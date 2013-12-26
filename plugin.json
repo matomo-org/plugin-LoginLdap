@@ -4,10 +4,13 @@
  "description": "LDAP connector for Piwik login",
  "theme": false,
  "keywords": ["ldap", "login", "authentication", "active", "directory"],
- "homepage": "http://code.google.com/p/piwik-ldap/",
+ "homepage": "https://github.com/tehnotronic/PiwikLdap",
  "require": {
         "piwik": ">=2.0.0",
         "php": ">=5.3.0"
+    },
+ "donate": {
+        "paypal": "aivo.koger@gmail.com"
     },
  "authors": [
         {
