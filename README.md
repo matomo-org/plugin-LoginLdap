@@ -28,7 +28,7 @@ From that point on they can login via mobile apps and API in general.
 
 ## FAQ
 
-http://code.google.com/p/piwik-ldap
+https://github.com/tehnotronic/PiwikLdap/wiki
 
 
 ## Changelog
@@ -81,4 +81,4 @@ LoginLdap 1.0.0:
 
 ## Support
 
-Please direct any feedback to http://code.google.com/p/piwik-ldap
+Please direct any feedback to https://github.com/tehnotronic/PiwikLdap
