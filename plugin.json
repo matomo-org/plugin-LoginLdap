@@ -4,6 +4,7 @@
  "description": "LDAP connector for Piwik login",
  "theme": false,
  "keywords": ["ldap", "login", "authentication", "active", "directory"],
+ "license": "GPL v3+",
  "homepage": "https://github.com/tehnotronic/PiwikLdap",
  "require": {
         "piwik": ">=2.0.0",
