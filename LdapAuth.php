@@ -35,11 +35,17 @@ class LdapAuth implements \Piwik\Auth
 
     private $LdapLogFile = "/plugins/LoginLdap/data/ldap.log";
 
+    /**
+     * @return string
+     */
     private function LdapGetLogPath()
     {
         return PIWIK_INCLUDE_PATH . $this->LdapLogFile;
     }
 
+    /**
+     * @param $text
+     */
     private function LdapLog($text)
     {
         if ($this->LdapLogFile) {
@@ -76,7 +82,9 @@ class LdapAuth implements \Piwik\Auth
 
         try {
             $kerberosEnabled = Config::getInstance()->LoginLdap['useKerberos'];
-            if ($kerberosEnabled=="") {$kerberosEnabled=false;}
+            if ($kerberosEnabled == "") {
+                $kerberosEnabled = false;
+            }
         } catch (Exception $ex) {
             $kerberosEnabled = false;
             $this->LdapLog("AUTH: kerberosEnabled: false");
@@ -137,7 +145,7 @@ class LdapAuth implements \Piwik\Auth
                             WHERE login = ?',
                         array($login)
                     );
-                    $this->LdapLog("AUTH: fetchOne: ".$userToken."; gethash: ".$this->getHashTokenAuth($login, $userToken)."; this->token_auth: ".$this->token_auth);
+
                     if (!empty($userToken)
                         && (($this->getHashTokenAuth($login, $userToken) === $this->token_auth)
                             || $userToken === $this->token_auth)

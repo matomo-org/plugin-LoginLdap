@@ -101,7 +101,6 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
         if(!empty($user))
         {
             $password = $this->generatePassword(25);
-            $token_auth = md5($userLogin . md5($password));
 
             if(empty($user['mail']))
             { // a valid email is needed to create a new user
@@ -133,7 +132,7 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
     }
 
     /**
-     *
+     * Default function
      */
     public function index()
     {
@@ -191,7 +190,6 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
     function loadUser()
     {
         $username = Common::getRequestVar('username', '');
-        $success = false;
         if(!empty($username))
         {
             try
@@ -211,9 +209,7 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
             {
                 throw new Exception($e->getMessage());
             }
-        }
-        else
-        {
+        } else {
             throw new Exception(Piwik::translate('LoginLdap_NoUserName', $username));
         }
     }
@@ -264,7 +260,6 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
                 $login = $form->getSubmitValue('form_login');
                 $password = $form->getSubmitValue('form_password');
                 $rememberMe = $form->getSubmitValue('form_rememberme') == '1';
-                $md5Password = md5($password);
                 try {
                     $this->authenticateAndRedirect($login, $password, $rememberMe);
                 } catch (Exception $e) {
@@ -401,7 +396,6 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
     private function resetPasswordFirstStep($form)
     {
         $loginMail = $form->getSubmitValue('form_login');
-        $token = $form->getSubmitValue('form_token');
         $password = $form->getSubmitValue('form_password');
 
         // check the password
@@ -507,7 +501,7 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
         if (is_null($errorMessage)) // if success, show login w/ success message
         {
             $this->redirectToIndex('LoginLdap', 'resetPasswordSuccess');
-            return;
+            return null;
         } else {
             // show login page w/ error. this will keep the token in the URL
             return $this->login($errorMessage);
