@@ -1,5 +1,5 @@
 {
-    "LoginLdap": {
+	"LoginLdap": {
 		"PluginDescription": "Login plugin with LDAP authentication. Provides an alternative to the standard Piwik Login plugin.",
 		"MenuLdap": "LDAP Users",
 		"LoadUser": "Load User from LDAP",
@@ -32,5 +32,5 @@
 		"Kerberos": "Kerberos enabled",
 		"KerberosDescription": "( \"true\" or \"false\" )",
 		"LdapUserAdded": "LDAP user added successfully!"
-    }
+	}
 }

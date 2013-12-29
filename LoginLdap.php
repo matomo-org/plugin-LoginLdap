@@ -38,7 +38,29 @@ class LoginLdap extends \Piwik\Plugin
         );
         return $hooks;
     }
-
+	
+    /**
+     * Set config parameters during install
+     */
+    public function install()
+	{
+	    Config::getInstance()->LoginLdap = array(
+            'serverUrl' => 'ldap://localhost/',
+            'ldapPort' => '389',
+            'baseDn' => 'OU=users,DC=localhost,DC=com',
+            'userIdField' => 'userPrincipalName',
+            'mailField' => 'mail',
+            'aliasField' => 'cn',
+            'usernameSuffix' => '',
+            'adminUser' => '',
+            'adminPass' => '',
+            'memberOf' => '',
+            'filter' => '(objectClass=person)',
+            'useKerberos' => 'false'
+        );
+        Config::getInstance()->forceSave();
+	}
+	
     /**
      * Redirects to Login form with error message.
      * Listens to User.isNotAuthorized hook.
@@ -49,12 +71,12 @@ class LoginLdap extends \Piwik\Plugin
 
         $controller = new Controller();
 
-        echo $controller->login($exceptionMessage, '' /* $exception->getTraceAsString() */);
+        echo $controller->login(/*$exceptionMessage*/'', '' /* $exception->getTraceAsString() */);
     }
 
     function addMenu()
     {
-	MenuAdmin::getInstance()->add('CoreAdminHome_MenuManage', 'LoginLdap_MenuLdap', array('module' => 'LoginLdap', 'action' => 'admin'),
+	    MenuAdmin::getInstance()->add('CoreAdminHome_MenuManage', 'LoginLdap_MenuLdap', array('module' => 'LoginLdap', 'action' => 'admin'),
             Piwik::isUserIsSuperUser(), $order = 3);
     }
 	

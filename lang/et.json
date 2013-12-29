@@ -1,5 +1,5 @@
-﻿{
-    "LoginLdap": {
+{
+	"LoginLdap": {
 		"PluginDescription": "Käesolev plugin on alternatiiv originaalsele sisselogimisele, võimaldades kasutajaid autentida LDAP serveri vastu ja kasutada ka Kerberose tuge.",
 		"MenuLdap": "LDAP Kasutajad",
 		"LoadUser": "Lae kasutaja LDAP-ga",
@@ -32,5 +32,5 @@
 		"Kerberos": "Kerberos aktiveeritud",
 		"KerberosDescription": "( \"true\" or \"false\" )",
 		"LdapUserAdded": "LDAP kasutaja lisatud edukalt!"
-    }
+	}
 }
