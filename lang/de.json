@@ -1,9 +1,9 @@
-{
+ï»¿{
     "LoginLdap": {
 		"PluginDescription": "Login Plugin mit LDAP Authentifzierung als Alternative zum Standard Piwik Login Plugin.",
 		"MenuLdap": "LDAP Benutzer",
 		"LoadUser": "Benutzer aus LDAP laden",
-		"LoadUserDescription": "Benutzer im LDAP Verzeichnis suchen und zu Piwik hinzufügen.",
+		"LoadUserDescription": "Benutzer im LDAP Verzeichnis suchen und zu Piwik hinzufÃ¼gen.",
 		"Settings": "LDAP Einstellungen",
 		"AliasField": "Alias Feld",
 		"BaseDn": "Basis DN",
@@ -20,7 +20,7 @@
 		"UserNotFound": "Der Benutzer \'%s\' konnte nicht gefunden werden!",
 		"NoUserName": "Sie haben keinen Benutzername angegeben!",
 		"DevelopedBy": "Entwickelt durch",
-		"UsernameSuffix": "Benutzername Suffix / Domäne",
+		"UsernameSuffix": "Benutzername Suffix / DomÃ¤ne",
 		"UsernameSuffixDescription": "( e.g. \"@localhost.com\" )",
 		"AdminUser": "Administrator Benutzer",
 		"AdminUserDescription": "( e.g. \"Administrator\" )",
@@ -31,6 +31,6 @@
 		"FilterDescription": "( e.g. \"(objectClass=person)\" )",
 		"Kerberos": "Kerberos aktiviert",
 		"KerberosDescription": "( \"true\" or \"false\" )",
-		"LdapUserAdded": "LDAP Benutzer erfolgreich hinzugefügt!"
+		"LdapUserAdded": "LDAP Benutzer erfolgreich hinzugefÃ¼gt!"
     }
 }
