@@ -33,6 +33,10 @@ From that point on they can login via mobile apps and API in general.
 
 ## Changelog
 
+#### LoginLdap 2.0.3:
+* Issue #26 Fixed 'malformed UTF8 in de.json'
+* Issue #28 Fixed 'plugin install should add parameters to config.ini.php'
+
 #### LoginLdap 2.0.2:
 * Added 'de' and 'et' translations
 * Minor code enhancements

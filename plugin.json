@@ -1,6 +1,6 @@
 {
  "name": "LoginLdap",
- "version": "2.0.2",
+ "version": "2.0.3",
  "description": "LDAP connector for Piwik login",
  "theme": false,
  "keywords": ["ldap", "login", "authentication", "active", "directory", "kerberos"],
@@ -20,7 +20,8 @@
             "homepage": "http://www.gigatec.de"
         }, {
             "name": "Aivo Koger",
-            "email": "aivo.koger@gmail.com"
+            "email": "aivo.koger@gmail.com",
+			"homepage": "https://github.com/tehnotronic"
         }
     ]
 }
