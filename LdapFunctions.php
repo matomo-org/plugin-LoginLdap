@@ -101,7 +101,6 @@ class LdapFunctions {
         }
 
         $this->connect();
-        $this->log("conect() end");
 
         $result = $this->getUserEntries($username);
         $this->log("FUNC: authenticateFu(".$username.") getUserEntries()");

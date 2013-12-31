@@ -33,6 +33,9 @@ From that point on they can login via mobile apps and API in general.
 
 ## Changelog
 
+#### LoginLdap 2.0.5:
+* Fixed issue with log file creation and reading
+
 #### LoginLdap 2.0.4:
 * Added 'View LDAP log from web as admin'
 * Added better error detection and check if LDAP is enabled in PHP

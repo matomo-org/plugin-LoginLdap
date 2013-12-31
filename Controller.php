@@ -226,11 +226,14 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
                     $offset2 = intval($linesize/count($lines) * ($linecount+1));
                     if ($offset2 > $offset) {$offset = $offset2;}
                     if ($offset > $fsize) {$offset = $fsize;}
-                    echo 'Trying with a bigger offset: ', $offset, "\n";
                     $lines = array();
                 }
             }
-        }
+        } else { // try to create a new log file
+            $fp = fopen($file, 'w');
+            fwrite($fp, '...');
+            fclose($fp);
+		}
 		if (count($lines) < 1) {array_push($lines, Piwik::translate('LoginLdap_LogEmpty'));}
 		
 		$line = "";
