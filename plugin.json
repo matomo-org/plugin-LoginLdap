@@ -1,6 +1,6 @@
 {
  "name": "LoginLdap",
- "version": "2.0.3",
+ "version": "2.0.4",
  "description": "LDAP connector for Piwik login",
  "theme": false,
  "keywords": ["ldap", "login", "authentication", "active", "directory", "kerberos"],

@@ -98,9 +98,7 @@ class LdapAuth implements \Piwik\Auth
         }
 
         if (is_null($this->login)) {
-            $this->LdapLog("AUTH: this->login null");
             if ($this->token_auth === $rootToken) {
-                $this->LdapLog("AUTH: superuser login success");
                 return new AuthResult(AuthResult::SUCCESS_SUPERUSER_AUTH_CODE, $rootLogin, $this->token_auth);
             }
 
@@ -119,7 +117,6 @@ class LdapAuth implements \Piwik\Auth
                 && ($this->getHashTokenAuth($rootLogin, $rootToken) === $this->token_auth)
                 || $rootToken === $this->token_auth
             ) {
-                $this->LdapLog("AUTH: login success as superuser");
                 $this->setTokenAuth($rootToken);
                 return new AuthResult(AuthResult::SUCCESS_SUPERUSER_AUTH_CODE, $rootLogin, $this->token_auth);
             } else {

@@ -136,4 +136,16 @@
 </form>
 </table>
 
+
+<h2>{{'LoginLdap_DisplayLog'|translate}}</h2>
+<div style="float:left">
+
+<p>{{'LoginLdap_DisplayLogDescription'|translate}} - <a href="index.php?module=LoginLdap&action=getLog" alt="{{'LoginLdap_DownloadLog'|translate}}">{{'LoginLdap_DownloadLog'|translate}}</a></p>
+
+<div style="width:900px;line-height:0.8em;height:200px;overflow:auto;">
+	<pre>{{ logContent }}</pre>
+</div>
+
+</div>
+
 {% endblock %}

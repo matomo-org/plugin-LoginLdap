@@ -147,8 +147,15 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
         Piwik::checkUserIsSuperUser();
         $view = new View('@LoginLdap/index');
 
+        if (!function_exists('ldap_connect')) {
+            $notification = new Notification(Piwik::translate('LoginLdap_LdapFunctionsMissing'));
+            $notification->context = Notification::CONTEXT_ERROR;
+            Notification\Manager::notify('LoginLdap_LdapFunctionsMissing', $notification);
+        }
+		
         $this->setBasicVariablesView($view);
         $view->infoMessage = nl2br($infoMessage);
+        $view->logContent = $this->readlog();
 
         if(!Config::getInstance()->LoginLdap)
         {
@@ -181,13 +188,93 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
         return $view->render();
     }
 
+	/*
+	 * Pull the last N lines from a (large) file
+	 * Open source (c) Paul Gregg, 2008
+	 * http://www.pgregg.com/projects/
+	 */
+	private function readlog() {
+	    $linecount  = 20;  // Number of lines we want to read
+	    $linelength = 55; // Predict the number of chars per line
+	    $file = './plugins/LoginLdap/data/ldap.log';
+	    $lines = array(); // array to store the lines we read.
+		
+		if (file_exists($file)) {
+	        $fsize = filesize($file);
+	        $offset = ($linecount+1) * $linelength;
+	        if ($offset > $fsize) {$offset = $fsize;}
+	        $fp = fopen($file, 'r');
+	        if ($fp === false) {exit;}
+	        $readloop = true;
+		
+            while($readloop) {
+                fseek($fp, 0 - $offset, SEEK_END);
+                if ($offset != $fsize) {fgets($fp);}
+                $linesize = 0;
+                while($line = fgets($fp)) {
+                        array_push($lines, $line);
+                        $linesize += strlen($line); // total up the char count
+                    if (count($lines) > $linecount) {array_shift($lines);}
+                }
+
+                if (count($lines) == $linecount) {
+                    $readloop = false;
+                } elseif ($offset >= $fsize) {
+                    $readloop = false;
+                } elseif (count($lines) < $linecount) {
+                    $offset = intval($offset * 1.1);  // increase offset 10%
+                    $offset2 = intval($linesize/count($lines) * ($linecount+1));
+                    if ($offset2 > $offset) {$offset = $offset2;}
+                    if ($offset > $fsize) {$offset = $fsize;}
+                    echo 'Trying with a bigger offset: ', $offset, "\n";
+                    $lines = array();
+                }
+            }
+        }
+		if (count($lines) < 1) {array_push($lines, Piwik::translate('LoginLdap_LogEmpty'));}
+		
+		$line = "";
+		foreach($lines as $key => $value) {
+			$line = $line.$value."\r\n";
+		}
+		
+        return $line;
+    }
+	
+	/**
+     * Download log file
+     *
+     * @param none
+     * @return void
+     */
+    public function getLog() {
+		$file = './plugins/LoginLdap/data/ldap.log';
+		
+        if (file_exists($file)) {
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/octet-stream');
+            header('Content-Disposition: attachment; filename='.basename($file));
+            header('Content-Transfer-Encoding: binary');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($file));
+            ob_clean();
+            flush();
+            readfile($file);
+            exit;
+        } else {
+            throw new Exception(Piwik::translate('LoginLdap_LogEmpty'));
+        }
+    }
+	
     /**
      * LoadUser action
      *
      * @param none
      * @return void
      */
-    function loadUser()
+    public function loadUser()
     {
         $username = Common::getRequestVar('username', '');
         if(!empty($username))

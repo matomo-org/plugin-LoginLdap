@@ -73,10 +73,13 @@ class LoginLdap extends \Piwik\Plugin
 
         echo $controller->login(/*$exceptionMessage*/'', '' /* $exception->getTraceAsString() */);
     }
-
+	
+    /**
+     * Add admin menu items
+     */
     function addMenu()
     {
-	    MenuAdmin::getInstance()->add('CoreAdminHome_MenuManage', 'LoginLdap_MenuLdap', array('module' => 'LoginLdap', 'action' => 'admin'),
+        MenuAdmin::getInstance()->add('CoreAdminHome_MenuManage', 'LoginLdap_MenuLdap', array('module' => 'LoginLdap', 'action' => 'admin'),
             Piwik::isUserIsSuperUser(), $order = 3);
     }
 	
