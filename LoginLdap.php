@@ -17,6 +17,7 @@ use Piwik\Cookie;
 use Piwik\Option;
 use Piwik\Piwik;
 use Piwik\Plugins\UsersManager\UsersManager;
+use Piwik\Plugin\Manager;
 use Piwik\Session;
 
 /**
@@ -59,6 +60,22 @@ class LoginLdap extends \Piwik\Plugin
             'useKerberos' => 'false'
         );
         Config::getInstance()->forceSave();
+	}
+		
+    /**
+     * Deactivate default Login module, as both cannot be activated together
+     */
+    public function activate()
+	{
+		Manager::getInstance()->deactivatePlugin("Login");
+	}
+			
+    /**
+     * Activate default Login module, as one of them is needed to access Piwik
+     */
+    public function deactivate()
+	{
+		Manager::getInstance()->activatePlugin("Login");
 	}
 	
     /**
