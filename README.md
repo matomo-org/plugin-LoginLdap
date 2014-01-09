@@ -33,6 +33,9 @@ From that point on they can login via mobile apps and API in general.
 
 ## Changelog
 
+#### LoginLdap 2.0.6:
+* Tmuellerleile fixed default controller action
+
 #### LoginLdap 2.0.5:
 * Fixed issue with log file creation and reading
 
