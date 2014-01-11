@@ -82,7 +82,7 @@ class LdapAuth implements \Piwik\Auth
 
         try {
             $kerberosEnabled = Config::getInstance()->LoginLdap['useKerberos'];
-            if ($kerberosEnabled == "") {
+            if ($kerberosEnabled == "" || $kerberosEnabled == "false") {
                 $kerberosEnabled = false;
             }
         } catch (Exception $ex) {
@@ -91,10 +91,12 @@ class LdapAuth implements \Piwik\Auth
         }
         if($kerberosEnabled && isset($_SERVER['REMOTE_USER']))
         {
-            $kerbLogin = $_SERVER['REMOTE_USER'];
-            $this->login = preg_replace('/@.*/', '', $kerbLogin);
-            $this->password = '';
-            $this->LdapLog("AUTH: REMOTE_USER: ".$this->login);
+            if (strlen($_SERVER['REMOTE_USER']) > 1) {
+                $kerbLogin = $_SERVER['REMOTE_USER'];
+                $this->login = preg_replace('/@.*/', '', $kerbLogin);
+                $this->password = '';
+                $this->LdapLog("AUTH: REMOTE_USER: ".$this->login);
+            }
         }
 
         if (is_null($this->login)) {
