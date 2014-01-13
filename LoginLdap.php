@@ -39,13 +39,13 @@ class LoginLdap extends \Piwik\Plugin
         );
         return $hooks;
     }
-	
+
     /**
      * Set config parameters during install
      */
     public function install()
-	{
-	    Config::getInstance()->LoginLdap = array(
+    {
+        Config::getInstance()->LoginLdap = array(
             'serverUrl' => 'ldap://localhost/',
             'ldapPort' => '389',
             'baseDn' => 'OU=users,DC=localhost,DC=com',
@@ -60,24 +60,24 @@ class LoginLdap extends \Piwik\Plugin
             'useKerberos' => 'false'
         );
         Config::getInstance()->forceSave();
-	}
-		
+    }
+
     /**
      * Deactivate default Login module, as both cannot be activated together
      */
     public function activate()
-	{
-		Manager::getInstance()->deactivatePlugin("Login");
-	}
-			
+    {
+        Manager::getInstance()->deactivatePlugin("Login");
+    }
+
     /**
      * Activate default Login module, as one of them is needed to access Piwik
      */
     public function deactivate()
-	{
-		Manager::getInstance()->activatePlugin("Login");
-	}
-	
+    {
+        Manager::getInstance()->activatePlugin("Login");
+    }
+
     /**
      * Redirects to Login form with error message.
      * Listens to User.isNotAuthorized hook.
@@ -90,7 +90,7 @@ class LoginLdap extends \Piwik\Plugin
 
         echo $controller->login(/*$exceptionMessage*/'', '' /* $exception->getTraceAsString() */);
     }
-	
+
     /**
      * Add admin menu items
      */
@@ -99,7 +99,7 @@ class LoginLdap extends \Piwik\Plugin
         MenuAdmin::getInstance()->add('CoreAdminHome_MenuManage', 'LoginLdap_MenuLdap', array('module' => 'LoginLdap', 'action' => 'admin'),
             Piwik::isUserIsSuperUser(), $order = 3);
     }
-	
+
     /**
      * Set login name and autehntication token for authentication request.
      * Listens to API.Request.authenticate hook.

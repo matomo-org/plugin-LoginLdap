@@ -152,7 +152,7 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
             $notification->context = Notification::CONTEXT_ERROR;
             Notification\Manager::notify('LoginLdap_LdapFunctionsMissing', $notification);
         }
-		
+
         $this->setBasicVariablesView($view);
         $view->infoMessage = nl2br($infoMessage);
         $view->logContent = $this->readlog();
@@ -188,25 +188,25 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
         return $view->render();
     }
 
-	/*
-	 * Pull the last N lines from a (large) file
-	 * Open source (c) Paul Gregg, 2008
-	 * http://www.pgregg.com/projects/
-	 */
-	private function readlog() {
-	    $linecount  = 20;  // Number of lines we want to read
-	    $linelength = 55; // Predict the number of chars per line
-	    $file = './plugins/LoginLdap/data/ldap.log';
-	    $lines = array(); // array to store the lines we read.
-		
-		if (file_exists($file)) {
-	        $fsize = filesize($file);
-	        $offset = ($linecount+1) * $linelength;
-	        if ($offset > $fsize) {$offset = $fsize;}
-	        $fp = fopen($file, 'r');
-	        if ($fp === false) {exit;}
-	        $readloop = true;
-		
+    /*
+     * Pull the last N lines from a (large) file
+     * Open source (c) Paul Gregg, 2008
+     * http://www.pgregg.com/projects/
+     */
+    private function readlog() {
+        $linecount  = 20;  // Number of lines we want to read
+        $linelength = 55; // Predict the number of chars per line
+        $file = './plugins/LoginLdap/data/ldap.log';
+        $lines = array(); // array to store the lines we read.
+
+        if (file_exists($file)) {
+            $fsize = filesize($file);
+            $offset = ($linecount+1) * $linelength;
+            if ($offset > $fsize) {$offset = $fsize;}
+            $fp = fopen($file, 'r');
+            if ($fp === false) {exit;}
+            $readloop = true;
+
             while($readloop) {
                 fseek($fp, 0 - $offset, SEEK_END);
                 if ($offset != $fsize) {fgets($fp);}
@@ -233,26 +233,26 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
             $fp = fopen($file, 'w');
             fwrite($fp, '...');
             fclose($fp);
-		}
-		if (count($lines) < 1) {array_push($lines, Piwik::translate('LoginLdap_LogEmpty'));}
-		
-		$line = "";
-		foreach($lines as $key => $value) {
-			$line = $line.$value."\r\n";
-		}
-		
+        }
+        if (count($lines) < 1) {array_push($lines, Piwik::translate('LoginLdap_LogEmpty'));}
+        
+        $line = "";
+        foreach($lines as $key => $value) {
+            $line = $line.$value."\r\n";
+        }
+
         return $line;
     }
-	
-	/**
+
+    /**
      * Download log file
      *
      * @param none
      * @return void
      */
     public function getLog() {
-		$file = './plugins/LoginLdap/data/ldap.log';
-		
+        $file = './plugins/LoginLdap/data/ldap.log';
+
         if (file_exists($file)) {
             header('Content-Description: File Transfer');
             header('Content-Type: application/octet-stream');
@@ -270,7 +270,7 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
             throw new Exception(Piwik::translate('LoginLdap_LogEmpty'));
         }
     }
-	
+
     /**
      * LoadUser action
      *
