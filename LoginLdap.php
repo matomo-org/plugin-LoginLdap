@@ -67,7 +67,9 @@ class LoginLdap extends \Piwik\Plugin
      */
     public function activate()
     {
-        Manager::getInstance()->deactivatePlugin("Login");
+        if (Manager::getInstance()->isPluginActivated("Login") == true) {
+            Manager::getInstance()->deactivatePlugin("Login");
+        }
     }
 
     /**
@@ -75,7 +77,9 @@ class LoginLdap extends \Piwik\Plugin
      */
     public function deactivate()
     {
-        Manager::getInstance()->activatePlugin("Login");
+        if (Manager::getInstance()->isPluginActivated("Login") == false) {
+            Manager::getInstance()->activatePlugin("Login");
+        }
     }
 
     /**
