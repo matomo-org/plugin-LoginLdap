@@ -33,6 +33,9 @@ From that point on they can login via mobile apps and API in general.
 
 ## Changelog
 
+#### LoginLdap 2.0.8:
+* Fixed issue #7 'Deinstallation not possible' 
+
 #### LoginLdap 2.0.7:
 * Fixed issue #4 'useKerberos config problem'
 
