@@ -7,7 +7,7 @@
  "license": "GPL v3+",
  "homepage": "https://github.com/tehnotronic/PiwikLdap",
  "require": {
-        "piwik": ">=2.0.0",
+        "piwik": ">=2.0.4-b5",
         "php": ">=5.3.0"
     },
  "donate": {

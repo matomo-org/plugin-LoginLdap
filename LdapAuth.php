@@ -27,7 +27,7 @@ require_once PIWIK_INCLUDE_PATH . '/plugins/LoginLdap/LdapFunctions.php';
  *
  * @package Login
  */
-class LdapAuth implements \Piwik\Auth
+class LdapAuth extends \Piwik\Plugins\Login\Auth
 {
     protected $login = null;
     protected $password = null;
