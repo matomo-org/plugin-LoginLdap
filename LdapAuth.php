@@ -20,6 +20,7 @@ use Piwik\Piwik;
 use Piwik\Plugins\UsersManager\API;
 use Piwik\ProxyHttp;
 use Piwik\Session;
+use Piwik\Plugins\UsersManager\Model as UserModel;
 
 require_once PIWIK_INCLUDE_PATH . '/plugins/LoginLdap/LdapFunctions.php';
 
@@ -76,10 +77,6 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
      */
     public function authenticate()
     {
-        $rootLogin = Config::getInstance()->superuser['login'];
-        $rootPassword = Config::getInstance()->superuser['password'];
-        $rootToken = API::getInstance()->getTokenAuth($rootLogin, $rootPassword);
-
         try {
             $kerberosEnabled = Config::getInstance()->LoginLdap['useKerberos'];
             if ($kerberosEnabled == "" || $kerberosEnabled == "false") {
@@ -100,64 +97,57 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
         }
 
         if (is_null($this->login)) {
-            if ($this->token_auth === $rootToken) {
-                return new AuthResult(AuthResult::SUCCESS_SUPERUSER_AUTH_CODE, $rootLogin, $this->token_auth);
-            }
 
-            $login = Db::fetchOne(
-                'SELECT login
-                FROM ' . Common::prefixTable('user') . '
-                    WHERE token_auth = ?',
-                array($this->token_auth)
-            );
-            if (!empty($login)) {
+            $model = new UserModel();
+            $user  = $model->getUserByTokenAuth($this->token_auth);
+
+            if (!empty($user['login'])) {
                 $this->LdapLog("AUTH: token login success");
-                return new AuthResult(AuthResult::SUCCESS, $login, $this->token_auth);
+                $code = $user['superuser_access'] ? AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
+
+                return new AuthResult($code, $user['login'], $this->token_auth);
             }
         } else if (!empty($this->login)) {
-            if ($this->login === $rootLogin
-                && ($this->getHashTokenAuth($rootLogin, $rootToken) === $this->token_auth)
-                || $rootToken === $this->token_auth
-            ) {
-                $this->setTokenAuth($rootToken);
-                return new AuthResult(AuthResult::SUCCESS_SUPERUSER_AUTH_CODE, $rootLogin, $this->token_auth);
-            } else {
 
-                $ldapException = null;
-                if ($this->login != "anonymous") {
-                    try {
-                        if($this->authenticateLDAP($this->login, $this->password, $kerberosEnabled))
-                        {
-                            $this->LdapLog("AUTH: piwik_auth_result ok");
-                            return new AuthResult(AuthResult::SUCCESS, $this->login, $this->token_auth );
-                        }
-                    } catch (Exception $ex) {
-                        $this->LdapLog("AUTH: exception: ".$ex);
-                        $ldapException = $ex;
+            $ldapException = null;
+            if ($this->login != "anonymous") {
+                try {
+                    if($this->authenticateLDAP($this->login, $this->password, $kerberosEnabled))
+                    {
+                        $this->LdapLog("AUTH: piwik_auth_result ok");
+                        return new AuthResult(AuthResult::SUCCESS, $this->login, $this->token_auth );
                     }
-                
-                    $this->LdapLog("AUTH: login: ".$this->login);
-                    $login = $this->login;
-                    $userToken = Db::fetchOne(
-                        'SELECT token_auth
-                        FROM ' . Common::prefixTable('user') . '
-                            WHERE login = ?',
-                        array($login)
-                    );
+                } catch (Exception $ex) {
+                    $this->LdapLog("AUTH: exception: ".$ex);
+                    $ldapException = $ex;
+                }
 
-                    if (!empty($userToken)
-                        && (($this->getHashTokenAuth($login, $userToken) === $this->token_auth)
-                            || $userToken === $this->token_auth)
-                    ) {
-                        $this->setTokenAuth($userToken);
-                        $this->LdapLog("AUTH: setTokenAuth: ".$userToken);
-                        return new AuthResult(AuthResult::SUCCESS, $login, $userToken);
-                    }
+                $this->LdapLog("AUTH: login: ".$this->login);
+                $login = $this->login;
 
-                    if (!is_null($ldapException)) {
-                        $this->LdapLog("AUTH: ldapException: ".$ldapException);
-                        throw $ldapException;
-                    }
+                $model = new UserModel();
+                $user  = $model->getUser($login);
+
+                $userToken = null;
+                if (!empty($user['token_auth'])) {
+                    $userToken = $user['token_auth'];
+                }
+
+                if (!empty($userToken)
+                    && (($this->getHashTokenAuth($login, $userToken) === $this->token_auth)
+                        || $userToken === $this->token_auth)
+                ) {
+                    $this->setTokenAuth($userToken);
+                    $this->LdapLog("AUTH: setTokenAuth: ".$userToken);
+
+                    $code = !empty($user['superuser_access']) ? AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
+
+                    return new AuthResult($code, $login, $userToken);
+                }
+
+                if (!is_null($ldapException)) {
+                    $this->LdapLog("AUTH: ldapException: ".$ldapException);
+                    throw $ldapException;
                 }
             }
         }
