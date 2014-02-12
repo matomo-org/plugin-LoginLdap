@@ -14,6 +14,7 @@ use Exception;
 use Piwik\Menu\MenuAdmin;
 use Piwik\Config;
 use Piwik\Cookie;
+use Piwik\FrontController;
 use Piwik\Option;
 use Piwik\Piwik;
 use Piwik\Plugins\UsersManager\UsersManager;
@@ -90,9 +91,7 @@ class LoginLdap extends \Piwik\Plugin
     {
         $exceptionMessage = $exception->getMessage();
 
-        $controller = new Controller();
-
-        echo $controller->login(/*$exceptionMessage*/'', '' /* $exception->getTraceAsString() */);
+        echo FrontController::getInstance()->dispatch('LoginLdap', 'login', array($exceptionMessage));
     }
 
     /**

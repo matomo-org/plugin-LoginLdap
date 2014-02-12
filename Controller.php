@@ -341,8 +341,6 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
      */
     public function login($messageNoAccess = null, $infoMessage = false)
     {
-        $this->checkForceSslLogin();
-
         $form = new FormLogin();
         if ($form->validate()) {
             $nonce = $form->getSubmitValue('form_nonce');
@@ -381,8 +379,6 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
 
         $view->linkTitle = Piwik::getRandomTitle();
 
-        $view->forceSslLogin = Config::getInstance()->General['force_ssl_login'];
-
         // crsf token: don't trust the submitted value; generate/fetch it from session data
         $view->nonce = Nonce::getNonce('LoginLdap.login');
     }
@@ -395,8 +391,6 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
      */
     function logme()
     {
-        self::checkForceSslLogin();
-
         $password = Common::getRequestVar('password', null, 'string');
         $login = Common::getRequestVar('login', null, 'string');
         if ($login == Config::getInstance()->superuser['login']) {
@@ -424,12 +418,16 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
      * @param string $urlToRedirect URL to redirect to, if successfully authenticated
      * @return string failure message if unable to authenticate
      */
-    protected function authenticateAndRedirect($login, $password, $rememberMe, $urlToRedirect = 'index.php')
+    protected function authenticateAndRedirect($login, $password, $rememberMe, $urlToRedirect = false)
     {
         Nonce::discardNonce('LoginLdap.login');
 
         \Piwik\Registry::get('auth')->initSession($login, $password, $rememberMe);
 
+        if(empty($urlToRedirect)) {
+            $urlToRedirect = Url::getCurrentUrlWithoutQueryString();
+        }
+		
         Url::redirectToUrl($urlToRedirect);
     }
 
@@ -448,8 +446,6 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
      */
     function resetPassword()
     {
-        self::checkForceSslLogin();
-
         $infoMessage = null;
         $formErrors = null;
 
@@ -739,26 +735,6 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
             Piwik::redirectToModule('CoreHome');
         } else {
             Url::redirectToUrl($logoutUrl);
-        }
-    }
-
-    /**
-     * Check force_ssl_login and redirect if connection isn't secure and not using a reverse proxy
-     *
-     * @param none
-     * @return void
-     */
-    protected function checkForceSslLogin()
-    {
-        $forceSslLogin = Config::getInstance()->General['force_ssl_login'];
-        if ($forceSslLogin
-            && !ProxyHttp::isHttps()
-        ) {
-            $url = 'https://'
-                . Url::getCurrentHost()
-                . Url::getCurrentScriptName()
-                . Url::getCurrentQueryString();
-            Url::redirectToUrl($url);
         }
     }
 }
