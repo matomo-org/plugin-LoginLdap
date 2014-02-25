@@ -144,7 +144,7 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
      */
     public function admin($infoMessage = false)
     {
-        Piwik::checkUserIsSuperUser();
+        Piwik::checkUserHasSuperUserAccess();
         $view = new View('@LoginLdap/index');
 
         if (!function_exists('ldap_connect')) {
@@ -309,7 +309,7 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
      */
     public function saveSettings()
     {
-        Piwik::checkUserIsSuperUser();
+        Piwik::checkUserHasSuperUserAccess();
 
         Config::getInstance()->LoginLdap = array(
             'serverUrl' => Common::getRequestVar('serverUrl', ''),
@@ -609,14 +609,8 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
                 "setNewUserPassword called w/ incorrect password hash. Something has gone terribly wrong.");
         }
 
-        if ($user['email'] == Piwik::getSuperUserEmail()) {
-            $user['password'] = $passwordHash;
-            Config::getInstance()->superuser = $user;
-            Config::getInstance()->forceSave();
-        } else {
-            APIUsersManager::getInstance()->updateUser(
-                $user['login'], $passwordHash, $email = false, $alias = false, $isPasswordHashed = true);
-        }
+        APIUsersManager::getInstance()->updateUser(
+            $user['login'], $passwordHash, $email = false, $alias = false, $isPasswordHashed = true);
     }
 
     /**
@@ -637,18 +631,10 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
      */
     protected function getUserInformation($loginMail)
     {
-        Piwik::setUserIsSuperUser();
+        Piwik::setUserHasSuperUserAccess();
 
         $user = null;
-        if ($loginMail == Piwik::getSuperUserEmail()
-            || $loginMail == Config::getInstance()->superuser['login']
-        ) {
-            $user = array(
-                'login'    => Config::getInstance()->superuser['login'],
-                'email'    => Piwik::getSuperUserEmail(),
-                'password' => Config::getInstance()->superuser['password'],
-            );
-        } else if (APIUsersManager::getInstance()->userExists($loginMail)) {
+        if (APIUsersManager::getInstance()->userExists($loginMail)) {
             $user = APIUsersManager::getInstance()->getUser($loginMail);
         } else if (APIUsersManager::getInstance()->userEmailExists($loginMail)) {
             $user = APIUsersManager::getInstance()->getUserByEmail($loginMail);
