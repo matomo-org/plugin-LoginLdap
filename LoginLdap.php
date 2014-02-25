@@ -91,7 +91,7 @@ class LoginLdap extends \Piwik\Plugin
     {
         $exceptionMessage = $exception->getMessage();
 
-        echo FrontController::getInstance()->dispatch('LoginLdap', 'login', array($exceptionMessage));
+        echo FrontController::getInstance()->dispatch('LoginLdap', 'login' /*, array($exceptionMessage)*/ );
     }
 
     /**
