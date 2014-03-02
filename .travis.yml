@@ -15,9 +15,12 @@ install:
   - TEST_PIWIK_VERSION=`echo $TEST_PIWIK_VERSION | tr -d ' ' | tr -d '\n'`
   - mkdir LoginLdap
   - cp -R !(LoginLdap) LoginLdap
+  - cp -R .git/ LoginLdap/
   - git clone https://github.com/piwik/piwik.git piwik
   - cd piwik
   - git checkout "$TEST_PIWIK_VERSION"
+  - git submodule init
+  - git submodule update || true
   - composer install
   - rm -rf plugins/LoginLdap
   - cd ../
