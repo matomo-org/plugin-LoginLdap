@@ -115,7 +115,10 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
                     if($this->authenticateLDAP($this->login, $this->password, $kerberosEnabled))
                     {
                         $this->LdapLog("AUTH: piwik_auth_result ok");
-                        return new AuthResult(AuthResult::SUCCESS, $this->login, $this->token_auth );
+                        $model = new UserModel();
+                        $user = $model->getUserByTokenAuth($this->token_auth);
+                        $code = $user['superuser_access'] ? AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
+                        return new AuthResult($code, $this->login, $this->token_auth );
                     }
                 } catch (Exception $ex) {
                     $this->LdapLog("AUTH: exception: ".$ex);
