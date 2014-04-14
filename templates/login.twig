@@ -13,21 +13,12 @@
     {% endautoescape %}
     <link rel="stylesheet" type="text/css" href="plugins/Login/stylesheets/login.css"/>
     <meta name="description" content="{{ 'General_OpenSourceWebAnalytics'|translate }}"/>
-    <!--[if lt IE 9]>
-    <script src="libs/html5shiv/html5shiv.js"></script>
-    <![endif]-->
-    <script type="text/javascript" src="libs/jquery/jquery.js"></script>
-    <script type="text/javascript" src="libs/jquery/jquery.placeholder.js"></script>
-    <script type="text/javascript" src="plugins/CoreHome/javascripts/require.js"></script>
-    <script type="text/javascript" src="plugins/CoreHome/javascripts/notification.js"></script>
-    <script type="text/javascript" src="plugins/CoreHome/javascripts/notification_parser.js"></script>
     <script type="text/javascript">
         $(function () {
             $('#form_login').focus();
             $('input').placeholder();
         });
     </script>
-    <script type="text/javascript" src="plugins/Login/javascripts/login.js"></script>
     {% if 'General_LayoutDirection'|translate =='rtl' %}
         <link rel="stylesheet" type="text/css" href="plugins/Zeitgeist/stylesheets/rtl.css"/>
     {% endif %}
