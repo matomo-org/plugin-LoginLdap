@@ -13,8 +13,11 @@ namespace Piwik\Plugins\LoginLdap;
 use Exception;
 use Piwik\Common;
 use Piwik\Config;
+use Piwik\Menu\MenuAdmin;
+use Piwik\Menu\MenuTop;
 use Piwik\Notification;
 use Piwik\Piwik;
+use Piwik\Plugin\ControllerAdmin;
 use Piwik\Plugins\UsersManager\API as APIUsersManager;
 use Piwik\Session;
 use Piwik\View;
@@ -116,6 +119,8 @@ class Controller extends \Piwik\Plugins\Login\Controller
     {
         Piwik::checkUserHasSuperUserAccess();
         $view = new View('@LoginLdap/index');
+
+        ControllerAdmin::setBasicVariablesAdminView($view);
 
         if (!function_exists('ldap_connect')) {
             $notification = new Notification(Piwik::translate('LoginLdap_LdapFunctionsMissing'));
@@ -265,6 +270,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
      */
     public function loadUser()
     {
+        Piwik::checkUserHasSuperUserAccess();
         $username = Common::getRequestVar('username', '');
         if (!empty($username)) {
             try {
