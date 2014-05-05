@@ -8,6 +8,9 @@
     <title>{% if isCustomLogo == false %}Piwik &rsaquo; {% endif %}{{ 'Login_LogIn'|translate }}</title>
 
     <link rel="shortcut icon" href="plugins/CoreHome/images/favicon.ico"/>
+    {% autoescape false %}
+    {{ includeAssets({"type": "css"}) }}
+    {% endautoescape %}
     <link rel="stylesheet" type="text/css" href="plugins/Login/stylesheets/login.css"/>
     <meta name="description" content="{{ 'General_OpenSourceWebAnalytics'|translate }}"/>
     <meta name="apple-itunes-app" content="app-id=737216887" />
@@ -61,7 +64,7 @@
                 {% if form_data.errors %}
                     <div class="message_error">
                         {% for data in form_data.errors %}
-                            <strong>{{ 'General_Error'|translate }}</strong>: {{ data }}<br/>
+                            <strong>{{ 'General_Error'|translate }}</strong>: {{ data|raw }}<br/>
                         {% endfor %}
                     </div>
                 {% endif %}
@@ -120,14 +123,14 @@
                            value="{{ 'General_ChangePassword'|translate }}" tabindex="100"/>
                 </fieldset>
 
-                <input type="hidden" name="module" value="LoginLdap"/>
+                <input type="hidden" name="module" value="{{ loginModule }}"/>
                 <input type="hidden" name="action" value="resetPassword"/>
             </form>
             <p id="nav">
                 <a id="login_form_nav" href="#"
                    title="{{ 'Login_LostYourPassword'|translate }}">{{ 'Login_LostYourPassword'|translate }}</a>
                 <a id="alternate_reset_nav" href="#" style="display:none;"
-                   title="{'Login_LogIn'|translate}">{{ 'Login_LogIn'|translate }}</a>
+                   title="{{'Login_LogIn'|translate}}">{{ 'Login_LogIn'|translate }}</a>
                 <a id="reset_form_nav" href="#" style="display:none;"
                    title="{{ 'Mobile_NavigationBack'|translate }}">{{ 'General_Cancel'|translate }}</a>
             </p>

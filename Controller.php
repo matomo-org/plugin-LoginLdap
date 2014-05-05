@@ -467,7 +467,8 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
             $formErrors = $formData['errors'];
         }
 
-        $view = new View('@LoginLdap/resetPassword');
+        // reuse Login template
+        $view = new View('@Login/resetPassword');
         $view->infoMessage = $infoMessage;
         $view->formErrors = $formErrors;
 

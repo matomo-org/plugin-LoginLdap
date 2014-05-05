@@ -1,13 +1,13 @@
 {
  "name": "LoginLdap",
- "version": "2.1.0",
+ "version": "2.2.0",
  "description": "LDAP connector for Piwik login",
  "theme": false,
  "keywords": ["ldap", "login", "authentication", "active", "directory", "kerberos"],
  "license": "GPL v3+",
  "homepage": "https://github.com/tehnotronic/PiwikLdap",
  "require": {
-        "piwik": ">=2.1",
+        "piwik": ">=2.2.0",
         "php": ">=5.3.0"
     },
  "donate": {
@@ -22,6 +22,10 @@
             "name": "Aivo Koger",
             "email": "aivo.koger@gmail.com",
 			"homepage": "https://github.com/tehnotronic"
+        }, {
+         "name": "Matthieu Aubry",
+         "email": "matt@piwik.org",
+         "homepage": "https://github.com/mattab"
         }
     ]
 }

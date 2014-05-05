@@ -37,8 +37,14 @@ class LoginLdap extends \Piwik\Plugin
             'Request.initAuthenticationObject' => 'initAuthenticationObject',
             'User.isNotAuthorized'             => 'noAccess',
             'API.Request.authenticate'         => 'ApiRequestAuthenticate',
+            'AssetManager.getJavaScriptFiles'  => 'getJsFiles'
         );
         return $hooks;
+    }
+
+    public function getJsFiles(&$jsFiles)
+    {
+        $jsFiles[] = "plugins/Login/javascripts/login.js";
     }
 
     /**
