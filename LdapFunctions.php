@@ -23,9 +23,6 @@ use Piwik\Session;
  */
 class LdapFunctions
 {
-
-    private $logFile = "/plugins/LoginLdap/data/ldap.log";
-
     private $serverUrl = null;
     private $ldapPort = null;
     private $userIdField = 'uid';
@@ -281,20 +278,13 @@ class LdapFunctions
         @ldap_close($this->ldapconn);
     }
 
-    private function getLogPath()
-    {
-        return PIWIK_INCLUDE_PATH . $this->logFile;
-    }
-
     private function log($text)
     {
-        if ($this->logFile) {
-            $path = $this->getLogPath();
-            $f = fopen($path, 'a');
-            if ($f != null) {
-                fwrite($f, strftime('%F %T') . ": $text\n");
-                fclose($f);
-            }
+        $path = LdapAuth::getLogPath();
+        $f = fopen($path, 'a');
+        if ($f != null) {
+            fwrite($f, strftime('%F %T') . ": $text\n");
+            fclose($f);
         }
     }
 
@@ -309,7 +299,9 @@ class LdapFunctions
     {
         $password = UsersManager::getPasswordHash($password);
         $token_auth = API::getInstance()->getTokenAuth($login, $password);
-        $result = Db::query("UPDATE " . Common::prefixTable('user') . " SET password='" . $password . "', token_auth='" . $token_auth . "' WHERE login='" . $login . "' and password != '" . $password . "'");
+        $result = Db::query("UPDATE " . Common::prefixTable('user')
+            . " SET password='" . $password . "', token_auth='" . $token_auth
+            . "' WHERE login='" . $login . "' and password != '" . $password . "'");
         return $result;
     }
 

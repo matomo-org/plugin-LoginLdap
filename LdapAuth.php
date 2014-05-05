@@ -30,7 +30,7 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
     protected $password = null;
     protected $token_auth = null;
 
-    private $LdapLogFile = "/plugins/LoginLdap/data/ldap.log";
+    const LDAP_LOG_FILE = "/tmp/logs/ldap.log";
 
     /**
      * Authentication module's name, e.g., "Login"
@@ -45,9 +45,9 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
     /**
      * @return string
      */
-    private function LdapGetLogPath()
+    public static function getLogPath()
     {
-        return PIWIK_INCLUDE_PATH . $this->LdapLogFile;
+        return PIWIK_INCLUDE_PATH . self::LDAP_LOG_FILE;
     }
 
     /**
@@ -55,8 +55,8 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
      */
     private function LdapLog($text)
     {
-        if ($this->LdapLogFile) {
-            $path = $this->LdapGetLogPath();
+        if (self::LDAP_LOG_FILE) {
+            $path = $this->getLogPath();
             $f = fopen($path, 'a');
             if ($f != null) {
                 fwrite($f, strftime('%F %T') . ": $text\n");

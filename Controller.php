@@ -166,7 +166,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
     {
         $linecount = 20; // Number of lines we want to read
         $linelength = 55; // Predict the number of chars per line
-        $file = './plugins/LoginLdap/data/ldap.log';
+        $file = LdapAuth::getLogPath();
         $lines = array(); // array to store the lines we read.
 
         if (file_exists($file)) {
@@ -237,7 +237,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
     public function getLog()
     {
         Piwik::checkUserHasSuperUserAccess();
-        $file = './plugins/LoginLdap/data/ldap.log';
+        $file = LdapAuth::getLogPath();
 
         if (file_exists($file)) {
             header('Content-Description: File Transfer');
