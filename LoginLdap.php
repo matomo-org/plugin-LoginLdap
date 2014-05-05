@@ -16,6 +16,7 @@ use Piwik\FrontController;
 use Piwik\Menu\MenuAdmin;
 use Piwik\Piwik;
 use Piwik\Plugin\Manager;
+use Piwik\Plugins\Login\Login;
 use Piwik\Session;
 
 /**
