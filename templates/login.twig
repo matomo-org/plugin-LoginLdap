@@ -8,20 +8,15 @@
     <title>{% if isCustomLogo == false %}Piwik &rsaquo; {% endif %}{{ 'Login_LogIn'|translate }}</title>
 
     <link rel="shortcut icon" href="plugins/CoreHome/images/favicon.ico"/>
-    {% autoescape false %}
-    {{ includeAssets({"type": "css"}) }}
-    {% endautoescape %}
     <link rel="stylesheet" type="text/css" href="plugins/Login/stylesheets/login.css"/>
     <meta name="description" content="{{ 'General_OpenSourceWebAnalytics'|translate }}"/>
-    <script type="text/javascript">
-        $(function () {
-            $('#form_login').focus();
-            $('input').placeholder();
-        });
-    </script>
-    {% if 'General_LayoutDirection'|translate =='rtl' %}
-        <link rel="stylesheet" type="text/css" href="plugins/Zeitgeist/stylesheets/rtl.css"/>
-    {% endif %}
+    <meta name="apple-itunes-app" content="app-id=737216887" />
+    {% include "_jsCssIncludes.twig" %}
+    <script type="text/javascript" src="libs/jquery/jquery.placeholder.js"></script>
+    <!--[if lt IE 9]>
+    <script src="libs/html5shiv/html5shiv.js"></script>
+    <![endif]-->
+
 </head>
 <body id="loginPage">
 
