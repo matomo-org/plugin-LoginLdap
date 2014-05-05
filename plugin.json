@@ -1,31 +1,33 @@
 {
- "name": "LoginLdap",
- "version": "2.2.0",
- "description": "LDAP connector for Piwik login",
- "theme": false,
- "keywords": ["ldap", "login", "authentication", "active", "directory", "kerberos"],
- "license": "GPL v3+",
- "homepage": "https://github.com/tehnotronic/PiwikLdap",
- "require": {
-        "piwik": ">=2.2.0",
+    "name": "LoginLdap",
+    "version": "2.2.0",
+    "description": "LDAP connector for Piwik login",
+    "theme": false,
+    "keywords": ["ldap", "login", "authentication", "active", "directory", "kerberos"],
+    "license": "GPL v3+",
+    "homepage": "https://github.com/tehnotronic/PiwikLdap",
+    "require": {
+        "piwik": ">=2.2.1-beta5",
         "php": ">=5.3.0"
     },
- "donate": {
+    "donate": {
         "paypal": "aivo.koger@gmail.com"
     },
- "authors": [
+    "authors": [
         {
             "name": "Stefan Kreuter",
             "email": "info@gigatec.de",
             "homepage": "http://www.gigatec.de"
-        }, {
+        },
+        {
             "name": "Aivo Koger",
             "email": "aivo.koger@gmail.com",
-			"homepage": "https://github.com/tehnotronic"
-        }, {
-         "name": "Matthieu Aubry",
-         "email": "matt@piwik.org",
-         "homepage": "https://github.com/mattab"
+            "homepage": "https://github.com/tehnotronic"
+        },
+        {
+            "name": "Matthieu Aubry",
+            "email": "matt@piwik.org",
+            "homepage": "https://github.com/mattab"
         }
     ]
 }

@@ -13,36 +13,38 @@ namespace Piwik\Plugins\LoginLdap;
 use Exception;
 use Piwik\Common;
 use Piwik\Db;
-use Piwik\Plugins\UsersManager\UsersManager;
 use Piwik\Plugins\UsersManager\API;
+use Piwik\Plugins\UsersManager\UsersManager;
 use Piwik\Session;
 
 /**
  *
  * @package LoginLdap
  */
-class LdapFunctions {
+class LdapFunctions
+{
 
     private $logFile = "/plugins/LoginLdap/data/ldap.log";
 
-    private $serverUrl = NULL;
-    private $ldapPort = NULL;
+    private $serverUrl = null;
+    private $ldapPort = null;
     private $userIdField = 'uid';
-    private $baseDn = NULL;
-    private $memberOf = NULL;
-    private $adminUser = NULL;
-    private $adminPass = NULL;
-    private $mailField = NULL;
-    private $aliasField = NULL;
-    private $usernameSuffix = NULL;
-    private $filter = NULL;
-    private $useKerberos = NULL;
+    private $baseDn = null;
+    private $memberOf = null;
+    private $adminUser = null;
+    private $adminPass = null;
+    private $mailField = null;
+    private $aliasField = null;
+    private $usernameSuffix = null;
+    private $filter = null;
+    private $useKerberos = null;
 
-    private $ldapconn = NULL;
+    private $ldapconn = null;
 
-    public function authenticateFu($username, $password) {
+    public function authenticateFu($username, $password)
+    {
 
-        if(empty($password)) {
+        if (empty($password)) {
             return false;
         }
 
@@ -56,11 +58,11 @@ class LdapFunctions {
 
         $this->connect();
         $result = $this->getUserEntries($username);
-        $this->log("FUNC: authenticateFu(".$username.") getUserEntries()");
+        $this->log("FUNC: authenticateFu(" . $username . ") getUserEntries()");
         // $this->log("FUNC: getUserEntries: ".@json_encode($result));
         if ($result['count'] > 0 && $result[0]['dn']) {
             $success = @ldap_bind($this->ldapconn, $result[0]['dn'], $password);
-            $this->log("FUNC: authenticateFu(".$username.", ...) ldap_bind (" . $result[0]['dn'] . "): " . ($success ? 'success' : 'fail'));
+            $this->log("FUNC: authenticateFu(" . $username . ", ...) ldap_bind (" . $result[0]['dn'] . "): " . ($success ? 'success' : 'fail'));
             $memberOfList = @$result[0]['memberof'];
             if ($success && !empty($this->memberOf) && !empty($memberOfList)) {
                 $success = false;
@@ -70,7 +72,7 @@ class LdapFunctions {
                         $success = true;
                     }
                 }
-                $this->log("FUNC: authenticateFu(".$username.", ...) check memberOf (".$this->memberOf."): " . ($success ? 'success' : 'fail'));
+                $this->log("FUNC: authenticateFu(" . $username . ", ...) check memberOf (" . $this->memberOf . "): " . ($success ? 'success' : 'fail'));
             }
         }
 
@@ -78,18 +80,18 @@ class LdapFunctions {
 
         if ($success) {
             if ($this->updateCredentials($username, $password)) {
-                $this->log("FUNC: LDAP user password and token updated successfully." );
+                $this->log("FUNC: LDAP user password and token updated successfully.");
             }
         }
 
         return $success;
     }
 
-    public function kerbthenticate($username) {
+    public function kerbthenticate($username)
+    {
 
-        if (isset($_SERVER["REMOTE_USER"]))
-        {
-            $this->log("REMOTE_USER: ".$_SERVER["REMOTE_USER"]);
+        if (isset($_SERVER["REMOTE_USER"])) {
+            $this->log("REMOTE_USER: " . $_SERVER["REMOTE_USER"]);
         }
 
         $success = false;
@@ -103,7 +105,7 @@ class LdapFunctions {
         $this->connect();
 
         $result = $this->getUserEntries($username);
-        $this->log("FUNC: authenticateFu(".$username.") getUserEntries()");
+        $this->log("FUNC: authenticateFu(" . $username . ") getUserEntries()");
         if ($result['count'] > 0 && $result[0]['dn']) {
             $success = true;
             $memberOfList = @$result[0]['memberof'];
@@ -114,7 +116,7 @@ class LdapFunctions {
                         $success = true;
                     }
                 }
-                $this->log("FUNC: authenticateFu(".$username.") check memberOf (".$this->memberOf."): " . ($success ? 'success' : 'fail'));
+                $this->log("FUNC: authenticateFu(" . $username . ") check memberOf (" . $this->memberOf . "): " . ($success ? 'success' : 'fail'));
             }
         }
 
@@ -123,7 +125,8 @@ class LdapFunctions {
         return $success;
     }
 
-    public function getUser($username, $aliasField = 'cn', $mailField = 'mail') {
+    public function getUser($username, $aliasField = 'cn', $mailField = 'mail')
+    {
 
         $user = array();
 
@@ -147,55 +150,68 @@ class LdapFunctions {
         return $user;
     }
 
-    public function setServerUrl($serverUrl) {
+    public function setServerUrl($serverUrl)
+    {
         $this->serverUrl = $serverUrl;
     }
 
-    public function setUserIdField($userIdField) {
+    public function setUserIdField($userIdField)
+    {
         $this->userIdField = $userIdField;
     }
 
-    public function setBaseDn($baseDn) {
+    public function setBaseDn($baseDn)
+    {
         $this->baseDn = $baseDn;
     }
 
-    public function setMemberOf($memberOf) {
+    public function setMemberOf($memberOf)
+    {
         $this->memberOf = $memberOf;
     }
 
-    public function setAdminUser($adminUser) {
+    public function setAdminUser($adminUser)
+    {
         $this->adminUser = $adminUser;
     }
 
-    public function setAdminPass($adminPass) {
+    public function setAdminPass($adminPass)
+    {
         $this->adminPass = $adminPass;
     }
 
-    public function setMailField($mailField) {
+    public function setMailField($mailField)
+    {
         $this->mailField = $mailField;
     }
 
-    public function setAliasField($aliasField) {
+    public function setAliasField($aliasField)
+    {
         $this->aliasField = $aliasField;
     }
 
-    public function setUsernameSuffix($usernameSuffix) {
+    public function setUsernameSuffix($usernameSuffix)
+    {
         $this->usernameSuffix = $usernameSuffix;
     }
 
-    public function setFilter($filter) {
+    public function setFilter($filter)
+    {
         $this->filter = $filter;
     }
 
-    public function setKerberos($useKerberos) {
+    public function setKerberos($useKerberos)
+    {
         $this->useKerberos = $useKerberos;
     }
 
-    public function setLdapPort($ldapPort) {
+    public function setLdapPort($ldapPort)
+    {
         $this->ldapPort = $ldapPort;
     }
 
-    private function validate() {
+    private function validate()
+    {
 
         if (empty($this->serverUrl)) {
             throw new Exception('serverUrl is not set');
@@ -208,12 +224,13 @@ class LdapFunctions {
         }
     }
 
-    private function connect() {
+    private function connect()
+    {
 
         $ldapconn = @ldap_connect($this->serverUrl, $this->ldapPort);
-        $this->log("FUNC: ldap_connect(".$this->serverUrl.")");
+        $this->log("FUNC: ldap_connect(" . $this->serverUrl . ")");
 
-        if(!$ldapconn) {
+        if (!$ldapconn) {
             $this->log("FUNC: ldap_connect() FAILED!");
             throw new Exception('could not connect to ldap server');
         }
@@ -224,23 +241,24 @@ class LdapFunctions {
         $this->ldapconn = $ldapconn;
     }
 
-    private function getUserEntries($username) {
+    private function getUserEntries($username)
+    {
 
-        $this->log("FUNC: getUserEntries(".$username.") ldap_bind: ".$this->addSuffix($this->adminUser));
+        $this->log("FUNC: getUserEntries(" . $username . ") ldap_bind: " . $this->addSuffix($this->adminUser));
         if (!empty($this->adminUser) && !@ldap_bind($this->ldapconn, $this->addSuffix($this->adminUser), $this->adminPass)) {
             $this->log("FUNC: ldap_bind() as admin FAILED!");
             throw new Exception('cound not bind as admin');
         }
 
         if (!empty($this->filter)) {
-            $searchFilter = "(&".$this->filter."(".$this->userIdField."=".$this->addSuffix($username)."))";
+            $searchFilter = "(&" . $this->filter . "(" . $this->userIdField . "=" . $this->addSuffix($username) . "))";
         } else {
-            $searchFilter = $this->userIdField."=".$this->addSuffix($username);
+            $searchFilter = $this->userIdField . "=" . $this->addSuffix($username);
         }
-        $this->log("FUNC: getUserEntries(".$username.", ...) ldap_search: ".$searchFilter);
+        $this->log("FUNC: getUserEntries(" . $username . ", ...) ldap_search: " . $searchFilter);
         $search = @ldap_search($this->ldapconn, $this->baseDn, $searchFilter);
-        if($search)    {
-            $this->log("FUNC: ldap_get_entries(); count: ".count($search));
+        if ($search) {
+            $this->log("FUNC: ldap_get_entries(); count: " . count($search));
             return @ldap_get_entries($this->ldapconn, $search);
         } else {
             $this->log("FUNC: ldap_get_entries() FAILED!");
@@ -248,7 +266,8 @@ class LdapFunctions {
         }
     }
 
-    private function addSuffix($username) {
+    private function addSuffix($username)
+    {
 
         if (!empty($this->usernameSuffix)) {
             $username .= $this->usernameSuffix;
@@ -256,7 +275,8 @@ class LdapFunctions {
         return $username;
     }
 
-    private function close() {
+    private function close()
+    {
         $this->log("FUNC: ldap_close()");
         @ldap_close($this->ldapconn);
     }
@@ -271,7 +291,7 @@ class LdapFunctions {
         if ($this->logFile) {
             $path = $this->getLogPath();
             $f = fopen($path, 'a');
-            if ($f != NULL) {
+            if ($f != null) {
                 fwrite($f, strftime('%F %T') . ": $text\n");
                 fclose($f);
             }
@@ -285,10 +305,11 @@ class LdapFunctions {
      * @param $login
      * @param $password
      */
-    private function updateCredentials($login, $password) {
+    private function updateCredentials($login, $password)
+    {
         $password = UsersManager::getPasswordHash($password);
         $token_auth = API::getInstance()->getTokenAuth($login, $password);
-        $result = Db::query("UPDATE ".Common::prefixTable('user')." SET password='".$password."', token_auth='".$token_auth."' WHERE login='".$login."' and password != '".$password."'");
+        $result = Db::query("UPDATE " . Common::prefixTable('user') . " SET password='" . $password . "', token_auth='" . $token_auth . "' WHERE login='" . $login . "' and password != '" . $password . "'");
         return $result;
     }
 

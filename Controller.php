@@ -13,19 +13,10 @@ namespace Piwik\Plugins\LoginLdap;
 use Exception;
 use Piwik\Common;
 use Piwik\Config;
-use Piwik\Cookie;
-use Piwik\IP;
-use Piwik\Mail;
-use Piwik\Nonce;
 use Piwik\Notification;
 use Piwik\Piwik;
 use Piwik\Plugins\UsersManager\API as APIUsersManager;
-use Piwik\Plugins\UsersManager\UsersManager;
-use Piwik\ProxyHttp;
-use Piwik\QuickForm2;
 use Piwik\Session;
-use Piwik\SettingsPiwik;
-use Piwik\Url;
 use Piwik\View;
 
 require_once PIWIK_INCLUDE_PATH . '/core/Config.php';
@@ -35,26 +26,8 @@ require_once PIWIK_INCLUDE_PATH . '/core/Config.php';
  *
  * @package Login
  */
-class Controller extends \Piwik\Plugin\ControllerAdmin
+class Controller extends \Piwik\Plugins\Login\Controller
 {
-    /**
-     * Generate hash on user info and password
-     *
-     * @param string $userInfo User name, email, etc
-     * @param string $password
-     * @return string
-     */
-    private function generateHash($userInfo, $password)
-    {
-        // mitigate rainbow table attack
-        $passwordLen = strlen($password) / 2;
-        $hash = Common::hash(
-            $userInfo . substr($password, 0, $passwordLen)
-            . SettingsPiwik::getSalt() . substr($password, $passwordLen)
-        );
-        return $hash;
-    }
-
     /**
      * Add a user from LDAP in the database.
      * A user is retrieved from LDAP by
@@ -67,7 +40,7 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
      *
      * @exception in case of an invalid parameter
      */
-    private function addUserLdap( $userLogin )
+    private function addUserLdap($userLogin)
     {
         $serverUrl = Config::getInstance()->LoginLdap['serverUrl'];
         $ldapPort = Config::getInstance()->LoginLdap['ldapPort'];
@@ -98,12 +71,10 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
 
         $user = $ldap->getUser($userLogin, $aliasField, $mailField);
 
-        if(!empty($user))
-        {
+        if (!empty($user)) {
             $password = $this->generatePassword(25);
 
-            if(empty($user['mail']))
-            { // a valid email is needed to create a new user
+            if (empty($user['mail'])) { // a valid email is needed to create a new user
                 $suffix = Config::getInstance()->LoginLdap['usernameSuffix'];
                 $domain = !empty($suffix) ? $suffix : '@mydomain.com';
                 $user['mail'] = $userLogin . $domain;
@@ -123,9 +94,8 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
         $chars = "234567890abcdefghijkmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
         $i = 0;
         $password = "";
-        while($i <= $length)
-        {
-            $password .= $chars{ mt_rand(0, strlen($chars) - 1) };
+        while ($i <= $length) {
+            $password .= $chars{mt_rand(0, strlen($chars) - 1)};
             $i++;
         }
         return $password;
@@ -157,8 +127,7 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
         $view->infoMessage = nl2br($infoMessage);
         $view->logContent = $this->readlog();
 
-        if(!Config::getInstance()->LoginLdap)
-        {
+        if (!Config::getInstance()->LoginLdap) {
             $view->serverUrl = "ldap://localhost";
             $view->ldapPort = "389";
             $view->baseDn = "";
@@ -193,28 +162,37 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
      * Open source (c) Paul Gregg, 2008
      * http://www.pgregg.com/projects/
      */
-    private function readlog() {
-        $linecount  = 20;  // Number of lines we want to read
+    private function readlog()
+    {
+        $linecount = 20; // Number of lines we want to read
         $linelength = 55; // Predict the number of chars per line
         $file = './plugins/LoginLdap/data/ldap.log';
         $lines = array(); // array to store the lines we read.
 
         if (file_exists($file)) {
             $fsize = filesize($file);
-            $offset = ($linecount+1) * $linelength;
-            if ($offset > $fsize) {$offset = $fsize;}
+            $offset = ($linecount + 1) * $linelength;
+            if ($offset > $fsize) {
+                $offset = $fsize;
+            }
             $fp = fopen($file, 'r');
-            if ($fp === false) {exit;}
+            if ($fp === false) {
+                exit;
+            }
             $readloop = true;
 
-            while($readloop) {
+            while ($readloop) {
                 fseek($fp, 0 - $offset, SEEK_END);
-                if ($offset != $fsize) {fgets($fp);}
+                if ($offset != $fsize) {
+                    fgets($fp);
+                }
                 $linesize = 0;
-                while($line = fgets($fp)) {
-                        array_push($lines, $line);
-                        $linesize += strlen($line); // total up the char count
-                    if (count($lines) > $linecount) {array_shift($lines);}
+                while ($line = fgets($fp)) {
+                    array_push($lines, $line);
+                    $linesize += strlen($line); // total up the char count
+                    if (count($lines) > $linecount) {
+                        array_shift($lines);
+                    }
                 }
 
                 if (count($lines) == $linecount) {
@@ -222,10 +200,14 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
                 } elseif ($offset >= $fsize) {
                     $readloop = false;
                 } elseif (count($lines) < $linecount) {
-                    $offset = intval($offset * 1.1);  // increase offset 10%
-                    $offset2 = intval($linesize/count($lines) * ($linecount+1));
-                    if ($offset2 > $offset) {$offset = $offset2;}
-                    if ($offset > $fsize) {$offset = $fsize;}
+                    $offset = intval($offset * 1.1); // increase offset 10%
+                    $offset2 = intval($linesize / count($lines) * ($linecount + 1));
+                    if ($offset2 > $offset) {
+                        $offset = $offset2;
+                    }
+                    if ($offset > $fsize) {
+                        $offset = $fsize;
+                    }
                     $lines = array();
                 }
             }
@@ -234,11 +216,13 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
             fwrite($fp, '...');
             fclose($fp);
         }
-        if (count($lines) < 1) {array_push($lines, Piwik::translate('LoginLdap_LogEmpty'));}
-        
+        if (count($lines) < 1) {
+            array_push($lines, Piwik::translate('LoginLdap_LogEmpty'));
+        }
+
         $line = "";
-        foreach($lines as $key => $value) {
-            $line = $line.$value."\r\n";
+        foreach ($lines as $key => $value) {
+            $line = $line . $value . "\r\n";
         }
 
         return $line;
@@ -250,13 +234,15 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
      * @param none
      * @return void
      */
-    public function getLog() {
+    public function getLog()
+    {
+        Piwik::checkUserHasSuperUserAccess();
         $file = './plugins/LoginLdap/data/ldap.log';
 
         if (file_exists($file)) {
             header('Content-Description: File Transfer');
             header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename='.basename($file));
+            header('Content-Disposition: attachment; filename=' . basename($file));
             header('Content-Transfer-Encoding: binary');
             header('Expires: 0');
             header('Cache-Control: must-revalidate');
@@ -280,10 +266,8 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
     public function loadUser()
     {
         $username = Common::getRequestVar('username', '');
-        if(!empty($username))
-        {
-            try
-            {
+        if (!empty($username)) {
+            try {
                 $success = $this->addUserLdap($username);
                 if ($success) {
                     $notification = new Notification(Piwik::translate('LoginLdap_LdapUserAdded'));
@@ -294,9 +278,7 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
                 } else {
                     throw new Exception(Piwik::translate('LoginLdap_UserNotFound', $username));
                 }
-            }
-            catch(Exception $e)
-            {
+            } catch (Exception $e) {
                 throw new Exception($e->getMessage());
             }
         } else {
@@ -312,18 +294,18 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
         Piwik::checkUserHasSuperUserAccess();
 
         Config::getInstance()->LoginLdap = array(
-            'serverUrl' => Common::getRequestVar('serverUrl', ''),
-            'ldapPort' => Common::getRequestVar('ldapPort', ''),
-            'baseDn' => Common::getRequestVar('baseDn', ''),
-            'userIdField' => Common::getRequestVar('userIdField', ''),
-            'mailField' => Common::getRequestVar('mailField', ''),
-            'aliasField' => Common::getRequestVar('aliasField', ''),
+            'serverUrl'      => Common::getRequestVar('serverUrl', ''),
+            'ldapPort'       => Common::getRequestVar('ldapPort', ''),
+            'baseDn'         => Common::getRequestVar('baseDn', ''),
+            'userIdField'    => Common::getRequestVar('userIdField', ''),
+            'mailField'      => Common::getRequestVar('mailField', ''),
+            'aliasField'     => Common::getRequestVar('aliasField', ''),
             'usernameSuffix' => Common::getRequestVar('usernameSuffix', ''),
-            'adminUser' => Common::getRequestVar('adminUser', ''),
-            'adminPass' => Common::getRequestVar('adminPass', ''),
-            'memberOf' => Common::getRequestVar('memberOf', ''),
-            'filter' => Common::getRequestVar('filter', ''),
-            'useKerberos' => Common::getRequestVar('useKerberos', '')
+            'adminUser'      => Common::getRequestVar('adminUser', ''),
+            'adminPass'      => Common::getRequestVar('adminPass', ''),
+            'memberOf'       => Common::getRequestVar('memberOf', ''),
+            'filter'         => Common::getRequestVar('filter', ''),
+            'useKerberos'    => Common::getRequestVar('useKerberos', '')
         );
         Config::getInstance()->forceSave();
 
@@ -335,394 +317,11 @@ class Controller extends \Piwik\Plugin\ControllerAdmin
     }
 
     /**
-     * @param null $messageNoAccess
-     * @param bool $infoMessage
-     * @return string
+     * @param $password
+     * @throws \Exception
      */
-    public function login($messageNoAccess = null, $infoMessage = false)
+    protected function checkPasswordHash($password)
     {
-        $form = new FormLogin();
-        if ($form->validate()) {
-            $nonce = $form->getSubmitValue('form_nonce');
-            if (Nonce::verifyNonce('LoginLdap.login', $nonce)) {
-                $login = $form->getSubmitValue('form_login');
-                $password = $form->getSubmitValue('form_password');
-                $rememberMe = $form->getSubmitValue('form_rememberme') == '1';
-                $md5Password = md5($password);
-                try {
-                    $this->authenticateAndRedirect($login, $md5Password, $rememberMe);
-                } catch (Exception $e) {
-                    $messageNoAccess = $e->getMessage();
-                }
-            } else {
-                $messageNoAccess = $this->getMessageExceptionNoAccess();
-            }
-        }
-
-        $view = new View('@LoginLdap/login');
-        $view->AccessErrorString = $messageNoAccess;
-        $view->infoMessage = nl2br($infoMessage);
-        $view->addForm($form);
-        $this->configureView($view);
-        self::setHostValidationVariablesView($view);
-
-        return $view->render();
-    }
-
-    /**
-     * Configure common view properties
-     *
-     * @param View $view
-     */
-    private function configureView($view)
-    {
-        $this->setBasicVariablesView($view);
-
-        $view->linkTitle = Piwik::getRandomTitle();
-
-        // crsf token: don't trust the submitted value; generate/fetch it from session data
-        $view->nonce = Nonce::getNonce('LoginLdap.login');
-    }
-
-    /**
-     * Form-less login
-     * @see how to use it on http://piwik.org/faq/how-to/#faq_30
-     * @throws Exception
-     * @return void
-     */
-    function logme()
-    {
-        $password = Common::getRequestVar('password', null, 'string');
-        $login = Common::getRequestVar('login', null, 'string');
-        if ($login == Config::getInstance()->superuser['login']) {
-            throw new Exception(Piwik::translate('Login_ExceptionInvalidSuperUserAuthenticationMethod', array("logme")));
-        }
-
-        $currentUrl = 'index.php';
-
-        if (($idSite = Common::getRequestVar('idSite', false, 'int')) !== false) {
-            $currentUrl .= '?idSite=' . $idSite;
-        }
-
-        $urlToRedirect = Common::getRequestVar('url', $currentUrl, 'string');
-        $urlToRedirect = Common::unsanitizeInputValue($urlToRedirect);
-
-        $this->authenticateAndRedirect($login, $password, false, $urlToRedirect);
-    }
-
-    /**
-     * Authenticate user and password.  Redirect if successful.
-     *
-     * @param string $login user name
-     * @param string $md5Password md5 hash of password
-     * @param bool $rememberMe Remember me?
-     * @param string $urlToRedirect URL to redirect to, if successfully authenticated
-     * @return string failure message if unable to authenticate
-     */
-    protected function authenticateAndRedirect($login, $password, $rememberMe, $urlToRedirect = false)
-    {
-        Nonce::discardNonce('LoginLdap.login');
-
-        \Piwik\Registry::get('auth')->initSession($login, $password, $rememberMe);
-
-        if(empty($urlToRedirect)) {
-            $urlToRedirect = Url::getCurrentUrlWithoutQueryString();
-        }
-		
-        Url::redirectToUrl($urlToRedirect);
-    }
-
-    /**
-     * @return string
-     */
-    protected function getMessageExceptionNoAccess()
-    {
-        $message = Piwik::translate('Login_InvalidNonceOrHeadersOrReferrer', array('<a href="?module=Proxy&action=redirect&url=' . urlencode('http://piwik.org/faq/how-to-install/#faq_98') . '" target="_blank">', '</a>'));
-        // Should mention trusted_hosts or link to FAQ
-        return $message;
-    }
-
-    /**
-     * @return string
-     */
-    function resetPassword()
-    {
-        $infoMessage = null;
-        $formErrors = null;
-
-        $form = new FormResetPassword();
-        if ($form->validate()) {
-            $nonce = $form->getSubmitValue('form_nonce');
-            if (Nonce::verifyNonce('LoginLdap.login', $nonce)) {
-                $formErrors = $this->resetPasswordFirstStep($form);
-                if (empty($formErrors)) {
-                    $infoMessage = Piwik::translate('Login_ConfirmationLinkSent');
-                }
-            } else {
-                $formErrors = array($this->getMessageExceptionNoAccess());
-            }
-        } else {
-            // if invalid, display error
-            $formData = $form->getFormData();
-            $formErrors = $formData['errors'];
-        }
-
-        // reuse Login template
-        $view = new View('@Login/resetPassword');
-        $view->infoMessage = $infoMessage;
-        $view->formErrors = $formErrors;
-
-        return $view->render();
-    }
-
-    /**
-     * Saves password reset info and sends confirmation email.
-     *
-     * @param QuickForm2 $form
-     * @return array Error message(s) if an error occurs.
-     */
-    private function resetPasswordFirstStep($form)
-    {
-        $loginMail = $form->getSubmitValue('form_login');
-        $password = $form->getSubmitValue('form_password');
-
-        // check the password
-        try {
-            UsersManager::checkPassword($password);
-        } catch (Exception $ex) {
-            return array($ex->getMessage());
-        }
-
-        // get the user's login
-        if ($loginMail === 'anonymous') {
-            return array(Piwik::translate('Login_InvalidUsernameEmail'));
-        }
-
-        $user = self::getUserInformation($loginMail);
-        if ($user === null) {
-            return array(Piwik::translate('Login_InvalidUsernameEmail'));
-        }
-
-        $login = $user['login'];
-
-        // if valid, store password information in options table, then...
-        LoginLdap::savePasswordResetInfo($login, $password);
-
-        // ... send email with confirmation link
-        try {
-            $this->sendEmailConfirmationLink($user);
-        } catch (Exception $ex) {
-            // remove password reset info
-            LoginLdap::removePasswordResetInfo($login);
-
-            return array($ex->getMessage() . Piwik::translate('Login_ContactAdmin'));
-        }
-
-        return null;
-    }
-
-    /**
-     * Sends email confirmation link for a password reset request.
-     *
-     * @param array $user User info for the requested password reset.
-     */
-    private function sendEmailConfirmationLink($user)
-    {
-        $login = $user['login'];
-        $email = $user['email'];
-
-        // construct a password reset token from user information
-        $resetToken = self::generatePasswordResetToken($user);
-
-        $ip = IP::getIpFromHeader();
-        $url = Url::getCurrentUrlWithoutQueryString()
-            . "?module=Login&action=confirmResetPassword&login=" . urlencode($login)
-            . "&resetToken=" . urlencode($resetToken);
-
-        // send email with new password
-        $mail = new Mail();
-        $mail->addTo($email, $login);
-        $mail->setSubject(Piwik::translate('Login_MailTopicPasswordChange'));
-        $bodyText = str_replace(
-                '\n',
-                "\n",
-                sprintf(Piwik::translate('Login_MailPasswordChangeBody'), $login, $ip, $url)
-            ) . "\n";
-        $mail->setBodyText($bodyText);
-
-        $fromEmailName = Config::getInstance()->General['login_password_recovery_email_name'];
-        $fromEmailAddress = Config::getInstance()->General['login_password_recovery_email_address'];
-        $mail->setFrom($fromEmailAddress, $fromEmailName);
-        @$mail->send();
-    }
-
-    /**
-     * Password reset confirmation action. Finishes the password reset process.
-     * Users visit this action from a link supplied in an email.
-     */
-    public function confirmResetPassword()
-    {
-        $errorMessage = null;
-
-        $login = Common::getRequestVar('login', '');
-        $resetToken = Common::getRequestVar('resetToken', '');
-
-        try {
-            // get password reset info & user info
-            $user = self::getUserInformation($login);
-            if ($user === null) {
-                throw new Exception(Piwik::translate('Login_InvalidUsernameEmail'));
-            }
-
-            // check that the reset token is valid
-            $resetPassword = LoginLdap::getPasswordToResetTo($login);
-            if ($resetPassword === false || !self::isValidToken($resetToken, $user)) {
-                throw new Exception(Piwik::translate('Login_InvalidOrExpiredToken'));
-            }
-
-            // reset password of user
-            $this->setNewUserPassword($user, $resetPassword);
-        } catch (Exception $ex) {
-            $errorMessage = $ex->getMessage();
-        }
-
-        if (is_null($errorMessage)) // if success, show login w/ success message
-        {
-            $this->redirectToIndex('LoginLdap', 'resetPasswordSuccess');
-            return null;
-        } else {
-            // show login page w/ error. this will keep the token in the URL
-            return $this->login($errorMessage);
-        }
-    }
-
-    /**
-     * Sets the password for a user.
-     *
-     * @param array $user User info.
-     * @param string $passwordHash The hashed password to use.
-     * @throws Exception
-     */
-    private function setNewUserPassword($user, $passwordHash)
-    {
-        if (strlen($passwordHash) !== 32) // sanity check
-        {
-            throw new Exception(
-                "setNewUserPassword called w/ incorrect password hash. Something has gone terribly wrong.");
-        }
-
-        APIUsersManager::getInstance()->updateUser(
-            $user['login'], $passwordHash, $email = false, $alias = false, $isPasswordHashed = true);
-    }
-
-    /**
-     * The action used after a password is successfully reset. Displays the login
-     * screen with an extra message. A separate action is used instead of returning
-     * the HTML in confirmResetPassword so the resetToken won't be in the URL.
-     */
-    public function resetPasswordSuccess()
-    {
-        return $this->login($errorMessage = null, $infoMessage = Piwik::translate('Login_PasswordChanged'));
-    }
-
-    /**
-     * Get user information
-     *
-     * @param string $loginMail user login or email address
-     * @return array ("login" => '...', "email" => '...', "password" => '...') or null, if user not found
-     */
-    protected function getUserInformation($loginMail)
-    {
-        Piwik::setUserHasSuperUserAccess();
-
-        $user = null;
-        if (APIUsersManager::getInstance()->userExists($loginMail)) {
-            $user = APIUsersManager::getInstance()->getUser($loginMail);
-        } else if (APIUsersManager::getInstance()->userEmailExists($loginMail)) {
-            $user = APIUsersManager::getInstance()->getUserByEmail($loginMail);
-        }
-
-        return $user;
-    }
-
-    /**
-     * Generate a password reset token.  Expires in (roughly) 24 hours.
-     *
-     * @param array $user user information
-     * @param int $timestamp Unix timestamp
-     * @return string generated token
-     */
-    protected function generatePasswordResetToken($user, $timestamp = null)
-    {
-        /*
-         * Piwik does not store the generated password reset token.
-         * This avoids a database schema change and SQL queries to store, retrieve, and purge (expired) tokens.
-         */
-        if (!$timestamp) {
-            $timestamp = time() + 24 * 60 * 60; /* +24 hrs */
-        }
-
-        $expiry = strftime('%Y%m%d%H', $timestamp);
-        $token = $this->generateHash(
-            $expiry . $user['login'] . $user['email'],
-            $user['password']
-        );
-        return $token;
-    }
-
-    /**
-     * Validate token.
-     *
-     * @param string $token
-     * @param array $user user information
-     * @return bool true if valid, false otherwise
-     */
-    protected function isValidToken($token, $user)
-    {
-        $now = time();
-
-        // token valid for 24 hrs (give or take, due to the coarse granularity in our strftime format string)
-        for ($i = 0; $i <= 24; $i++) {
-            $generatedToken = self::generatePasswordResetToken($user, $now + $i * 60 * 60);
-            if ($generatedToken === $token) {
-                return true;
-            }
-        }
-
-        // fails if token is invalid, expired, password already changed, other user information has changed, ...
-        return false;
-    }
-
-    /**
-     * Clear session information
-     *
-     * @param none
-     * @return void
-     */
-    static public function clearSession()
-    {
-        $authCookieName = Config::getInstance()->General['login_cookie_name'];
-        $cookie = new Cookie($authCookieName);
-        $cookie->delete();
-
-        Session::expireSessionCookie();
-    }
-
-    /**
-     * Logout current user
-     *
-     * @param none
-     * @return void
-     */
-    public function logout()
-    {
-        self::clearSession();
-
-        $logoutUrl = @Config::getInstance()->General['login_logout_url'];
-        if (empty($logoutUrl)) {
-            Piwik::redirectToModule('CoreHome');
-        } else {
-            Url::redirectToUrl($logoutUrl);
-        }
+        // do not check password (Login uses hashed password, LoginLdap uses real passwords)
     }
 }

@@ -11,13 +11,10 @@
 namespace Piwik\Plugins\LoginLdap;
 
 use Exception;
-use Piwik\Menu\MenuAdmin;
 use Piwik\Config;
-use Piwik\Cookie;
 use Piwik\FrontController;
-use Piwik\Option;
+use Piwik\Menu\MenuAdmin;
 use Piwik\Piwik;
-use Piwik\Plugins\UsersManager\UsersManager;
 use Piwik\Plugin\Manager;
 use Piwik\Session;
 
@@ -53,18 +50,18 @@ class LoginLdap extends \Piwik\Plugin
     public function install()
     {
         Config::getInstance()->LoginLdap = array(
-            'serverUrl' => 'ldap://localhost/',
-            'ldapPort' => '389',
-            'baseDn' => 'OU=users,DC=localhost,DC=com',
-            'userIdField' => 'userPrincipalName',
-            'mailField' => 'mail',
-            'aliasField' => 'cn',
+            'serverUrl'      => 'ldap://localhost/',
+            'ldapPort'       => '389',
+            'baseDn'         => 'OU=users,DC=localhost,DC=com',
+            'userIdField'    => 'userPrincipalName',
+            'mailField'      => 'mail',
+            'aliasField'     => 'cn',
             'usernameSuffix' => '',
-            'adminUser' => '',
-            'adminPass' => '',
-            'memberOf' => '',
-            'filter' => '(objectClass=person)',
-            'useKerberos' => 'false'
+            'adminUser'      => '',
+            'adminPass'      => '',
+            'memberOf'       => '',
+            'filter'         => '(objectClass=person)',
+            'useKerberos'    => 'false'
         );
         Config::getInstance()->forceSave();
     }
@@ -97,7 +94,7 @@ class LoginLdap extends \Piwik\Plugin
     {
         $exceptionMessage = $exception->getMessage();
 
-        echo FrontController::getInstance()->dispatch('LoginLdap', 'login' , array($exceptionMessage) );
+        echo FrontController::getInstance()->dispatch('LoginLdap', 'login', array($exceptionMessage));
     }
 
     /**
@@ -123,79 +120,12 @@ class LoginLdap extends \Piwik\Plugin
      * Initializes the authentication object.
      * Listens to Request.initAuthenticationObject hook.
      */
-    function initAuthenticationObject($allowCookieAuthentication = false)
+    function initAuthenticationObject($activateCookieAuth = false)
     {
         $auth = new LdapAuth();
         \Piwik\Registry::set('auth', $auth);
 
-        $action = Piwik::getAction();
-        if (Piwik::getModule() === 'API'
-            && (empty($action) || $action == 'index')
-            && $allowCookieAuthentication !== true
-        ) {
-            return;
-        }
-
-        $authCookieName = Config::getInstance()->General['login_cookie_name'];
-        $authCookieExpiry = 0;
-        $authCookiePath = Config::getInstance()->General['login_cookie_path'];
-        $authCookie = new Cookie($authCookieName, $authCookieExpiry, $authCookiePath);
-        $defaultLogin = 'anonymous';
-        $defaultTokenAuth = 'anonymous';
-        if ($authCookie->isCookieFound()) {
-            $defaultLogin = $authCookie->get('login');
-            $defaultTokenAuth = $authCookie->get('token_auth');
-        }
-        $auth->setLogin($defaultLogin);
-        $auth->setTokenAuth($defaultTokenAuth);
+        Login::initAuthenticationFromCookie($auth, $activateCookieAuth);
     }
 
-    /**
-     * Stores password reset info for a specific login.
-     *
-     * @param string $login The user login for whom a password change was requested.
-     * @param string $password The new password to set.
-     */
-    public static function savePasswordResetInfo($login, $password)
-    {
-        $optionName = self::getPasswordResetInfoOptionName($login);
-        $optionData = UsersManager::getPasswordHash($password);
-
-        Option::set($optionName, $optionData);
-    }
-
-    /**
-     * Removes stored password reset info if it exists.
-     *
-     * @param string $login The user login to check for.
-     */
-    public static function removePasswordResetInfo($login)
-    {
-        $optionName = self::getPasswordResetInfoOptionName($login);
-        Option::delete($optionName);
-    }
-
-    /**
-     * Gets password hash stored in password reset info.
-     *
-     * @param string $login The user login to check for.
-     * @return string|false The hashed password or false if no reset info exists.
-     */
-    public static function getPasswordToResetTo($login)
-    {
-        $optionName = self::getPasswordResetInfoOptionName($login);
-        return Option::get($optionName);
-    }
-
-    /**
-     * Gets the option name for the option that will store a user's password change
-     * request.
-     *
-     * @param string $login The user login for whom a password change was requested.
-     * @return string
-     */
-    public static function getPasswordResetInfoOptionName($login)
-    {
-        return $login . '_reset_password_info';
-    }
 }
