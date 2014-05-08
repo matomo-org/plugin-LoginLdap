@@ -129,6 +129,16 @@
             </tr>
 
             <tr>
+                <td><label for="debugEnabled">{{ 'LoginLdap_Debug'|translate }} </label></td>
+                <td>
+                    <select name="debugEnabled">
+                        <option value="false"{% if debugEnabled == "false" %} selected{% endif %}>{{ 'General_No'|translate }}</option>
+                        <option value="true"{% if debugEnabled == "true" %} selected{% endif %}>{{ 'General_Yes'|translate }}</option>
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
                 <td align="left">
                     <input class="submit" type="submit" value="{{ 'General_Save'|translate }}"/>
                 </td>

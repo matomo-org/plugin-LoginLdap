@@ -33,8 +33,24 @@ From that point on they can login via mobile apps and API in general.
 
 ## Changelog
 
+#### LoginLdap 2.2.4:
+* Added debug mode and more detail logging
+
+#### LoginLdap 2.2.3:
+* Fixes #21 Ensure all variables are correctly set
+* Storing log file in tmp/logs/ and fix PHP log read warning
+
+#### LoginLdap 2.2.2:
+* Adding missing namespace 
+
+#### LoginLdap 2.2.1:
+* Controller now extends Login controller. Reusing assets and templates.
+
 #### LoginLdap 2.1.0:
 * Code updated to support Piwik 2.1 and newer
+
+#### LoginLdap 2.0.9:
+* Fixes Piwik #4001 Deprecate force_ssl_login setting
 
 #### LoginLdap 2.0.8:
 * Fixed issue #7 'Deinstallation not possible' 

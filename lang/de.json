@@ -36,6 +36,7 @@
         "DisplayLogDescription": "Zeigt die letzten 20 Zeilen aus \"plugins/LoginLdap/data/ldap.log\".",
         "LogEmpty": "Log-Datei scheint leer zu sein",
         "DownloadLog": "Download der vollständigen Logdatei",
-        "LdapFunctionsMissing": "PHP ldap_connect() Funktion fehlt, aktivieren Sie bitte LDAP-Modul auf Ihrer PHP-Konfiguration!"
+        "LdapFunctionsMissing": "PHP ldap_connect() Funktion fehlt, aktivieren Sie bitte LDAP-Modul auf Ihrer PHP-Konfiguration!",
+        "Debug": "Debug-Modus aktiviert"
     }
 }

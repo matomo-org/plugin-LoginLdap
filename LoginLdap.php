@@ -62,7 +62,8 @@ class LoginLdap extends \Piwik\Plugin
             'adminPass'      => '',
             'memberOf'       => '',
             'filter'         => '(objectClass=person)',
-            'useKerberos'    => 'false'
+            'useKerberos'    => 'false',
+            'debugEnabled'    => 'false'
         );
         Config::getInstance()->forceSave();
     }

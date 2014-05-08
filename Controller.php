@@ -57,6 +57,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
         $memberOf = Config::getInstance()->LoginLdap['memberOf'];
         $filter = Config::getInstance()->LoginLdap['filter'];
         $useKerberos = Config::getInstance()->LoginLdap['useKerberos'];
+        $debugEnabled = Config::getInstance()->LoginLdap['debugEnabled'];
 
         $ldap = new LdapFunctions();
         $ldap->setServerUrl($serverUrl);
@@ -71,6 +72,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
         $ldap->setMemberOf($memberOf);
         $ldap->setFilter($filter);
         $ldap->setKerberos($useKerberos);
+        $ldap->setDebug($debugEnabled);
 
         $user = $ldap->getUser($userLogin, $aliasField, $mailField);
 
@@ -145,6 +147,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
             $view->memberOf = "";
             $view->filter = "";
             $view->useKerberos = "false";
+            $view->debugEnabled = "false";
         } else {
             $view->serverUrl = @Config::getInstance()->LoginLdap['serverUrl'];
             $view->ldapPort = @Config::getInstance()->LoginLdap['ldapPort'];
@@ -158,6 +161,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
             $view->memberOf = @Config::getInstance()->LoginLdap['memberOf'];
             $view->filter = @Config::getInstance()->LoginLdap['filter'];
             $view->useKerberos = @Config::getInstance()->LoginLdap['useKerberos'];
+            $view->debugEnabled = @Config::getInstance()->LoginLdap['debugEnabled'];
         }
         return $view->render();
     }
@@ -169,7 +173,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
      */
     private function readlog()
     {
-        $linecount = 20; // Number of lines we want to read
+        $linecount = 30; // Number of lines we want to read
         $linelength = 55; // Predict the number of chars per line
         $file = LdapAuth::getLogPath();
         $lines = array(); // array to store the lines we read.
@@ -311,7 +315,8 @@ class Controller extends \Piwik\Plugins\Login\Controller
             'adminPass'      => Common::getRequestVar('adminPass', ''),
             'memberOf'       => Common::getRequestVar('memberOf', ''),
             'filter'         => Common::getRequestVar('filter', ''),
-            'useKerberos'    => Common::getRequestVar('useKerberos', '')
+            'useKerberos'    => Common::getRequestVar('useKerberos', ''),
+            'debugEnabled'    => Common::getRequestVar('debugEnabled', '')
         );
         Config::getInstance()->forceSave();
 
