@@ -12,6 +12,7 @@ namespace Piwik\Plugins\LoginLdap;
 
 use Exception;
 use Piwik\Common;
+use Piwik\Config;
 use Piwik\Db;
 use Piwik\Plugins\UsersManager\API;
 use Piwik\Plugins\UsersManager\UsersManager;
@@ -289,7 +290,7 @@ class LdapFunctions
 	
     private function log($text, $isDebug = 0)
     {
-		$debugEnabled = Config::getInstance()->LoginLdap['debugMode'];
+		$debugEnabled = @Config::getInstance()->LoginLdap['debugEnabled'];
 		if ($debugEnabled == "" || $debugEnabled == "false") {
 			$debugEnabled = false;
 		}

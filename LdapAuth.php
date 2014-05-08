@@ -55,7 +55,7 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
      */
     private function LdapLog($text, $isDebug = 0)
     {
-		$debugEnabled = Config::getInstance()->LoginLdap['debugMode'];
+		$debugEnabled = @Config::getInstance()->LoginLdap['debugEnabled'];
 		if ($debugEnabled == "" || $debugEnabled == "false") {
 			$debugEnabled = false;
 		}
@@ -160,7 +160,7 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
 				}
 
                 if (!is_null($ldapException)) {
-                    $this->LdapLog("WARN: ldapauth authenticate() - ldapException: " . $ldapException->getMessage()), 0);
+                    $this->LdapLog("WARN: ldapauth authenticate() - ldapException: " . $ldapException->getMessage(), 0);
                     throw $ldapException;
                 }
             } else {
@@ -203,7 +203,7 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
             $memberOf = Config::getInstance()->LoginLdap['memberOf'];
             $filter = Config::getInstance()->LoginLdap['filter'];
             $useKerberos = Config::getInstance()->LoginLdap['useKerberos'];
-            $debugEnabled = Config::getInstance()->LoginLdap['debugEnabled'];
+            $debugEnabled = @Config::getInstance()->LoginLdap['debugEnabled'];
         } catch (Exception $e) {
             $this->LdapLog("WARN: ldapauth authenticateLDAP() - exception: " . $e->getMessage(), 0);
             return false;

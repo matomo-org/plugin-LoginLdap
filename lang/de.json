@@ -33,7 +33,7 @@
         "KerberosDescription": "( \"true\" or \"false\" )",
         "LdapUserAdded": "LDAP Benutzer erfolgreich hinzugefügt!",
         "DisplayLog": "LDAP log",
-        "DisplayLogDescription": "Zeigt die letzten 20 Zeilen aus \"plugins/LoginLdap/data/ldap.log\".",
+        "DisplayLogDescription": "Zeigt die letzten 20 Zeilen aus \"tmp/logs/ldap.log\".",
         "LogEmpty": "Log-Datei scheint leer zu sein",
         "DownloadLog": "Download der vollständigen Logdatei",
         "LdapFunctionsMissing": "PHP ldap_connect() Funktion fehlt, aktivieren Sie bitte LDAP-Modul auf Ihrer PHP-Konfiguration!",
