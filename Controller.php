@@ -13,8 +13,6 @@ namespace Piwik\Plugins\LoginLdap;
 use Exception;
 use Piwik\Common;
 use Piwik\Config;
-use Piwik\Menu\MenuAdmin;
-use Piwik\Menu\MenuTop;
 use Piwik\Notification;
 use Piwik\Piwik;
 use Piwik\Plugin\ControllerAdmin;
