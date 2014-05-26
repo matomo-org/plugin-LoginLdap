@@ -33,6 +33,9 @@ From that point on they can login via mobile apps and API in general.
 
 ## Changelog
 
+#### LoginLdap 2.2.5:
+* Fixes issue #22 'unable to login'
+
 #### LoginLdap 2.2.4:
 * Added debug mode and more detail logging
 
