@@ -1,4 +1,4 @@
-<?php
+ <?php
 /**
  * Piwik - Open source web analytics
  *
@@ -14,6 +14,7 @@ use Exception;
 use Piwik\Config;
 use Piwik\FrontController;
 use Piwik\Menu\MenuAdmin;
+use Piwik\Option;
 use Piwik\Piwik;
 use Piwik\Plugin\Manager;
 use Piwik\Plugins\Login\Login;
@@ -130,4 +131,38 @@ class LoginLdap extends \Piwik\Plugin
         Login::initAuthenticationFromCookie($auth, $activateCookieAuth);
     }
 
+    /**
+    * Removes stored password reset info if it exists.
+    *
+    * @param string $login The user login to check for.
+    */
+    public static function removePasswordResetInfo($login)
+    {
+        $optionName = self::getPasswordResetInfoOptionName($login);
+        Option::delete($optionName);
+    }
+
+    /**
+    * Gets password hash stored in password reset info.
+    *
+    * @param string $login The user login to check for.
+    * @return string|false The hashed password or false if no reset info exists.
+    */
+    public static function getPasswordToResetTo($login)
+    {
+        $optionName = self::getPasswordResetInfoOptionName($login);
+        return Option::get($optionName);
+    }
+
+    /**
+    * Gets the option name for the option that will store a user's password change
+    * request.
+    *
+    * @param string $login The user login for whom a password change was requested.
+    * @return string
+    */
+    public static function getPasswordResetInfoOptionName($login)
+    {
+        return $login . '_reset_password_info';
+    }
 }

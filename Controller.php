@@ -1,4 +1,4 @@
-<?php
+ <?php
 /**
  * Piwik - Open source web analytics
  *
@@ -14,8 +14,10 @@ use Exception;
 use Piwik\Common;
 use Piwik\Config;
 use Piwik\Notification;
+use Piwik\Nonce;
 use Piwik\Piwik;
 use Piwik\Plugin\ControllerAdmin;
+use Piwik\Plugins\Login\FormLogin;
 use Piwik\Plugins\UsersManager\API as APIUsersManager;
 use Piwik\Session;
 use Piwik\View;
@@ -332,5 +334,55 @@ class Controller extends \Piwik\Plugins\Login\Controller
     protected function checkPasswordHash($password)
     {
         // do not check password (Login uses hashed password, LoginLdap uses real passwords)
+    }
+
+    /**
+    * Configure common view properties
+    *
+    * @param View $view
+    */
+    private function configureView($view)
+    {
+        $this->setBasicVariablesView($view);
+
+        $view->linkTitle = Piwik::getRandomTitle();
+
+        // crsf token: don't trust the submitted value; generate/fetch it from session data
+        $view->nonce = Nonce::getNonce('LoginLdap.login');
+    }
+
+    /**
+    * @param null $messageNoAccess
+    * @param bool $infoMessage
+    * @return string
+    */
+    public function login($messageNoAccess = null, $infoMessage = false)
+    {
+        $form = new FormLogin();
+        if ($form->validate()) {
+            $nonce = $form->getSubmitValue('form_nonce');
+            if (Nonce::verifyNonce('LoginLdap.login', $nonce)) {
+                $login = $form->getSubmitValue('form_login');
+                $password = $form->getSubmitValue('form_password');
+                $rememberMe = $form->getSubmitValue('form_rememberme') == '1';
+                $md5Password = md5($password);
+                try {
+                    $this->authenticateAndRedirect($login, $password, $rememberMe);
+                } catch (Exception $e) {
+                    $messageNoAccess = $e->getMessage();
+                }
+            } else {
+                $messageNoAccess = $this->getMessageExceptionNoAccess();
+            }
+        }
+
+        $view = new View('@Login/login');
+        $view->AccessErrorString = $messageNoAccess;
+        $view->infoMessage = nl2br($infoMessage);
+        $view->addForm($form);
+        $this->configureView($view);
+        self::setHostValidationVariablesView($view);
+
+        return $view->render();
     }
 }
