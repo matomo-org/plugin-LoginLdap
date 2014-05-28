@@ -58,6 +58,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
         $filter = Config::getInstance()->LoginLdap['filter'];
         $useKerberos = Config::getInstance()->LoginLdap['useKerberos'];
         $debugEnabled = Config::getInstance()->LoginLdap['debugEnabled'];
+        $autoCreateUser = Config::getInstance()->LoginLdap['autoCreateUser'];
 
         $ldap = new LdapFunctions();
         $ldap->setServerUrl($serverUrl);
@@ -73,6 +74,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
         $ldap->setFilter($filter);
         $ldap->setKerberos($useKerberos);
         $ldap->setDebug($debugEnabled);
+        $ldap->setAutoCreateUser($autoCreateUser);
 
         $user = $ldap->getUser($userLogin, $aliasField, $mailField);
 
@@ -148,6 +150,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
             $view->filter = "";
             $view->useKerberos = "false";
             $view->debugEnabled = "false";
+            $view->autoCreateUser = "false";
         } else {
             $view->serverUrl = @Config::getInstance()->LoginLdap['serverUrl'];
             $view->ldapPort = @Config::getInstance()->LoginLdap['ldapPort'];
@@ -162,6 +165,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
             $view->filter = @Config::getInstance()->LoginLdap['filter'];
             $view->useKerberos = @Config::getInstance()->LoginLdap['useKerberos'];
             $view->debugEnabled = @Config::getInstance()->LoginLdap['debugEnabled'];
+            $view->autoCreateUser = @Config::getInstance()->LoginLdap['autoCreateUser'];
         }
         return $view->render();
     }
@@ -316,7 +320,8 @@ class Controller extends \Piwik\Plugins\Login\Controller
             'memberOf'       => Common::getRequestVar('memberOf', ''),
             'filter'         => Common::getRequestVar('filter', ''),
             'useKerberos'    => Common::getRequestVar('useKerberos', ''),
-            'debugEnabled'    => Common::getRequestVar('debugEnabled', '')
+            'debugEnabled'    => Common::getRequestVar('debugEnabled', ''),
+            'autoCreateUser'    => Common::getRequestVar('autoCreateUser', '')
         );
         Config::getInstance()->forceSave();
 
@@ -384,5 +389,12 @@ class Controller extends \Piwik\Plugins\Login\Controller
         self::setHostValidationVariablesView($view);
 
         return $view->render();
+    }
+
+    public function autoCreateUser ($username) {
+        if(Config::getInstance()->LoginLdap['autoCreateUser'] == true) {
+            return $this->addUserLdap($username);
+        } 
+        return false;
     }
 }

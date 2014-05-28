@@ -37,6 +37,7 @@
         "LogEmpty": "Log file seems to be empty",
         "DownloadLog": "Download full logfile",
         "LdapFunctionsMissing": "PHP ldap_connect() function missing, please enable LDAP on your PHP config!",
-        "Debug": "Debug mode enabled"
+        "Debug": "Debug mode enabled",
+        "autoCreateUser": "Add users if they match LDAP user settings"
     }
 }

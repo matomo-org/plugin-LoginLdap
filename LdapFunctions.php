@@ -37,6 +37,7 @@ class LdapFunctions
     private $filter = null;
     private $useKerberos = null;
     private $debugEnabled = null;
+    private $autoCreateUser = null;
 
     private $ldapconn = null;
 
@@ -210,6 +211,11 @@ class LdapFunctions
     public function setDebug($debugEnabled)
     {
         $this->debugEnabled = $debugEnabled;
+    }
+
+    public function setAutoCreateUser($autoCreateUser)
+    {
+        $this->autoCreateUser = $autoCreateUser;
     }
 
     public function setLdapPort($ldapPort)
