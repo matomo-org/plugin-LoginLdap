@@ -43,10 +43,10 @@ class LdapFunctions
 
     public function authenticateFu($username, $password)
     {
-		$this->log("INFO: ldapfunctions authenticateFu(" . $username . ") - started. Password is " . strlen($password) . " chars.", 0);
-		
+        $this->log("INFO: ldapfunctions authenticateFu(" . $username . ") - started. Password is " . strlen($password) . " chars.", 0);
+
         if (empty($password)) {
-			$this->log("WARN: ldapfunctions authenticateFu(" . $username . ") - password is not set!", 1);
+            $this->log("WARN: ldapfunctions authenticateFu(" . $username . ") - password is not set!", 1);
             return false;
         }
 
@@ -55,7 +55,7 @@ class LdapFunctions
         $this->validate();
 
         if (empty($username)) {
-			$this->log("WARN: ldapfunctions authenticateFu(" . $username . ") - username is not set!", 1);
+            $this->log("WARN: ldapfunctions authenticateFu(" . $username . ") - username is not set!", 1);
             throw new Exception('username is not set');
         }
 
@@ -110,7 +110,7 @@ class LdapFunctions
         $this->log("INFO: ldapfunctions kerbthenticate(" . $username . ") - getUserEntries()", 0);
         if ($result['count'] > 0 && $result[0]['dn']) {
             $success = true;
-			$this->log("INFO: ldapfunctions kerbthenticate(" . $username . ") - so far success, now we must validate memberOf group", 1);
+            $this->log("INFO: ldapfunctions kerbthenticate(" . $username . ") - so far success, now we must validate memberOf group", 1);
             $memberOfList = @$result[0]['memberof'];
             if (!empty($this->memberOf) && !empty($memberOfList)) {
                 $success = false;
@@ -282,7 +282,7 @@ class LdapFunctions
     private function addSuffix($username)
     {
         if (!empty($this->usernameSuffix)) {
-			$this->log("INFO: ldapfunctions addSuffix() - suffix (" . $this->usernameSuffix . ") added to username (" . $username . ").", 1);
+            $this->log("INFO: ldapfunctions addSuffix() - suffix (" . $this->usernameSuffix . ") added to username (" . $username . ").", 1);
             $username .= $this->usernameSuffix;
         }
         return $username;
@@ -293,22 +293,22 @@ class LdapFunctions
         $this->log("INFO: ldapfunctions close() - ldap connection closed.", 1);
         @ldap_close($this->ldapconn);
     }
-	
+
     private function log($text, $isDebug = 0)
     {
-		$debugEnabled = @Config::getInstance()->LoginLdap['debugEnabled'];
-		if ($debugEnabled == "" || $debugEnabled == "false") {
-			$debugEnabled = false;
-		}
+        $debugEnabled = @Config::getInstance()->LoginLdap['debugEnabled'];
+        if ($debugEnabled == "" || $debugEnabled == "false") {
+            $debugEnabled = false;
+        }
         if ($isDebug == 0 or ($isDebug == 1 and $debugEnabled == true)) {
-			if (LdapAuth::getLogPath()) {
-				$path = LdapAuth::getLogPath();
-				$f = fopen($path, 'a');
-				if ($f != null) {
-					fwrite($f, strftime('%F %T') . ": $text\n");
-					fclose($f);
-				}
-			}
+            if (LdapAuth::getLogPath()) {
+                $path = LdapAuth::getLogPath();
+                $f = fopen($path, 'a');
+                if ($f != null) {
+                    fwrite($f, strftime('%F %T') . ": $text\n");
+                    fclose($f);
+                }
+            }
         }
     }
 
@@ -321,7 +321,7 @@ class LdapFunctions
      */
     private function updateCredentials($login, $password)
     {
-		$this->log("INFO: ldapfunctions updateCredentials() - DB updated with token and password.", 1);
+        $this->log("INFO: ldapfunctions updateCredentials() - DB updated with token and password.", 1);
         $password = UsersManager::getPasswordHash($password);
         $token_auth = API::getInstance()->getTokenAuth($login, $password);
         $result = Db::query("UPDATE " . Common::prefixTable('user')

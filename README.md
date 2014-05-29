@@ -33,6 +33,9 @@ From that point on they can login via mobile apps and API in general.
 
 ## Changelog
 
+#### LoginLdap 2.2.7:
+* Auto create users from LDAP #23 
+
 #### LoginLdap 2.2.6:
 * Fixes empty characters
 

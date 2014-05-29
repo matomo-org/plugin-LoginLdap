@@ -37,6 +37,7 @@
         "LogEmpty": "Logi fail paistab olevat tühi",
         "DownloadLog": "Lae alla terve logi fail",
         "LdapFunctionsMissing": "PHP ldap_connect() funktsioon puudub, palun seadista LDAP moodul PHP konfiguratsioonis!",
-        "Debug": "Detailne logimine"
+        "Debug": "Detailne logimine",
+        "autoCreateUser": "Automaatne kasutaja loomine LDAP-st"
     }
 }
