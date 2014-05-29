@@ -208,6 +208,7 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
             $filter = Config::getInstance()->LoginLdap['filter'];
             $useKerberos = Config::getInstance()->LoginLdap['useKerberos'];
             $debugEnabled = @Config::getInstance()->LoginLdap['debugEnabled'];
+            $autoCreateUser = @Config::getInstance()->LoginLdap['autoCreateUser'];
         } catch (Exception $e) {
             $this->LdapLog("WARN: ldapauth authenticateLDAP() - exception: " . $e->getMessage(), 0);
             return false;
@@ -227,6 +228,7 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
         $ldapF->setFilter($filter);
         $ldapF->setKerberos($useKerberos);
         $ldapF->setDebug($debugEnabled);
+        $ldapF->setAutoCreateUser($autoCreateUser);
 
         if ($sso == true && empty($pwd) && $useKerberos == true) {
             if ($ldapF->kerbthenticate($usr)) {
@@ -250,6 +252,14 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
                     $this->LdapLog("INFO: ldapauth authenticateLDAP() - token for ldap user found.", 1);
                 } else {
                     $this->LdapLog("WARN: ldapauth authenticateLDAP() - token for ldap user not found in DB!", 1);
+                    if ( $autoCreateUser == true) {
+                        $this->LdapLog("DEBUG: ldapauth authenticateLDAP() - autoCreateUser enabled - Trying to create user!", 1);
+                        $isSuperUser = Piwik::hasUserSuperUserAccess();
+                        Piwik::setUserHasSuperUserAccess();
+                        $controller = new \Piwik\Plugins\LoginLdap\Controller;
+                        $controller->autoCreateUser($usr);
+                        Piwik::setUserHasSuperUserAccess($isSuperUser);
+                    }
                 }
             } else {
                 $this->LdapLog("WARN: ldapauth authenticateLDAP() - authenticateFu called and failed!", 1);

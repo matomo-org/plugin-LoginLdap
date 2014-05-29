@@ -139,6 +139,16 @@
             </tr>
 
             <tr>
+                <td><label for="autoCreateUser">{{ 'LoginLdap_autoCreateUser'|translate }} </label></td>
+                <td>
+                    <select name="autoCreateUser">
+                        <option value="false"{% if autoCreateUser == "false" %} selected{% endif %}>{{ 'General_No'|translate }}</option>
+                        <option value="true"{% if autoCreateUser == "true" %} selected{% endif %}>{{ 'General_Yes'|translate }}</option>
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
                 <td align="left">
                     <input class="submit" type="submit" value="{{ 'General_Save'|translate }}"/>
                 </td>
