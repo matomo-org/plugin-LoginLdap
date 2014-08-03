@@ -15,6 +15,11 @@
     },
     "authors": [
         {
+            "name": "Piwik",
+            "email": "matt@piwik.org",
+            "homepage": "https://github.com/mattab"
+        },
+        {
             "name": "Stefan Kreuter",
             "email": "info@gigatec.de",
             "homepage": "http://www.gigatec.de"
@@ -23,11 +28,6 @@
             "name": "Aivo Koger",
             "email": "aivo.koger@gmail.com",
             "homepage": "https://github.com/tehnotronic"
-        },
-        {
-            "name": "Matthieu Aubry",
-            "email": "matt@piwik.org",
-            "homepage": "https://github.com/mattab"
         }
     ]
 }
