@@ -5,7 +5,7 @@
     "theme": false,
     "keywords": ["ldap", "login", "authentication", "active", "directory", "kerberos"],
     "license": "GPL v3+",
-    "homepage": "https://github.com/tehnotronic/PiwikLdap",
+    "homepage": "https://github.com/piwik/plugin-LoginLdap",
     "require": {
         "piwik": ">=2.2.1-rc1",
         "php": ">=5.3.0"
@@ -16,18 +16,18 @@
     "authors": [
         {
             "name": "Piwik",
-            "email": "matt@piwik.org",
-            "homepage": "https://github.com/mattab"
-        },
-        {
-            "name": "Stefan Kreuter",
-            "email": "info@gigatec.de",
-            "homepage": "http://www.gigatec.de"
+            "email": "hello@piwik.org",
+            "homepage": "https://github.com/piwik"
         },
         {
             "name": "Aivo Koger",
             "email": "aivo.koger@gmail.com",
             "homepage": "https://github.com/tehnotronic"
+        },
+        {
+            "name": "Stefan Kreuter",
+            "email": "info@gigatec.de",
+            "homepage": "http://www.gigatec.de"
         }
     ]
 }
