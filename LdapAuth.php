@@ -21,6 +21,7 @@ use Piwik\Plugins\UsersManager\API;
 use Piwik\Plugins\UsersManager\Model as UserModel;
 use Piwik\ProxyHttp;
 use Piwik\Session;
+use Piwik\SettingsPiwik;
 
 require_once PIWIK_INCLUDE_PATH . '/plugins/LoginLdap/LdapFunctions.php';
 
@@ -51,7 +52,12 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
      */
     public static function getLogPath()
     {
-        return PIWIK_INCLUDE_PATH . self::LDAP_LOG_FILE;
+        $logPath = PIWIK_INCLUDE_PATH.self::LDAP_LOG_FILE;
+        $path = SettingsPiwik::rewriteTmpPathWithInstanceId($logPath);
+        if (is_dir($path)) {
+            $path .= '/piwik.log';
+        }
+        return $path;
     }
 
     /**
