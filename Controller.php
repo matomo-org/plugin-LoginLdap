@@ -372,7 +372,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
                 $rememberMe = $form->getSubmitValue('form_rememberme') == '1';
                 $md5Password = md5($password);
                 try {
-                    $this->authenticateAndRedirect($login, $password, $rememberMe);
+                    $this->authenticateAndRedirect($login, $md5Password, $rememberMe);
                 } catch (Exception $e) {
                     $messageNoAccess = $e->getMessage();
                 }
