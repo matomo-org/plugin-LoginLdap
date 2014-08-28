@@ -3,7 +3,7 @@
 
 ## Description
 
-**Piwik login that uses LDAP queries to authenticate users and offeres Kerberos SSO support.**
+**Piwik login that uses LDAP queries to authenticate users and offers Kerberos SSO support.**
 
 #### HowTo Create a new User from LDAP in Piwik:
 * Login to Piwik backend as superuser
