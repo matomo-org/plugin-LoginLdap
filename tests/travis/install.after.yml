@@ -1,0 +1,1 @@
+  - ./plugins/LoginLdap/tests/travis/setup_ldap.sh

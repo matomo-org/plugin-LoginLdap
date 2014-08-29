@@ -1,0 +1,2 @@
+  # add ldap extension to php.ini
+  - echo "extension=ldap.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
