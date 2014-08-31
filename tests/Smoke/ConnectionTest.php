@@ -22,7 +22,7 @@ class ConnectionTest extends DatabaseTestCase
     const SERVER_HOST_NAME = 'localhost';
     const SERVER_POST = 389;
     const SERVER_BASE_DN = "dc=avengers,dc=shield,dc=org";
-    const GROUP_NAME = 'avengers';
+    const GROUP_NAME = 'cn=avengers,dc=avengers,dc=shield,dc=org';
 
     const TEST_LOGIN = 'ironman';
     const TEST_PASS = 'piedpiper';
@@ -35,12 +35,7 @@ class ConnectionTest extends DatabaseTestCase
 
         parent::setUp();
 
-        UsersManagerAPI::getInstance()->addUser(self::TEST_LOGIN, self::TEST_PASS, 'billionairephilanthropistplayboy@starkindustries.com', $alias = false);
-    }
-
-    public function testBasicAuthTest()
-    {
-        Config::getInstance()->LoginLdap = array(
+        Config::getInstance()->LoginLdap = Config::getInstance()->LoginLdapTest + array(
             'serverUrl' => self::SERVER_HOST_NAME,
             'ldapPort' => self::SERVER_POST,
             'baseDn' => self::SERVER_BASE_DN,
@@ -50,11 +45,16 @@ class ConnectionTest extends DatabaseTestCase
             'adminPass' => 'secrets',
             'mailField' => '',
             'aliasField' => '',
-            'memberOf' => '',
+            'memberOf' => self::GROUP_NAME,
             'filter' => '',
             'useKerberos' => 'false'
         );
 
+        UsersManagerAPI::getInstance()->addUser(self::TEST_LOGIN, self::TEST_PASS, 'billionairephilanthropistplayboy@starkindustries.com', $alias = false);
+    }
+
+    public function testBasicAuthTest()
+    {
         $ldapAuth = new LdapAuth();
         $ldapAuth->setLogin(self::TEST_LOGIN);
         $ldapAuth->setPassword(self::TEST_PASS);
@@ -65,21 +65,6 @@ class ConnectionTest extends DatabaseTestCase
 
     public function testBasicAuthFailure()
     {
-        Config::getInstance()->LoginLdap = array(
-            'serverUrl' => self::SERVER_HOST_NAME,
-            'ldapPort' => self::SERVER_POST,
-            'baseDn' => self::SERVER_BASE_DN,
-            'userIdField' => 'uid',
-            'usernameSuffix' => '',
-            'adminUser' => 'cn=fury,' . self::SERVER_BASE_DN,
-            'adminPass' => 'secrets',
-            'mailField' => '',
-            'aliasField' => '',
-            'memberOf' => '',
-            'filter' => '',
-            'useKerberos' => 'false'
-        );
-
         $ldapAuth = new LdapAuth();
         $ldapAuth->setLogin(self::TEST_LOGIN);
         $ldapAuth->setPassword('slkadjfasldfj');
@@ -92,20 +77,7 @@ class ConnectionTest extends DatabaseTestCase
     //       authentication to the HTTP server when useKerberos = 1. code must reflect that.
     public function testKerberosConnection()
     {
-        Config::getInstance()->LoginLdap = array(
-            'serverUrl' => self::SERVER_HOST_NAME,
-            'ldapPort' => self::SERVER_POST,
-            'baseDn' => self::SERVER_BASE_DN,
-            'userIdField' => 'uid',
-            'usernameSuffix' => '',
-            'adminUser' => 'cn=fury,' . self::SERVER_BASE_DN,
-            'adminPass' => 'secrets',
-            'mailField' => '',
-            'aliasField' => '',
-            'memberOf' => '',
-            'filter' => '',
-            'useKerberos' => 1
-        );
+        Config::getInstance()->LoginLdap['useKerberos'] = 1;
 
         $_SERVER['REMOTE_USER'] = self::TEST_LOGIN;
 

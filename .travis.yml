@@ -137,5 +137,7 @@ after_script:
   # upload test artifacts (for debugging travis failures)
   - ./tests/travis/upload_artifacts.sh
 
+  - sudo grep slapd /var/log/syslog
+
 after_success:
   - cd $PIWIK_ROOT_DIR

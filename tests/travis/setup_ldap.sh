@@ -18,13 +18,21 @@ ADMIN_PASS=secrets
 ADMIN_PASS_HASH=`slappasswd -s $ADMIN_PASS`
 BASE_DN="dc=avengers,dc=shield,dc=org"
 
+sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
+
+dn: cn=config
+replace: olcLogLevel
+olcLogLevel: -1
+
+EOF
+
 sudo ldapadd -Y EXTERNAL -H ldapi:/// <<EOF
 
 # database
-dn: olcDatabase={3}hdb,cn=config
+dn: olcDatabase={2}hdb,cn=config
 objectClass: olcDatabaseConfig
 objectClass: olcHdbConfig
-olcDatabase: {3}hdb
+olcDatabase: {2}hdb
 olcRootDN: cn=$ADMIN_USER,$BASE_DN
 olcRootPW: $ADMIN_PASS_HASH
 olcDbDirectory: $TRAVIS_BUILD_DIR/ldap
@@ -42,10 +50,48 @@ olcDbIndex: objectClass eq
 
 EOF
 
+sudo ldapadd -Y EXTERNAL -H ldapi:/// <<EOF
+
+# modules
+dn: cn=module,cn=config
+cn: module
+objectClass: olcModuleList
+objectClass: top
+olcModulePath: /usr/lib/ldap
+olcModuleLoad: memberof.la
+
+dn: olcOverlay={0}memberof,olcDatabase={2}hdb,cn=config
+objectClass: olcConfig
+objectClass: olcMemberOf
+objectClass: olcOverlayConfig
+objectClass: top
+olcOverlay: memberof
+
+dn: cn=module,cn=config
+cn: module
+objectclass: olcModuleList
+objectClass: top
+olcModuleLoad: refint.la
+olcModulePath: /usr/lib/ldap
+
+dn: olcOverlay={1}refint,olcDatabase={2}hdb,cn=config
+objectClass: olcConfig
+objectClass: olcOverlayConfig
+objectClass: olcRefintConfig
+objectClass: top
+olcOverlay: {1}refint
+olcRefintAttribute: memberof member manager owner
+
+EOF
+
 if [ "$?" -eq "0" ]; then
     echo "Configured."
 else
     echo "Failed to configure ldap."
+    echo ""
+    echo "slapd log:"
+    sudo grep slapd /var/log/syslog
+
     exit 1
 fi
 
@@ -67,51 +113,41 @@ objectclass: organizationalunit
 ou: Groups
 description: all groups
 
-# group entry
-dn: cn=avengers,$BASE_DN
-gidNumber: 500
-cn: avengers
-objectClass: posixGroup
-objectClass: top
-
 # USER ENTRY (pwd: piedpiper)
 dn: cn=Tony Stark,$BASE_DN
 cn: Tony Stark
 sn: Stark
 objectClass: inetOrgPerson
-objectClass: posixAccount
 objectClass: top
 uid: ironman
 userPassword: `slappasswd -s piedpiper`
-gidNumber: 500
-uidNumber: 1000
-homeDirectory: /home/ironman/
 
 # USER ENTRY (pwd: redledger)
 dn: cn=Natalia Romanova,$BASE_DN
 cn: Natalia Romanova
 objectClass: top
 objectClass: inetOrgPerson
-objectClass: posixAccount
 sn: Romanova
 uid: blackwidow
 userPassword: `slappasswd -s redledger`
-gidNumber: 500
-uidNumber: 1001
-homeDirectory: /home/blackwidow/
 
 # USER ENTRY (pwd: thaifood)
 dn: cn=Steve Rodgers,$BASE_DN
 cn: Steve Rodgers
 objectClass: top
 objectClass: inetOrgPerson
-objectClass: posixAccount
 sn: Rodgers
 uid: captainamerica
 userPassword: `slappasswd -s thaifood`
-gidNumber: 500
-uidNumber: 1002
-homeDirectory: /home/captainamerica/
+
+# group entry
+dn: cn=avengers,$BASE_DN
+cn: avengers
+objectClass: groupOfNames
+objectClass: top
+member: cn=Tony Stark,$BASE_DN
+member: cn=Natalia Romanova,$BASE_DN
+member: cn=Steve Rodgers,$BASE_DN
 
 EOF
 
@@ -119,8 +155,12 @@ if [ "$?" -eq "0" ]; then
     echo "Added entries."
 else
     echo "Failed to add entries."
+    echo ""
+    echo "slapd log:"
+    sudo grep slapd /var/log/syslog
+
     exit 1
 fi
 
-echo ldapsearch -x -D "cn=Tony Stark,$BASE_DN" -w "piedpiper" -b "$BASE_DN"
-ldapsearch -x -D "cn=Tony Stark,$BASE_DN" -w "piedpiper" -b "$BASE_DN"
+echo ldapsearch -x -D "cn=Tony Stark,$BASE_DN" -w "piedpiper" -b "$BASE_DN" "(uid=ironman)" memberOf
+ldapsearch -x -D "cn=Tony Stark,$BASE_DN" -w "piedpiper" -b "$BASE_DN" "(uid=ironman)" memberOf

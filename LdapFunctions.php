@@ -17,6 +17,8 @@ use Piwik\Db;
 use Piwik\Plugins\UsersManager\API;
 use Piwik\Plugins\UsersManager\UsersManager;
 use Piwik\Session;
+use Piwik\Log;
+use Piwik\Plugins\LoginLdap\Ldap\Client as LdapClient;
 
 /**
  *
@@ -59,96 +61,107 @@ class LdapFunctions
             throw new Exception('username is not set');
         }
 
-        $this->connect();
-        $result = $this->getUserEntries($username);
-        $this->log("INFO: ldapfunctions authenticateFu(" . $username . ") - getUserEntries: ".@json_encode($result), 1);
-        if ($result['count'] > 0 && $result[0]['dn']) {
-            $success = @ldap_bind($this->ldapconn, $result[0]['dn'], $password);
-            $this->log("INFO: ldapfunctions authenticateFu(" . $username . ") - ldap_bind(" . $result[0]['dn'] . "): " . ($success ? 'success' : 'fail'), 0);
-            $memberOfList = @$result[0]['memberof'];
-            if ($success && !empty($this->memberOf) && !empty($memberOfList)) {
-                $success = false;
-                for ($i = 0; $i < $memberOfList['count']; $i++) {
+        $ldapClient = new LdapClient();
 
-                    if ($memberOfList[$i] == $this->memberOf) {
-                        $success = true;
-                    }
+        try {
+            $ldapClient->connect($this->serverUrl, $this->ldapPort);
+
+            $result = $this->getUserEntries($ldapClient, $username); // TODO: removed logging statement, think about putting back
+            if ($result['count'] > 0 && !empty($result[0]['dn'])) {
+                $userDn = $result[0]['dn'];
+
+                if (!$ldapClient->bind($userDn, $password)) {
+                    throw new Exception("Unable to bind to $userDn.");
                 }
-                $this->log("INFO: ldapfunctions authenticateFu(" . $username . ") - check memberOf (" . $this->memberOf . "): " . ($success ? 'success' : 'fail'), 0);
+            } else {
+                throw new Exception("No such user '$username'.");
             }
+        } catch (Exception $ex) {
+            Log::debug($ex);
+
+            try {
+                $ldapClient->close();
+            } catch (Exception $ex) {
+                Log::debug($ex);
+            }
+
+            return false;
         }
 
-        $this->close();
+        $ldapClient->close();
 
-        if ($success) {
-            if ($this->updateCredentials($username, $password)) {
-                $this->log("INFO: ldapfunctions authenticateFu(" . $username . ") - ldap user password and token update success.", 1);
-            }
+        if ($this->updateCredentials($username, $password)) {
+            $this->log("INFO: ldapfunctions authenticateFu(" . $username . ") - ldap user password and token update success.", 1);
         }
 
-        return $success;
+        return true;
     }
 
     public function kerbthenticate($username)
     {
-
         if (isset($_SERVER["REMOTE_USER"])) {
             $this->log("INFO: ldapfunctions kerbthenticate(" . $username . ") - REMOTE_USER: " . $_SERVER["REMOTE_USER"], 1);
         }
 
-        $success = false;
-
         $this->validate();
 
         if (empty($username)) {
             throw new Exception('username is not set');
         }
 
-        $this->connect();
+        $ldapClient = new LdapClient();
 
-        $result = $this->getUserEntries($username);
-        $this->log("INFO: ldapfunctions kerbthenticate(" . $username . ") - getUserEntries()", 0);
-        if ($result['count'] > 0 && $result[0]['dn']) {
-            $success = true;
-            $this->log("INFO: ldapfunctions kerbthenticate(" . $username . ") - so far success, now we must validate memberOf group", 1);
-            $memberOfList = @$result[0]['memberof'];
-            if (!empty($this->memberOf) && !empty($memberOfList)) {
-                $success = false;
-                for ($i = 0; $i < $memberOfList['count']; $i++) {
-                    if ($memberOfList[$i] == $this->memberOf) {
-                        $success = true;
-                    }
-                }
-                $this->log("INFO: ldapfunctions kerbthenticate(" . $username . ") - check memberOf (" . $this->memberOf . "): " . ($success ? 'success' : 'fail'), 0);
+        try {
+            $ldapClient->connect($this->serverUrl, $this->ldapPort);
+
+            $result = $this->getUserEntries($ldapClient, $username); // TODO: removed logging statement, think about putting back
+            if ($result['count'] == 0 || empty($result[0]['dn'])) {
+                throw new Exception("User not member of required group.");
             }
+        } catch (Exception $ex) {
+            Log::debug($ex);
+
+            try {
+                $ldapClient->close();
+            } catch (Exception $ex) {
+                Log::debug($ex);
+            }
+
+            return false;
         }
 
-        $this->close();
+        $ldapClient->close();
 
-        return $success;
+        return true;
     }
 
     public function getUser($username, $aliasField = 'cn', $mailField = 'mail')
     {
-
-        $user = array();
-
         $this->validate();
 
         if (empty($username)) {
             throw new Exception('username is not set');
         }
 
-        $this->connect();
+        try {
+            $ldapClient = new LdapClient();
+            $ldapClient->connect($this->serverUrl, $this->ldapPort);
 
-        $result = $this->getUserEntries($username);
-        if ($result['count'] > 0) {
-            $user['username'] = $username;
-            $user['alias'] = $result[0][$aliasField][0];
-            $user['mail'] = $result[0][$mailField][0];
+            $user = array();
+
+            $result = $this->getUserEntries($ldapClient, $username);
+            if ($result['count'] > 0) {
+                $user['username'] = $username;
+                $user['alias'] = $result[0][$aliasField][0];
+                $user['mail'] = $result[0][$mailField][0];
+            }
+        } catch (Exception $ex) {
+            $ldapClient->close();
+
+            throw $ex;
         }
 
-        $this->close();
+        $ldapClient->close();
 
         return $user;
     }
@@ -237,46 +250,39 @@ class LdapFunctions
         }
     }
 
-    private function connect()
+    private function getUserEntries(LdapClient $ldapClient, $username)
     {
+        $adminResource = $this->addSuffix($this->adminUser);
 
-        $ldapconn = @ldap_connect($this->serverUrl, $this->ldapPort);
-        $this->log("INFO: ldapfunctions connect() - ldap_connect(" . $this->serverUrl . ") started.", 1);
-
-        if (!$ldapconn) {
-            $this->log("WARN: ldapfunctions connect() - ldap_connect(" . $this->serverUrl . ") FAILED!",0);
-            throw new Exception('could not connect to ldap server');
+        if (!$ldapClient->bind($adminResource, $this->adminPass)) {
+            throw new Exception("Could not bind as LDAP admin."); // admin user DN should not be displayed in exception message
         }
 
-        ldap_set_option($ldapconn, LDAP_OPT_PROTOCOL_VERSION, 3);
-        ldap_set_option($ldapconn, LDAP_OPT_REFERRALS, 0);
+        $userEntries = $ldapClient->fetchAll($this->baseDn, $this->getUserEntryQuery($username));
 
-        $this->ldapconn = $ldapconn;
+        // TODO: test anonymous bind (for validity of old error message)
+        if ($userEntries === null) {
+            throw new Exception("Couldn't search for LDAP entries.");
+        }
+
+        return $userEntries;
     }
 
-    private function getUserEntries($username)
+    private function getUserEntryQuery($username)
     {
+        // TODO: add LDAP query builder?
+        $username = $this->addSuffix($username);
 
-        $this->log("INFO: ldapfunctions getUserEntries(" . $username . ") - ldap_bind: " . $this->addSuffix($this->adminUser), 0);
-        if (!empty($this->adminUser) && !@ldap_bind($this->ldapconn, $this->addSuffix($this->adminUser), $this->adminPass)) {
-            $this->log("WARN: ldapfunctions getUserEntries(" . $username . ") - ldap_bind() as admin FAILED!", 0);
-            throw new Exception('could not bind as admin');
-        }
-
+        $conditions = array();
         if (!empty($this->filter)) {
-            $searchFilter = "(&" . $this->filter . "(" . $this->userIdField . "=" . $this->addSuffix($username) . "))";
-        } else {
-            $searchFilter = $this->userIdField . "=" . $this->addSuffix($username);
+            $conditions[] = $this->filter;
         }
-        $this->log("INFO: ldapfunctions getUserEntries(" . $username . ") - ldap_search: " . $searchFilter, 1);
-        $search = @ldap_search($this->ldapconn, $this->baseDn, $searchFilter);
-        if ($search) {
-            $this->log("INFO: ldapfunctions getUserEntries(" . $username . ") - ldap_get_entries(); count: " . count($search), 1);
-            return @ldap_get_entries($this->ldapconn, $search);
-        } else {
-            $this->log("WARN: ldapfunctions getUserEntries(" . $username . ") - ldap_get_entries() FAILED!", 0);
-            throw new Exception('could not get user entries, maybe anonymous bind is forbidden or admin credentials are invalid');
+        if (!empty($this->memberOf)) {
+            $conditions[] = "(memberof=" . $this->memberOf . ")";
         }
+        $conditions[] = "(" . $this->userIdField . "=" . $username . ")";
+
+        return "(&" . implode('', $conditions) . ")";
     }
 
     private function addSuffix($username)
@@ -286,12 +292,6 @@ class LdapFunctions
             $username .= $this->usernameSuffix;
         }
         return $username;
-    }
-
-    private function close()
-    {
-        $this->log("INFO: ldapfunctions close() - ldap connection closed.", 1);
-        @ldap_close($this->ldapconn);
     }
 
     private function log($text, $isDebug = 0)
@@ -329,7 +329,4 @@ class LdapFunctions
             . "' WHERE login='" . $login . "' and password != '" . $password . "'");
         return $result;
     }
-
 }
-
-?>
