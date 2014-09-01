@@ -258,7 +258,8 @@ class LdapFunctions
             throw new Exception("Could not bind as LDAP admin."); // admin user DN should not be displayed in exception message
         }
 
-        $userEntries = $ldapClient->fetchAll($this->baseDn, $this->getUserEntryQuery($username));
+        list($filter, $bind) = $this->getUserEntryQuery($username);
+        $userEntries = $ldapClient->fetchAll($this->baseDn, $filter, $bind);
 
         // TODO: test anonymous bind (for validity of old error message)
         if ($userEntries === null) {
@@ -270,19 +271,25 @@ class LdapFunctions
 
     private function getUserEntryQuery($username)
     {
-        // TODO: add LDAP query builder?
         $username = $this->addSuffix($username);
+
+        $bind = array();
 
         $conditions = array();
         if (!empty($this->filter)) {
             $conditions[] = $this->filter;
         }
         if (!empty($this->memberOf)) {
-            $conditions[] = "(memberof=" . $this->memberOf . ")";
+            $conditions[] = "(memberof=?)";
+            $bind[] = $this->memberOf;
         }
-        $conditions[] = "(" . $this->userIdField . "=" . $username . ")";
+        $conditions[] = "(" . $this->userIdField . "=?)";
 
-        return "(&" . implode('', $conditions) . ")";
+        $bind[] = $username;
+
+        $filter = "(&" . implode('', $conditions) . ")";
+
+        return array($filter, $bind);
     }
 
     private function addSuffix($username)

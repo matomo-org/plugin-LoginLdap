@@ -21,7 +21,7 @@ class Client
     const DEFAULT_LDAP_PORT = 389;
 
     /**
-     * The LDAP connection resource ID. Set to the result of `ldap_connect`.
+     * The LDAP connection resource. Set to the result of `ldap_connect`.
      *
      * @var resource
      */
@@ -62,7 +62,7 @@ class Client
 
             $result = ldap_connect($serverHostName, $port);
 
-            Log::debug("ldap_connect result is %s", empty($result) ? "empty" : "not empty");
+            Log::debug("ldap_connect result is %s", $result);
 
             return $result;
         });
@@ -121,19 +121,23 @@ class Client
      * All PHP errors triggered by ldap_* calls are wrapped in exceptions and thrown.
      *
      * @param string $baseDn The base DN to use.
-     * @param string $ldapQuery The LDAP query string, ie, `"(&(...)(...))"`.
+     * @param string $ldapFilter The LDAP filter string, ie, `"(&(...)(...))"`. This client allows you to use
+     *                           `"?"` placeholders in the string.
+     * @param array $filterBind Bind parameters for $ldapFilter.
      * @return array|null The result of `ldap_get_entries` or null if `ldap_search` fails somehow.
      * @throws Exception If an error occurs during the `ldap_search` or `ldap_get_entries` calls.
      */
-    public function fetchAll($baseDn, $ldapQuery)
+    public function fetchAll($baseDn, $ldapFilter, $filterBind = array())
     {
+        $ldapFilter = $this->bindFilterParameters($ldapFilter, $filterBind);
+
         $connectionResource = $this->connectionResource;
-        $searchResultResource = $this->throwPhpErrors(function () use ($connectionResource, $baseDn, $ldapQuery) {
-            Log::debug("Calling ldap_search(%s, '%s', '%s')", $connectionResource, $baseDn, $ldapQuery);
+        $searchResultResource = $this->throwPhpErrors(function () use ($connectionResource, $baseDn, $ldapFilter) {
+            Log::debug("Calling ldap_search(%s, '%s', '%s')", $connectionResource, $baseDn, $ldapFilter);
 
-            $result = ldap_search($connectionResource, $baseDn, $ldapQuery);
+            $result = ldap_search($connectionResource, $baseDn, $ldapFilter);
 
-            Log::debug("ldap_search result is %s", empty($result) ? "empty" : "not empty");
+            Log::debug("ldap_search result is %s", $result);
 
             return $result;
         });
@@ -150,6 +154,36 @@ class Client
             });
         } else {
             return null;
+        }
+    }
+
+    private function bindFilterParameters($ldapFilter, $bind)
+    {
+        $idx = 0;
+        return preg_replace_callback("/(?<!\\\\)[?]/", function ($matches) use (&$idx, $bind) {
+            $result = Client::escapeFilterParameter($bind[$idx]);
+
+            ++$idx;
+
+            return $result;
+        }, $ldapFilter);
+    }
+
+    /**
+     * Escapes an LDAP string for use in a filter.
+     *
+     * @param mixed $value The value that should be inserted into an LDAP filter. Converted to
+     *                     a string before being escaped.
+     * @return string The escaped string.
+     */
+    public static function escapeFilterParameter($value)
+    {
+        $value = (string) $value;
+
+        if (function_exists('ldap_escape')) { // available in PHP 5.6
+            return ldap_escape($value, $ignoreChars = "", LDAP_ESCAPE_FILTER);
+        } else {
+            return preg_replace("/([*()\\?])/", "\\\\1", $value); // replace special filter characters
         }
     }
 
@@ -198,7 +232,7 @@ class Client
             return true;
         });
 
-        // execute the callback and restore the old event handler before the method exists
+        // execute the callback and restore the old event handler before the method exits
         try {
             $result = $callback($this);
         } catch (Exception $ex) {
