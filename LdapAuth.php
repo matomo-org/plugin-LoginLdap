@@ -22,6 +22,7 @@ use Piwik\Plugins\UsersManager\Model as UserModel;
 use Piwik\ProxyHttp;
 use Piwik\Session;
 use Piwik\SettingsPiwik;
+use Piwik\Log;
 
 require_once PIWIK_INCLUDE_PATH . '/plugins/LoginLdap/LdapFunctions.php';
 
@@ -48,39 +49,12 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
     }
 
     /**
-     * @return string
-     */
-    public static function getLogPath()
-    {
-        $logPath = PIWIK_INCLUDE_PATH.self::LDAP_LOG_FILE;
-        $path = SettingsPiwik::rewriteTmpPathWithInstanceId($logPath);
-        if (is_dir($path)) {
-            $path .= '/piwik.log';
-        }
-        return $path;
-    }
-
-    /**
      * @param $text
      */
     private function LdapLog($text, $isDebug = 0)
     {
-        $debugEnabled = @Config::getInstance()->LoginLdap['debugEnabled'];
-        if ($debugEnabled == "" || $debugEnabled == "false") {
-            $debugEnabled = false;
-        }
-        if ($isDebug == 0 or ($isDebug == 1 and $debugEnabled == true)) {
-            if (self::LDAP_LOG_FILE) {
-                $path = $this->getLogPath();
-                $f = fopen($path, 'a');
-                if ($f != null) {
-                    fwrite($f, strftime('%F %T') . ": $text\n");
-                    fclose($f);
-                }
-            }
-        }
+        // empty
     }
-
 
     /**
      * Authenticates user
@@ -89,98 +63,23 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
      */
     public function authenticate()
     {
-        try {
-            $kerberosEnabled = Config::getInstance()->LoginLdap['useKerberos'];
-            if ($kerberosEnabled == "" || $kerberosEnabled == "false") {
-                $kerberosEnabled = false;
-                $this->LdapLog("INFO: ldapauth authenticate() - try kerberosEnabled: false.", 1);
-            }
-        } catch (Exception $ex) {
-            $kerberosEnabled = false;
-            $this->LdapLog("WARN: ldapauth authenticate() - catch kerberosEnabled: false. " . $ex->getMessage(), 1);
-        }
-        if ($kerberosEnabled && isset($_SERVER['REMOTE_USER'])) {
-            if (strlen($_SERVER['REMOTE_USER']) > 1) {
-                $kerbLogin = $_SERVER['REMOTE_USER'];
-                $this->login = preg_replace('/@.*/', '', $kerbLogin);
+        $kerberosEnabled = @Config::getInstance()->LoginLdap['useKerberos'] == 1;
+        if ($kerberosEnabled) {
+            $httpAuthUser = $this->getAlreadyAuthenticatedLogin();
+
+            if (!empty($httpAuthUser)) {
+                $this->login = preg_replace('/@.*/', '', $httpAuthUser);
                 $this->password = '';
-                $this->LdapLog("INFO: ldapauth authenticate() - REMOTE_USER: " . $this->login, 0);
-            } else {
-                $this->LdapLog("WARN: ldapauth authenticate() - REMOTE_USER string too short!", 1);
+
+                Log::info("Performing authentication with HTTP auth user '%s'.", $this->login);
             }
-        } else {
-            $this->LdapLog("INFO: ldapauth authenticate() - kerberos not enabled or REMOTE_USER not set!", 1);
         }
 
-        if (is_null($this->login)) {
-
-            $model = new UserModel();
-            $user = $model->getUserByTokenAuth($this->token_auth);
-
-            if (!empty($user['login'])) {
-                $this->LdapLog("INFO: ldapauth authenticate() - token login success.", 0);
-                $code = $user['superuser_access'] ? AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
-
-                return new AuthResult($code, $user['login'], $this->token_auth);
-            } else {
-                $this->LdapLog("WARN: ldapauth authenticate() - token login tried, but user info missing!", 1);
-            }
-        } else if (!empty($this->login)) {
-
-            $ldapException = null;
-            if ($this->login != "anonymous") {
-                try {
-                    if ($this->authenticateLDAP($this->login, $this->password, $kerberosEnabled)) {
-                        $this->LdapLog("INFO: ldapauth authenticate() - not anonymous login ok by authenticateLDAP().", 0);
-                        $model = new UserModel();
-                        $user = $model->getUserByTokenAuth($this->token_auth);
-                        $code = $user['superuser_access'] ? AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
-                        return new AuthResult($code, $this->login, $this->token_auth);
-                    } else {
-                        $this->LdapLog("WARN: ldapauth authenticate() - not anonymous login failed by authenticateLDAP()!", 1);
-                    }
-                } catch (Exception $ex) {
-                    $this->LdapLog("WARN: ldapauth authenticate() - not anonymous login exception: " . $ex->getMessage(), 1);
-                    $ldapException = $ex;
-                }
-
-                $this->LdapLog("INFO: ldapauth authenticate() - login: " . $this->login, 0);
-                $login = $this->login;
-
-                $model = new UserModel();
-                $user = $model->getUser($login);
-
-                $userToken = null;
-                if (!empty($user['token_auth'])) {
-                    $userToken = $user['token_auth'];
-                }
-
-                if (!empty($userToken)
-                    && (($this->getHashTokenAuth($login, $userToken) === $this->token_auth)
-                        || $userToken === $this->token_auth)
-                ) {
-                    $this->setTokenAuth($userToken);
-                    $this->LdapLog("INFO: ldapauth authenticate() - success, setTokenAuth: " . $userToken, 0);
-
-                    $code = !empty($user['superuser_access']) ? AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
-
-                    return new AuthResult($code, $login, $userToken);
-                } else {
-                    $this->LdapLog("WARN: ldapauth authenticate() - userToken empty or does not match!", 1);
-                }
-
-                if (!is_null($ldapException)) {
-                    $this->LdapLog("WARN: ldapauth authenticate() - ldapException: " . $ldapException->getMessage(), 0);
-                    throw $ldapException;
-                }
-            } else {
-                $this->LdapLog("WARN: ldapauth authenticate() - login variable is set to anonymous and this is not expected!", 1);
-            }
+        if ($this->login === null) {
+            return $this->authenticateByTokenAuth();
         } else {
-            $this->LdapLog("WARN: ldapauth authenticate() - problem with login variable, this should not happen!", 1);
+            return $this->authenticateByLoginAndPassword($kerberosEnabled);
         }
-
-        return new AuthResult(AuthResult::FAILURE, $this->login, $this->token_auth);
     }
 
     /**
@@ -236,41 +135,32 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
         $ldapF->setDebug($debugEnabled);
         $ldapF->setAutoCreateUser($autoCreateUser);
 
-        if ($sso == true && empty($pwd) && $useKerberos == true) {
-            if ($ldapF->kerbthenticate($usr)) {
-                $user = Db::fetchOne("SELECT token_auth FROM " . Common::prefixTable('user') . " WHERE login = '" . $usr . "'");
-                if (!empty($user)) {
-                    $returncode = true;
-                    $this->token_auth = $user;
-                    $this->LdapLog("INFO: ldapauth authenticateLDAP() - token for kerberos user found.", 1);
-                } else {
-                    $this->LdapLog("WARN: ldapauth authenticateLDAP() - token for kerberos user not found in DB!", 1);
-                }
+        $useWebServerAuth = $sso == true && empty($pwd) && $useKerberos == true;
+        if ($ldapF->authenticateFu($usr, $pwd, $useWebServerAuth)) {
+            $user = Db::fetchOne("SELECT token_auth FROM " . Common::prefixTable('user') . " WHERE login = '" . $usr . "'");
+
+            if (!empty($user)) {
+                $returncode = true;
+                $this->token_auth = $user;
+                $this->LdapLog("INFO: ldapauth authenticateLDAP() - token for kerberos user found.", 1);
             } else {
-                $this->LdapLog("WARN: ldapauth authenticateLDAP() - kerbthenticate() called and failed!", 1);
+                $this->LdapLog("WARN: ldapauth authenticateLDAP() - token for ldap user not found in DB!", 1);
+
+                if (!$useKerberos
+                    && $autoCreateUser == true
+                ) {
+                    $this->LdapLog("DEBUG: ldapauth authenticateLDAP() - autoCreateUser enabled - Trying to create user!", 1);
+                    $isSuperUser = Piwik::hasUserSuperUserAccess();
+                    Piwik::setUserHasSuperUserAccess();
+                    $controller = new \Piwik\Plugins\LoginLdap\Controller;
+                    $controller->autoCreateUser($usr);
+                    Piwik::setUserHasSuperUserAccess($isSuperUser);
+                }
             }
         } else {
-            if ($ldapF->authenticateFu($usr, $pwd)) {
-                $user = Db::fetchOne("SELECT token_auth FROM " . Common::prefixTable('user') . " WHERE login = '" . $usr . "'");
-                if (!empty($user)) {
-                    $returncode = true;
-                    $this->token_auth = $user;
-                    $this->LdapLog("INFO: ldapauth authenticateLDAP() - token for ldap user found.", 1);
-                } else {
-                    $this->LdapLog("WARN: ldapauth authenticateLDAP() - token for ldap user not found in DB!", 1);
-                    if ( $autoCreateUser == true) {
-                        $this->LdapLog("DEBUG: ldapauth authenticateLDAP() - autoCreateUser enabled - Trying to create user!", 1);
-                        $isSuperUser = Piwik::hasUserSuperUserAccess();
-                        Piwik::setUserHasSuperUserAccess();
-                        $controller = new \Piwik\Plugins\LoginLdap\Controller;
-                        $controller->autoCreateUser($usr);
-                        Piwik::setUserHasSuperUserAccess($isSuperUser);
-                    }
-                }
-            } else {
-                $this->LdapLog("WARN: ldapauth authenticateLDAP() - authenticateFu called and failed!", 1);
-            }
+            $this->LdapLog("WARN: ldapauth authenticateLDAP() - authenticateFu called and failed!", 1);
         }
+
         return $returncode;
     }
 
@@ -280,32 +170,95 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
     */
     public function initSession($login, $password, $rememberMe)
     {
-        $md5Password = md5($password);
-        $tokenAuth = API::getInstance()->getTokenAuth($login, $md5Password);
-
-        $this->setLogin($login);
-        $this->setTokenAuth($tokenAuth);
         $this->setPassword($password);
-        $authResult = $this->authenticate();
-
-        $authCookieName = Config::getInstance()->General['login_cookie_name'];
-        $authCookieExpiry = $rememberMe ? time() + Config::getInstance()->General['login_cookie_expire'] : 0;
-        $authCookiePath = Config::getInstance()->General['login_cookie_path'];
-        $cookie = new Cookie($authCookieName, $authCookieExpiry, $authCookiePath);
-        if (!$authResult->wasAuthenticationSuccessful()) {
-            $cookie->delete();
-            $this->LdapLog("initSession LoginPasswordNotCorrect");
-            throw new Exception(Piwik::translate('Login_LoginPasswordNotCorrect'));
-        }
-
-        $cookie->set('login', $login);
-        $cookie->set('token_auth', $this->getHashTokenAuth($login, $authResult->getTokenAuth()));
-        $cookie->setSecure(ProxyHttp::isHttps());
-        $cookie->setHttpOnly(true);
-        $cookie->save();
-        @Session::regenerateId();
+        
+        parent::initSession($login, md5($password), $rememberMe);
 
         // remove password reset entry if it exists
         LoginLdap::removePasswordResetInfo($login);
+    }
+
+    private function getAlreadyAuthenticatedLogin()
+    {
+        if (!isset($_SERVER['REMOTE_USER'])) {
+            Log::debug("useKerberos set to 1, but REMOTE_USER not found.");
+            return null;
+        }
+
+        $remoteUser = $_SERVER['REMOTE_USER'];
+        if (strlen($remoteUser) <= 1) {
+            Log::debug("REMOTE_USER string length too short (== %s).", strlen($remoteUser));
+        }
+
+        return $remoteUser;
+    }
+
+    private function authenticateByTokenAuth()
+    {
+        if (empty($this->token_auth)) {
+            Log::debug("authenticateByTokenAuth: token auth is empty.");
+
+            return $this->makeAuthFailure();
+        }
+
+        $user = $this->getUserByTokenAuth();
+
+        if (empty($user['login'])) {
+            Log::debug("authenticateByTokenAuth failed: no user found for given token auth.");
+
+            return $this->makeAuthFailure();
+        }
+
+        return $this->makeSuccessLogin($user);
+    }
+
+    private function authenticateByLoginAndPassword($usingWebServerAuth)
+    {
+        if (empty($this->login)) { // sanity check
+            Log::warning("authenticateByLoginAndPassword: empty login encountered.");
+
+            return $this->makeAuthFailure();
+        }
+
+        if ($this->login == 'anonymous') { // sanity check
+            Log::warning("authenticateByLoginAndPassword: login is 'anonymous', this is not expected.");
+
+            return $this->makeAuthFailure();
+        }
+
+        try {
+            if ($this->authenticateLDAP($this->login, $this->password, $usingWebServerAuth)) {
+                $user = $this->getUserByTokenAuth();
+
+                return $this->makeSuccessLogin($user);
+            } else {
+                return $this->makeAuthFailure();
+            }
+        } catch (Exception $ex) {
+            Log::debug($ex);
+
+            throw $ex;
+        }
+
+        // TODO: removed code that authenticates based on token auth of user. mimics Login Auth's no-password authentication.
+        //       not sure if this should be mimiced, but shouldn't be able to login if LDAP fails...
+        //       if LDAP login fails but token auth == expected token auth, then there is a syncing error.
+    }
+
+    private function getUserByTokenAuth()
+    {
+        $model = new UserModel();
+        return $model->getUserByTokenAuth($this->token_auth);
+    }
+
+    private function makeSuccessLogin($userInfo)
+    {
+        $successCode = $userInfo['superuser_access'] ? AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
+        return new AuthResult($successCode, $userInfo['login'], $this->token_auth);
+    }
+
+    private function makeAuthFailure()
+    {
+        return new AuthResult(AuthResult::FAILURE, $this->login, $this->token_auth);
     }
 }

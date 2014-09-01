@@ -43,21 +43,21 @@ class LdapFunctions
 
     private $ldapconn = null;
 
-    public function authenticateFu($username, $password)
+    public function authenticateFu($username, $password, $useWebServerAuth = false)
     {
-        $this->log("INFO: ldapfunctions authenticateFu(" . $username . ") - started. Password is " . strlen($password) . " chars.", 0);
+        Log::info("INFO: ldapfunctions authenticateFu(" . $username . ") - started. Password is " . strlen($password) . " chars.");
 
-        if (empty($password)) {
-            $this->log("WARN: ldapfunctions authenticateFu(" . $username . ") - password is not set!", 1);
+        if (empty($password)
+            && !$useWebServerAuth
+        ) {
+            Log::debug("WARN: ldapfunctions authenticateFu(" . $username . ") - password is not set!");
             return false;
         }
-
-        $success = false;
 
         $this->validate();
 
         if (empty($username)) {
-            $this->log("WARN: ldapfunctions authenticateFu(" . $username . ") - username is not set!", 1);
+            Log::debug("WARN: ldapfunctions authenticateFu(" . $username . ") - username is not set!");
             throw new Exception('username is not set');
         }
 
@@ -67,14 +67,21 @@ class LdapFunctions
             $ldapClient->connect($this->serverUrl, $this->ldapPort);
 
             $result = $this->getUserEntries($ldapClient, $username); // TODO: removed logging statement, think about putting back
+                                                                     // TODO: removed logging statement in kerbthenticate, think about putting back
             if ($result['count'] > 0 && !empty($result[0]['dn'])) {
                 $userDn = $result[0]['dn'];
 
-                if (!$ldapClient->bind($userDn, $password)) {
-                    throw new Exception("Unable to bind to $userDn.");
+                if (!$useWebServerAuth) { // using LDAP auth only
+                    if (!$ldapClient->bind($userDn, $password)) {
+                        throw new Exception("Unable to bind to $userDn.");
+                    }
                 }
             } else {
-                throw new Exception("No such user '$username'.");
+                if ($useWebServerAuth) { // delegated authentication to web server
+                    throw new Exception("User not member of required group.");
+                } else { // did LDAP auth in PHP
+                    throw new Exception("No such user '$username'.");
+                }
             }
         } catch (Exception $ex) {
             Log::debug($ex);
@@ -91,46 +98,8 @@ class LdapFunctions
         $ldapClient->close();
 
         if ($this->updateCredentials($username, $password)) {
-            $this->log("INFO: ldapfunctions authenticateFu(" . $username . ") - ldap user password and token update success.", 1);
+            Log::debug("INFO: ldapfunctions authenticateFu(" . $username . ") - ldap user password and token update success.");
         }
-
-        return true;
-    }
-
-    public function kerbthenticate($username)
-    {
-        if (isset($_SERVER["REMOTE_USER"])) {
-            $this->log("INFO: ldapfunctions kerbthenticate(" . $username . ") - REMOTE_USER: " . $_SERVER["REMOTE_USER"], 1);
-        }
-
-        $this->validate();
-
-        if (empty($username)) {
-            throw new Exception('username is not set');
-        }
-
-        $ldapClient = new LdapClient();
-
-        try {
-            $ldapClient->connect($this->serverUrl, $this->ldapPort);
-
-            $result = $this->getUserEntries($ldapClient, $username); // TODO: removed logging statement, think about putting back
-            if ($result['count'] == 0 || empty($result[0]['dn'])) {
-                throw new Exception("User not member of required group.");
-            }
-        } catch (Exception $ex) {
-            Log::debug($ex);
-
-            try {
-                $ldapClient->close();
-            } catch (Exception $ex) {
-                Log::debug($ex);
-            }
-
-            return false;
-        }
-
-        $ldapClient->close();
 
         return true;
     }
@@ -303,20 +272,7 @@ class LdapFunctions
 
     private function log($text, $isDebug = 0)
     {
-        $debugEnabled = @Config::getInstance()->LoginLdap['debugEnabled'];
-        if ($debugEnabled == "" || $debugEnabled == "false") {
-            $debugEnabled = false;
-        }
-        if ($isDebug == 0 or ($isDebug == 1 and $debugEnabled == true)) {
-            if (LdapAuth::getLogPath()) {
-                $path = LdapAuth::getLogPath();
-                $f = fopen($path, 'a');
-                if ($f != null) {
-                    fwrite($f, strftime('%F %T') . ": $text\n");
-                    fclose($f);
-                }
-            }
-        }
+        // removed
     }
 
     /**

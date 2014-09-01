@@ -157,36 +157,6 @@ class Client
         }
     }
 
-    private function bindFilterParameters($ldapFilter, $bind)
-    {
-        $idx = 0;
-        return preg_replace_callback("/(?<!\\\\)[?]/", function ($matches) use (&$idx, $bind) {
-            $result = Client::escapeFilterParameter($bind[$idx]);
-
-            ++$idx;
-
-            return $result;
-        }, $ldapFilter);
-    }
-
-    /**
-     * Escapes an LDAP string for use in a filter.
-     *
-     * @param mixed $value The value that should be inserted into an LDAP filter. Converted to
-     *                     a string before being escaped.
-     * @return string The escaped string.
-     */
-    public static function escapeFilterParameter($value)
-    {
-        $value = (string) $value;
-
-        if (function_exists('ldap_escape')) { // available in PHP 5.6
-            return ldap_escape($value, $ignoreChars = "", LDAP_ESCAPE_FILTER);
-        } else {
-            return preg_replace("/([*()\\?])/", "\\\\1", $value); // replace special filter characters
-        }
-    }
-
     /**
      * Returns true if there is currently an open connection being managed, false if otherwise.
      *
@@ -249,5 +219,35 @@ class Client
         }
 
         return $result;
+    }
+
+    private function bindFilterParameters($ldapFilter, $bind)
+    {
+        $idx = 0;
+        return preg_replace_callback("/(?<!\\\\)[?]/", function ($matches) use (&$idx, $bind) {
+            $result = Client::escapeFilterParameter($bind[$idx]);
+
+            ++$idx;
+
+            return $result;
+        }, $ldapFilter);
+    }
+
+    /**
+     * Escapes an LDAP string for use in a filter.
+     *
+     * @param mixed $value The value that should be inserted into an LDAP filter. Converted to
+     *                     a string before being escaped.
+     * @return string The escaped string.
+     */
+    public static function escapeFilterParameter($value)
+    {
+        $value = (string) $value;
+
+        if (function_exists('ldap_escape')) { // available in PHP 5.6
+            return ldap_escape($value, $ignoreChars = "", LDAP_ESCAPE_FILTER);
+        } else {
+            return preg_replace("/([*()\\?])/", "\\\\1", $value); // replace special filter characters
+        }
     }
 }
