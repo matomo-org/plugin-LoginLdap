@@ -21,6 +21,7 @@ use Piwik\Plugins\Login\FormLogin;
 use Piwik\Plugins\UsersManager\API as APIUsersManager;
 use Piwik\Session;
 use Piwik\View;
+use Piwik\Plugins\LoginLdap\Model LdapUsers;
 
 require_once PIWIK_INCLUDE_PATH . '/core/Config.php';
 
@@ -45,50 +46,23 @@ class Controller extends \Piwik\Plugins\Login\Controller
      */
     private function addUserLdap($userLogin)
     {
-        $serverUrl = Config::getInstance()->LoginLdap['serverUrl'];
-        $ldapPort = Config::getInstance()->LoginLdap['ldapPort'];
-        $baseDn = Config::getInstance()->LoginLdap['baseDn'];
-        $uidField = Config::getInstance()->LoginLdap['userIdField'];
-        $usernameSuffix = Config::getInstance()->LoginLdap['usernameSuffix'];
-        $adminUser = Config::getInstance()->LoginLdap['adminUser'];
-        $adminPass = Config::getInstance()->LoginLdap['adminPass'];
-        $mailField = Config::getInstance()->LoginLdap['mailField'];
-        $aliasField = Config::getInstance()->LoginLdap['aliasField'];
-        $memberOf = Config::getInstance()->LoginLdap['memberOf'];
-        $filter = Config::getInstance()->LoginLdap['filter'];
-        $useKerberos = Config::getInstance()->LoginLdap['useKerberos'];
-        $debugEnabled = Config::getInstance()->LoginLdap['debugEnabled'];
-        $autoCreateUser = Config::getInstance()->LoginLdap['autoCreateUser'];
+        $ldapUsers = new LdapUsers();
 
-        $ldap = new LdapFunctions();
-        $ldap->setServerUrl($serverUrl);
-        $ldap->setLdapPort($ldapPort);
-        $ldap->setBaseDn($baseDn);
-        $ldap->setUserIdField($uidField);
-        $ldap->setUsernameSuffix($usernameSuffix);
-        $ldap->setAdminUser($adminUser);
-        $ldap->setAdminPass($adminPass);
-        $ldap->setMailField($mailField);
-        $ldap->setAliasField($aliasField);
-        $ldap->setMemberOf($memberOf);
-        $ldap->setFilter($filter);
-        $ldap->setKerberos($useKerberos);
-        $ldap->setDebug($debugEnabled);
-        $ldap->setAutoCreateUser($autoCreateUser);
+        $ldapUser = $ldap->getUser($userLogin);
+        if (!empty($ldapUser)) {
+            $piwikUser = $ldapUsers->createPiwikUserEntryForLdapUser($ldapUser);
 
-        $user = $ldap->getUser($userLogin, $aliasField, $mailField);
-
-        if (!empty($user)) {
-            $password = $this->generatePassword(25);
-
-            if (empty($user['mail'])) { // a valid email is needed to create a new user
-                $suffix = Config::getInstance()->LoginLdap['usernameSuffix'];
+            if (empty($user['email'])) { // a valid email is needed to create a new user
+                $suffix = @Config::getInstance()->LoginLdap['usernameSuffix'];
                 $domain = !empty($suffix) ? $suffix : '@mydomain.com';
-                $user['mail'] = $userLogin . $domain;
+                $user['email'] = $userLogin . $domain;
             }
-            APIUsersManager::getInstance()->addUser($userLogin, $password, $user['mail'], $user['alias']);
+
+            UsersManagerApi::getInstance()->addUser($user['login'], $user['password'], $user['email'], $user['alias']);
+
             return true;
         }
+
         return false;
     }
 

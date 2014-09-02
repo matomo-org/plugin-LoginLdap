@@ -17,14 +17,14 @@ use Piwik\Cookie;
 use Piwik\Config;
 use Piwik\Db;
 use Piwik\Piwik;
-use Piwik\Plugins\UsersManager\API;
-use Piwik\Plugins\UsersManager\Model as UserModel;
+use Piwik\Plugins\UsersManager\API as UsersManagerApi;
 use Piwik\ProxyHttp;
 use Piwik\Session;
 use Piwik\SettingsPiwik;
 use Piwik\Log;
 
-require_once PIWIK_INCLUDE_PATH . '/plugins/LoginLdap/LdapFunctions.php';
+use Piwik\Plugins\UsersManager\Model as UserModel;
+use Piwik\Plugins\LoginLdap\Model\LdapUsers;
 
 /**
  *
@@ -36,7 +36,19 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
     protected $password = null;
     protected $token_auth = null;
 
-    const LDAP_LOG_FILE = "/tmp/logs/ldap.log";
+    /**
+     * TODO
+     *
+     * @param Model\LdapUsers
+     */
+    private $ldapUsersModel;
+
+    /**
+     * TODO
+     *
+     * @param Piwik\Plugins\UsersManager\Model
+     */
+    private $usersModel;
 
     /**
      * Authentication module's name, e.g., "Login"
@@ -49,11 +61,12 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
     }
 
     /**
-     * @param $text
+     * TODO
      */
-    private function LdapLog($text, $isDebug = 0)
+    public function __construct()
     {
-        // empty
+        $this->ldapUsersModel = new LdapUsers();
+        $this->usersModel = new UserModel();
     }
 
     /**
@@ -92,76 +105,52 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
         $this->password = $password;
     }
 
+    private function getConfigValue($optionName, $default = false)
+    {
+        $config = Config::getInstance()->LoginLdap;
+        return isset($config[$optionName]) ? $config[$optionName] : $default;
+    }
+
     /**
      * This method is used for LDAP authentication.
      */
-    private function authenticateLDAP($usr, $pwd, $sso)
+    private function authenticateLDAP($user, $password, $sso)
     {
-        $this->LdapLog("INFO: ldapauth authenticateLDAP() - function called and started.", 1);
-        $returncode = false;
-        try {
-            $serverUrl = Config::getInstance()->LoginLdap['serverUrl'];
-            $ldapPort = Config::getInstance()->LoginLdap['ldapPort'];
-            $baseDn = Config::getInstance()->LoginLdap['baseDn'];
-            $uidField = Config::getInstance()->LoginLdap['userIdField'];
-            $usernameSuffix = Config::getInstance()->LoginLdap['usernameSuffix'];
-            $adminUser = Config::getInstance()->LoginLdap['adminUser'];
-            $adminPass = Config::getInstance()->LoginLdap['adminPass'];
-            $mailField = Config::getInstance()->LoginLdap['mailField'];
-            $aliasField = Config::getInstance()->LoginLdap['aliasField'];
-            $memberOf = Config::getInstance()->LoginLdap['memberOf'];
-            $filter = Config::getInstance()->LoginLdap['filter'];
-            $useKerberos = Config::getInstance()->LoginLdap['useKerberos'];
-            $debugEnabled = @Config::getInstance()->LoginLdap['debugEnabled'];
-            $autoCreateUser = @Config::getInstance()->LoginLdap['autoCreateUser'];
-        } catch (Exception $e) {
-            $this->LdapLog("WARN: ldapauth authenticateLDAP() - exception: " . $e->getMessage(), 0);
-            return false;
-        }
+        $config = Config::getInstance()->LoginLdap;
 
-        $ldapF = new LdapFunctions();
-        $ldapF->setServerUrl($serverUrl);
-        $ldapF->setLdapPort($ldapPort);
-        $ldapF->setBaseDn($baseDn);
-        $ldapF->setUserIdField($uidField);
-        $ldapF->setUsernameSuffix($usernameSuffix);
-        $ldapF->setAdminUser($adminUser);
-        $ldapF->setAdminPass($adminPass);
-        $ldapF->setMailField($mailField);
-        $ldapF->setAliasField($aliasField);
-        $ldapF->setMemberOf($memberOf);
-        $ldapF->setFilter($filter);
-        $ldapF->setKerberos($useKerberos);
-        $ldapF->setDebug($debugEnabled);
-        $ldapF->setAutoCreateUser($autoCreateUser);
+        $useKerberos = $this->getConfigValue('useKerberos') == 1;
+        $autoCreateUser = $this->getConfigValue('autoCreateUser') == 1;
 
-        $useWebServerAuth = $sso == true && empty($pwd) && $useKerberos == true;
-        if ($ldapF->authenticateFu($usr, $pwd, $useWebServerAuth)) {
-            $user = Db::fetchOne("SELECT token_auth FROM " . Common::prefixTable('user') . " WHERE login = '" . $usr . "'");
+        $useWebServerAuth = $sso == true && empty($pwd) && $useKerberos; // TODO: review this statement, is it necessary
 
-            if (!empty($user)) {
-                $returncode = true;
-                $this->token_auth = $user;
-                $this->LdapLog("INFO: ldapauth authenticateLDAP() - token for kerberos user found.", 1);
+        $ldapUser = $this->ldapUsers->authenticate($user, $password, $useWebServerAuth);
+        if (!empty($ldapUser)) {
+            $user = $this->usersModel->getUser($user); // TODO: is setting the token auth necessary?
+
+            if (!empty($user['token_auth'])) {
+                $this->token_auth = $user['token_auth'];
+
+                return true;
             } else {
-                $this->LdapLog("WARN: ldapauth authenticateLDAP() - token for ldap user not found in DB!", 1);
+                Log::debug("Token auth for user '%s' not found in Piwik DB.", $user);
 
                 if (!$useKerberos
-                    && $autoCreateUser == true
+                    && $autoCreateUser
                 ) {
-                    $this->LdapLog("DEBUG: ldapauth authenticateLDAP() - autoCreateUser enabled - Trying to create user!", 1);
-                    $isSuperUser = Piwik::hasUserSuperUserAccess();
-                    Piwik::setUserHasSuperUserAccess();
-                    $controller = new \Piwik\Plugins\LoginLdap\Controller;
-                    $controller->autoCreateUser($usr);
-                    Piwik::setUserHasSuperUserAccess($isSuperUser);
+                    $user = $this->ldapUsers->createPiwikUserEntryForLdapUser($ldapUser);
+/* TODO: May need this again?
+$isSuperUser = Piwik::hasUserSuperUserAccess();
+Piwik::setUserHasSuperUserAccess();
+Piwik::setUserHasSuperUserAccess($isSuperUser);
+*/
+                    UsersManagerApi::getInstance()->addUser($user['login'], $user['password'], $user['email'], $user['alias']);
+
+                    return true;
                 }
             }
-        } else {
-            $this->LdapLog("WARN: ldapauth authenticateLDAP() - authenticateFu called and failed!", 1);
         }
 
-        return $returncode;
+        return false;
     }
 
 
