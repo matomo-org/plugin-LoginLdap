@@ -62,6 +62,9 @@ class Client
 
             $result = ldap_connect($serverHostName, $port);
 
+            ldap_set_option($result, LDAP_OPT_PROTOCOL_VERSION, 3);
+            ldap_set_option($result, LDAP_OPT_REFERRALS, 0);
+
             Log::debug("ldap_connect result is %s", $result);
 
             return $result;
@@ -70,9 +73,6 @@ class Client
         if (!$this->isOpen()) { // sanity check
             throw new Exception("sanity check failed: ldap_connect did not return a connection resource!");
         }
-
-        ldap_set_option($this->connectionResource, LDAP_OPT_PROTOCOL_VERSION, 3);
-        ldap_set_option($this->connectionResource, LDAP_OPT_REFERRALS, 0);
     }
 
     /**
@@ -225,6 +225,10 @@ class Client
     {
         $idx = 0;
         return preg_replace_callback("/(?<!\\\\)[?]/", function ($matches) use (&$idx, $bind) {
+            if (!isset($bind[$idx])) {
+                return "?";
+            }
+
             $result = Client::escapeFilterParameter($bind[$idx]);
 
             ++$idx;
@@ -247,7 +251,7 @@ class Client
         if (function_exists('ldap_escape')) { // available in PHP 5.6
             return ldap_escape($value, $ignoreChars = "", LDAP_ESCAPE_FILTER);
         } else {
-            return preg_replace("/([*()\\?])/", "\\\\1", $value); // replace special filter characters
+            return preg_replace("/([*()\\?])/", "\\\\$1", $value); // replace special filter characters
         }
     }
 }
