@@ -7,6 +7,7 @@
  */
 namespace Piwik\Plugins\LoginLdap\Model;
 
+use Piwik\Config;
 use Piwik\Log;
 use Piwik\Plugins\LoginLdap\Ldap\Client as LdapClient;
 use InvalidArgumentException;
