@@ -21,7 +21,7 @@ use Piwik\Plugins\Login\FormLogin;
 use Piwik\Plugins\UsersManager\API as APIUsersManager;
 use Piwik\Session;
 use Piwik\View;
-use Piwik\Plugins\LoginLdap\Model LdapUsers;
+use Piwik\Plugins\LoginLdap\Model\LdapUsers;
 
 require_once PIWIK_INCLUDE_PATH . '/core/Config.php';
 
