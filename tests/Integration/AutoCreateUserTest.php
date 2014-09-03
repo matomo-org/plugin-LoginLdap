@@ -71,7 +71,7 @@ class AutoCreateUserTest extends DatabaseTestCase
 
         $this->assertEquals(1, $authResult->getCode());
 
-        $addedPass = md5('{SSHA}55twESDhNvJdhDO+oNC');
+        $addedPass = md5('{MD5}Dv6yiT/W4FvaM5gBdqHw');
 
         $user = Db::fetchRow("SELECT login, password, alias, email, token_auth FROM " . Common::prefixTable('user') . " WHERE login = ?", array(self::TEST_LOGIN));
         $this->assertNotEmpty($user);
