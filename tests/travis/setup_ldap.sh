@@ -176,3 +176,6 @@ fi
 
 echo ldapsearch -x -D "cn=Tony Stark,$BASE_DN" -w "piedpiper" -b "$BASE_DN" "(uid=ironman)" memberOf
 ldapsearch -x -D "cn=Tony Stark,$BASE_DN" -w "piedpiper" -b "$BASE_DN" "(uid=ironman)" memberOf
+
+echo ldapsearch -x -D "cn=$ADMIN_USER,$BASE_DN" -w "$ADMIN_PASS" -b "$BASE_DN" 
+ldapsearch -x -D "cn=$ADMIN_USER,$BASE_DN" -w "$ADMIN_PASS" -b "$BASE_DN" 
