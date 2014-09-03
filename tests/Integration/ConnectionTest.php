@@ -19,6 +19,8 @@ use DatabaseTestCase;
  * @group LoginLdap
  * @group LoginLdap_Integration
  * @group LoginLdap_ConnectionTest
+ *
+ * TODO: rename to AuthenticationTest and test for token_auth only authentication (need to do in AutoCreateUserTest as well)
  */
 class ConnectionTest extends DatabaseTestCase
 {

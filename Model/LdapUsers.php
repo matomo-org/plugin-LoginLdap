@@ -159,12 +159,15 @@ class LdapUsers
         }
 
         try {
-            $result = $this->doWithClient($ldapClient, function ($self, $ldapClient) use ($username, $password, $alreadyAuthenticated) {
+            $authenticationRequiredMemberOf = $this->authenticationRequiredMemberOf;
+            $result = $this->doWithClient($ldapClient, function ($self, $ldapClient)
+                use ($username, $password, $alreadyAuthenticated, $authenticationRequiredMemberOf) {
+                
                 $user = $self->getUser($username, $ldapClient);
 
                 if (empty($user)) {
                     Log::debug("ModelUsers\\LdapUsers::%s: No such user '%s' or user is not a member of '%s'.",
-                        __FUNCTION__, $username, $self->authenticationRequiredMemberOf);
+                        __FUNCTION__, $username, $authenticationRequiredMemberOf);
 
                     return null;
                 }

@@ -207,7 +207,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
             $filterUsed = $filter;
             $filterBind = $bind;
 
-            return array(array('uid' => self::TEST_USER, 'dn' => 'thedn'));
+            return array(array('uid' => LdapUsersTest::TEST_USER, 'dn' => 'thedn'));
         }));
 
         $this->ldapUsers->setLdapClientClass($mockLdapClient);
@@ -276,7 +276,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
             $usedFilter = $filter;
             $filterBind = $bind;
 
-            return array(array('uid' => self::TEST_USER));
+            return array(array('uid' => LdapUsersTest::TEST_USER));
         }));
 
         $this->ldapUsers->setLdapClientClass($mockLdapClient);
