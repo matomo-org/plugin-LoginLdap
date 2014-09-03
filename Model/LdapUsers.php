@@ -164,7 +164,7 @@ class LdapUsers
 
                 if (empty($user)) {
                     Log::debug("ModelUsers\\LdapUsers::%s: No such user '%s' or user is not a member of '%s'.",
-                        __FUNCTION__, $username, $this->authenticationRequiredMemberOf);
+                        __FUNCTION__, $username, $self->authenticationRequiredMemberOf);
 
                     return null;
                 }
