@@ -254,9 +254,13 @@ class LdapUsers
      */
     public function createPiwikUserEntryForLdapUser($ldapUser)
     {
+        // we don't actually use this in authentication, we just add it as an extra security precaution, in case
+        // someone manages to disable LDAP auth
+        $password = substr($ldapUser['userpassword'], 0, UsersManager::PASSWORD_MAX_LENGTH - 1);
+
         return array(
             'login' => $ldapUser[$this->ldapUserIdField],
-            'password' => "-",
+            'password' => $password, 
             'email' => $ldapUser[$this->ldapMailField],
             'alias' => $ldapUser[$this->ldapAliasField]
         );

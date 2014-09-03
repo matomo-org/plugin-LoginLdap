@@ -12,6 +12,7 @@ use Piwik\Config;
 use Piwik\Log;
 use Piwik\Db;
 use Piwik\Common;
+use Piwik\Piwik;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Plugins\LoginLdap\LdapAuth;
 use DatabaseTestCase;
@@ -51,11 +52,14 @@ class AutoCreateUserTest extends DatabaseTestCase
             'useKerberos' => 'false', // tests backwards compatibility, old config allowed 'false' as a string
             'autoCreateUser' => 1
         );
+
+        Piwik::setUserHasSuperUserAccess(false);
     }
 
     public function tearDown()
     {
         Log::unsetInstance();
+        Piwik::setUserHasSuperUserAccess(true);
     }
 
     public function testPiwikUserIsCreatedWhenLdapLoginSucceedsButPiwikUserDoesntExist()
@@ -67,14 +71,16 @@ class AutoCreateUserTest extends DatabaseTestCase
 
         $this->assertEquals(1, $authResult->getCode());
 
+        $addedPass = md5('{SSHA}55twESDhNvJdhDO+oNC');
+
         $user = Db::fetchRow("SELECT login, password, alias, email, token_auth FROM " . Common::prefixTable('user') . " WHERE login = ?", array(self::TEST_LOGIN));
         $this->assertNotEmpty($user);
         $this->assertEquals(array(
             'login' => self::TEST_LOGIN,
-            'password' => md5('-'),
+            'password' => $addedPass,
             'alias' => 'Tony Stark',
             'email' => 'billionairephilanthropistplayboy@starkindustries.com',
-            'token_auth' => '-'
+            'token_auth' => UsersManagerAPI::getInstance()->getTokenAuth(self::TEST_LOGIN, $addedPass)
         ), $user);
     }
 
@@ -87,7 +93,7 @@ class AutoCreateUserTest extends DatabaseTestCase
         $ldapAuth->setPassword(self::TEST_PASS);
         $authResult = $ldapAuth->authenticate();
 
-        $this->assertEquals(1, $authResult->getCode());
+        $this->assertEquals(0, $authResult->getCode()); // should fail because we need normal user info like alias/email
 
         $user = Db::fetchRow("SELECT login, password, alias, email, token_auth FROM " . Common::prefixTable('user') . " WHERE login = ?", array(self::TEST_LOGIN));
         $this->assertEmpty($user);
@@ -95,7 +101,9 @@ class AutoCreateUserTest extends DatabaseTestCase
 
     public function testPiwikUserIsNotCreatedIfPiwikUserAlreadyExists()
     {
+        Piwik::setUserHasSuperUserAccess(true);
         UsersManagerAPI::getInstance()->addUser(self::TEST_LOGIN, self::TEST_PASS, 'billionairephilanthropistplayboy@starkindustries.com', $alias = false);
+        Piwik::setUserHasSuperUserAccess(false);
 
         $ldapAuth = new LdapAuth();
         $ldapAuth->setLogin(self::TEST_LOGIN);
@@ -108,10 +116,10 @@ class AutoCreateUserTest extends DatabaseTestCase
         $this->assertNotEmpty($user);
         $this->assertEquals(array(
             'login' => self::TEST_LOGIN,
-            'password' => md5('-'),
-            'alias' => null,
+            'password' => md5(self::TEST_PASS),
+            'alias' => self::TEST_LOGIN,
             'email' => 'billionairephilanthropistplayboy@starkindustries.com',
-            'token_auth' => '-'
+            'token_auth' => UsersManagerAPI::getInstance()->getTokenAuth(self::TEST_LOGIN, md5(self::TEST_PASS))
         ), $user);
     }
 }

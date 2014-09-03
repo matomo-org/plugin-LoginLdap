@@ -137,12 +137,11 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
                     $user = $this->ldapUsers->createPiwikUserEntryForLdapUser($ldapUser);
 
                     Log::debug("Autocreating Piwik user (%s) for LDAP user: %s", $user, $ldapUser);
-/* TODO: May need this again?
-$isSuperUser = Piwik::hasUserSuperUserAccess();
-Piwik::setUserHasSuperUserAccess();
-Piwik::setUserHasSuperUserAccess($isSuperUser);
-*/
+
+                    $isSuperUser = Piwik::hasUserSuperUserAccess(); // TODO: should move this code to a utility method that uses a closure
+                    Piwik::setUserHasSuperUserAccess();
                     UsersManagerApi::getInstance()->addUser($user['login'], $user['password'], $user['email'], $user['alias']);
+                    Piwik::setUserHasSuperUserAccess($isSuperUser);
 
                     return true;
                 }
