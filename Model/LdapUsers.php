@@ -390,7 +390,10 @@ class LdapUsers
         $this->ldapClientClass = $ldapClientClass;
     }
 
-    private function getUserEntryQuery($username)
+    /**
+     * Public only for use in closure.
+     */
+    public function getUserEntryQuery($username)
     {
         $bind = array();
         $conditions = array();
@@ -412,6 +415,9 @@ class LdapUsers
         return array($filter, $bind);
     }
 
+    /**
+     * Public only for use in closure.
+     */
     public function addUsernameSuffix($username)
     {
         if (!empty($this->authenticationUsernameSuffix)) {
