@@ -37,14 +37,14 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
     protected $token_auth = null;
 
     /**
-     * TODO
+     * LdapUsers DAO instance.
      *
      * @param Model\LdapUsers
      */
     private $ldapUsers;
 
     /**
-     * TODO
+     * Piwik Users model. Used to query for data in the Piwik users table.
      *
      * @param Piwik\Plugins\UsersManager\Model
      */
