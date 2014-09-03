@@ -7,14 +7,18 @@
  */
 namespace Piwik\Plugins\LoginLdap\Model;
 
+use Piwik\Db;
 use Piwik\Config;
 use Piwik\Log;
+use Piwik\Common;
+use Piwik\Plugins\UsersManager\UsersManager;
+use Piwik\Plugins\UsersManager\API as UsersManagerApi;
 use Piwik\Plugins\LoginLdap\Ldap\Client as LdapClient;
 use InvalidArgumentException;
 use Exception;
 
 /**
- * TODO
+ * DAO class for user related operations that use LDAP as a backend.
  */
 class LdapUsers
 {
@@ -22,87 +26,126 @@ class LdapUsers
     const FUNCTION_END_LOG_MESSAGE = "Model\\LdapUsers: end %s() with %s";
 
     /**
-     * TODO
+     * The LDAP server hostname.
+     *
+     * @var string
      */
     private $serverHostname;
 
     /**
-     * TODO
+     * The port to use when connecting to the LDAP server.
+     *
+     * @var int
      */
-    private $serverPort;
+    private $serverPort = LdapClient::DEFAULT_LDAP_PORT;
 
     /**
-     * TODO (uid)
+     * The LDAP resource field that holds a user's username.
+     *
+     * @var string
      */
-    private $ldapUserIdField;
+    private $ldapUserIdField = 'uid';
 
     /**
-     * TODO (cn)
+     * The LDAP resource field to use when determining a user's alias.
+     *
+     * @var string
      */
-    private $ldapAliasField;
+    private $ldapAliasField = 'cn';
 
     /**
-     * TODO (mail)
+     * The LDAP resource field to use when determining a user's email address.
+     *
+     * @var string
      */
-    private $ldapMailField;
+    private $ldapMailField = 'mail';
 
     /**
-     * TODO
+     * The base DN to use when searching the LDAP server. Determines which specific
+     * LDAP database is searched.
+     *
+     * @var string
      */
     private $baseDn;
 
     /**
-     * TODO
+     * If set, the user must be a member of a specific LDAP groupOfNames in order
+     * to authenticate to Piwik. Users that are not a part of this group will not
+     * be able to access Piwik.
+     *
+     * @var string
      */
     private $authenticationRequiredMemberOf;
 
     /**
-     * TODO
+     * If set, this value is added to the end of usernames before authentication
+     * is attempted. This includes the admin user in addition to attempted logins.
+     *
+     * @var string
      */
     private $authenticationUsernameSuffix;
 
     /**
-     * TODO
+     * An LDAP filter that should be used to further filter LDAP users. Users that
+     * do not pass this filter will not be able to access Piwik.
+     *
+     * @var string ie, `"(&!((uidNumber=1002))(gidNumber=550))"`
      */
     private $authenticationLdapFilter;
 
     /**
-     * TODO
+     * The 'admin' LDAP user to use when authenticating. This user must have read
+     * access to other users so we can search for the person attempting login.
+     *
+     * TODO: is this needed? ie, since we only want the user's data and not others, can we just bind w/ the user?
+     *       if it works, allow adminUserName to be null.
+     *
+     * @var string
      */
     private $adminUserName;
 
     /**
-     * TODO
+     * The password to use when binding w/ the 'admin' LDAP user.
+     *
+     * @var string
      */
     private $adminUserPassword;
 
     /**
-     * TODO
+     * The fully qualified class name of the LDAP client to use. Mostly for testing purposes,
+     * but it might have some future use.
+     *
+     * @var string
+     */
+    private $ldapClientClass = "Piwik\\Plugins\\LoginLdap\\Ldap\\Client";
+
+    /**
+     * Constructor.
      */
     public function __construct()
     {
-        $this->serverHostname = Config::getInstance()->LoginLdap['serverUrl'];
-        $this->serverPort = Config::getInstance()->LoginLdap['ldapPort'];
-        $this->baseDn = Config::getInstance()->LoginLdap['baseDn'];
-        $this->ldapUserIdField = Config::getInstance()->LoginLdap['userIdField'];
-        $this->authenticationUsernameSuffix = Config::getInstance()->LoginLdap['usernameSuffix'];
-        $this->adminUserName = Config::getInstance()->LoginLdap['adminUser'];
-        $this->adminUserPassword = Config::getInstance()->LoginLdap['adminPass'];
-        $this->ldapMailField = Config::getInstance()->LoginLdap['mailField'];
-        $this->ldapAliasField = Config::getInstance()->LoginLdap['aliasField'];
-        $this->authenticationRequiredMemberOf = Config::getInstance()->LoginLdap['memberOf'];
-        $this->authenticationLdapFilter = Config::getInstance()->LoginLdap['filter'];
-
-        // TODO: validate configuration issues?
+        // empty
     }
 
     /**
-     * TODO
+     * Authenticates a username/password pair using LDAP and returns LDAP user info on success.
+     *
+     * @param string $username The LDAP user's username. This is the value of the LDAP field specified by
+     *                         {@link $ldapUserIdField}.
+     * @param string $password The password to try and authenticate.
+     * @param bool $alreadyAuthenticated Whether to assume the user has already been authenticated or not.
+     *                                   If true, we make sure the user is allowed to access Piwik based on
+     *                                   the {@link $authenticationRequiredMemberOf} and {@link $authenticationLdapFilter}
+     *                                   fields.
+     * @param Ldap\Client|null $ldapClient The client to use. If none specified, a new one is created and
+     *                                     a connection made. Before the function exists, the connection is
+     *                                     closed.
+     * @return array|null On success, returns user info stored in the LDAP database. On failure returns `null`.
      */
-    public function authenticate($username, $password, $usingWebServerAuth, LdapClient $ldapClient = null)
+    public function authenticate($username, $password, $alreadyAuthenticated = false, LdapClient $ldapClient = null)
     {
         Log::debug(self::FUNCTION_START_LOG_MESSAGE, __FUNCTION__,
-            array($username, "<password[length=" . strlen($password) . "]>", $usingWebServerAuth));
+            array($username, "<password[length=" . strlen($password) . "]>", $alreadyAuthenticated));
 
         if (empty($username)) {
             throw new InvalidArgumentException('No username supplied in Model\\LdapUsers::authenticate().');
@@ -110,13 +153,13 @@ class LdapUsers
 
         // if password is empty, avoid connecting to the LDAP server
         if (empty($password)
-            && !$useWebServerAuth
+            && !$alreadyAuthenticated
         ) {
             return null;
         }
 
         try {
-            $result = $this->doWithClient($ldapClient, function ($self, $ldapClient) use ($username, $password, $useWebServerAuth) {
+            $result = $this->doWithClient($ldapClient, function ($self, $ldapClient) use ($username, $password, $alreadyAuthenticated) {
                 $user = $self->getUser($username, $ldapClient);
 
                 if (empty($user)) {
@@ -126,11 +169,11 @@ class LdapUsers
                     return null;
                 }
 
-                if ($useWebServerAuth) {
+                if ($alreadyAuthenticated) {
                     return $user;
                 }
 
-                if ($ldapClient->bind($username, $password)) {
+                if ($ldapClient->bind($this->addUsernameSuffix($username), $password)) {
                     if ($self->updateCredentials($username, $password)) {
                         Log::debug("ModelUsers\\LdapUsers::%s: Updated credentails for LDAP user '%'.", __FUNCTION__, $username);
                     }
@@ -141,7 +184,7 @@ class LdapUsers
                 }
             });
         } catch (Exception $ex) {
-            Log::debug($ex); // TODO: should be a warning but these errors shouldn't be printed to the screen...
+            Log::debug($ex);
 
             $result = null;
         }
@@ -152,9 +195,15 @@ class LdapUsers
     }
 
     /**
-     * TODO
+     * Retrieves LDAP user information for a given username.
+     *
+     * @param string $username The username of the user to get LDAP information for.
+     * @param Ldap\Client|null $ldapClient The client to use. If none specified, a new one is created and
+     *                                     a connection made. Before the function exists, the connection is
+     *                                     closed.
+     * @return string[] Associative array containing LDAP field data, eg, `array('dn' => '...')`
      */
-    public function getUser($username, $ldapClient = null)
+    public function getUser($username, LdapClient $ldapClient = null)
     {
         Log::debug(self::FUNCTION_START_LOG_MESSAGE, __FUNCTION__, array($username));
 
@@ -171,7 +220,7 @@ class LdapUsers
             $userEntries = $ldapClient->fetchAll($self->baseDn, $filter, $bind);
 
             // TODO: test anonymous bind (for validity of old error message in LdapFunctions.php)
-            if ($userEntries === null) {
+            if ($userEntries === null) { // sanity check
                 throw new Exception("LDAP search for entries failed.");
             }
 
@@ -190,9 +239,15 @@ class LdapUsers
     }
 
     /**
-     * TODO
+     * Creates an array with normal Piwik user information using LDAP data for the user. The
+     * information in the result should be used with the **UsersManager.addUser** API method.
+     *
+     * This method is used in syncing LDAP user information with Piwik user info.
+     *
+     * @param string[] $ldapUser Associative array containing LDAP field data, eg, `array('dn' => '...')`
+     * @return string[]
      */
-    public function createPiwikUserEntryForLdapUser($ldapUser, $ldapClient = null)
+    public function createPiwikUserEntryForLdapUser($ldapUser)
     {
         return array(
             'login' => $ldapUser[$this->ldapUserIdField],
@@ -200,6 +255,126 @@ class LdapUsers
             'email' => $ldapUser[$this->ldapMailField],
             'alias' => $ldapUser[$this->ldapAliasField]
         );
+    }
+
+    /**
+     * Sets the {@link $serverHostname} member.
+     *
+     * @param string $serverHostname
+     */
+    public function setServerHostname($serverHostname)
+    {
+        $this->serverHostname = $serverHostname;
+    }
+
+    /**
+     * Sets the {@link $serverPort} member.
+     *
+     * @param int $serverPort
+     */
+    public function setServerPort($serverPort)
+    {
+        $this->serverPort = $serverPort;
+    }
+
+    /**
+     * Sets the {@link $ldapUserIdField} member.
+     *
+     * @param string $ldapUserIdField
+     */
+    public function setLdapUserIdField($ldapUserIdField)
+    {
+        $this->ldapUserIdField = $ldapUserIdField;
+    }
+
+    /**
+     * Sets the {@link $ldapAliasField} member.
+     *
+     * @param string $ldapAliasField
+     */
+    public function setLdapAliasField($ldapAliasField)
+    {
+        $this->ldapAliasField = $ldapAliasField;
+    }
+
+    /**
+     * Sets the {@link $ldapMailField} member.
+     *
+     * @param string $ldapMailField
+     */
+    public function setLdapMailField($ldapMailField)
+    {
+        $this->ldapMailField = $ldapMailField;
+    }
+
+    /**
+     * Sets the {@link $baseDn} member.
+     *
+     * @param string $baseDn
+     */
+    public function setBaseDn($baseDn)
+    {
+        $this->baseDn = $baseDn;
+    }
+
+    /**
+     * Sets the {@link $authenticationRequiredMemberOf} member.
+     *
+     * @param string $authenticationRequiredMemberOf
+     */
+    public function setAuthenticationRequiredMemberOf($authenticationRequiredMemberOf)
+    {
+        $this->authenticationRequiredMemberOf = $authenticationRequiredMemberOf;
+    }
+
+    /**
+     * Sets the {@link $authenticationUsernameSuffix} member.
+     *
+     * @param string $authenticationUsernameSuffix
+     */
+    public function setAuthenticationUsernameSuffix($authenticationUsernameSuffix)
+    {
+        $this->authenticationUsernameSuffix = $authenticationUsernameSuffix;
+    }
+
+    /**
+     * Sets the {@link $authenticationLdapFilter} member.
+     *
+     * @param string $authenticationLdapFilter
+     */
+    public function setAuthenticationLdapFilter($authenticationLdapFilter)
+    {
+        $this->authenticationLdapFilter = $authenticationLdapFilter;
+    }
+
+    /**
+     * Sets the {@link $adminUserName} member.
+     *
+     * @param string $adminUserName
+     */
+    public function setAdminUserName($adminUserName)
+    {
+        $this->adminUserName = $adminUserName;
+    }
+
+    /**
+     * Sets the {@link $adminUserPassword} member.
+     *
+     * @param string $adminUserPassword
+     */
+    public function setAdminUserPassword($adminUserPassword)
+    {
+        $this->adminUserPassword = $adminUserPassword;
+    }
+
+    /**
+     * Sets the {@link $ldapClientClass} member.
+     *
+     * @param string $ldapClientClass
+     */
+    public function setLdapClientClass($ldapClientClass)
+    {
+        $this->ldapClientClass = $ldapClientClass;
     }
 
     private function getUserEntryQuery($username)
@@ -217,7 +392,7 @@ class LdapUsers
         }
 
         $conditions[] = "(" . $this->ldapUserIdField . "=?)";
-        $bind[] = $this->addSuffix($username);
+        $bind[] = $this->addUsernameSuffix($username);
 
         $filter = "(&" . implode('', $conditions) . ")";
 
@@ -227,21 +402,27 @@ class LdapUsers
     private function addUsernameSuffix($username)
     {
         if (!empty($this->authenticationUsernameSuffix)) {
-            Log::debug("Model\\LdapUsers::%s: Adding suffix '%s' to username '%s'.", $this->authenticationUsernameSuffix, $username);
+            Log::debug("Model\\LdapUsers::%s: Adding suffix '%s' to username '%s'.", __FUNCTION__, $this->authenticationUsernameSuffix, $username);
         }
 
         return $username . $this->authenticationUsernameSuffix;
     }
 
     /**
-     * TODO
+     * Utility method that executes a closure with an LDAP client. Will either use
+     * the passed client or create a new one and connect.
+     *
+     * Using this method allows users of LdapUsers & methods of LdapUsers to combine
+     * multiple calls without creating multiple LDAP connections.
+     *
+     * If an LDAP client is created, it will be closed before the end of this method.
      */
-    private function doWithClient(LdapClient $ldapClient, $function)
+    private function doWithClient(LdapClient $ldapClient = null, $function = null)
     {
         $closeClient = false;
 
         try {
-            if ($ldapClient == null) {
+            if ($ldapClient === null) {
                 $ldapClient = $this->makeLdapClient();
 
                 $closeClient = true;
@@ -269,8 +450,11 @@ class LdapUsers
 
     private function makeLdapClient()
     {
-        $ldapClient = new LdapClient();
+        $ldapClientClass = $this->ldapClientClass;
+
+        $ldapClient = is_string($ldapClientClass) ? new $ldapClientClass() : $ldapClientClass;
         $ldapClient->connect($this->serverHostname, $this->serverPort);
+        return $ldapClient;
     }
 
     /**
@@ -283,10 +467,59 @@ class LdapUsers
     private function updateCredentials($login, $password)
     {
         $password = UsersManager::getPasswordHash($password);
-        $token_auth = API::getInstance()->getTokenAuth($login, $password);
+        $token_auth = UsersManagerApi::getInstance()->getTokenAuth($login, $password);
         $result = Db::query("UPDATE " . Common::prefixTable('user')
             . " SET password='" . $password . "', token_auth='" . $token_auth
             . "' WHERE login='" . $login . "' and password != '" . $password . "'");
+        return $result;
+    }
+
+    /**
+     * Creates a new {@link LdapUsers} instance using config.ini.php values.
+     *
+     * @return LdapUsers
+     */
+    public static function makeConfigured()
+    {
+        $config = Config::getInstance()->LoginLdap;
+
+        $result = new LdapUsers();
+        $result->setServerHostname($config['serverUrl']);
+        $result->setServerPort($config['serverPort']);
+        $result->setBaseDn($config['baseDn']);
+
+        if (!empty($config['userIdField'])) {
+            $result->setLdapUserIdField($config['userIdField']);
+        }
+
+        if (!empty($config['usernameSuffix'])) {
+            $result->setAuthenticationUsernameSuffix($config['usernameSuffix']);
+        }
+
+        if (!empty($config['adminUser'])) {
+            $result->setAdminUserName('adminUser');
+        }
+
+        if (!empty($config['adminPass'])) {
+            $result->setAdminUserPassword($config['adminPass']);
+        }
+
+        if (!empty($config['mailField'])) {
+            $result->setLdapMailField($config['mailField']);
+        }
+
+        if (!empty($config['aliasField'])) {
+            $result->setLdapAliasField($config['aliasField']);
+        }
+
+        if (!empty($config['memberOf'])) {
+            $result->setAuthenticationRequiredMemberOf($config['memberOf']);
+        }
+
+        if (!empty($config['filter'])) {
+            $result->setAuthenticationLdapFilter($config['filter']);
+        }
+
         return $result;
     }
 }
