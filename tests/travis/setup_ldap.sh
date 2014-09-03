@@ -15,7 +15,7 @@ sudo chmod -R 777 $TRAVIS_BUILD_DIR/ldap
 
 ADMIN_USER=fury
 ADMIN_PASS=secrets
-ADMIN_PASS_HASH=`slappasswd -s $ADMIN_PASS`
+ADMIN_PASS_HASH=`slappasswd -h {md5} -s $ADMIN_PASS`
 BASE_DN="dc=avengers,dc=shield,dc=org"
 
 sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
@@ -120,7 +120,7 @@ sn: Stark
 objectClass: inetOrgPerson
 objectClass: top
 uid: ironman
-userPassword: `slappasswd -s piedpiper`
+userPassword: `slappasswd -h {md5} -s piedpiper`
 mobile: 555-555-5555
 mail: billionairephilanthropistplayboy@starkindustries.com
 
@@ -131,7 +131,7 @@ objectClass: top
 objectClass: inetOrgPerson
 sn: Romanova
 uid: blackwidow
-userPassword: `slappasswd -s redledger`
+userPassword: `slappasswd -h {md5} -s redledger`
 mobile: none
 
 # USER ENTRY (pwd: thaifood)
@@ -141,7 +141,7 @@ objectClass: top
 objectClass: inetOrgPerson
 sn: Rodgers
 uid: captainamerica
-userPassword: `slappasswd -s thaifood`
+userPassword: `slappasswd -h {md5} -s thaifood`
 mobile: 123-456-7890
 mail: srodgers@aol.com
 
