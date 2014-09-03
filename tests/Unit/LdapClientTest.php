@@ -24,8 +24,6 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
 {
     const ERROR_MESSAGE = "triggered error";
 
-    private $connectionResourceCount = 0;
-
     public function setUp()
     {
         // make sure logging logic is executed so we can test whether there are bugs in the logging code
@@ -34,7 +32,6 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
         LdapFunctions::$phpUnitMock = $this->getMock('stdClass', array(
             'ldap_connect', 'ldap_close', 'ldap_bind', 'ldap_search', 'ldap_set_option', 'ldap_get_entries'
         ));
-        $this->connectionResourceCount = 0;
     }
 
     public function tearDown()
@@ -158,7 +155,7 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
             function ($conn, $dn, $filter) use (&$escapedFilter) {
                 $escapedFilter = $filter;
             })
-    );
+        );
         LdapFunctions::$phpUnitMock->expects($this->any())->method('ldap_get_entities')->will($this->returnValue("result"));
 
         $ldapClient = new LdapClient();
