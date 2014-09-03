@@ -121,6 +121,8 @@ objectClass: inetOrgPerson
 objectClass: top
 uid: ironman
 userPassword: `slappasswd -s piedpiper`
+mobile: 555-555-5555
+mail: billionairephilanthropistplayboy@starkindustries.com
 
 # USER ENTRY (pwd: redledger)
 dn: cn=Natalia Romanova,$BASE_DN
@@ -130,6 +132,7 @@ objectClass: inetOrgPerson
 sn: Romanova
 uid: blackwidow
 userPassword: `slappasswd -s redledger`
+mobile: none
 
 # USER ENTRY (pwd: thaifood)
 dn: cn=Steve Rodgers,$BASE_DN
@@ -139,6 +142,8 @@ objectClass: inetOrgPerson
 sn: Rodgers
 uid: captainamerica
 userPassword: `slappasswd -s thaifood`
+mobile: 123-456-7890
+mail: srodgers@aol.com
 
 # group entry
 dn: cn=avengers,$BASE_DN
@@ -148,6 +153,13 @@ objectClass: top
 member: cn=Tony Stark,$BASE_DN
 member: cn=Natalia Romanova,$BASE_DN
 member: cn=Steve Rodgers,$BASE_DN
+
+# another group entry
+dn: cn=S.H.I.E.L.D.,$BASE_DN
+cn: S.H.I.E.L.D.
+objectClass: groupOfNames
+objectClass: top
+member: cn=Natalia Romanova,$BASE_DN
 
 EOF
 

@@ -8,7 +8,9 @@
  */
 namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
+use Piwik\AuthResult;
 use Piwik\Config;
+use Piwik\Log;
 use Piwik\Plugins\LoginLdap\LdapAuth;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use DatabaseTestCase;
@@ -28,6 +30,12 @@ class ConnectionTest extends DatabaseTestCase
     const TEST_LOGIN = 'ironman';
     const TEST_PASS = 'piedpiper';
 
+    const OTHER_TEST_LOGIN = 'blackwidow';
+    const OTHER_TEST_PASS = 'redledger';
+
+    const TEST_SUPERUSER_LOGIN = 'captainamerica';
+    const TEST_SUPERUSER_PASS = 'thaifood';
+
     public function setUp()
     {
         if (!function_exists('ldap_bind')) {
@@ -36,25 +44,30 @@ class ConnectionTest extends DatabaseTestCase
 
         parent::setUp();
 
+        // make sure logging logic is executed so we can test whether there are bugs in the logging code
+        Log::getInstance()->setLogLevel(Log::VERBOSE);
+
         Config::getInstance()->LoginLdap = Config::getInstance()->LoginLdapTest + array(
             'serverUrl' => self::SERVER_HOST_NAME,
             'ldapPort' => self::SERVER_POST,
             'baseDn' => self::SERVER_BASE_DN,
-            'userIdField' => 'uid',
-            'usernameSuffix' => '',
             'adminUser' => 'cn=fury,' . self::SERVER_BASE_DN,
             'adminPass' => 'secrets',
-            'mailField' => '',
-            'aliasField' => '',
-            'memberOf' => self::GROUP_NAME,
-            'filter' => '',
             'useKerberos' => 'false'
         );
 
         UsersManagerAPI::getInstance()->addUser(self::TEST_LOGIN, self::TEST_PASS, 'billionairephilanthropistplayboy@starkindustries.com', $alias = false);
+        
+        UsersManagerAPI::getInstance()->addUser(self::TEST_SUPERUSER_LOGIN, self::TEST_SUPERUSER_PASS, 'srodgers@aol.com', $alias = false);
+        UsersManagerAPI::getInstance()->setSuperUserAccess(self::TEST_SUPERUSER_LOGIN, true);
     }
 
-    public function testBasicAuthTest()
+    public function tearDown()
+    {
+        Log::unsetInstance();
+    }
+
+    public function testLdapAuthSucceedsWithCorrectCredentials()
     {
         $ldapAuth = new LdapAuth();
         $ldapAuth->setLogin(self::TEST_LOGIN);
@@ -64,27 +77,142 @@ class ConnectionTest extends DatabaseTestCase
         $this->assertEquals(1, $authResult->getCode());
     }
 
-    public function testBasicAuthFailure()
+    public function testLdapAuthFailsWithIncorrectPassword()
     {
         $ldapAuth = new LdapAuth();
         $ldapAuth->setLogin(self::TEST_LOGIN);
-        $ldapAuth->setPassword('slkadjfasldfj');
+        $ldapAuth->setPassword('slkdjfsd');
         $authResult = $ldapAuth->authenticate();
 
         $this->assertEquals(0, $authResult->getCode());
     }
 
-    // TODO: keep this test until refactoring done, but LoginLdap doesn't actually use kerberos so much as delegate
-    //       authentication to the HTTP server when useKerberos = 1. code must reflect that.
-    public function testKerberosConnection()
+    public function testLdapAuthFailsWithNonexistantUser()
+    {
+        $ldapAuth = new LdapAuth();
+        $ldapAuth->setLogin('skldfjsd');
+        $ldapAuth->setPassword(self::TEST_PASS);
+        $authResult = $ldapAuth->authenticate();
+
+        $this->assertEquals(0, $authResult->getCode());
+    }
+
+    public function testLdapAuthChecksMemberOf()
+    {
+        Config::getInstance()->LoginLdap['memberOf'] = "cn=S.H.I.E.L.D.," . self::SERVER_BASE_DN;
+
+        $ldapAuth = new LdapAuth();
+        $ldapAuth->setLogin(self::TEST_LOGIN);
+        $ldapAuth->setPassword(self::TEST_PASS);
+        $authResult = $ldapAuth->authenticate();
+
+        $this->assertEquals(0, $authResult->getCode());
+
+        Config::getInstance()->LoginLdap['memberOf'] = "cn=avengers," . self::SERVER_BASE_DN;
+
+        $ldapAuth = new LdapAuth();
+        $ldapAuth->setLogin(self::TEST_LOGIN);
+        $ldapAuth->setPassword(self::TEST_PASS);
+        $authResult = $ldapAuth->authenticate();
+
+        $this->assertEquals(1, $authResult->getCode());
+    }
+
+    public function testLdapAuthUsesConfiguredFilter()
+    {
+        Config::getInstance()->LoginLdap['filter'] = "(!(mobile=none))";
+
+        $ldapAuth = new LdapAuth();
+        $ldapAuth->setLogin(self::TEST_LOGIN);
+        $ldapAuth->setPassword(self::TEST_PASS);
+        $authResult = $ldapAuth->authenticate();
+
+        $this->assertEquals(1, $authResult->getCode());
+
+        $ldapAuth = new LdapAuth();
+        $ldapAuth->setLogin(self::OTHER_TEST_LOGIN);
+        $ldapAuth->setPassword(self::OTHER_TEST_PASS);
+        $authResult = $ldapAuth->authenticate();
+
+        $this->assertEquals(0, $authResult->getCode());
+    }
+
+    public function testWebServerAuthWorksIfUserExistsRegardlessOfPassword()
     {
         Config::getInstance()->LoginLdap['useKerberos'] = 1;
 
         $_SERVER['REMOTE_USER'] = self::TEST_LOGIN;
 
         $ldapAuth = new LdapAuth();
+        $ldapAuth->setPassword('slkdjfdslf');
+        $authResult = $ldapAuth->authenticate();
+
+        $this->assertEquals(1, $authResult->getCode());
+
+        $ldapAuth = new LdapAuth();
+        $ldapAuth->setPassword(self::TEST_PASSWORD);
         $authResult = $ldapAuth->authenticate();
 
         $this->assertEquals(1, $authResult->getCode());
     }
+
+    public function testWebServerAuthFailsIfUserDoesNotExist()
+    {
+        Config::getInstance()->LoginLdap['useKerberos'] = 1;
+
+        $_SERVER['REMOTE_USER'] = 'abcdefghijk';
+
+        $ldapAuth = new LdapAuth();
+        $authResult = $ldapAuth->authenticate();
+
+        $this->assertEquals(0, $authResult->getCode());
+    }
+
+    public function testWebServerAuthFailsIfUserIsNotPartOfRequiredGroup()
+    {
+        Config::getInstance()->LoginLdap['useKerberos'] = 1;
+        Config::getInstance()->LoginLdap['memberOf'] = "cn=S.H.I.E.L.D.," . self::SERVER_BASE_DN;
+
+        $_SERVER['REMOTE_USER'] = self::TEST_LOGIN;
+
+        $ldapAuth = new LdapAuth();
+        $authResult = $ldapAuth->authenticate();
+
+        $this->assertEquals(0, $authResult->getCode());
+    }
+
+    public function testWebServerAuthFailsIfUserIsNotMatchedByCustomFilter()
+    {
+        Config::getInstance()->LoginLdap['useKerberos'] = 1;
+        Config::getInstance()->LoginLdap['filter'] = "(mobile=none)";
+
+        $_SERVER['REMOTE_USER'] = self::TEST_LOGIN;
+
+        $ldapAuth = new LdapAuth();
+        $authResult = $ldapAuth->authenticate();
+
+        $this->assertEquals(0, $authResult->getCode());
+    }
+
+    public function testLdapAuthReturnsCorrectCodeForSuperUsers()
+    {
+        $ldapAuth = new LdapAuth();
+        $ldapAuth->setLogin(self::TEST_SUPERUSER_LOGIN);
+        $ldapAuth->setPassword(self::TEST_SUPERUSER_PASS);
+        $authResult = $ldapAuth->authenticate();
+
+        $this->assertEquals(AuthResult::SUCCESS_SUPERUSER_AUTH_CODE, $authResult->getCode());
+    }
+
+    public function testWebServerAuthReturnsCorrectCodeForSuperUsers()
+    {
+        $_SERVER['REMOTE_USER'] = self::TEST_SUPERUSER_LOGIN;
+
+        $ldapAuth = new LdapAuth();
+        $authResult = $ldapAuth->authenticate();
+
+        $this->assertEquals(AuthResult::SUCCESS_SUPERUSER_AUTH_CODE, $authResult->getCode());
+    }
+
+    // TODO: rename kerberos stuff w/ webserver auth
 }
