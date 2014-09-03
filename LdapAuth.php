@@ -41,7 +41,7 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
      *
      * @param Model\LdapUsers
      */
-    private $ldapUsersModel;
+    private $ldapUsers;
 
     /**
      * TODO
@@ -61,11 +61,11 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
     }
 
     /**
-     * TODO
+     * Constructor.
      */
     public function __construct()
     {
-        $this->ldapUsersModel = new LdapUsers();
+        $this->ldapUsers = LdapUsers::makeConfigured();
         $this->usersModel = new UserModel();
     }
 
@@ -114,14 +114,11 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
     /**
      * This method is used for LDAP authentication.
      */
-    private function authenticateLDAP($user, $password, $sso)
+    private function authenticateLDAP($user, $password, $useWebServerAuth)
     {
         $config = Config::getInstance()->LoginLdap;
 
-        $useKerberos = $this->getConfigValue('useKerberos') == 1;
         $autoCreateUser = $this->getConfigValue('autoCreateUser') == 1;
-
-        $useWebServerAuth = $sso == true && empty($pwd) && $useKerberos; // TODO: review this statement, is it necessary
 
         $ldapUser = $this->ldapUsers->authenticate($user, $password, $useWebServerAuth);
         if (!empty($ldapUser)) {
