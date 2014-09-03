@@ -150,7 +150,7 @@ class ConnectionTest extends DatabaseTestCase
         $this->assertEquals(1, $authResult->getCode());
 
         $ldapAuth = new LdapAuth();
-        $ldapAuth->setPassword(self::TEST_PASSWORD);
+        $ldapAuth->setPassword(self::TEST_PASS);
         $authResult = $ldapAuth->authenticate();
 
         $this->assertEquals(1, $authResult->getCode());

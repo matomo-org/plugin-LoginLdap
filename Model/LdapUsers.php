@@ -173,7 +173,13 @@ class LdapUsers
                     return $user;
                 }
 
-                if ($ldapClient->bind($this->addUsernameSuffix($username), $password)) {
+                if (empty($user['dn'])) {
+                    Log::debug("ModelUsers\\LdapUsers::%s: LDAP user info for '%s' has no dn attribute!", __FUNCTION__, $username);
+
+                    return null;
+                }
+
+                if ($ldapClient->bind($user['dn'], $password)) {
                     if ($self->updateCredentials($username, $password)) {
                         Log::debug("ModelUsers\\LdapUsers::%s: Updated credentails for LDAP user '%'.", __FUNCTION__, $username);
                     }
@@ -399,7 +405,7 @@ class LdapUsers
         return array($filter, $bind);
     }
 
-    private function addUsernameSuffix($username)
+    public function addUsernameSuffix($username)
     {
         if (!empty($this->authenticationUsernameSuffix)) {
             Log::debug("Model\\LdapUsers::%s: Adding suffix '%s' to username '%s'.", __FUNCTION__, $this->authenticationUsernameSuffix, $username);
@@ -461,10 +467,13 @@ class LdapUsers
      * Update password and token in the database.
      * This is needed because the initially entered password of LDAP users is just a dummy one.
      * The update should only happen for LDAP users and only the first time they login.
+     *
+     * Public for use w/ a closure.
+     *
      * @param $login
      * @param $password
      */
-    private function updateCredentials($login, $password)
+    public function updateCredentials($login, $password)
     {
         $password = UsersManager::getPasswordHash($password);
         $token_auth = UsersManagerApi::getInstance()->getTokenAuth($login, $password);
@@ -485,7 +494,7 @@ class LdapUsers
 
         $result = new LdapUsers();
         $result->setServerHostname($config['serverUrl']);
-        $result->setServerPort($config['serverPort']);
+        $result->setServerPort($config['ldapPort']);
         $result->setBaseDn($config['baseDn']);
 
         if (!empty($config['userIdField'])) {
@@ -497,7 +506,7 @@ class LdapUsers
         }
 
         if (!empty($config['adminUser'])) {
-            $result->setAdminUserName('adminUser');
+            $result->setAdminUserName($config['adminUser']);
         }
 
         if (!empty($config['adminPass'])) {

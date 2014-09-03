@@ -15,7 +15,11 @@ class LdapFunctions
 
     public static function __callStatic($name, $arguments)
     {
-        return call_user_func_array(array(self::$phpUnitMock, $name), $arguments);
+        if (isset(self::$phpUnitMock)) {
+            return call_user_func_array(array(self::$phpUnitMock, $name), $arguments);
+        } else {
+            return call_user_func_array("\\" . $name, $arguments);
+        }
     }
 }
 

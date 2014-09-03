@@ -36,6 +36,8 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
 
     public function tearDown()
     {
+        LdapFunctions::$phpUnitMock = null;
+
         Log::unsetInstance();
     }
 

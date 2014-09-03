@@ -146,6 +146,18 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
                 return false; // fail binding after first calls
             }
         }));
+        $mockLdapClient->method('fetchAll')->will($this->returnValue(array('count' => 1, 0 => array('uid' => self::TEST_USER, 'dn' => 'thedn'))));
+
+        $this->ldapUsers->setLdapClientClass($mockLdapClient);
+        $result = $this->ldapUsers->authenticate(self::TEST_USER, self::PASSWORD, $alreadyAuthenticated = false);
+
+        $this->assertNull($result);
+    }
+
+    public function testAuthenticateFailsWhenLdapUserInfoDoesNotHaveDn()
+    {
+        $mockLdapClient = $this->makeMockLdapClient();
+        $mockLdapClient->method('bind')->will($this->returnValue(true));
         $mockLdapClient->method('fetchAll')->will($this->returnValue(array('count' => 1, 0 => array('uid' => self::TEST_USER))));
 
         $this->ldapUsers->setLdapClientClass($mockLdapClient);
@@ -195,7 +207,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
             $filterUsed = $filter;
             $filterBind = $bind;
 
-            return array('count' => 1, '0' => array('uid' => self::TEST_USER));
+            return array('count' => 1, '0' => array('uid' => self::TEST_USER, 'dn' => 'thedn'));
         }));
 
         $this->ldapUsers->setLdapClientClass($mockLdapClient);
@@ -204,7 +216,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
         $this->ldapUsers->authenticate(self::TEST_USER, self::PASSWORD);
 
         $this->assertEquals(self::TEST_ADMIN_USER . 'whoa', $adminUserName);
-        $this->assertEquals(self::TEST_USER . 'whoa', $userName);
+        $this->assertEquals('thedn', $userName);
         $this->assertContains("uid=?", $filterUsed);
         $this->assertEquals(array(self::TEST_USER . 'whoa'), $filterBind);
     }
@@ -248,7 +260,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
         $this->ldapUsers->setLdapClientClass($mockLdapClient);
         $result = $this->ldapUsers->getUser(self::TEST_USER);
 
-        $this->assertEquals(array('uid' => self::TEST_USER, 'otherval' => 34), $result);
+        $this->assertEquals(array('uid' => self::TEST_USER, 'otherval' => 34, 'dn' => 'thedn'), $result);
     }
 
     public function testGetUserWillUseCorrectLDAPFilterAndBaseDn()
@@ -354,7 +366,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
 
         if ($forSuccess) {
             $mock->method('bind')->will($this->returnValue(true));
-            $mock->method('fetchAll')->will($this->returnValue(array('count' => 1, 0 => array('uid' => self::TEST_USER, 'otherval' => 34))));
+            $mock->method('fetchAll')->will($this->returnValue(array('count' => 1, 0 => array('uid' => self::TEST_USER, 'otherval' => 34, 'dn' => 'thedn'))));
         }
 
         return $mock;

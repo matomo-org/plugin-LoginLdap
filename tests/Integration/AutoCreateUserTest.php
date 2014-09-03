@@ -31,8 +31,14 @@ class AutoCreateUserTest extends DatabaseTestCase
     const TEST_LOGIN = 'ironman';
     const TEST_PASS = 'piedpiper';
 
-    public function setUp()
+    public function setUp() // TODO: there is code redundancy w/ this and ConnectionTest. should move common code to base type
     {
+        if (!function_exists('ldap_bind')) {
+            throw new \Exception("PHP not compiled w/ --with-ldap!");
+        }
+
+        parent::setUp();
+
         // make sure logging logic is executed so we can test whether there are bugs in the logging code
         Log::getInstance()->setLogLevel(Log::VERBOSE);
 
@@ -61,7 +67,7 @@ class AutoCreateUserTest extends DatabaseTestCase
 
         $this->assertEquals(1, $authResult->getCode());
 
-        $user = Db::fetchOne("SELECT login, password, alias, email, token_auth FROM " . Common::prefixTable('user') . " WHERE login = ?", array(self::TEST_LOGIN));
+        $user = Db::fetchRow("SELECT login, password, alias, email, token_auth FROM " . Common::prefixTable('user') . " WHERE login = ?", array(self::TEST_LOGIN));
         $this->assertNotEmpty($user);
         $this->assertEquals(array(
             'login' => self::TEST_LOGIN,
@@ -83,7 +89,7 @@ class AutoCreateUserTest extends DatabaseTestCase
 
         $this->assertEquals(1, $authResult->getCode());
 
-        $user = Db::fetchOne("SELECT login, password, alias, email, token_auth FROM " . Common::prefixTable('user') . " WHERE login = ?", array(self::TEST_LOGIN));
+        $user = Db::fetchRow("SELECT login, password, alias, email, token_auth FROM " . Common::prefixTable('user') . " WHERE login = ?", array(self::TEST_LOGIN));
         $this->assertEmpty($user);
     }
 
@@ -98,7 +104,7 @@ class AutoCreateUserTest extends DatabaseTestCase
 
         $this->assertEquals(1, $authResult->getCode());
 
-        $user = Db::fetchOne("SELECT login, password, alias, email, token_auth FROM " . Common::prefixTable('user') . " WHERE login = ?", array(self::TEST_LOGIN));
+        $user = Db::fetchRow("SELECT login, password, alias, email, token_auth FROM " . Common::prefixTable('user') . " WHERE login = ?", array(self::TEST_LOGIN));
         $this->assertNotEmpty($user);
         $this->assertEquals(array(
             'login' => self::TEST_LOGIN,

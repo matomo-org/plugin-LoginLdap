@@ -131,10 +131,12 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
             } else {
                 Log::debug("Token auth for user '%s' not found in Piwik DB.", $user);
 
-                if (!$useKerberos
+                if (!$useWebServerAuth
                     && $autoCreateUser
                 ) {
                     $user = $this->ldapUsers->createPiwikUserEntryForLdapUser($ldapUser);
+
+                    Log::debug("Autocreating Piwik user (%s) for LDAP user: %s", $user, $ldapUser);
 /* TODO: May need this again?
 $isSuperUser = Piwik::hasUserSuperUserAccess();
 Piwik::setUserHasSuperUserAccess();
