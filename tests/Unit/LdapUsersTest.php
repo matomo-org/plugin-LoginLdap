@@ -329,10 +329,11 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
             'uid' => 'martha',
             'cn' => 'A real doctor',
             'mail' => 'martha@unit.co.uk',
+            'userpassword' => 'pass',
             'other' => 'sfdklsdjf'
         ));
 
-        $this->assertEquals(array('login' => 'martha', 'password' => '-', 'email' => 'martha@unit.co.uk', 'alias' => 'A real doctor'), $result);
+        $this->assertEquals(array('login' => 'martha', 'password' => 'pass', 'email' => 'martha@unit.co.uk', 'alias' => 'A real doctor'), $result);
 
         $this->ldapUsers->setLdapAliasField('testfield1');
         $this->ldapUsers->setLdapUserIdField('testfield2');
@@ -341,10 +342,11 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
             'testfield1' => 'am i bovvered?',
             'testfield2' => 'donna',
             'testfield3' => 'donna@rstad.com',
+            'userpassword' => 'pass',
             'other3' => 'sdlfdsf'
         ));
 
-        $this->assertEquals(array('login' => 'donna', 'password' => '-', 'email' => 'donna@rstad.com', 'alias' => 'am i bovvered?'), $result);
+        $this->assertEquals(array('login' => 'donna', 'password' => 'pass', 'email' => 'donna@rstad.com', 'alias' => 'am i bovvered?'), $result);
     }
 
     /**

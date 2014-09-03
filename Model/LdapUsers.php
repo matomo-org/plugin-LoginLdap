@@ -214,17 +214,21 @@ class LdapUsers
     {
         Log::debug(self::FUNCTION_START_LOG_MESSAGE, __FUNCTION__, array($username));
 
-        $result = $this->doWithClient($ldapClient, function ($self, $ldapClient) use ($username) {
-            $adminUserName = $self->addUsernameSuffix($self->adminUserName);
+        $adminUserName = $this->adminUserName;
+        $adminUserPassword = $this->adminUserPassword;
+        $baseDn = $this->baseDn;
+
+        $result = $this->doWithClient($ldapClient, function ($self, $ldapClient) use ($username, $adminUserName, $adminUserPassword, $baseDn) {
+            $adminUserName = $self->addUsernameSuffix($adminUserName);
 
             // bind using the admin user which has at least read access to LDAP users
-            if (!$ldapClient->bind($adminUserName, $self->adminUserPassword)) {
+            if (!$ldapClient->bind($adminUserName, $adminUserPassword)) {
                 throw new Exception("Could not bind as LDAP admin.");
             }
 
             // look for the user, applying extra filters
             list($filter, $bind) = $self->getUserEntryQuery($username);
-            $userEntries = $ldapClient->fetchAll($self->baseDn, $filter, $bind);
+            $userEntries = $ldapClient->fetchAll($baseDn, $filter, $bind);
 
             // TODO: test anonymous bind (for validity of old error message in LdapFunctions.php)
             if ($userEntries === null) { // sanity check
