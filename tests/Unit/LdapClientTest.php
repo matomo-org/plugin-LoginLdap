@@ -175,6 +175,68 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
         $this->assertEquals("(&(uid=tw\\(\\)o,thr\\?\\?e)(whatev=?))", $escapedFilter);
     }
 
+    public function getLdapTransformTestData()
+    {
+        return array(
+            array(
+                array('count' => 0),
+                array()
+            ),
+            array(
+                array(
+                    'count' => 1,
+                    0 => array(
+                        'count' => 2,
+                        'cn' => array('count' => 1, '0' => 'value'),
+                        'dn' => 'the dn',
+                        0 => 'cn',
+                        1 => 'dn'
+                    )
+                ),
+                array(
+                    array('cn' => 'value', 'dn' => 'the dn')
+                )
+            ),
+            array(
+                array(
+                    'count' => 2,
+                    0 => array(
+                        'count' => 2,
+                        0 => 'cn',
+                        1 => 'objectClass',
+                        'cn' => array('count' => 1, '0' => 'value2'),
+                        'objectClass' => array('count' => '1', '0' => 'top'),
+                        'dn' => 'the dn'
+                    ),
+                    1 => array(
+                        'count' => 2,
+                        'cn' => array('count' => 2, '0' => 'value3'),
+                        0 => 'objectclass',
+                        'objectclass' => array('count' => '2', '0' => 'top', '1' => 'inetOrgPersion'),
+                        1 => 'cn'
+                    )
+                ),
+                array(
+                    array('cn' => 'value2', 'objectclass' => 'top', 'dn' => 'the dn'),
+                    array('objectclass' => array('top', 'inetOrgPersion'), 'cn' => 'value3'),
+                )
+            )
+        );
+    }
+
+    /**
+     * @dataProvider getLdapTransformTestData
+     */
+    public function testFetchAllCorrectlyProcessesLdapSearchResults($ldapData, $expectedData)
+    {
+        LdapFunctions::$phpUnitMock->expects($this->any())->method('ldap_search')->will($this->returnValue("resource"));
+        LdapFunctions::$phpUnitMock->expects($this->any())->method('ldap_get_entries')->will($this->returnValue($ldapData));
+
+        $ldapClient = new LdapClient();
+        $result = $ldapClient->fetchAll("base dn", "filter");
+        $this->assertEquals($expectedData, $result);
+    }
+
     private function addLdapConnectMethodMock($hostname = null, $port = null)
     {
         $getConnectionResource = function ($hostname, $port) {

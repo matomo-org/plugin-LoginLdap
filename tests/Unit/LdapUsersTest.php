@@ -80,7 +80,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
     {
         $mockLdapClient = $this->makeMockLdapClient();
         $mockLdapClient->method('bind')->will($this->returnValue(true));
-        $mockLdapClient->method('fetchAll')->will($this->returnValue(array('count' => 0)));
+        $mockLdapClient->method('fetchAll')->will($this->returnValue(array()));
 
         $this->ldapUsers->setLdapClientClass($mockLdapClient);
         $result = $this->ldapUsers->authenticate(self::TEST_USER, self::PASSWORD);
@@ -92,7 +92,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
     {
         $mockLdapClient = $this->makeMockLdapClient();
         $mockLdapClient->method('bind')->will($this->returnValue(true));
-        $mockLdapClient->method('fetchAll')->will($this->returnValue(array('count' => 0)));
+        $mockLdapClient->method('fetchAll')->will($this->returnValue(array()));
 
         $this->ldapUsers->setLdapClientClass($mockLdapClient);
         $result = $this->ldapUsers->authenticate(self::TEST_USER, self::PASSWORD, $alreadyAuthenticated = true);
@@ -114,7 +114,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
                 return false; // fail binding after first calls
             }
         }));
-        $mockLdapClient->method('fetchAll')->will($this->returnValue(array('count' => 1, 0 => array('uid' => self::TEST_USER))));
+        $mockLdapClient->method('fetchAll')->will($this->returnValue(array(array('uid' => self::TEST_USER))));
 
         $this->ldapUsers->setLdapClientClass($mockLdapClient);
         $result = $this->ldapUsers->authenticate(self::TEST_USER, self::PASSWORD, $alreadyAuthenticated = true);
@@ -146,7 +146,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
                 return false; // fail binding after first calls
             }
         }));
-        $mockLdapClient->method('fetchAll')->will($this->returnValue(array('count' => 1, 0 => array('uid' => self::TEST_USER, 'dn' => 'thedn'))));
+        $mockLdapClient->method('fetchAll')->will($this->returnValue(array(array('uid' => self::TEST_USER, 'dn' => 'thedn'))));
 
         $this->ldapUsers->setLdapClientClass($mockLdapClient);
         $result = $this->ldapUsers->authenticate(self::TEST_USER, self::PASSWORD, $alreadyAuthenticated = false);
@@ -158,7 +158,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
     {
         $mockLdapClient = $this->makeMockLdapClient();
         $mockLdapClient->method('bind')->will($this->returnValue(true));
-        $mockLdapClient->method('fetchAll')->will($this->returnValue(array('count' => 1, 0 => array('uid' => self::TEST_USER))));
+        $mockLdapClient->method('fetchAll')->will($this->returnValue(array(array('uid' => self::TEST_USER))));
 
         $this->ldapUsers->setLdapClientClass($mockLdapClient);
         $result = $this->ldapUsers->authenticate(self::TEST_USER, self::PASSWORD, $alreadyAuthenticated = false);
@@ -207,7 +207,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
             $filterUsed = $filter;
             $filterBind = $bind;
 
-            return array('count' => 1, '0' => array('uid' => self::TEST_USER, 'dn' => 'thedn'));
+            return array(array('uid' => self::TEST_USER, 'dn' => 'thedn'));
         }));
 
         $this->ldapUsers->setLdapClientClass($mockLdapClient);
@@ -245,7 +245,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
     {
         $mockLdapClient = $this->makeMockLdapClient();
         $mockLdapClient->method('bind')->will($this->returnValue(true));
-        $mockLdapClient->method('fetchAll')->will($this->returnValue(array('count' => 0)));
+        $mockLdapClient->method('fetchAll')->will($this->returnValue(array()));
 
         $this->ldapUsers->setLdapClientClass($mockLdapClient);
         $result = $this->ldapUsers->getUser(self::TEST_USER);
@@ -276,7 +276,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
             $usedFilter = $filter;
             $filterBind = $bind;
 
-            return array('count' => 1, '0' => array('uid' => self::TEST_USER));
+            return array(array('uid' => self::TEST_USER));
         }));
 
         $this->ldapUsers->setLdapClientClass($mockLdapClient);
@@ -366,7 +366,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
 
         if ($forSuccess) {
             $mock->method('bind')->will($this->returnValue(true));
-            $mock->method('fetchAll')->will($this->returnValue(array('count' => 1, 0 => array('uid' => self::TEST_USER, 'otherval' => 34, 'dn' => 'thedn'))));
+            $mock->method('fetchAll')->will($this->returnValue(array(array('uid' => self::TEST_USER, 'otherval' => 34, 'dn' => 'thedn'))));
         }
 
         return $mock;

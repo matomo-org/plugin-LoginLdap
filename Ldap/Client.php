@@ -143,7 +143,7 @@ class Client
         });
 
         if (!empty($searchResultResource)) {
-            return $this->throwPhpErrors(function () use ($connectionResource, $searchResultResource) {
+            $ldapInfo = $this->throwPhpErrors(function () use ($connectionResource, $searchResultResource) {
                 Log::debug("Calling ldap_get_entries(%s, %s)", $connectionResource, $searchResultResource);
 
                 $result = ldap_get_entries($connectionResource, $searchResultResource);
@@ -152,6 +152,8 @@ class Client
 
                 return $result;
             });
+
+            return $this->transformLdapInfo($ldapInfo);
         } else {
             return null;
         }
@@ -235,6 +237,89 @@ class Client
 
             return $result;
         }, $ldapFilter);
+    }
+
+    /**
+     * Converts information returned by `ldap_search` into a normal PHP array.
+     *
+     * `ldap_search` returns results like this:
+     *
+     *     array(
+     *         'count' => '2',
+     *         '0' => array(
+     *             'count' => 1,
+     *             'cn' => array(
+     *                 'count' => 1,
+     *                 '0' => 'value'
+     *             )
+     *         ),
+     *         '1' => array(
+     *             'count' => 1,
+     *             'objectclass => array(
+     *                 'count' => 2,
+     *                 '0' => 'inetOrgPerson',
+     *                 '1' => 'top'
+     *             )
+     *         )
+     *     )
+     *
+     * This method will convert that to:
+     *
+     *     array(
+     *         'cn' => 'value',
+     *         'objectclass' => array('inetOrgPerson', 'top')
+     *     )
+     *
+     */
+    private function transformLdapInfo($ldapInfo)
+    {
+        $result = array();
+
+        $processedKeys = array('count');
+
+        $count = @$ldapInfo['count'];
+        for ($i = 0; $i < $count; ++$i) {
+            if (!isset($ldapInfo[$i])) {
+                continue;
+            }
+
+            $value = $ldapInfo[$i];
+
+            if (is_array($value)) { // index is for array, ie 0 => array(...)
+                $result[$i] = $this->transformLdapInfo($value);
+            } else if (isset($ldapInfo[$value])) { // index is for name of attribute, ie 0 => 'cn', 'cn' => array(...)
+                $key = strtolower($value);
+
+                if (is_array($ldapInfo[$value])) {
+                    $result[$key] = $this->transformLdapInfo($ldapInfo[$value]);
+
+                    if (count($result[$key]) == 1) {
+                        $result[$key] = reset($result[$key]);
+                    }
+                } else {
+                    $result[$key] = $ldapInfo[$value];
+                }
+
+                $processedKeys[] = $key;
+            } else { // index is for attribute value
+                $result[$i] = $value;
+            }
+        }
+
+        foreach ($ldapInfo as $key => $value) {
+            if (is_int($key)) {
+                continue;
+            }
+
+            $key = strtolower($key);
+            if (in_array($key, $processedKeys)) {
+                continue;
+            }
+
+            $result[$key] = $value;
+        }
+
+        return $result;
     }
 
     /**

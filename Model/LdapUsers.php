@@ -174,7 +174,8 @@ class LdapUsers
                 }
 
                 if (empty($user['dn'])) {
-                    Log::debug("ModelUsers\\LdapUsers::%s: LDAP user info for '%s' has no dn attribute!", __FUNCTION__, $username);
+                    Log::debug("ModelUsers\\LdapUsers::%s: LDAP user info for '%s' has no dn attribute! (info = %s)",
+                        __FUNCTION__, $username, $user);
 
                     return null;
                 }
@@ -230,9 +231,7 @@ class LdapUsers
                 throw new Exception("LDAP search for entries failed.");
             }
 
-            if (empty($userEntries)
-                || $userEntries['count'] == 0
-            ) {
+            if (empty($userEntries)) {
                 return null;
             } else {
                 return $userEntries[0];
