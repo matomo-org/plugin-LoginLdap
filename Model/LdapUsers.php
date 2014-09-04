@@ -452,7 +452,9 @@ class LdapUsers
 
             $result = $function($this, $ldapClient);
         } catch (Exception $ex) {
-            if ($closeClient) {
+            if ($closeClient
+                && isset($ldapClient)
+            ) {
                 try {
                     $ldapClient->close();
                 } catch (Exception $ex) {

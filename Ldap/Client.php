@@ -306,6 +306,7 @@ class Client
             }
         }
 
+        // process keys that have no addociated index (ie, a 'dn' => that has no N => 'dn')
         foreach ($ldapInfo as $key => $value) {
             if (is_int($key)) {
                 continue;
