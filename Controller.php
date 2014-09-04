@@ -108,7 +108,6 @@ class Controller extends \Piwik\Plugins\Login\Controller
 
         $this->setBasicVariablesView($view);
         $view->infoMessage = nl2br($infoMessage);
-        $view->logContent = $this->readlog();
 
         if (!Config::getInstance()->LoginLdap) {
             $view->serverUrl = "ldap://localhost";
@@ -142,77 +141,6 @@ class Controller extends \Piwik\Plugins\Login\Controller
             $view->autoCreateUser = @Config::getInstance()->LoginLdap['autoCreateUser'];
         }
         return $view->render();
-    }
-
-    /*
-     * Pull the last N lines from a (large) file
-     * Open source (c) Paul Gregg, 2008
-     * http://www.pgregg.com/projects/
-     */
-    private function readlog()
-    {
-        $linecount = 30; // Number of lines we want to read
-        $linelength = 55; // Predict the number of chars per line
-        $file = LdapAuth::getLogPath();
-        $lines = array(); // array to store the lines we read.
-
-        if (file_exists($file)) {
-            $fsize = filesize($file);
-            $offset = ($linecount + 1) * $linelength;
-            if ($offset > $fsize) {
-                $offset = $fsize;
-            }
-            $fp = fopen($file, 'r');
-            if ($fp === false) {
-                exit;
-            }
-            $readloop = true;
-
-            while ($readloop) {
-                fseek($fp, 0 - $offset, SEEK_END);
-                if ($offset != $fsize) {
-                    fgets($fp);
-                }
-                $linesize = 0;
-                while ($line = fgets($fp)) {
-                    array_push($lines, $line);
-                    $linesize += strlen($line); // total up the char count
-                    if (count($lines) > $linecount) {
-                        array_shift($lines);
-                    }
-                }
-
-                if (count($lines) == $linecount) {
-                    $readloop = false;
-                } elseif ($offset >= $fsize) {
-                    $readloop = false;
-                } elseif (count($lines) < $linecount) {
-                    $offset = intval($offset * 1.1); // increase offset 10%
-                    $offset2 = intval($linesize / count($lines) * ($linecount + 1));
-                    if ($offset2 > $offset) {
-                        $offset = $offset2;
-                    }
-                    if ($offset > $fsize) {
-                        $offset = $fsize;
-                    }
-                    $lines = array();
-                }
-            }
-        } else { // try to create a new log file
-            $fp = fopen($file, 'w');
-            fwrite($fp, '...');
-            fclose($fp);
-        }
-        if (count($lines) < 1) {
-            array_push($lines, Piwik::translate('LoginLdap_LogEmpty'));
-        }
-
-        $line = "";
-        foreach ($lines as $key => $value) {
-            $line = $line . $value . "\r\n";
-        }
-
-        return $line;
     }
 
     /**
