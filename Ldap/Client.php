@@ -18,7 +18,6 @@ use Piwik\Error;
  */
 class Client
 {
-    const DEFAULT_LDAP_PORT = 389;
 
     /**
      * The LDAP connection resource. Set to the result of `ldap_connect`.
@@ -35,7 +34,7 @@ class Client
      * @param int $port The server port to use.
      * @throws Exception if a connection is attempted and it fails.
      */
-    public function __construct($serverHostName = null, $port = self::DEFAULT_LDAP_PORT)
+    public function __construct($serverHostName = null, $port = ServerInfo::DEFAULT_LDAP_PORT)
     {
         if (!empty($serverHostName)) {
             $this->connect($serverHostName, $port);
@@ -53,7 +52,7 @@ class Client
      * @param int $port The server port to use.
      * @throws Exception If an error occurs during the `ldap_connect` call.
      */
-    public function connect($serverHostName, $port = self::DEFAULT_LDAP_PORT)
+    public function connect($serverHostName, $port = ServerInfo::DEFAULT_LDAP_PORT)
     {
         $this->closeIfCurrentlyOpen();
 

@@ -14,6 +14,7 @@ use Piwik\Common;
 use Piwik\Plugins\UsersManager\UsersManager;
 use Piwik\Plugins\UsersManager\API as UsersManagerApi;
 use Piwik\Plugins\LoginLdap\Ldap\Client as LdapClient;
+use Piwik\Plugins\LoginLdap\Ldap\ServerInfo;
 use InvalidArgumentException;
 use Exception;
 
@@ -24,20 +25,6 @@ class LdapUsers
 {
     const FUNCTION_START_LOG_MESSAGE = "Model\\LdapUsers: start %s() with %s";
     const FUNCTION_END_LOG_MESSAGE = "Model\\LdapUsers: end %s() with %s";
-
-    /**
-     * The LDAP server hostname.
-     *
-     * @var string
-     */
-    private $serverHostname;
-
-    /**
-     * The port to use when connecting to the LDAP server.
-     *
-     * @var int
-     */
-    private $serverPort = LdapClient::DEFAULT_LDAP_PORT;
 
     /**
      * The LDAP resource field that holds a user's username.
@@ -59,14 +46,6 @@ class LdapUsers
      * @var string
      */
     private $ldapMailField = 'mail';
-
-    /**
-     * The base DN to use when searching the LDAP server. Determines which specific
-     * LDAP database is searched.
-     *
-     * @var string
-     */
-    private $baseDn;
 
     /**
      * If set, the user must be a member of a specific LDAP groupOfNames in order
@@ -94,30 +73,39 @@ class LdapUsers
     private $authenticationLdapFilter;
 
     /**
-     * The 'admin' LDAP user to use when authenticating. This user must have read
-     * access to other users so we can search for the person attempting login.
-     *
-     * TODO: is this needed? ie, since we only want the user's data and not others, can we just bind w/ the user?
-     *       if it works, allow adminUserName to be null.
-     *
-     * @var string
-     */
-    private $adminUserName;
-
-    /**
-     * The password to use when binding w/ the 'admin' LDAP user.
-     *
-     * @var string
-     */
-    private $adminUserPassword;
-
-    /**
      * The fully qualified class name of the LDAP client to use. Mostly for testing purposes,
      * but it might have some future use.
      *
      * @var string
      */
     private $ldapClientClass = "Piwik\\Plugins\\LoginLdap\\Ldap\\Client";
+
+    /**
+     * Information describing the list of LDAP servers that should be used.
+     * When connecting, we try to connect with the first available server.
+     *
+     * @var ServerInfo[]
+     */
+    private $ldapServers = null;
+
+    /**
+     * The current LDAP client object if any. It is set when the {@link $doWithClient}
+     * method creates a Client and unset when the same method is done with a client.
+     *
+     * @var LdapClient|null
+     */
+    private $ldapClient;
+
+    /**
+     * The current {@link ServerInfo} instance describing the LDAP server we are
+     * currently connected to. It is set to the ServerInfo instance in {@link $servers}
+     * that describes the connected server. It is used to get server specific
+     * information such as the server's base DN or the admin user to bind with for
+     * the server.
+     *
+     * @var ServerInfo
+     */
+    private $currentServerInfo;
 
     /**
      * Constructor.
@@ -137,12 +125,9 @@ class LdapUsers
      *                                   If true, we make sure the user is allowed to access Piwik based on
      *                                   the {@link $authenticationRequiredMemberOf} and {@link $authenticationLdapFilter}
      *                                   fields.
-     * @param Ldap\Client|null $ldapClient The client to use. If none specified, a new one is created and
-     *                                     a connection made. Before the function exists, the connection is
-     *                                     closed.
      * @return array|null On success, returns user info stored in the LDAP database. On failure returns `null`.
      */
-    public function authenticate($username, $password, $alreadyAuthenticated = false, LdapClient $ldapClient = null)
+    public function authenticate($username, $password, $alreadyAuthenticated = false)
     {
         Log::debug(self::FUNCTION_START_LOG_MESSAGE, __FUNCTION__,
             array($username, "<password[length=" . strlen($password) . "]>", $alreadyAuthenticated));
@@ -160,7 +145,7 @@ class LdapUsers
 
         try {
             $authenticationRequiredMemberOf = $this->authenticationRequiredMemberOf;
-            $result = $this->doWithClient($ldapClient, function ($self, $ldapClient)
+            $result = $this->doWithClient(function (LdapUsers $self, LdapClient $ldapClient)
                 use ($username, $password, $alreadyAuthenticated, $authenticationRequiredMemberOf) {
                 
                 $user = $self->getUser($username, $ldapClient);
@@ -208,30 +193,24 @@ class LdapUsers
      * Retrieves LDAP user information for a given username.
      *
      * @param string $username The username of the user to get LDAP information for.
-     * @param Ldap\Client|null $ldapClient The client to use. If none specified, a new one is created and
-     *                                     a connection made. Before the function exists, the connection is
-     *                                     closed.
      * @return string[] Associative array containing LDAP field data, eg, `array('dn' => '...')`
      */
-    public function getUser($username, LdapClient $ldapClient = null)
+    public function getUser($username)
     {
         Log::debug(self::FUNCTION_START_LOG_MESSAGE, __FUNCTION__, array($username));
 
-        $adminUserName = $this->adminUserName;
-        $adminUserPassword = $this->adminUserPassword;
-        $baseDn = $this->baseDn;
-
-        $result = $this->doWithClient($ldapClient, function ($self, $ldapClient) use ($username, $adminUserName, $adminUserPassword, $baseDn) {
-            $adminUserName = $self->addUsernameSuffix($adminUserName);
+        $result = $this->doWithClient(function (LdapUsers $self, LdapClient $ldapClient, ServerInfo $server)
+            use ($username) {
+            $adminUserName = $self->addUsernameSuffix($server->getAdminUsername());
 
             // bind using the admin user which has at least read access to LDAP users
-            if (!$ldapClient->bind($adminUserName, $adminUserPassword)) {
+            if (!$ldapClient->bind($adminUserName, $server->getAdminPassword())) {
                 throw new Exception("Could not bind as LDAP admin.");
             }
 
             // look for the user, applying extra filters
             list($filter, $bind) = $self->getUserEntryQuery($username);
-            $userEntries = $ldapClient->fetchAll($baseDn, $filter, $bind);
+            $userEntries = $ldapClient->fetchAll($server->getBaseDn(), $filter, $bind);
 
             // TODO: test anonymous bind (for validity of old error message in LdapFunctions.php)
             if ($userEntries === null) { // sanity check
@@ -283,26 +262,6 @@ class LdapUsers
     }
 
     /**
-     * Sets the {@link $serverHostname} member.
-     *
-     * @param string $serverHostname
-     */
-    public function setServerHostname($serverHostname)
-    {
-        $this->serverHostname = $serverHostname;
-    }
-
-    /**
-     * Sets the {@link $serverPort} member.
-     *
-     * @param int $serverPort
-     */
-    public function setServerPort($serverPort)
-    {
-        $this->serverPort = $serverPort;
-    }
-
-    /**
      * Sets the {@link $ldapUserIdField} member.
      *
      * @param string $ldapUserIdField
@@ -330,16 +289,6 @@ class LdapUsers
     public function setLdapMailField($ldapMailField)
     {
         $this->ldapMailField = $ldapMailField;
-    }
-
-    /**
-     * Sets the {@link $baseDn} member.
-     *
-     * @param string $baseDn
-     */
-    public function setBaseDn($baseDn)
-    {
-        $this->baseDn = $baseDn;
     }
 
     /**
@@ -373,26 +322,6 @@ class LdapUsers
     }
 
     /**
-     * Sets the {@link $adminUserName} member.
-     *
-     * @param string $adminUserName
-     */
-    public function setAdminUserName($adminUserName)
-    {
-        $this->adminUserName = $adminUserName;
-    }
-
-    /**
-     * Sets the {@link $adminUserPassword} member.
-     *
-     * @param string $adminUserPassword
-     */
-    public function setAdminUserPassword($adminUserPassword)
-    {
-        $this->adminUserPassword = $adminUserPassword;
-    }
-
-    /**
      * Sets the {@link $ldapClientClass} member.
      *
      * @param string $ldapClientClass
@@ -400,6 +329,26 @@ class LdapUsers
     public function setLdapClientClass($ldapClientClass)
     {
         $this->ldapClientClass = $ldapClientClass;
+    }
+
+    /**
+     * Returns the {@link $ldapServers} member.
+     *
+     * @return ServerInfo[]
+     */
+    public function getLdapServers()
+    {
+        return $this->ldapServers;
+    }
+
+    /**
+     * Sets the {@link $ldapServers} member.
+     *
+     * @param ServerInfo[] $ldapServers
+     */
+    public function setLdapServers($ldapServers)
+    {
+        $this->ldapServers = $ldapServers;
     }
 
     /**
@@ -440,32 +389,40 @@ class LdapUsers
     }
 
     /**
-     * Utility method that executes a closure with an LDAP client. Will either use
-     * the passed client or create a new one and connect.
+     * Executes a closure with a connected LDAP client. If a client has already been
+     * created, the stored client will be used.
      *
-     * Using this method allows users of LdapUsers & methods of LdapUsers to combine
+     * Using this method allows users of this class & methods of this class to combine
      * multiple calls without creating multiple LDAP connections.
      *
      * If an LDAP client is created, it will be closed before the end of this method.
+     *
+     * @param callable|null $function Should accept 3 parameters: The LdapUsers instance,
+     *                                a connected LdapClient instance and a ServerInfo
+     *                                instance that describes the LDAP server we are
+     *                                connected to.
+     * @return mixed Returns the result of the callback.
+     * @throws Exception Forwards exceptions thrown by the callback and throws LDAP
+     *                   exceptions.
      */
-    private function doWithClient(LdapClient $ldapClient = null, $function = null)
+    public function doWithClient($function = null)
     {
         $closeClient = false;
 
         try {
-            if ($ldapClient === null) {
-                $ldapClient = $this->makeLdapClient();
+            if ($this->ldapClient === null) {
+                $this->makeLdapClient();
 
                 $closeClient = true;
             }
 
-            $result = $function($this, $ldapClient);
+            $result = $function($this, $this->ldapClient, $this->currentServerInfo);
         } catch (Exception $ex) {
             if ($closeClient
-                && isset($ldapClient)
+                && isset($this->ldapClient)
             ) {
                 try {
-                    $ldapClient->close();
+                    $this->closeLdapClient();
                 } catch (Exception $ex) {
                     Log::debug($ex);
                 }
@@ -475,7 +432,7 @@ class LdapUsers
         }
 
         if ($closeClient) {
-            $ldapClient->close();
+            $this->closeLdapClient();
         }
 
         return $result;
@@ -483,11 +440,46 @@ class LdapUsers
 
     private function makeLdapClient()
     {
-        $ldapClientClass = $this->ldapClientClass;
+        if (empty($this->ldapServers)) { // sanity check
+            throw new Exception("No LDAP servers configured in LdapUsers instance.");
+        }
 
-        $ldapClient = is_string($ldapClientClass) ? new $ldapClientClass() : $ldapClientClass;
-        $ldapClient->connect($this->serverHostname, $this->serverPort);
-        return $ldapClient;
+        $ldapClientClass = $this->ldapClientClass;
+        $this->ldapClient = is_string($ldapClientClass) ? new $ldapClientClass() : $ldapClientClass;
+
+        foreach ($this->ldapServers as $server) {
+            try {
+                $this->ldapClient->connect($server->getServerHostname(), $server->getServerPort());
+
+                $this->ldapClient = $ldapClient;
+                $this->currentServerInfo = $server;
+
+                return;
+            } catch (Exception $ex) {
+                // TODO: should be warning but default Piwik logger is 'screen'
+                Log::info("Model\\LdapUsers::%s: Could not connect to LDAP server %s:%s.",
+                    $server->getServerHostname(), $server->getServerPort());
+            }
+        }
+
+        $this->throwCouldNotConnectException();
+    }
+
+    private function closeLdapClient()
+    {
+        $this->ldapClient->close();
+        $this->ldapClient = null;
+    }
+
+    private function throwCouldNotConnectException()
+    {
+        if (count($this->ldapServers) > 1) { // TODO: translate this message
+            $message = "Could not connect to any of the " . count($this->ldapServers) . " LDAP servers.";
+        } else {
+            $message = "Could not connect to the LDAP server.";
+        }
+
+        throw new Exception($message);
     }
 
     /**
@@ -521,9 +513,8 @@ class LdapUsers
         $config = Config::getInstance()->LoginLdap;
 
         $result = new LdapUsers();
-        $result->setServerHostname($config['serverUrl']);
-        $result->setServerPort($config['ldapPort']);
-        $result->setBaseDn($config['baseDn']);
+
+        $result->setLdapServers(self::getConfiguredLdapServers($config));
 
         if (!empty($config['userIdField'])) {
             $result->setLdapUserIdField($config['userIdField']);
@@ -531,14 +522,6 @@ class LdapUsers
 
         if (!empty($config['usernameSuffix'])) {
             $result->setAuthenticationUsernameSuffix($config['usernameSuffix']);
-        }
-
-        if (!empty($config['adminUser'])) {
-            $result->setAdminUserName($config['adminUser']);
-        }
-
-        if (!empty($config['adminPass'])) {
-            $result->setAdminUserPassword($config['adminPass']);
         }
 
         if (!empty($config['mailField'])) {
@@ -558,5 +541,33 @@ class LdapUsers
         }
 
         return $result;
+    }
+
+    /**
+     * Returns a list of {@link ServerInfo} instances describing the LDAP servers
+     * that should be connected to.
+     *
+     * @param array $config The `[LoginLdap]` INI config section.
+     * @return ServerInfo[]
+     */
+    private static function getConfiguredLdapServers($config)
+    {
+        $serverNameList = @$config['servers'];
+
+        if (empty($serverNameList)) {
+            $server = ServerInfo::makeFromOldConfig($config);
+            return array($server);
+        } else {
+            $servers = array();
+            foreach ($serverNameList as $name) {
+                try {
+                    $servers[] = ServerInfo::makeConfigured($name);
+                } catch (Exception $ex) {
+                    Log::debug("Model\\LdapUsers::%s: LDAP server info '%s' is configured incorrectly: %s",
+                        __FUNCTION__, $name, $ex->getMessage());
+                }
+            }
+            return $servers;
+        }
     }
 }
