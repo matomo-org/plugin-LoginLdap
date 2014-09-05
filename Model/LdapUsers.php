@@ -261,14 +261,23 @@ class LdapUsers
      */
     public function createPiwikUserEntryForLdapUser($ldapUser)
     {
+        $login = $ldapUser[$this->ldapUserIdField];
+
         // we don't actually use this in authentication, we just add it as an extra security precaution, in case
         // someone manages to disable LDAP auth
         $password = substr($ldapUser['userpassword'], 0, UsersManager::PASSWORD_MAX_LENGTH - 1);
 
+        $email = @$ldapUser[$this->ldapMailField];
+        if (empty($email)) { // a valid email is needed to create a new user
+            $suffix = $this->authenticationUsernameSuffix;
+            $domain = !empty($suffix) ? $suffix : '@mydomain.com';
+            $email = $login . $domain; // TODO: this assumes username suffix is a email suffix (ie @whatever.com)
+        }
+
         return array(
-            'login' => $ldapUser[$this->ldapUserIdField],
+            'login' => $login,
             'password' => $password, 
-            'email' => $ldapUser[$this->ldapMailField],
+            'email' => $email,
             'alias' => $ldapUser[$this->ldapAliasField]
         );
     }
@@ -490,6 +499,7 @@ class LdapUsers
      *
      * @param $login
      * @param $password
+     * @return int
      */
     public function updateCredentials($login, $password)
     {

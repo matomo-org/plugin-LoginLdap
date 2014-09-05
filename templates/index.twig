@@ -1,160 +1,132 @@
 {% extends 'admin.twig' %}
 
 {% block content %}
+<div ng-controller="LoginLdapAdminController"
+        data-loginLdapConfig="{{ ldapConfig|json_encode }}">
 
     <h2>{{ 'LoginLdap_LoadUser'|translate }}</h2>
     <div style="float:left">
 
         <p>{{ 'LoginLdap_LoadUserDescription'|translate }}</p>
 
-        <table id='ldapLoadUserTable' class="adminTable" style="width:750px">
-            <form method="post" action="{{ {'action':'loadUser', 'form':'loadUserForm', 'token_auth':token_auth} | urlRewriteWithParameters }}"
-                  id="loadUserForm" name="loadUserForm">
+        <label for="load-user-username" style="width:150px">{{ 'General_Username'|translate }}</label>
+        <input size="25" id="load-user-username" ng-model="userNameToSync"/>
+        <input class="submit" type="submit" value="{{ 'LoginLdap_LoadUser'|translate }}" ng-click="synchronizeLdapUser(userNameToSync)"/>
 
-                <tr>
-                    <td width="150"><label for="username">{{ 'General_Username'|translate }} </label></td>
-                    <td>
-                        <input size="25" value="" id="username" name="username"/>
-                        <input class="submit" type="submit" value="{{ 'LoginLdap_LoadUser'|translate }}"/>
-                    </td>
-                </tr>
-
-            </form>
-        </table>
-
+        <img ng-show="isSynchronizingUser" src="plugins/Morpheus/images/loading-blue.gif"/>
     </div>
 
 
     <h2>{{ 'LoginLdap_Settings'|translate }}</h2>
 
     <table id='ldapSettingsTable' class="adminTable" style='width:900px'>
-        <form method="post" action="{{ {'action':'saveSettings', 'form':'saveSettingsForm', 'token_auth':token_auth} | urlRewriteWithParameters }}"
-              id="saveSettingsForm" name="saveSettingsForm">
+        <tr>
+            <td width="150"><label for="serverUrl">{{ 'LoginLdap_ServerUrl'|translate }} </label></td>
+            <td>
+                <input size="25" id="serverUrl" ng-model="loginLdapConfig.serverUrl"/>
+                <span class='form-description'>{{ 'LoginLdap_ServerUrlDescription'|translate }}</span>
+            </td>
+        </tr>
 
-            <tr>
-                <td width="150"><label for="serverUrl">{{ 'LoginLdap_ServerUrl'|translate }} </label></td>
-                <td>
-                    <input size="25" value="{{ serverUrl }}" id="serverUrl" name="serverUrl"/>
-                    <span class='form-description'>{{ 'LoginLdap_ServerUrlDescription'|translate }}</span>
-                </td>
-            </tr>
+        <tr>
+            <td><label for="ldapPort">{{ 'LoginLdap_LdapPort'|translate }} </label></td>
+            <td>
+                <input size="25" id="ldapPort" ng-model="loginLdapConfig.ldapPort"/>
+                <span class='form-description'>{{ 'LoginLdap_LdapPortDescription'|translate }}</span>
+            </td>
+        </tr>
 
-            <tr>
-                <td><label for="ldapPort">{{ 'LoginLdap_LdapPort'|translate }} </label></td>
-                <td>
-                    <input size="25" value="{{ ldapPort }}" id="ldapPort" name="ldapPort"/>
-                    <span class='form-description'>{{ 'LoginLdap_LdapPortDescription'|translate }}</span>
-                </td>
-            </tr>
+        <tr>
+            <td><label for="baseDn">{{ 'LoginLdap_BaseDn'|translate }} </label></td>
+            <td>
+                <input size="25" id="baseDn" ng-model="loginLdapConfig.baseDn"/>
+                <span class='form-description'>{{ 'LoginLdap_BaseDnDescription'|translate }}</span>
+            </td>
+        </tr>
 
-            <tr>
-                <td><label for="baseDn">{{ 'LoginLdap_BaseDn'|translate }} </label></td>
-                <td>
-                    <input size="25" value="{{ baseDn }}" id="baseDn" name="baseDn"/>
-                    <span class='form-description'>{{ 'LoginLdap_BaseDnDescription'|translate }}</span>
-                </td>
-            </tr>
+        <tr>
+            <td><label for="userIdField">{{ 'LoginLdap_UserIdField'|translate }} </label></td>
+            <td>
+                <input size="25" id="userIdField" ng-model="loginLdapConfig.userIdField"/>
+                <span class='form-description'>{{ 'LoginLdap_UserIdFieldDescription'|translate }}</span>
+            </td>
+        </tr>
 
-            <tr>
-                <td><label for="userIdField">{{ 'LoginLdap_UserIdField'|translate }} </label></td>
-                <td>
-                    <input size="25" value="{{ userIdField }}" id="userIdField" name="userIdField"/>
-                    <span class='form-description'>{{ 'LoginLdap_UserIdFieldDescription'|translate }}</span>
-                </td>
-            </tr>
+        <tr>
+            <td><label for="mailField">{{ 'LoginLdap_MailField'|translate }} </label></td>
+            <td>
+                <input size="25" id="mailField" ng-model="loginLdapConfig.mailField"/>
+                <span class='form-description'>{{ 'LoginLdap_MailFieldDescription'|translate }}</span>
+            </td>
+        </tr>
 
-            <tr>
-                <td><label for="mailField">{{ 'LoginLdap_MailField'|translate }} </label></td>
-                <td>
-                    <input size="25" value="{{ mailField }}" id="mailField" name="mailField"/>
-                    <span class='form-description'>{{ 'LoginLdap_MailFieldDescription'|translate }}</span>
-                </td>
-            </tr>
+        <tr>
+            <td><label for="aliasField">{{ 'LoginLdap_AliasField'|translate }} </label></td>
+            <td>
+                <input size="25" id="aliasField" ng-model="loginLdapConfig.aliasField"/>
+                <span class='form-description'>{{ 'LoginLdap_AliasFieldDescription'|translate }}</span>
+            </td>
+        </tr>
 
-            <tr>
-                <td><label for="aliasField">{{ 'LoginLdap_AliasField'|translate }} </label></td>
-                <td>
-                    <input size="25" value="{{ aliasField }}" id="aliasField" name="aliasField"/>
-                    <span class='form-description'>{{ 'LoginLdap_AliasFieldDescription'|translate }}</span>
-                </td>
-            </tr>
+        <tr>
+            <td><label for="usernameSuffix">{{ 'LoginLdap_UsernameSuffix'|translate }} </label></td>
+            <td>
+                <input size="25" id="usernameSuffix" ng-model="loginLdapConfig.usernameSuffix"/>
+                <span class='form-description'>{{ 'LoginLdap_UsernameSuffixDescription'|translate }}</span>
+            </td>
+        </tr>
 
-            <tr>
-                <td><label for="usernameSuffix">{{ 'LoginLdap_UsernameSuffix'|translate }} </label></td>
-                <td>
-                    <input size="25" value="{{ usernameSuffix }}" id="usernameSuffix" name="usernameSuffix"/>
-                    <span class='form-description'>{{ 'LoginLdap_UsernameSuffixDescription'|translate }}</span>
-                </td>
-            </tr>
+        <tr>
+            <td><label for="adminUser">{{ 'LoginLdap_AdminUser'|translate }} </label></td>
+            <td>
+                <input size="25" id="adminUser" ng-model="loginLdapConfig.adminUser"/>
+                <span class='form-description'>{{ 'LoginLdap_AdminUserDescription'|translate }}</span>
+            </td>
+        </tr>
 
-            <tr>
-                <td><label for="adminUser">{{ 'LoginLdap_AdminUser'|translate }} </label></td>
-                <td>
-                    <input size="25" value="{{ adminUser }}" id="adminUser" name="adminUser"/>
-                    <span class='form-description'>{{ 'LoginLdap_AdminUserDescription'|translate }}</span>
-                </td>
-            </tr>
+        <tr>
+            <td><label for="adminPass">{{ 'LoginLdap_AdminPass'|translate }} </label></td>
+            <td>
+                <input size="25" id="adminPass" ng-model="loginLdapConfig.adminPass" type="password"/>
+            </td>
+        </tr>
 
-            <tr>
-                <td><label for="adminPass">{{ 'LoginLdap_AdminPass'|translate }} </label></td>
-                <td>
-                    <input size="25" value="{{ adminPass }}" id="adminPass" name="adminPass" type="password"/>
-                </td>
-            </tr>
+        <tr>
+            <td><label for="memberOf">{{ 'LoginLdap_MemberOf'|translate }} </label></td>
+            <td>
+                <input size="25" id="memberOf" ng-model="loginLdapConfig.memberOf"/>
+                <span class='form-description'>{{ 'LoginLdap_MemberOfDescription'|translate }}</span>
+            </td>
+        </tr>
 
-            <tr>
-                <td><label for="memberOf">{{ 'LoginLdap_MemberOf'|translate }} </label></td>
-                <td>
-                    <input size="25" value="{{ memberOf }}" id="memberOf" name="memberOf"/>
-                    <span class='form-description'>{{ 'LoginLdap_MemberOfDescription'|translate }}</span>
-                </td>
-            </tr>
+        <tr>
+            <td><label for="filter">{{ 'LoginLdap_Filter'|translate }} </label></td>
+            <td>
+                <input size="25" id="filter" ng-model="loginLdapConfig.filter"/>
+                <span class='form-description'>{{ 'LoginLdap_FilterDescription'|translate }}</span>
+            </td>
+        </tr>
 
-            <tr>
-                <td><label for="filter">{{ 'LoginLdap_Filter'|translate }} </label></td>
-                <td>
-                    <input size="25" value="{{ filter }}" id="filter" name="filter"/>
-                    <span class='form-description'>{{ 'LoginLdap_FilterDescription'|translate }}</span>
-                </td>
-            </tr>
+        <tr>
+            <td><label for="useKerberos">{{ 'LoginLdap_Kerberos'|translate }} </label></td>
+            <td>
+                <input type="checkbox" ng-model="loginLdapConfig.useKerberos" id="useKerberos"/>
+            </td>
+        </tr>
 
-            <tr>
-                <td><label for="useKerberos">{{ 'LoginLdap_Kerberos'|translate }} </label></td>
-                <td>
-                    <select name="useKerberos">
-                        <option value="false"{% if useKerberos == "false" %} selected{% endif %}>{{ 'General_No'|translate }}</option>
-                        <option value="true"{% if useKerberos == "true" %} selected{% endif %}>{{ 'General_Yes'|translate }}</option>
-                    </select>
-                </td>
-            </tr>
+        <tr>
+            <td><label for="autoCreateUser">{{ 'LoginLdap_autoCreateUser'|translate }} </label></td>
+            <td>
+                <input type="checkbox" ng-model="loginLdapConfig.autoCreateUser" id="autoCreateUser"/>
+            </td>
+        </tr>
 
-            <tr>
-                <td><label for="debugEnabled">{{ 'LoginLdap_Debug'|translate }} </label></td>
-                <td>
-                    <select name="debugEnabled">
-                        <option value="false"{% if debugEnabled == "false" %} selected{% endif %}>{{ 'General_No'|translate }}</option>
-                        <option value="true"{% if debugEnabled == "true" %} selected{% endif %}>{{ 'General_Yes'|translate }}</option>
-                    </select>
-                </td>
-            </tr>
-
-            <tr>
-                <td><label for="autoCreateUser">{{ 'LoginLdap_autoCreateUser'|translate }} </label></td>
-                <td>
-                    <select name="autoCreateUser">
-                        <option value="false"{% if autoCreateUser == "false" %} selected{% endif %}>{{ 'General_No'|translate }}</option>
-                        <option value="true"{% if autoCreateUser == "true" %} selected{% endif %}>{{ 'General_Yes'|translate }}</option>
-                    </select>
-                </td>
-            </tr>
-
-            <tr>
-                <td align="left">
-                    <input class="submit" type="submit" value="{{ 'General_Save'|translate }}"/>
-                </td>
-                <td></td>
-            </tr>
-
-        </form>
+        <tr>
+            <td align="left">
+                <input class="submit" type="submit" value="{{ 'General_Save'|translate }}" ng-click="saveLoginLdapConfig(loginLdapConfig)"/>
+            </td>
+            <td></td>
+        </tr>
     </table>
+</div>
 {% endblock %}

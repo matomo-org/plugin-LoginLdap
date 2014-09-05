@@ -26,6 +26,23 @@ use Piwik\Session;
  */
 class LoginLdap extends \Piwik\Plugin
 {
+    public static $defaultConfig = array(
+        'serverUrl' => "ldap://localhost",
+        'ldapPort' => "389",
+        'baseDn' => "",
+        'userIdField' => "sAMAccountName",
+        'mailField' => "mail",
+        'aliasField' => "cn",
+        'usernameSuffix' => "@dc.com",
+        'adminUser' => "ldap_user",
+        'adminPass' => "ldap_pass",
+        'memberOf' => "",
+        'filter' => "",
+        'useKerberos' => "false",
+        'debugEnabled' => "false",
+        'autoCreateUser' => "false"
+    );
+
     /**
      * @see Piwik_Plugin::getListHooksRegistered
      */
@@ -43,7 +60,8 @@ class LoginLdap extends \Piwik\Plugin
 
     public function getJsFiles(&$jsFiles)
     {
-        $jsFiles[] = "plugins/Login/javascripts/login.js";
+        $jsFiles[] = "plugins/Login/javascripts/login.js"; // TODO: shouldn't disable Login plugin
+        $jsFiles[] = "plugins/LoginLdap/javascripts/angularjs/admin/controller.js";
     }
 
     /**

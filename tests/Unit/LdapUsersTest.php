@@ -26,6 +26,9 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
     const TEST_EXTRA_FILTER = '(testfilter)';
     const TEST_MEMBER_OF = "member";
 
+    /**
+     * @var LdapUsers
+     */
     private $ldapUsers = null;
 
     public function setUp()
@@ -347,6 +350,31 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
         ));
 
         $this->assertEquals(array('login' => 'donna', 'password' => 'pass', 'email' => 'donna@rstad.com', 'alias' => 'am i bovvered?'), $result);
+    }
+
+    public function testCreatePiwikUserEntryForLdapUserSetsCorrectEmailWhenUserHasNone()
+    {
+        $result = $this->ldapUsers->createPiwikUserEntryForLdapUser(array(
+            'uid' => 'pond',
+            'cn' => 'kissogram',
+            'userpassword' => 'pass'
+        ));
+
+        $this->assertEquals(array('login' => 'pond', 'password' => 'pass', 'email' => 'pond@mydomain.com', 'alias' => 'kissogram'), $result);
+
+        $this->ldapUsers->setAuthenticationUsernameSuffix('@royalleadworthhospital.co.uk');
+        $result = $this->ldapUsers->createPiwikUserEntryForLdapUser(array(
+            'uid' => 'mrpond',
+            'cn' => 'not quite Bond',
+            'userpassword' => 'pass'
+        ));
+
+        $this->assertEquals(array(
+            'login' => 'mrpond',
+            'password' => 'pass',
+            'email' => 'mrpond@royalleadworthhospital.co.uk',
+            'alias' => 'not quite Bond'
+        ), $result);
     }
 
     /**
