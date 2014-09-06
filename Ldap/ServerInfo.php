@@ -229,11 +229,11 @@ class ServerInfo
         }
 
         if (empty($config['hostname'])) {
-            throw new Exception("Required config option 'hostname' not found in [$name] section.")
+            throw new Exception("Required config option 'hostname' not found in [$name] section.");
         }
 
         if (empty($config['base_dn'])) {
-            throw new Exception("Required config option 'base_dn' not found in [$name] section.")
+            throw new Exception("Required config option 'base_dn' not found in [$name] section.");
         }
 
         $hostname = $config['hostname'];

@@ -450,15 +450,15 @@ class LdapUsers
         foreach ($this->ldapServers as $server) {
             try {
                 $this->ldapClient->connect($server->getServerHostname(), $server->getServerPort());
-
-                $this->ldapClient = $ldapClient;
                 $this->currentServerInfo = $server;
 
                 return;
             } catch (Exception $ex) {
+                Log::debug($ex);
+
                 // TODO: should be warning but default Piwik logger is 'screen'
-                Log::info("Model\\LdapUsers::%s: Could not connect to LDAP server %s:%s.",
-                    $server->getServerHostname(), $server->getServerPort());
+                Log::info("Model\\LdapUsers::%s: Could not connect to LDAP server %s:%s: %s",
+                    __FUNCTION__, $server->getServerHostname(), $server->getServerPort(), $ex->getMessage());
             }
         }
 
