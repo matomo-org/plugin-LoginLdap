@@ -28,8 +28,6 @@ class AutoCreateUserTest extends LdapIntegrationTest
     {
         parent::setUp();
 
-        Config::getInstance()->LoginLdap['autoCreateUser'] = 1;
-
         Piwik::setUserHasSuperUserAccess(false);
     }
 
@@ -60,21 +58,6 @@ class AutoCreateUserTest extends LdapIntegrationTest
             'email' => 'billionairephilanthropistplayboy@starkindustries.com',
             'token_auth' => UsersManagerAPI::getInstance()->getTokenAuth(self::TEST_LOGIN, $addedPass)
         ), $user);
-    }
-
-    public function testPiwikUserIsNotCreatedIfAutoCreateUserIsNotEnabled()
-    {
-        Config::getInstance()->LoginLdap['autoCreateUser'] = 0;
-
-        $ldapAuth = new LdapAuth();
-        $ldapAuth->setLogin(self::TEST_LOGIN);
-        $ldapAuth->setPassword(self::TEST_PASS);
-        $authResult = $ldapAuth->authenticate();
-
-        $this->assertEquals(0, $authResult->getCode()); // should fail because we need normal user info like alias/email
-
-        $user = Db::fetchRow("SELECT login, password, alias, email, token_auth FROM " . Common::prefixTable('user') . " WHERE login = ?", array(self::TEST_LOGIN));
-        $this->assertEmpty($user);
     }
 
     public function testPiwikUserIsNotCreatedIfPiwikUserAlreadyExists()

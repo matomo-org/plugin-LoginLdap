@@ -40,6 +40,7 @@
         "Debug": "Debug mode enabled",
         "autoCreateUser": "Add users if they match LDAP user settings",
         "CannotConnectToServer": "Could not connect to the LDAP server.",
-        "CannotConnectToServers": "Could not connect to any of the %s LDAP servers."
+        "CannotConnectToServers": "Could not connect to any of the %s LDAP servers.",
+        "LDAPServers": "LDAP Servers"
     }
 }

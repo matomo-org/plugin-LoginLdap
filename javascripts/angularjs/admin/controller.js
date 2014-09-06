@@ -9,16 +9,10 @@ angular.module('piwikApp').controller('LoginLdapAdminController', function ($sco
     $scope.isSynchronizingUser = false;
     $scope.userNameToSync = "";
 
-    $scope.loginLdapConfig = JSON.parse($attrs['loginldapconfig']);
+    $scope.loginLdapConfig = JSON.parse($attrs['loginldapconfig']) || {};
 
-    // TODO: use nonces as in old controller method way
-    $scope.synchronizeLdapUser = function (ldapUserName) {
-        $scope.isSynchronizingUser = true;
-        piwikApi.fetch({
-            method: "LoginLdap.synchronizeLdapUser",
-            ldapUserName: ldapUserName
-        }).then(function (response) {
-            var UI = require('piwik/UI');
+    var UI = require('piwik/UI'),
+        displaySuccessMessage = function (response) {
             var notification = new UI.Notification();
             notification.show(response.message, {
                 context: 'success',
@@ -26,7 +20,15 @@ angular.module('piwikApp').controller('LoginLdapAdminController', function ($sco
                 id: 'ajaxHelper'
             });
             notification.scrollToNotification();
-        })['finally'](function () {
+        };
+
+    // TODO: use nonces as in old controller method way
+    $scope.synchronizeLdapUser = function (ldapUserName) {
+        $scope.isSynchronizingUser = true;
+        piwikApi.fetch({
+            method: "LoginLdap.synchronizeLdapUser",
+            ldapUserName: ldapUserName
+        }).then(displaySuccessMessage)['finally'](function () {
             $scope.isSynchronizingUser = false;
         });
     };
@@ -37,17 +39,37 @@ angular.module('piwikApp').controller('LoginLdapAdminController', function ($sco
         piwikApi.fetch({
             method: "LoginLdap.saveLdapConfig",
             config: JSON.stringify(config)
-        }).then(function (response) {
-            var UI = require('piwik/UI');
-            var notification = new UI.Notification();
-            notification.show(response.message, {
-                context: 'success',
-                type: 'toast',
-                id: 'ajaxHelper'
-            });
-            notification.scrollToNotification();
-        })['finally'](function () {
+        }).then(displaySuccessMessage)['finally'](function () {
             $scope.isSavingLdapConfig = false;
+        });
+    };
+
+    // LDAP server info management
+    $scope.servers = JSON.parse($attrs['servers']) || [];
+
+    $scope.deleteServer = function (name) {
+        $scope.servers = $scope.servers.filter(function (server) { return server.name != name; });
+    };
+
+    $scope.addServer = function () {
+        $scope.servers.push({
+            name: "server" + $scope.servers.length,
+            hostname: "",
+            port: 389,
+            base_dn: "",
+            admin_user: "",
+            admin_pass: ""
+        });
+    };
+
+    $scope.isSavingLdapServers = false;
+    $scope.saveServers = function (servers) {
+        $scope.isSavingLdapServers = true;
+        piwikApi.fetch({
+            method: "LoginLdap.saveServersInfo",
+            servers: JSON.stringify(servers)
+        }).then(displaySuccessMessage)['finally'](function () {
+            $scope.isSavingLdapServers = false;
         });
     };
 });

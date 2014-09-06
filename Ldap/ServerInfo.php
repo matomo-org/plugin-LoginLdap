@@ -251,4 +251,42 @@ class ServerInfo
         }
         return $result;
     }
+
+    /**
+     * Sets an INI config section using an array of LDAP server info.
+     *
+     * @param string[] $serverInfo
+     * @param bool $forceSave If true, configuration changes are saved before this method exits.
+     * @throws Exception if hostname or base_dn are missing from $serverInfo.
+     */
+    public static function saveServerConfig($serverInfo, $forceSave = true)
+    {
+        if (empty($serverInfo['name'])) {
+            throw new Exception("Server info array has no name!");
+        }
+
+        if (empty($serverInfo['hostname'])) {
+            throw new Exception("'hostname' property is required for server '{$serverInfo['name']}'.");
+        }
+
+        if (empty($serverInfo['base_dn'])) {
+            throw new Exception("'base_dn' property is required for server '{$serverInfo['name']}'.");
+        }
+
+        $configSection = array(
+            'hostname' => $serverInfo['hostname'],
+            'port' => @$serverInfo['port'],
+            'base_dn' => $serverInfo['base_dn'],
+            'admin_user' => @$serverInfo['admin_user'],
+            'admin_pass' => @$serverInfo['admin_pass']
+        );
+
+        $configSectionName = 'LoginLdap_' . $serverInfo['name'];
+
+        Config::getInstance()->__set($configSectionName, $configSection);
+
+        if ($forceSave) {
+            Config::getInstance()->forceSave();
+        }
+    }
 }

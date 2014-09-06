@@ -9,18 +9,18 @@
 namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
 use Piwik\AuthResult;
+use Piwik\Common;
 use Piwik\Config;
+use Piwik\Db;
 use Piwik\Plugins\LoginLdap\LdapAuth;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 
 /**
  * @group LoginLdap
  * @group LoginLdap_Integration
- * @group LoginLdap_ConnectionTest
- *
- * TODO: rename to AuthenticationTest and test for token_auth only authentication (need to do in AutoCreateUserTest as well)
+ * @group LoginLdap_AuthenticationTest
  */
-class ConnectionTest extends LdapIntegrationTest
+class AuthenticationTest extends LdapIntegrationTest
 {
     public function setUp()
     {
@@ -171,7 +171,7 @@ class ConnectionTest extends LdapIntegrationTest
 
     public function testWebServerAuthReturnsCorrectCodeForSuperUsers()
     {
-        $this->markTestSkipped("Superuser access from LDAP not implemented yet"); // TODO remove when implemented
+        Config::getInstance()->LoginLdap['useKerberos'] = 1;
 
         $_SERVER['REMOTE_USER'] = self::TEST_SUPERUSER_LOGIN;
 
@@ -179,6 +179,43 @@ class ConnectionTest extends LdapIntegrationTest
         $authResult = $ldapAuth->authenticate();
 
         $this->assertEquals(AuthResult::SUCCESS_SUPERUSER_AUTH_CODE, $authResult->getCode());
+    }
+
+    public function testTokenAuthOnlyAuthenticationWorks()
+    {
+        $tokenAuth = Db::fetchOne("SELECT token_auth FROM " . Common::prefixTable("user") . " WHERE login = ?", array(self::TEST_LOGIN));
+
+        $ldapAuth = new LdapAuth();
+        $ldapAuth->setLogin(self::TEST_LOGIN);
+        $ldapAuth->setTokenAuth($tokenAuth);
+        $authResult = $ldapAuth->authenticate();
+
+        $this->assertEquals(1, $authResult->getCode());
+    }
+
+    public function testAuthenticationWorksWhenAuthenticatingNormalPiwikSuperUser()
+    {
+        UsersManagerAPI::getInstance()->addUser('zola', 'hydra___', 'zola@shield.org', $alias = false);
+        UsersManagerAPI::getInstance()->setSuperUserAccess('zola', true);
+
+        $ldapAuth = new LdapAuth();
+        $ldapAuth->setLogin('zola');
+        $ldapAuth->setPassword('hydra___');
+        $authResult = $ldapAuth->authenticate();
+
+        $this->assertEquals(AuthResult::SUCCESS_SUPERUSER_AUTH_CODE, $authResult->getCode());
+    }
+
+    public function testAuthenticationFailsWhenAuthenticatingNormalPiwikNonSuperUser()
+    {
+        UsersManagerAPI::getInstance()->addUser('pcoulson', 'vintage', 'pcoulson@shield.org', $alias = false);
+
+        $ldapAuth = new LdapAuth();
+        $ldapAuth->setLogin('pcoulson');
+        $ldapAuth->setPassword('vintage');
+        $authResult = $ldapAuth->authenticate();
+
+        $this->assertEquals(0, $authResult->getCode());
     }
 
     // TODO: rename kerberos stuff w/ webserver auth

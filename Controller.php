@@ -72,9 +72,23 @@ class Controller extends \Piwik\Plugins\Login\Controller
         $this->setBasicVariablesView($view);
         $view->infoMessage = nl2br($infoMessage);
 
+        $config = Config::getInstance()->LoginLdap;
+
+        $serverNames = @$config['servers'] ?: array();
+
+        $view->servers = array();
+        foreach ($serverNames as $server) {
+            $configName = 'LoginLdap_' . $server;
+            $serverConfig = Config::getInstance()->__get($configName);
+            if (!empty($serverConfig)) {
+                $serverConfig['name'] = $server;
+                $view->servers[] = $serverConfig;
+            }
+        }
+
         $view->ldapConfig = LoginLdap::$defaultConfig;
 
-        $config = Config::getInstance()->LoginLdap;
+        unset($config['servers']);
         foreach ($view->ldapConfig as $name => &$value) {
             if (isset($config[$name])) {
                 $view->ldapConfig[$name] = $config[$name];
@@ -94,10 +108,10 @@ class Controller extends \Piwik\Plugins\Login\Controller
     }
 
     /**
-    * Configure common view properties
-    *
-    * @param View $view
-    */
+     * Configure common view properties
+     *
+     * @param View $view
+     */
     private function configureView($view)
     {
         $this->setBasicVariablesView($view);
@@ -109,10 +123,10 @@ class Controller extends \Piwik\Plugins\Login\Controller
     }
 
     /**
-    * @param null $messageNoAccess
-    * @param bool $infoMessage
-    * @return string
-    */
+     * @param null $messageNoAccess
+     * @param bool $infoMessage
+     * @return string
+     */
     public function login($messageNoAccess = null, $infoMessage = false)
     {
         $form = new FormLogin();
@@ -122,9 +136,8 @@ class Controller extends \Piwik\Plugins\Login\Controller
                 $login = $form->getSubmitValue('form_login');
                 $password = $form->getSubmitValue('form_password');
                 $rememberMe = $form->getSubmitValue('form_rememberme') == '1';
-                $md5Password = md5($password);
                 try {
-                    $this->authenticateAndRedirect($login, $md5Password, $rememberMe);
+                    $this->authenticateAndRedirect($login, $password, $rememberMe);
                 } catch (Exception $e) {
                     $messageNoAccess = $e->getMessage();
                 }

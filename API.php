@@ -10,6 +10,7 @@ namespace Piwik\Plugins\LoginLdap;
 use Piwik\Common;
 use Piwik\Config;
 use Piwik\Piwik;
+use Piwik\Plugins\LoginLdap\Ldap\ServerInfo;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
 use Piwik\Plugins\UsersManager\API as UsersManagerApi;
 use Exception;
@@ -65,6 +66,33 @@ class API extends \Piwik\Plugin\API
                 Config::getInstance()->LoginLdap[$name] = $config[$name];
             }
         }
+
+        Config::getInstance()->forceSave();
+
+        return array('result' => 'success', 'message' => Piwik::translate("General_YourChangesHaveBeenSaved"));
+    }
+
+    /**
+     * Saves LDAP server config.
+     *
+     * @param string $servers JSON encoded server info array.
+     * @return array
+     * @throws Exception
+     */
+    public function saveServersInfo($servers)
+    {
+        $this->checkHttpMethodIsPost();
+        Piwik::checkUserHasSuperUserAccess();
+
+        $servers = json_decode(Common::unsanitizeInputValue($servers), true);
+
+        $serverNames = array();
+        foreach ($servers as $serverInfo) {
+            ServerInfo::saveServerConfig($serverInfo, $forceSave = false);
+
+            $serverNames[] = $serverInfo['name'];
+        }
+        Config::getInstance()->LoginLdap['servers']= $serverNames;
 
         Config::getInstance()->forceSave();
 

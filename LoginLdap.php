@@ -128,7 +128,7 @@ class LoginLdap extends \Piwik\Plugin
     }
 
     /**
-     * Set login name and autehntication token for authentication request.
+     * Set login name and authentication token for authentication request.
      * Listens to API.Request.authenticate hook.
      */
     public function ApiRequestAuthenticate($tokenAuth)

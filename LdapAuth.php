@@ -32,9 +32,12 @@ use Piwik\Plugins\LoginLdap\Model\LdapUsers;
  */
 class LdapAuth extends \Piwik\Plugins\Login\Auth
 {
-    protected $login = null;
     protected $password = null;
-    protected $token_auth = null;
+
+    /**
+     * @var bool
+     */
+    private $initializingSession = false;
 
     /**
      * LdapUsers DAO instance.
@@ -88,7 +91,9 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
             }
         }
 
-        if ($this->login === null) {
+        if (!$this->initializingSession
+            && !empty($this->token_auth)
+        ) {
             return $this->authenticateByTokenAuth();
         } else {
             return $this->authenticateByLoginAndPassword($kerberosEnabled);
@@ -114,43 +119,36 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
     /**
      * This method is used for LDAP authentication.
      */
-    private function authenticateLDAP($user, $password, $useWebServerAuth)
+    private function authenticateLDAP($userLogin, $password, $useWebServerAuth)
     {
-        $config = Config::getInstance()->LoginLdap;
-
-        $autoCreateUser = $this->getConfigValue('autoCreateUser') == 1;
-
-        $ldapUser = $this->ldapUsers->authenticate($user, $password, $useWebServerAuth);
+        $ldapUser = $this->ldapUsers->authenticate($userLogin, $password, $useWebServerAuth);
         if (!empty($ldapUser)) {
-            $user = $this->usersModel->getUser($user); // TODO: is setting the token auth necessary?
+            $user = $this->usersModel->getUser($userLogin); // TODO: is setting the token auth necessary?
 
-            if (!empty($user['token_auth'])) {
-                $this->token_auth = $user['token_auth'];
-
-                return true;
-            } else {
+            if (empty($user['token_auth'])) {
                 Log::debug("Token auth for user '%s' not found in Piwik DB.", $user);
 
-                if (!$useWebServerAuth
-                    && $autoCreateUser
-                ) {
-                    $user = $this->ldapUsers->createPiwikUserEntryForLdapUser($ldapUser);
+                $user = $this->ldapUsers->createPiwikUserEntryForLdapUser($ldapUser);
 
-                    Log::debug("Autocreating Piwik user (%s) for LDAP user: %s", $user, $ldapUser);
+                Log::debug("Autocreating Piwik user (%s) for LDAP user: %s", $user, $ldapUser);
 
-                    $isSuperUser = Piwik::hasUserSuperUserAccess(); // TODO: should move this code to a utility method that uses a closure
-                    Piwik::setUserHasSuperUserAccess();
-                    UsersManagerApi::getInstance()->addUser($user['login'], $user['password'], $user['email'], $user['alias']);
-                    Piwik::setUserHasSuperUserAccess($isSuperUser);
+                $isSuperUser = Piwik::hasUserSuperUserAccess(); // TODO: should move this code to a utility method that uses a closure
+                Piwik::setUserHasSuperUserAccess();
+                UsersManagerApi::getInstance()->addUser($user['login'], $user['password'], $user['email'], $user['alias']);
+                Piwik::setUserHasSuperUserAccess($isSuperUser);
 
-                    return true;
-                }
+                $user = $this->usersModel->getUser($userLogin);
             }
+
+            $this->token_auth = $user['token_auth'];
+
+            // TODO: if token auth in DB is wrong, should we update it when syncing?
+
+            return true;
+        } else {
+            return false;
         }
-
-        return false;
     }
-
 
     /**
     * Authenticates the user and initializes the session.
@@ -158,8 +156,10 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
     public function initSession($login, $password, $rememberMe)
     {
         $this->setPassword($password);
-        
+
+        $this->initializingSession = true;
         parent::initSession($login, md5($password), $rememberMe);
+        $this->initializingSession = false;
 
         // remove password reset entry if it exists
         LoginLdap::removePasswordResetInfo($login);
@@ -182,21 +182,7 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
 
     private function authenticateByTokenAuth()
     {
-        if (empty($this->token_auth)) {
-            Log::debug("authenticateByTokenAuth: token auth is empty.");
-
-            return $this->makeAuthFailure();
-        }
-
-        $user = $this->getUserByTokenAuth();
-
-        if (empty($user['login'])) {
-            Log::debug("authenticateByTokenAuth failed: no user found for given token auth.");
-
-            return $this->makeAuthFailure();
-        }
-
-        return $this->makeSuccessLogin($user);
+        return parent::authenticate();
     }
 
     private function authenticateByLoginAndPassword($usingWebServerAuth)
@@ -219,17 +205,25 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
 
                 return $this->makeSuccessLogin($user);
             } else {
-                return $this->makeAuthFailure();
+                if (empty($this->token_auth)) {
+                    $this->token_auth = UsersManagerApi::getInstance()->getTokenAuth($this->login, md5($this->password));
+                }
+
+                // if LDAP auth failed, try normal auth. if we have a login for a superuser, let it through.
+                // this way, LoginLdap can be managed even if no users exist in LDAP.
+                $result = parent::authenticate();
+
+                if ($result->getCode() == AuthResult::SUCCESS_SUPERUSER_AUTH_CODE) {
+                    return $result;
+                } else {
+                    return self::makeAuthFailure();
+                }
             }
         } catch (Exception $ex) {
             Log::debug($ex);
 
             throw $ex;
         }
-
-        // TODO: removed code that authenticates based on token auth of user. mimics Login Auth's no-password authentication.
-        //       not sure if this should be mimiced, but shouldn't be able to login if LDAP fails...
-        //       if LDAP login fails but token auth == expected token auth, then there is a syncing error.
     }
 
     private function getUserByTokenAuth()
