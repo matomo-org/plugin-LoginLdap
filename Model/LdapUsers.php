@@ -11,10 +11,12 @@ use Piwik\Db;
 use Piwik\Config;
 use Piwik\Log;
 use Piwik\Common;
+use Piwik\Piwik;
 use Piwik\Plugins\UsersManager\UsersManager;
 use Piwik\Plugins\UsersManager\API as UsersManagerApi;
 use Piwik\Plugins\LoginLdap\Ldap\Client as LdapClient;
 use Piwik\Plugins\LoginLdap\Ldap\ServerInfo;
+use Piwik\Plugins\LoginLdap\Ldap\Exceptions\ConnectionException;
 use InvalidArgumentException;
 use Exception;
 
@@ -126,6 +128,7 @@ class LdapUsers
      *                                   the {@link $authenticationRequiredMemberOf} and {@link $authenticationLdapFilter}
      *                                   fields.
      * @return array|null On success, returns user info stored in the LDAP database. On failure returns `null`.
+     * @throws ConnectionException if we connect to any configured LDAP server.
      */
     public function authenticate($username, $password, $alreadyAuthenticated = false)
     {
@@ -146,8 +149,8 @@ class LdapUsers
         try {
             $authenticationRequiredMemberOf = $this->authenticationRequiredMemberOf;
             $result = $this->doWithClient(function (LdapUsers $self, LdapClient $ldapClient)
-                use ($username, $password, $alreadyAuthenticated, $authenticationRequiredMemberOf) {
-                
+            use ($username, $password, $alreadyAuthenticated, $authenticationRequiredMemberOf) {
+
                 $user = $self->getUser($username, $ldapClient);
 
                 if (empty($user)) {
@@ -178,6 +181,8 @@ class LdapUsers
                     return null;
                 }
             });
+        } catch (ConnectionException $ex) {
+            throw $ex;
         } catch (Exception $ex) {
             Log::debug($ex);
 
@@ -474,12 +479,12 @@ class LdapUsers
     private function throwCouldNotConnectException()
     {
         if (count($this->ldapServers) > 1) { // TODO: translate this message
-            $message = "Could not connect to any of the " . count($this->ldapServers) . " LDAP servers.";
+            $message = Piwik::translate('LoginLdap_CannotConnectToServers', count($this->ldapServers));
         } else {
-            $message = "Could not connect to the LDAP server.";
+            $message = Piwik::translate("CannotConnectToServer");
         }
 
-        throw new Exception($message);
+        throw new ConnectionException($message);
     }
 
     /**

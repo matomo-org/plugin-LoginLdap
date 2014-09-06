@@ -10,10 +10,8 @@ namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
 use Piwik\AuthResult;
 use Piwik\Config;
-use Piwik\Log;
 use Piwik\Plugins\LoginLdap\LdapAuth;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
-use DatabaseTestCase;
 
 /**
  * @group LoginLdap
@@ -22,55 +20,16 @@ use DatabaseTestCase;
  *
  * TODO: rename to AuthenticationTest and test for token_auth only authentication (need to do in AutoCreateUserTest as well)
  */
-class ConnectionTest extends DatabaseTestCase
+class ConnectionTest extends LdapIntegrationTest
 {
-    const SERVER_HOST_NAME = 'localhost';
-    const SERVER_POST = 389;
-    const SERVER_BASE_DN = "dc=avengers,dc=shield,dc=org";
-    const GROUP_NAME = 'cn=avengers,dc=avengers,dc=shield,dc=org';
-
-    const TEST_LOGIN = 'ironman';
-    const TEST_PASS = 'piedpiper';
-
-    const OTHER_TEST_LOGIN = 'blackwidow';
-    const OTHER_TEST_PASS = 'redledger';
-
-    const TEST_SUPERUSER_LOGIN = 'captainamerica';
-    const TEST_SUPERUSER_PASS = 'thaifood';
-
     public function setUp()
     {
-        if (!function_exists('ldap_bind')) {
-            throw new \Exception("PHP not compiled w/ --with-ldap!");
-        }
-
         parent::setUp();
 
-        // make sure logging logic is executed so we can test whether there are bugs in the logging code
-        Log::getInstance()->setLogLevel(Log::VERBOSE);
-
-        Config::getInstance()->LoginLdap = Config::getInstance()->LoginLdapTest + array(
-            'servers' => 'testserver',
-            'useKerberos' => 'false'
-        );
-
-        Config::getInstance()->LoginLdap_testserver = Config::getInstance()->LoginLdap_testserver + array(
-            'hostname' => self::SERVER_HOST_NAME,
-            'port' => self::SERVER_POST,
-            'base_dn' => self::SERVER_BASE_DN,
-            'admin_user' => 'cn=fury,' . self::SERVER_BASE_DN,
-            'admin_pass' => 'secrets'
-        );
-
         UsersManagerAPI::getInstance()->addUser(self::TEST_LOGIN, self::TEST_PASS, 'billionairephilanthropistplayboy@starkindustries.com', $alias = false);
-        
+
         UsersManagerAPI::getInstance()->addUser(self::TEST_SUPERUSER_LOGIN, self::TEST_SUPERUSER_PASS, 'srodgers@aol.com', $alias = false);
         UsersManagerAPI::getInstance()->setSuperUserAccess(self::TEST_SUPERUSER_LOGIN, true);
-    }
-
-    public function tearDown()
-    {
-        Log::unsetInstance();
     }
 
     public function testLdapAuthSucceedsWithCorrectCredentials()

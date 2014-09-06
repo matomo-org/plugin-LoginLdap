@@ -38,6 +38,8 @@
         "DownloadLog": "Download full logfile",
         "LdapFunctionsMissing": "PHP ldap_connect() function missing, please enable LDAP on your PHP config!",
         "Debug": "Debug mode enabled",
-        "autoCreateUser": "Add users if they match LDAP user settings"
+        "autoCreateUser": "Add users if they match LDAP user settings",
+        "CannotConnectToServer": "Could not connect to the LDAP server.",
+        "CannotConnectToServers": "Could not connect to any of the %s LDAP servers."
     }
 }

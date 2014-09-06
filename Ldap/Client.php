@@ -66,6 +66,12 @@ class Client
 
             Log::debug("ldap_connect result is %s", $result);
 
+            // ldap_connect will not always try to connect to the server, so execute a bind
+            // to test the connection
+            ldap_bind($result);
+
+            Log::debug("anonymous ldap_bind call finished; connection ok");
+
             return $result;
         });
 

@@ -22,48 +22,22 @@ use DatabaseTestCase;
  * @group LoginLdap_Integration
  * @group LoginLdap_AutoCreateUserTest
  */
-class AutoCreateUserTest extends DatabaseTestCase
+class AutoCreateUserTest extends LdapIntegrationTest
 {
-    const SERVER_HOST_NAME = 'localhost';
-    const SERVER_POST = 389;
-    const SERVER_BASE_DN = "dc=avengers,dc=shield,dc=org";
-    const GROUP_NAME = 'cn=avengers,dc=avengers,dc=shield,dc=org';
-
-    const TEST_LOGIN = 'ironman';
-    const TEST_PASS = 'piedpiper';
-
     public function setUp() // TODO: there is code redundancy w/ this and ConnectionTest. should move common code to base type
     {
-        if (!function_exists('ldap_bind')) {
-            throw new \Exception("PHP not compiled w/ --with-ldap!");
-        }
-
         parent::setUp();
 
-        // make sure logging logic is executed so we can test whether there are bugs in the logging code
-        Log::getInstance()->setLogLevel(Log::VERBOSE);
-
-        Config::getInstance()->LoginLdap = Config::getInstance()->LoginLdapTest + array(
-            'servers' => 'testserver',
-            'useKerberos' => 'false', // tests backwards compatibility, old config allowed 'false' as a string
-            'autoCreateUser' => 1
-        );
-
-        Config::getInstance()->LoginLdap_testserver = Config::getInstance()->LoginLdap_testserver + array(
-            'hostname' => self::SERVER_HOST_NAME,
-            'port' => self::SERVER_POST,
-            'base_dn' => self::SERVER_BASE_DN,
-            'admin_user' => 'cn=fury,' . self::SERVER_BASE_DN,
-            'admin_pass' => 'secrets'
-        );
+        Config::getInstance()->LoginLdap['autoCreateUser'] = 1;
 
         Piwik::setUserHasSuperUserAccess(false);
     }
 
     public function tearDown()
     {
-        Log::unsetInstance();
         Piwik::setUserHasSuperUserAccess(true);
+
+        parent::tearDown();
     }
 
     public function testPiwikUserIsCreatedWhenLdapLoginSucceedsButPiwikUserDoesntExist()

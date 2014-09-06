@@ -176,9 +176,6 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
         $this->assertNull($result);
     }
 
-    /**
-     * @group Only
-     */
     public function testAuthenticateAddsUsernameSuffixIfOneIsConfigured()
     {
         $adminUserName = null;
