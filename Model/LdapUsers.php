@@ -558,6 +558,10 @@ class LdapUsers
             $server = ServerInfo::makeFromOldConfig($config);
             return array($server);
         } else {
+            if (is_string($serverNameList)) {
+                $serverNameList = explode(',', $serverNameList);
+            }
+
             $servers = array();
             foreach ($serverNameList as $name) {
                 try {

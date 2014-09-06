@@ -44,13 +44,17 @@ class AutoCreateUserTest extends DatabaseTestCase
         Log::getInstance()->setLogLevel(Log::VERBOSE);
 
         Config::getInstance()->LoginLdap = Config::getInstance()->LoginLdapTest + array(
-            'serverUrl' => self::SERVER_HOST_NAME,
-            'ldapPort' => self::SERVER_POST,
-            'baseDn' => self::SERVER_BASE_DN,
-            'adminUser' => 'cn=fury,' . self::SERVER_BASE_DN,
-            'adminPass' => 'secrets',
+            'servers' => 'testserver',
             'useKerberos' => 'false', // tests backwards compatibility, old config allowed 'false' as a string
             'autoCreateUser' => 1
+        );
+
+        Config::getInstance()->LoginLdap_testserver = Config::getInstance()->LoginLdap_testserver + array(
+            'hostname' => self::SERVER_HOST_NAME,
+            'port' => self::SERVER_POST,
+            'base_dn' => self::SERVER_BASE_DN,
+            'admin_user' => 'cn=fury,' . self::SERVER_BASE_DN,
+            'admin_pass' => 'secrets'
         );
 
         Piwik::setUserHasSuperUserAccess(false);

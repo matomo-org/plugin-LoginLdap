@@ -50,12 +50,16 @@ class ConnectionTest extends DatabaseTestCase
         Log::getInstance()->setLogLevel(Log::VERBOSE);
 
         Config::getInstance()->LoginLdap = Config::getInstance()->LoginLdapTest + array(
-            'serverUrl' => self::SERVER_HOST_NAME,
-            'ldapPort' => self::SERVER_POST,
-            'baseDn' => self::SERVER_BASE_DN,
-            'adminUser' => 'cn=fury,' . self::SERVER_BASE_DN,
-            'adminPass' => 'secrets',
+            'servers' => 'testserver',
             'useKerberos' => 'false'
+        );
+
+        Config::getInstance()->LoginLdap_testserver = Config::getInstance()->LoginLdap_testserver + array(
+            'hostname' => self::SERVER_HOST_NAME,
+            'port' => self::SERVER_POST,
+            'base_dn' => self::SERVER_BASE_DN,
+            'admin_user' => 'cn=fury,' . self::SERVER_BASE_DN,
+            'admin_pass' => 'secrets'
         );
 
         UsersManagerAPI::getInstance()->addUser(self::TEST_LOGIN, self::TEST_PASS, 'billionairephilanthropistplayboy@starkindustries.com', $alias = false);
