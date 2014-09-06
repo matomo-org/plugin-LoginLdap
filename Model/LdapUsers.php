@@ -29,27 +29,6 @@ class LdapUsers
     const FUNCTION_END_LOG_MESSAGE = "Model\\LdapUsers: end %s() with %s";
 
     /**
-     * The LDAP resource field that holds a user's username.
-     *
-     * @var string
-     */
-    private $ldapUserIdField = 'uid';
-
-    /**
-     * The LDAP resource field to use when determining a user's alias.
-     *
-     * @var string
-     */
-    private $ldapAliasField = 'cn';
-
-    /**
-     * The LDAP resource field to use when determining a user's email address.
-     *
-     * @var string
-     */
-    private $ldapMailField = 'mail';
-
-    /**
      * If set, the user must be a member of a specific LDAP groupOfNames in order
      * to authenticate to Piwik. Users that are not a part of this group will not
      * be able to access Piwik.
@@ -228,38 +207,6 @@ class LdapUsers
         Log::debug(self::FUNCTION_END_LOG_MESSAGE, __FUNCTION__, $result);
 
         return $result;
-    }
-
-    /**
-     * Creates an array with normal Piwik user information using LDAP data for the user. The
-     * information in the result should be used with the **UsersManager.addUser** API method.
-     *
-     * This method is used in syncing LDAP user information with Piwik user info.
-     *
-     * @param string[] $ldapUser Associative array containing LDAP field data, eg, `array('dn' => '...')`
-     * @return string[]
-     */
-    public function createPiwikUserEntryForLdapUser($ldapUser)
-    {
-        $login = $ldapUser[$this->ldapUserIdField];
-
-        // we don't actually use this in authentication, we just add it as an extra security precaution, in case
-        // someone manages to disable LDAP auth
-        $password = substr($ldapUser['userpassword'], 0, UsersManager::PASSWORD_MAX_LENGTH - 1);
-
-        $email = @$ldapUser[$this->ldapMailField];
-        if (empty($email)) { // a valid email is needed to create a new user
-            $suffix = $this->authenticationUsernameSuffix;
-            $domain = !empty($suffix) ? $suffix : '@mydomain.com';
-            $email = $login . $domain; // TODO: this assumes username suffix is a email suffix (ie @whatever.com)
-        }
-
-        return array(
-            'login' => $login,
-            'password' => $password, 
-            'email' => $email,
-            'alias' => $ldapUser[$this->ldapAliasField]
-        );
     }
 
     /**
