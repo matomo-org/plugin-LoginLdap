@@ -149,7 +149,7 @@ class LdapUsers
         try {
             $authenticationRequiredMemberOf = $this->authenticationRequiredMemberOf;
             $result = $this->doWithClient(function (LdapUsers $self, LdapClient $ldapClient)
-            use ($username, $password, $alreadyAuthenticated, $authenticationRequiredMemberOf) {
+                use ($username, $password, $alreadyAuthenticated, $authenticationRequiredMemberOf) {
 
                 $user = $self->getUser($username, $ldapClient);
 
@@ -172,10 +172,6 @@ class LdapUsers
                 }
 
                 if ($ldapClient->bind($user['dn'], $password)) {
-                    if ($self->updateCredentials($username, $password)) {
-                        Log::debug("ModelUsers\\LdapUsers::%s: Updated credentails for LDAP user '%'.", __FUNCTION__, $username);
-                    }
-
                     return $user;
                 } else {
                     return null;
