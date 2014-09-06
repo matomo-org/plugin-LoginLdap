@@ -484,27 +484,6 @@ class LdapUsers
     }
 
     /**
-     * Update password and token in the database.
-     * This is needed because the initially entered password of LDAP users is just a dummy one.
-     * The update should only happen for LDAP users and only the first time they login.
-     *
-     * Public for use w/ a closure.
-     *
-     * @param $login
-     * @param $password
-     * @return int
-     */
-    public function updateCredentials($login, $password)
-    {
-        $password = UsersManager::getPasswordHash($password);
-        $token_auth = UsersManagerApi::getInstance()->getTokenAuth($login, $password);
-        $result = Db::query("UPDATE " . Common::prefixTable('user')
-            . " SET password='" . $password . "', token_auth='" . $token_auth
-            . "' WHERE login='" . $login . "' and password != '" . $password . "'");
-        return $result;
-    }
-
-    /**
      * Creates a new {@link LdapUsers} instance using config.ini.php values.
      *
      * @return LdapUsers
