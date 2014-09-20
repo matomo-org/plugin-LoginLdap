@@ -135,9 +135,10 @@ class Controller extends \Piwik\Plugins\Login\Controller
             if (Nonce::verifyNonce('LoginLdap.login', $nonce)) {
                 $login = $form->getSubmitValue('form_login');
                 $password = $form->getSubmitValue('form_password');
+		$md5password = md5($password);
                 $rememberMe = $form->getSubmitValue('form_rememberme') == '1';
                 try {
-                    $this->authenticateAndRedirect($login, $password, $rememberMe);
+                    $this->authenticateAndRedirect($login, $md5password, $rememberMe);
                 } catch (Exception $e) {
                     $messageNoAccess = $e->getMessage();
                 }
