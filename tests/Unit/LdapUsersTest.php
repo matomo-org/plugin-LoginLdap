@@ -10,6 +10,7 @@ namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
 use Piwik\Log;
 use Piwik\Plugins\LoginLdap\Ldap\ServerInfo;
+use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
 use PHPUnit_Framework_TestCase;
 
@@ -39,6 +40,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
 
         $this->ldapUsers = new LdapUsers();
         $this->ldapUsers->setLdapServers(array(new ServerInfo("localhost", "basedn")));
+        $this->ldapUsers->setLdapUserMapper(new UserMapper());
     }
 
     public function tearDown()
@@ -307,65 +309,6 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
 
         $this->ldapUsers->setLdapClientClass($mockLdapClient);
         $this->ldapUsers->getUser(self::TEST_USER);
-    }
-
-    public function testCreatePiwikUserEntryForLdapUserCreatesCorrectPiwikUser()
-    {
-        $result = $this->ldapUsers->createPiwikUserEntryForLdapUser(array(
-            'uid' => 'martha',
-            'cn' => 'A real doctor',
-            'mail' => 'martha@unit.co.uk',
-            'userpassword' => 'pass',
-            'other' => 'sfdklsdjf'
-        ));
-
-        $this->assertEquals(array('login' => 'martha', 'password' => 'pass', 'email' => 'martha@unit.co.uk', 'alias' => 'A real doctor'), $result);
-
-        $this->ldapUsers->setLdapAliasField('testfield1');
-        $this->ldapUsers->setLdapUserIdField('testfield2');
-        $this->ldapUsers->setLdapMailField('testfield3');
-        $result = $this->ldapUsers->createPiwikUserEntryForLdapUser(array(
-            'testfield1' => 'am i bovvered?',
-            'testfield2' => 'donna',
-            'testfield3' => 'donna@rstad.com',
-            'userpassword' => 'pass',
-            'other3' => 'sdlfdsf'
-        ));
-
-        $this->assertEquals(array('login' => 'donna', 'password' => 'pass', 'email' => 'donna@rstad.com', 'alias' => 'am i bovvered?'), $result);
-    }
-
-    public function testCreatePiwikUserEntryForLdapUserSetsCorrectEmailWhenUserHasNone()
-    {
-        $result = $this->ldapUsers->createPiwikUserEntryForLdapUser(array(
-            'uid' => 'pond',
-            'cn' => 'kissogram',
-            'userpassword' => 'pass'
-        ));
-
-        $this->assertEquals(array('login' => 'pond', 'password' => 'pass', 'email' => 'pond@mydomain.com', 'alias' => 'kissogram'), $result);
-
-        $this->ldapUsers->setAuthenticationUsernameSuffix('@royalleadworthhospital.co.uk');
-        $result = $this->ldapUsers->createPiwikUserEntryForLdapUser(array(
-            'uid' => 'mrpond',
-            'cn' => 'not quite Bond',
-            'userpassword' => 'pass'
-        ));
-
-        $this->assertEquals(array(
-            'login' => 'mrpond',
-            'password' => 'pass',
-            'email' => 'mrpond@royalleadworthhospital.co.uk',
-            'alias' => 'not quite Bond'
-        ), $result);
-    }
-
-    /**
-     * @expectedException Exception
-     */
-    public function testCreatePiwikUserEntryForLdapUserFailsWhenInfoMissing()
-    {
-        $this->ldapUsers->createPiwikUserEntryForLdapUser(array('useless' => 'info'));
     }
 
     public function testDoWithCllientSuccessfullyManagesLdapConnections()

@@ -11,6 +11,7 @@ use Piwik\Db;
 use Piwik\Config;
 use Piwik\Log;
 use Piwik\Piwik;
+use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\Plugins\UsersManager\UsersManager;
 use Piwik\Plugins\LoginLdap\Ldap\Client as LdapClient;
 use Piwik\Plugins\LoginLdap\Ldap\ServerInfo;
@@ -25,27 +26,6 @@ class LdapUsers
 {
     const FUNCTION_START_LOG_MESSAGE = "Model\\LdapUsers: start %s() with %s";
     const FUNCTION_END_LOG_MESSAGE = "Model\\LdapUsers: end %s() with %s";
-
-    /**
-     * The LDAP resource field that holds a user's username.
-     *
-     * @var string
-     */
-    private $ldapUserIdField = 'uid';
-
-    /**
-     * The LDAP resource field to use when determining a user's alias.
-     *
-     * @var string
-     */
-    private $ldapAliasField = 'cn';
-
-    /**
-     * The LDAP resource field to use when determining a user's email address.
-     *
-     * @var string
-     */
-    private $ldapMailField = 'mail';
 
     /**
      * If set, the user must be a member of a specific LDAP groupOfNames in order
@@ -106,6 +86,14 @@ class LdapUsers
      * @var ServerInfo
      */
     private $currentServerInfo;
+
+    /**
+     * The UserMapper instance used to get the LDAP user ID field to use. Used when
+     * searching for a specific user.
+     *
+     * @var UserMapper
+     */
+    private $ldapUserMapper;
 
     /**
      * Constructor.
@@ -229,68 +217,6 @@ class LdapUsers
     }
 
     /**
-     * Creates an array with normal Piwik user information using LDAP data for the user. The
-     * information in the result should be used with the **UsersManager.addUser** API method.
-     *
-     * This method is used in syncing LDAP user information with Piwik user info.
-     *
-     * @param string[] $ldapUser Associative array containing LDAP field data, eg, `array('dn' => '...')`
-     * @return string[]
-     */
-    public function createPiwikUserEntryForLdapUser($ldapUser)
-    {
-        $login = $ldapUser[$this->ldapUserIdField];
-
-        // we don't actually use this in authentication, we just add it as an extra security precaution, in case
-        // someone manages to disable LDAP auth
-        $password = substr($ldapUser['userpassword'], 0, UsersManager::PASSWORD_MAX_LENGTH - 1);
-
-        $email = @$ldapUser[$this->ldapMailField];
-        if (empty($email)) { // a valid email is needed to create a new user
-            $suffix = $this->authenticationUsernameSuffix;
-            $domain = !empty($suffix) ? $suffix : '@mydomain.com';
-            $email = $login . $domain; // TODO: this assumes username suffix is a email suffix (ie @whatever.com)
-        }
-
-        return array(
-            'login' => $login,
-            'password' => $password, 
-            'email' => $email,
-            'alias' => $ldapUser[$this->ldapAliasField]
-        );
-    }
-
-    /**
-     * Sets the {@link $ldapUserIdField} member.
-     *
-     * @param string $ldapUserIdField
-     */
-    public function setLdapUserIdField($ldapUserIdField)
-    {
-        $this->ldapUserIdField = $ldapUserIdField;
-    }
-
-    /**
-     * Sets the {@link $ldapAliasField} member.
-     *
-     * @param string $ldapAliasField
-     */
-    public function setLdapAliasField($ldapAliasField)
-    {
-        $this->ldapAliasField = $ldapAliasField;
-    }
-
-    /**
-     * Sets the {@link $ldapMailField} member.
-     *
-     * @param string $ldapMailField
-     */
-    public function setLdapMailField($ldapMailField)
-    {
-        $this->ldapMailField = $ldapMailField;
-    }
-
-    /**
      * Sets the {@link $authenticationRequiredMemberOf} member.
      *
      * @param string $authenticationRequiredMemberOf
@@ -351,6 +277,16 @@ class LdapUsers
     }
 
     /**
+     * Sets the {@link $ldapUserMapper} member.
+     *
+     * @param UserMapper $ldapUserMapper
+     */
+    public function setLdapUserMapper(UserMapper $ldapUserMapper)
+    {
+        $this->ldapUserMapper = $ldapUserMapper;
+    }
+
+    /**
      * Public only for use in closure.
      */
     public function getUserEntryQuery($username)
@@ -367,7 +303,7 @@ class LdapUsers
             $bind[] = $this->authenticationRequiredMemberOf;
         }
 
-        $conditions[] = "(" . $this->ldapUserIdField . "=?)";
+        $conditions[] = "(" . $this->ldapUserMapper->getLdapUserIdField() . "=?)";
         $bind[] = $this->addUsernameSuffix($username);
 
         $filter = "(&" . implode('', $conditions) . ")";
@@ -494,20 +430,8 @@ class LdapUsers
 
         $result->setLdapServers(self::getConfiguredLdapServers($config));
 
-        if (!empty($config['userIdField'])) {
-            $result->setLdapUserIdField($config['userIdField']);
-        }
-
         if (!empty($config['usernameSuffix'])) {
             $result->setAuthenticationUsernameSuffix($config['usernameSuffix']);
-        }
-
-        if (!empty($config['mailField'])) {
-            $result->setLdapMailField($config['mailField']);
-        }
-
-        if (!empty($config['aliasField'])) {
-            $result->setLdapAliasField($config['aliasField']);
         }
 
         if (!empty($config['memberOf'])) {
@@ -517,6 +441,8 @@ class LdapUsers
         if (!empty($config['filter'])) {
             $result->setAuthenticationLdapFilter($config['filter']);
         }
+
+        $result->setLdapUserMapper(UserMapper::makeConfigured());
 
         return $result;
     }

@@ -4,23 +4,16 @@
  *
  * @link http://piwik.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
- *
- * @category Piwik_Plugins
- * @package Piwik_LoginLdap
  */
 namespace Piwik\Plugins\LoginLdap;
 
 use Exception;
 use Piwik\AuthResult;
-use Piwik\Common;
-use Piwik\Cookie;
 use Piwik\Config;
 use Piwik\Db;
-use Piwik\Piwik;
+use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 use Piwik\Plugins\UsersManager\API as UsersManagerApi;
-use Piwik\ProxyHttp;
 use Piwik\Session;
-use Piwik\SettingsPiwik;
 use Piwik\Log;
 
 use Piwik\Plugins\UsersManager\Model as UserModel;
@@ -42,16 +35,26 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
     /**
      * LdapUsers DAO instance.
      *
-     * @param Model\LdapUsers
+     * @var Model\LdapUsers
      */
     private $ldapUsers;
 
     /**
      * Piwik Users model. Used to query for data in the Piwik users table.
      *
-     * @param Piwik\Plugins\UsersManager\Model
+     * @var \Piwik\Plugins\UsersManager\Model
      */
     private $usersModel;
+
+    /**
+     * UserSynchronizer instance used to convert LDAP users to Piwik users and then
+     * persist them in Piwik's MySQL database. Doing so allows Piwik to authorize and
+     * authenticate LDAP users without having to communicate with the LDAP server
+     * on each request.
+     *
+     * @var UserSynchronizer
+     */
+    private $userSynchronizer;
 
     /**
      * Authentication module's name, e.g., "Login"
@@ -69,6 +72,7 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
     public function __construct()
     {
         $this->ldapUsers = LdapUsers::makeConfigured();
+        $this->userSynchronizer = UserSynchronizer::makeConfigured();
         $this->usersModel = new UserModel();
     }
 
@@ -126,18 +130,9 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
             $user = $this->usersModel->getUser($userLogin); // TODO: is setting the token auth necessary?
 
             if (empty($user['token_auth'])) {
-                Log::debug("Token auth for user '%s' not found in Piwik DB.", $user);
+                Log::debug("Token auth for user '%s' not found in Piwik DB, synchronizing user.", $user);
 
-                $user = $this->ldapUsers->createPiwikUserEntryForLdapUser($ldapUser);
-
-                Log::debug("Autocreating Piwik user (%s) for LDAP user: %s", $user, $ldapUser);
-
-                $isSuperUser = Piwik::hasUserSuperUserAccess(); // TODO: should move this code to a utility method that uses a closure
-                Piwik::setUserHasSuperUserAccess();
-                UsersManagerApi::getInstance()->addUser($user['login'], $user['password'], $user['email'], $user['alias']);
-                Piwik::setUserHasSuperUserAccess($isSuperUser);
-
-                $user = $this->usersModel->getUser($userLogin);
+                $user = $this->userSynchronizer->synchronizeLdapUser($ldapUser);
             }
 
             $this->token_auth = $user['token_auth'];
@@ -215,8 +210,6 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
 
                 if ($result->getCode() == AuthResult::SUCCESS_SUPERUSER_AUTH_CODE) {
                     return $result;
-                } else {
-                    return self::makeAuthFailure();
                 }
             }
         } catch (Exception $ex) {
@@ -224,6 +217,8 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
 
             throw $ex;
         }
+
+        return self::makeAuthFailure();
     }
 
     private function getUserByTokenAuth()
