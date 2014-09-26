@@ -95,7 +95,7 @@ class UserMapper
 
     private function getEmailAddressForLdapUser($ldapUser, $login)
     {
-        $email = @$ldapUser[$this->ldapMailField];
+        $email = $this->getLdapUserField($ldapUser, $this->ldapMailField);
         if (empty($email)) { // a valid email is needed to create a new user
             $email = $login . $this->userEmailSuffix;
         }
@@ -104,7 +104,7 @@ class UserMapper
 
     private function getAliasForLdapUser($ldapUser)
     {
-        $alias = @$ldapUser[$this->ldapAliasField];
+        $alias = $this->getLdapUserField($ldapUser, $this->ldapAliasField);
         if (empty($alias)
             && !empty($ldapUser[$this->ldapFirstNameField])
             && !empty($ldapUser[$this->ldapLastNameField])
@@ -122,13 +122,134 @@ class UserMapper
             throw new Exception("LDAP entity missing required '$fieldName' field.");
         }
 
-        $result = $ldapUser[$fieldName];
+        return $this->getLdapUserField($ldapUser, $fieldName, $fetchSingleValue);
+    }
+
+    private function getLdapUserField($ldapUser, $fieldName, $fetchSingleValue = true)
+    {
+        $result = @$ldapUser[$fieldName];
         if ($fetchSingleValue
             && is_array($result)
         ) {
             $result = reset($result);
         }
         return $result;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLdapUserIdField()
+    {
+        return $this->ldapUserIdField;
+    }
+
+    /**
+     * @param string $ldapUserIdField
+     */
+    public function setLdapUserIdField($ldapUserIdField)
+    {
+        $this->ldapUserIdField = $ldapUserIdField;
+    }
+
+    /**
+     * Returns the {@link $ldapAliasField} property.
+     *
+     * @return string
+     */
+    public function getLdapAliasField()
+    {
+        return $this->ldapAliasField;
+    }
+
+    /**
+     * Sets the {@link $ldapAliasField} property.
+     *
+     * @param string $ldapAliasField
+     */
+    public function setLdapAliasField($ldapAliasField)
+    {
+        $this->ldapAliasField = $ldapAliasField;
+    }
+
+    /**
+     * Returns the {@link $ldapMailField} property.
+     *
+     * @return string
+     */
+    public function getLdapMailField()
+    {
+        return $this->ldapMailField;
+    }
+
+    /**
+     * Sets the {@link $ldapMailField} property.
+     *
+     * @param string $ldapMailField
+     */
+    public function setLdapMailField($ldapMailField)
+    {
+        $this->ldapMailField = $ldapMailField;
+    }
+
+    /**
+     * Returns the {@link $ldapFirstNameField} property.
+     *
+     * @return string
+     */
+    public function getLdapFirstNameField()
+    {
+        return $this->ldapFirstNameField;
+    }
+
+    /**
+     * Sets the {@link $ldapFirstNameField} property.
+     *
+     * @param string $ldapFirstNameField
+     */
+    public function setLdapFirstNameField($ldapFirstNameField)
+    {
+        $this->ldapFirstNameField = $ldapFirstNameField;
+    }
+
+    /**
+     * Returns the {@link $ldapLastNameField} property.
+     *
+     * @return string
+     */
+    public function getLdapLastNameField()
+    {
+        return $this->ldapLastNameField;
+    }
+
+    /**
+     * Sets the {@link $ldapLastNameField} property.
+     *
+     * @param string $ldapLastNameField
+     */
+    public function setLdapLastNameField($ldapLastNameField)
+    {
+        $this->ldapLastNameField = $ldapLastNameField;
+    }
+
+    /**
+     * Returns the {@link $userEmailSuffix} property.
+     *
+     * @return string
+     */
+    public function getUserEmailSuffix()
+    {
+        return $this->userEmailSuffix;
+    }
+
+    /**
+     * Sets the {@link $userEmailSuffix} property.
+     *
+     * @param string $userEmailSuffix
+     */
+    public function setUserEmailSuffix($userEmailSuffix)
+    {
+        $this->userEmailSuffix = $userEmailSuffix;
     }
 
     /**
@@ -154,7 +275,7 @@ class UserMapper
     {
         if (!empty($config[$optionName])) {
             $value = $config[$optionName];
-        } else if (!empty($$alternateName)
+        } else if (!empty($alternateName)
             && !empty($config[$alternateName])
         ) {
             $value = $config[$alternateName];

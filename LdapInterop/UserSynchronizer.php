@@ -66,6 +66,26 @@ class UserSynchronizer
     }
 
     /**
+     * Returns the {@link $userMapper} password.
+     *
+     * @return UserMapper
+     */
+    public function getUserMapper()
+    {
+        return $this->userMapper;
+    }
+
+    /**
+     * Sets the {@link $userMapper} password.
+     *
+     * @param UserMapper $userMapper
+     */
+    public function setUserMapper(UserMapper $userMapper)
+    {
+        $this->userMapper = $userMapper;
+    }
+
+    /**
      * Creates a UserSynchronizer using INI configuration.
      *
      * @return UserSynchronizer
