@@ -38,15 +38,12 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
         Config::unsetInstance();
         Config::getInstance()->setTestEnvironment();
 
-        \Piwik\Registry::set('UsersManager_API', null);
-
         $this->userSynchronizer = new UserSynchronizer();
         $this->userSynchronizer->setUserMapper($this->getSuccessUserMapperMock());
     }
 
     public function tearDown()
     {
-        \Piwik\Registry::set('UsersManager_API', null);
         Config::unsetInstance();
 
         parent::tearDown();
@@ -117,8 +114,7 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
         } else {
             $mock->expects($this->any())->method('addUser');
         }
-
-        \Piwik\Registry::set('UsersManager_API', $mock);
+        $this->userSynchronizer->setUsersManagerApi($mock);
     }
 
     private function getPiwikUserData()

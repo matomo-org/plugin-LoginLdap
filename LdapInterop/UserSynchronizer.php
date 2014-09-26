@@ -8,7 +8,7 @@
 namespace Piwik\Plugins\LoginLdap\LdapInterop;
 
 use Piwik\Piwik;
-use Piwik\Plugins\UsersManager\API as UsersManagerApi;
+use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Exception;
 
 /**
@@ -26,6 +26,13 @@ class UserSynchronizer
     private $userMapper;
 
     /**
+     * UsersManager API instance used to add and get users.
+     *
+     * @var \Piwik\Plugins\UsersManager\API
+     */
+    private $usersManagerApi;
+
+    /**
      * Converts a supplied LDAP entity into a Piwik user that is persisted in
      * the MySQL DB.
      *
@@ -37,10 +44,11 @@ class UserSynchronizer
     {
         $user = $this->userMapper->createPiwikUserFromLdapUser($ldapUser);
 
-        return $this->doAsSuperUser(function () use ($user) {
-            UsersManagerApi::getInstance()->addUser($user['login'], $user['password'], $user['email'], $user['alias']);
+        $usersManagerApi = $this->usersManagerApi;
+        return $this->doAsSuperUser(function () use ($user, $usersManagerApi) {
+            $usersManagerApi->addUser($user['login'], $user['password'], $user['email'], $user['alias']);
 
-            $addedUser = UsersManagerApi::getInstance()->getUser($user['login']);
+            $addedUser = $usersManagerApi->getUser($user['login']);
             unset($addedUser['password']); // remove password since it shouldn't be needed by caller
             return $addedUser;
         });
@@ -86,6 +94,26 @@ class UserSynchronizer
     }
 
     /**
+     * Gets the {@link $usersManagerApi} property.
+     *
+     * @return UsersManagerAPI
+     */
+    public function getUsersManagerApi()
+    {
+        return $this->usersManagerApi;
+    }
+
+    /**
+     * Sets the {@link $usersManagerApi} property.
+     *
+     * @param UsersManagerAPI $usersManagerApi
+     */
+    public function setUsersManagerApi(UsersManagerAPI $usersManagerApi)
+    {
+        $this->usersManagerApi = $usersManagerApi;
+    }
+
+    /**
      * Creates a UserSynchronizer using INI configuration.
      *
      * @return UserSynchronizer
@@ -93,7 +121,8 @@ class UserSynchronizer
     public static function makeConfigured()
     {
         $result = new UserSynchronizer();
-        $result->userMapper = UserMapper::makeConfigured();
+        $result->setUserMapper(UserMapper::makeConfigured());
+        $result->setUsersManagerApi(UsersManagerAPI::getInstance());
         return $result;
     }
 }

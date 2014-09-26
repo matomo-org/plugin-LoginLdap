@@ -24,7 +24,7 @@ use DatabaseTestCase;
  */
 class AutoCreateUserTest extends LdapIntegrationTest
 {
-    public function setUp() // TODO: there is code redundancy w/ this and ConnectionTest. should move common code to base type
+    public function setUp()
     {
         parent::setUp();
 
