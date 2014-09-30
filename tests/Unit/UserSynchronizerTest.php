@@ -23,6 +23,8 @@ class MockAPI extends UsersManagerAPI
  * @group LoginLdap
  * @group LoginLdap_Unit
  * @group LoginLdap_UserSynchronizerTest
+ *
+ * TODO: this test is starting to look ugly. refactor
  */
 class UserSynchronizerTest extends PHPUnit_Framework_TestCase
 {
