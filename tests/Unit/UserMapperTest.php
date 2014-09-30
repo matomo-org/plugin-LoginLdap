@@ -221,6 +221,18 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(array('login' => 'rose', 'password' => '{LDAP}pass', 'email' => 'rose@linda.com', 'alias' => 'bad wolf'), $result);
     }
 
+    public function test_isUserLdapUser_ReportsUserAsLdapUser_IfUserInfoHasSpecialPassword()
+    {
+        $isLdapUser = UserMapper::isUserLdapUser(array('password' => "{LDAP}..."));
+        $this->assertTrue($isLdapUser);
+    }
+
+    public function test_isUserLdapUser_ReportsUserAsLdapUser_IfUserInfoHasNormalPasswordHash()
+    {
+        $isLdapUser = UserMapper::isUserLdapUser(array('password' => "..."));
+        $this->assertFalse($isLdapUser);
+    }
+
     private function assertUserMapperIsCorrectlyConfigured(UserMapper $userMapper)
     {
         $this->assertEquals('userIdField', $userMapper->getLdapUserIdField());

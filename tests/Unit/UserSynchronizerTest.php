@@ -31,6 +31,11 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
      */
     private $userSynchronizer;
 
+    /**
+     * @var array
+     */
+    private $userAccess;
+
     public function setUp()
     {
         parent::setUp();
@@ -39,8 +44,11 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
         Config::getInstance()->setTestEnvironment();
 
         $this->userSynchronizer = new UserSynchronizer();
-        $this->userSynchronizer->setUserMapper($this->getSuccessUserMapperMock());
-        $this->userSynchronizer->setUserModel($this->getUserModelMock());
+        $this->userSynchronizer->setUserModel($this->getUserModelMock($this->getPiwikUserData()));
+        $this->userSynchronizer->setNewUserDefaultSitesWithViewAccess(array(1,2));
+        $this->setUserMapperMock($this->getPiwikUserData());
+
+        $this->userAccess = array();
     }
 
     public function tearDown()
@@ -81,10 +89,12 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
     public function test_synchronizeLdapUser_ReturnsUserManagerApiWithoutPassword()
     {
         $this->setUserManagerApiMock($throws = false);
+        $this->userSynchronizer->setUserModel($this->getUserModelMock(null));
 
         $result = $this->userSynchronizer->synchronizeLdapUser(array());
 
         $this->assertTrue(empty($result['password']), "Password set in synchronizeLdapUser result, it shouldn't be.");
+        $this->assertEquals(array('piwikuser', 'view', array(1,2,)), $this->userAccess);
     }
 
     /**
@@ -92,23 +102,23 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
      */
     public function test_synchronizeLdapUser_Throws_IfUserManagerApiThrows()
     {
-        $this->setUserManagerApiMock($throwsInAddUser = false, $throwsInUpdateUser = true);
+        $this->setUserManagerApiMock($throwsInAddUser = true, $throwsInUpdateUser = true);
+        $this->userSynchronizer->setUserModel($this->getUserModelMock(null));
 
         $this->userSynchronizer->synchronizeLdapUser(array());
     }
 
-    private function getSuccessUserMapperMock()
+    public function test_synchronizeLdapUser_Succeeds_IfUserDoesNotExistInDb()
     {
-        $piwikUser = $this->getPiwikUserData();
+        $this->setUserManagerApiMock($throws = false);
+        $this->userSynchronizer->setUserModel($this->getUserModelMock(null));
 
-        $mock = $this->getMock('Piwik\Plugins\LoginLdap\LdapInterop\UserMapper', array('createPiwikUserFromLdapUser'));
-        $mock->expects($this->any())->method('createPiwikUserFromLdapUser')->will($this->returnValue($piwikUser));
-        return $mock;
+        $this->userSynchronizer->synchronizeLdapUser(array());
     }
 
     private function setUserManagerApiMock($throwsOnAddUser, $throwsOnUpdateUser = false)
     {
-        $mock = $this->getMock('Piwik\Plugins\LoginLdap\tests\Unit\MockAPI', array('addUser', 'updateUser', 'getUser'));
+        $mock = $this->getMock('Piwik\Plugins\LoginLdap\tests\Unit\MockAPI', array('addUser', 'updateUser', 'getUser', 'setUserAccess'));
         if ($throwsOnAddUser) {
             $mock->expects($this->any())->method('addUser')->willThrowException(new Exception("dummy message"));
         } else {
@@ -119,6 +129,11 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
         } else {
             $mock->expects($this->any())->method('updateUser');
         }
+
+        $self = $this;
+        $mock->expects($this->any())->method('setUserAccess')->willReturnCallback(function ($login, $access, $sites) use ($self) {
+            $self->userAccess = array($login, $access, $sites);
+        });
         $this->userSynchronizer->setUsersManagerApi($mock);
     }
 
@@ -126,16 +141,23 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
     {
         return array(
             'login' => 'piwikuser',
-            'password' => 'password',
+            'password' => '{LDAP}password',
             'email' => 'email',
             'alias' => 'alias'
         );
     }
 
-    private function getUserModelMock()
+    private function getUserModelMock($returnValue)
     {
         $mock = $this->getMock('Piwik\Plugins\UsersManager\Model', array('getUser'));
-        $mock->expects($this->any())->method('getUser')->will($this->returnValue($this->getPiwikUserData()));
+        $mock->expects($this->any())->method('getUser')->will($this->returnValue($returnValue));
         return $mock;
+    }
+
+    private function setUserMapperMock($value)
+    {
+        $mock = $this->getMock('Piwik\Plugins\LoginLdap\LdapInterop\UserMapper', array('createPiwikUserFromLdapUser'));
+        $mock->expects($this->any())->method('createPiwikUserFromLdapUser')->will($this->returnValue($value));
+        $this->userSynchronizer->setUserMapper($mock);
     }
 }

@@ -22,12 +22,24 @@ use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
  */
 class AuthenticationTest extends LdapIntegrationTest
 {
+    const NON_LDAP_USER = 'stan';
+    const NON_LDAP_PASS = 'whereisthefourthwall?';
+
+    const NON_LDAP_NORMAL_USER = 'amber';
+    const NON_LDAP_NORMAL_PASS = 'crossingthefourthwall';
+
     public function setUp()
     {
         parent::setUp();
 
+        // test superusers should not have {LDAP} password to test that superusers can
+        // login, even if they are not in LDAP
         UsersManagerAPI::getInstance()->addUser(self::TEST_SUPERUSER_LOGIN, self::TEST_SUPERUSER_PASS, 'srodgers@aol.com', $alias = false);
         UsersManagerAPI::getInstance()->setSuperUserAccess(self::TEST_SUPERUSER_LOGIN, true);
+
+        UsersManagerAPI::getInstance()->addUser(self::NON_LDAP_USER, self::NON_LDAP_PASS, 'whatever@aol.com', $alias = false);
+        UsersManagerAPI::getInstance()->setSuperUserAccess(self::NON_LDAP_USER, true);
+        UsersManagerAPI::getInstance()->addUser(self::NON_LDAP_NORMAL_USER, self::NON_LDAP_NORMAL_PASS, 'witchy@sdhs.edu', $alias = false);
     }
 
     public function testLdapAuthSucceedsWithCorrectCredentials()
@@ -157,6 +169,20 @@ class AuthenticationTest extends LdapIntegrationTest
         $this->assertEquals(0, $authResult->getCode());
     }
 
+    // TODO: move web server auth test to separate integration test
+    // TODO: rewrite test function names
+    public function testWebServerAuthFailsIfUserIsNoRemoteUserExists()
+    {
+        Config::getInstance()->LoginLdap['useKerberos'] = 1;
+
+        unset($_SERVER['REMOTE_USER']);
+
+        $ldapAuth = new LdapAuth();
+        $authResult = $ldapAuth->authenticate();
+
+        $this->assertEquals(0, $authResult->getCode());
+    }
+
     public function testLdapAuthReturnsCorrectCodeForSuperUsers()
     {
         $ldapAuth = new LdapAuth();
@@ -165,6 +191,40 @@ class AuthenticationTest extends LdapIntegrationTest
         $authResult = $ldapAuth->authenticate();
 
         $this->assertEquals(AuthResult::SUCCESS_SUPERUSER_AUTH_CODE, $authResult->getCode());
+    }
+
+    public function testLdapAuthReturnsCorrectCodeForNonLdapSuperUsers()
+    {
+        $ldapAuth = new LdapAuth();
+        $ldapAuth->setLogin(self::NON_LDAP_USER);
+        $ldapAuth->setPassword(self::NON_LDAP_PASS);
+        $authResult = $ldapAuth->authenticate();
+
+        $this->assertEquals(AuthResult::SUCCESS_SUPERUSER_AUTH_CODE, $authResult->getCode());
+
+        $ldapAuth = new LdapAuth();
+        $ldapAuth->setTokenAuth($this->getNonLdapUserTokenAuth());
+        $authResult = $ldapAuth->authenticate();
+
+        $this->assertEquals(self::NON_LDAP_USER, $ldapAuth->getLogin());
+        $this->assertEquals(AuthResult::SUCCESS_SUPERUSER_AUTH_CODE, $authResult->getCode());
+    }
+
+    public function testLdapAuthReturnsCorrectCodeForNonLdapNormalUsers()
+    {
+        $ldapAuth = new LdapAuth();
+        $ldapAuth->setLogin(self::NON_LDAP_NORMAL_USER);
+        $ldapAuth->setPassword(self::NON_LDAP_NORMAL_PASS);
+        $authResult = $ldapAuth->authenticate();
+
+        $this->assertEquals(0, $authResult->getCode());
+
+        $ldapAuth = new LdapAuth();
+        $ldapAuth->setTokenAuth($this->getNonLdapNormalUserTokenAuth());
+        $authResult = $ldapAuth->authenticate();
+
+        $this->assertEquals(self::NON_LDAP_NORMAL_USER, $ldapAuth->getLogin());
+        $this->assertEquals(0, $authResult->getCode());
     }
 
     public function testWebServerAuthReturnsCorrectCodeForSuperUsers()
@@ -216,6 +276,16 @@ class AuthenticationTest extends LdapIntegrationTest
         $authResult = $ldapAuth->authenticate();
 
         $this->assertEquals(0, $authResult->getCode());
+    }
+
+    private function getNonLdapUserTokenAuth()
+    {
+        return UsersManagerAPI::getInstance()->getTokenAuth(self::NON_LDAP_USER, md5(self::NON_LDAP_PASS));
+    }
+
+    private function getNonLdapNormalUserTokenAuth()
+    {
+        return UsersManagerAPI::getInstance()->getTokenAuth(self::NON_LDAP_NORMAL_USER, md5(self::NON_LDAP_NORMAL_PASS));
     }
 
     // TODO: rename kerberos stuff w/ webserver auth
