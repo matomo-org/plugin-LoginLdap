@@ -95,7 +95,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
             'other' => 'sfdklsdjf'
         ));
 
-        $this->assertEquals(array('login' => 'martha', 'password' => 'pass', 'email' => 'martha@unit.co.uk', 'alias' => 'A real doctor'), $result);
+        $this->assertEquals(array('login' => 'martha', 'password' => '{LDAP}pass', 'email' => 'martha@unit.co.uk', 'alias' => 'A real doctor'), $result);
     }
 
     public function test_createPiwikUserFromLdapUser_CreatesCorrectPiwikUser_WhenCustomLdapAttributesAreUsedAndPresent()
@@ -116,7 +116,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
             'other3' => 'sdlfdsf'
         ));
 
-        $this->assertEquals(array('login' => 'donna', 'password' => 'pass', 'email' => 'donna@rstad.com', 'alias' => 'am i bovvered?'), $result);
+        $this->assertEquals(array('login' => 'donna', 'password' => '{LDAP}pass', 'email' => 'donna@rstad.com', 'alias' => 'am i bovvered?'), $result);
 
         $result = $this->userMapper->createPiwikUserFromLdapUser(array(
             'testfield2' => 'donna',
@@ -127,7 +127,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
             'other3' => 'sdlfdsf'
         ));
 
-        $this->assertEquals(array('login' => 'donna', 'password' => 'pass', 'email' => 'donna@rstad.com', 'alias' => 'Donna Noble'), $result);
+        $this->assertEquals(array('login' => 'donna', 'password' => '{LDAP}pass', 'email' => 'donna@rstad.com', 'alias' => 'Donna Noble'), $result);
     }
 
     /**
@@ -176,7 +176,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
             'userpassword' => 'pass'
         ));
 
-        $this->assertEquals(array('login' => 'pond', 'password' => 'pass', 'email' => 'pond@mydomain.com', 'alias' => 'kissogram'), $result);
+        $this->assertEquals(array('login' => 'pond', 'password' => '{LDAP}pass', 'email' => 'pond@mydomain.com', 'alias' => 'kissogram'), $result);
 
         $this->userMapper->setUserEmailSuffix('@royalleadworthhospital.co.uk');
         $result = $this->userMapper->createPiwikUserFromLdapUser(array(
@@ -187,7 +187,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(array(
             'login' => 'mrpond',
-            'password' => 'pass',
+            'password' => '{LDAP}pass',
             'email' => 'mrpond@royalleadworthhospital.co.uk',
             'alias' => 'not quite Bond'
         ), $result);
@@ -203,7 +203,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
             'other' => 'sfdklsdjf'
         ));
 
-        $this->assertEquals(array('login' => 'harkness', 'password' => 'pass', 'email' => 'harkness@mydomain.com', 'alias' => 'Captain Harkness'), $result);
+        $this->assertEquals(array('login' => 'harkness', 'password' => '{LDAP}pass', 'email' => 'harkness@mydomain.com', 'alias' => 'Captain Harkness'), $result);
     }
 
     public function test_createPiwikUserEntryForLdapUser_CreatesCorrectPiwikUser_IfLdapUserInfoIsAnArray()
@@ -218,7 +218,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
             'other' => array('sfdklsdjf)')
         ));
 
-        $this->assertEquals(array('login' => 'rose', 'password' => 'pass', 'email' => 'rose@linda.com', 'alias' => 'bad wolf'), $result);
+        $this->assertEquals(array('login' => 'rose', 'password' => '{LDAP}pass', 'email' => 'rose@linda.com', 'alias' => 'bad wolf'), $result);
     }
 
     private function assertUserMapperIsCorrectlyConfigured(UserMapper $userMapper)

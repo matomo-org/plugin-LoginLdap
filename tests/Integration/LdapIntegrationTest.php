@@ -42,7 +42,8 @@ abstract class LdapIntegrationTest extends DatabaseTestCase
 
         Config::getInstance()->LoginLdap = Config::getInstance()->LoginLdapTest + array(
             'servers' => 'testserver',
-            'useKerberos' => 'false'
+            'useKerberos' => 'false',
+            'new_user_default_sites_view_access' => '1,2'
         );
 
         Config::getInstance()->LoginLdap_testserver = Config::getInstance()->LoginLdap_testserver + array(

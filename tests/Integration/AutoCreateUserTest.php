@@ -8,6 +8,7 @@
  */
 namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
+use Piwik\Access;
 use Piwik\Config;
 use Piwik\Log;
 use Piwik\Db;
@@ -28,12 +29,12 @@ class AutoCreateUserTest extends LdapIntegrationTest
     {
         parent::setUp();
 
-        Piwik::setUserHasSuperUserAccess(false);
+        Access::getInstance()->setSuperUserAccess(false);
     }
 
     public function tearDown()
     {
-        Piwik::setUserHasSuperUserAccess(true);
+        Access::getInstance()->setSuperUserAccess(true);
 
         parent::tearDown();
     }
@@ -47,7 +48,7 @@ class AutoCreateUserTest extends LdapIntegrationTest
 
         $this->assertEquals(1, $authResult->getCode());
 
-        $addedPass = md5('{MD5}Dv6yiT/W4FvaM5gBdqHw');
+        $addedPass = '{LDAP}0efeb2893fd6e05bda33980176';
 
         $user = Db::fetchRow("SELECT login, password, alias, email, token_auth FROM " . Common::prefixTable('user') . " WHERE login = ?", array(self::TEST_LOGIN));
         $this->assertNotEmpty($user);
@@ -62,9 +63,9 @@ class AutoCreateUserTest extends LdapIntegrationTest
 
     public function testPiwikUserIsNotCreatedIfPiwikUserAlreadyExists()
     {
-        Piwik::setUserHasSuperUserAccess(true);
+        Access::getInstance()->setSuperUserAccess(true);
         UsersManagerAPI::getInstance()->addUser(self::TEST_LOGIN, self::TEST_PASS, 'billionairephilanthropistplayboy@starkindustries.com', $alias = false);
-        Piwik::setUserHasSuperUserAccess(false);
+        Access::getInstance()->setSuperUserAccess(false);
 
         $ldapAuth = new LdapAuth();
         $ldapAuth->setLogin(self::TEST_LOGIN);

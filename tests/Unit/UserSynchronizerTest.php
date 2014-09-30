@@ -40,6 +40,7 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
 
         $this->userSynchronizer = new UserSynchronizer();
         $this->userSynchronizer->setUserMapper($this->getSuccessUserMapperMock());
+        $this->userSynchronizer->setUserModel($this->getUserModelMock());
     }
 
     public function tearDown()
@@ -91,7 +92,7 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
      */
     public function test_synchronizeLdapUser_Throws_IfUserManagerApiThrows()
     {
-        $this->setUserManagerApiMock($throws = true);
+        $this->setUserManagerApiMock($throwsInAddUser = false, $throwsInUpdateUser = true);
 
         $this->userSynchronizer->synchronizeLdapUser(array());
     }
@@ -105,14 +106,18 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
         return $mock;
     }
 
-    private function setUserManagerApiMock($throws)
+    private function setUserManagerApiMock($throwsOnAddUser, $throwsOnUpdateUser = false)
     {
-        $mock = $this->getMock('Piwik\Plugins\LoginLdap\tests\Unit\MockAPI', array('addUser', 'getUser'));
-        $mock->expects($this->any())->method('getUser')->will($this->returnValue($this->getPiwikUserData()));
-        if ($throws) {
+        $mock = $this->getMock('Piwik\Plugins\LoginLdap\tests\Unit\MockAPI', array('addUser', 'updateUser', 'getUser'));
+        if ($throwsOnAddUser) {
             $mock->expects($this->any())->method('addUser')->willThrowException(new Exception("dummy message"));
         } else {
             $mock->expects($this->any())->method('addUser');
+        }
+        if ($throwsOnUpdateUser) {
+            $mock->expects($this->any())->method('updateUser')->willThrowException(new Exception("dummy message"));
+        } else {
+            $mock->expects($this->any())->method('updateUser');
         }
         $this->userSynchronizer->setUsersManagerApi($mock);
     }
@@ -125,5 +130,12 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
             'email' => 'email',
             'alias' => 'alias'
         );
+    }
+
+    private function getUserModelMock()
+    {
+        $mock = $this->getMock('Piwik\Plugins\UsersManager\Model', array('getUser'));
+        $mock->expects($this->any())->method('getUser')->will($this->returnValue($this->getPiwikUserData()));
+        return $mock;
     }
 }

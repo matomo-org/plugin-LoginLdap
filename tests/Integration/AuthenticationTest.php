@@ -26,8 +26,6 @@ class AuthenticationTest extends LdapIntegrationTest
     {
         parent::setUp();
 
-        UsersManagerAPI::getInstance()->addUser(self::TEST_LOGIN, self::TEST_PASS, 'billionairephilanthropistplayboy@starkindustries.com', $alias = false);
-
         UsersManagerAPI::getInstance()->addUser(self::TEST_SUPERUSER_LOGIN, self::TEST_SUPERUSER_PASS, 'srodgers@aol.com', $alias = false);
         UsersManagerAPI::getInstance()->setSuperUserAccess(self::TEST_SUPERUSER_LOGIN, true);
     }
@@ -183,6 +181,8 @@ class AuthenticationTest extends LdapIntegrationTest
 
     public function testTokenAuthOnlyAuthenticationWorks()
     {
+        $this->testLdapAuthSucceedsWithCorrectCredentials();
+
         $tokenAuth = Db::fetchOne("SELECT token_auth FROM " . Common::prefixTable("user") . " WHERE login = ?", array(self::TEST_LOGIN));
 
         $ldapAuth = new LdapAuth();

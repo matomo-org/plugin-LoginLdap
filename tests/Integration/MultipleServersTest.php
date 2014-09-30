@@ -10,7 +10,6 @@ namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
 use Piwik\Config;
 use Piwik\Plugins\LoginLdap\LdapAuth;
-use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 
 /**
  * @group LoginLdap
@@ -37,8 +36,6 @@ class MultipleServersTest extends LdapIntegrationTest
             'admin_user' => 'cn=fury,' . self::SERVER_BASE_DN,
             'admin_pass' => 'secrets'
         );
-
-        UsersManagerAPI::getInstance()->addUser(self::TEST_LOGIN, self::TEST_PASS, 'billionairephilanthropistplayboy@starkindustries.com', $alias = false);
     }
 
     public function testAuthenticateSucceedsWhenFirstServerWorksButOthersFailToConnect()
