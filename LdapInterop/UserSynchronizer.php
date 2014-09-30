@@ -7,6 +7,7 @@
  */
 namespace Piwik\Plugins\LoginLdap\LdapInterop;
 
+use Exception;
 use Piwik\Access;
 use Piwik\Config;
 use Piwik\Log;
@@ -74,7 +75,11 @@ class UserSynchronizer
                 // set new user view access
                 $usersManagerApi->setUserAccess($user['login'], 'view', $newUserDefaultSitesWithViewAccess);
             } else {
-                $usersManagerApi->updateUser($user['login'], $user['password'], $user['email'], $user['alias'], $isPasswordHashed = true);
+                if (!UserMapper::isUserLdapUser($existingUser)) {
+                    Log::warning("Unable to synchronize LDAP user '%s', Piwik user with same name exists.", $existingUser['login']);
+                } else {
+                    $usersManagerApi->updateUser($user['login'], $user['password'], $user['email'], $user['alias'], $isPasswordHashed = true);
+                }
             }
             return $usersManagerApi->getUser($user['login']);
         });
