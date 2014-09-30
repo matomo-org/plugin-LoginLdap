@@ -9,7 +9,6 @@ namespace Piwik\Plugins\LoginLdap\LdapInterop;
 
 use Exception;
 use Piwik\Config;
-use Piwik\Plugins\UsersManager\UsersManager;
 
 /**
  * Maps LDAP users to arrays that can be used to create new Piwik
@@ -19,6 +18,13 @@ use Piwik\Plugins\UsersManager\UsersManager;
  */
 class UserMapper
 {
+    /**
+     * The prefix for the 'password' field of a Piwik user that was converted to an LDAP
+     * user. This prefix serves two functions: it identifies a user as an LDAP user and
+     * hides the hashing algorithm used in LDAP.
+     */
+    const MAPPED_USER_PASSWORD_PREFIX = "{LDAP}";
+
     /**
      * The LDAP resource field that holds a user's username.
      *
@@ -83,13 +89,17 @@ class UserMapper
         );
     }
 
+    /**
+     * The password we store for a mapped user isn't used to authenticate, it's just
+     * data used to generate a user's token auth.
+     *
+     * TODO: maybe it's better to create a random password for token auth
+     */
     private function getPiwikPasswordForLdapUser($ldapUser)
     {
-        // TODO: explain the synchronizing approach better.
-        // we don't actually use this in authentication, we just add it as an extra security precaution, in case
-        // someone manages to disable LDAP auth or get's access to the Piwik database. it's also used to generate the token auth.
         $password = $this->getRequiredLdapUserField($ldapUser, 'userpassword');
-        $password = substr($password, 0, UsersManager::PASSWORD_MAX_LENGTH - 1);
+        $password = preg_replace("/^(?:\\{[^}]*\\})?/", self::MAPPED_USER_PASSWORD_PREFIX, $password);
+        $password = substr($password, 0, 32);
         return $password;
     }
 
@@ -250,6 +260,23 @@ class UserMapper
     public function setUserEmailSuffix($userEmailSuffix)
     {
         $this->userEmailSuffix = $userEmailSuffix;
+    }
+
+    /**
+     * Returns true if the user information is for a Piwik user that was mapped from LDAP,
+     * false if otherwise.
+     *
+     * @param string[] $user The user information (must have at least a 'password' field).
+     * @return bool
+     * @throws Exception if the 'password' field is missing from $user.
+     */
+    public static function isUserLdapUser($user)
+    {
+        if (empty($user['password'])) { // sanity check
+            throw new Exception("Unexpected error: no password for user, cannot check if LDAP synchronized.");
+        }
+
+        return substr($user['password'], 0, strlen(self::MAPPED_USER_PASSWORD_PREFIX)) == self::MAPPED_USER_PASSWORD_PREFIX;
     }
 
     /**

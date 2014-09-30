@@ -68,7 +68,7 @@ class Client
 
             // ldap_connect will not always try to connect to the server, so execute a bind
             // to test the connection
-            ldap_bind($result);
+            ldap_bind($result); // TODO: test w/ anonymous bind not allowed
 
             Log::debug("anonymous ldap_bind call finished; connection ok");
 
@@ -200,8 +200,10 @@ class Client
 
     private function throwPhpErrors($callback)
     {
-        // set an error handler that will catch PHP errors for this function execution
+        /** @var Exception $errorException */
         $errorException = null;
+
+        // set an error handler that will catch PHP errors for this function execution
         set_error_handler(function ($errno, $errstr, $errfile, $errline) use (&$errorException) {
             $errorType = Error::getErrNoString($errno);
             $errorException = new Exception("$errorType: $errstr in $errfile on line $errline");

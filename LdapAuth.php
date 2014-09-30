@@ -8,29 +8,85 @@
 namespace Piwik\Plugins\LoginLdap;
 
 use Exception;
+use Piwik\Auth;
 use Piwik\AuthResult;
 use Piwik\Config;
 use Piwik\Db;
+use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
-use Piwik\Plugins\UsersManager\API as UsersManagerApi;
+use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Session;
 use Piwik\Log;
-
 use Piwik\Plugins\UsersManager\Model as UserModel;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
 
 /**
+ * LDAP based authentication implementation: allows authenticating to Piwik via
+ * an LDAP server.
  *
- * @package Login
+ * Supports authenticating by login and password, and supports authenticating by
+ * token auth (with login or without).
+ *
+ * ## Implementation Details
+ *
+ * **Authenticating By Password**
+ *
+ * When authenticating by password LdapAuth will communicate with the LDAP server.
+ * On a successful authentication, the details of the LDAP user will be synchronized
+ * in Piwik's DB (except the password). This is so Piwik can be personalized for
+ * the user without having to communicate w/ the LDAP server on every request.
+ *
+ * If the user does not exist in the MySQL DB on first authentication, it will be
+ * created. If it does exist, it will be updated. This way, changes made in the
+ * LDAP server will be reflected in the UI.
+ *
+ * **Authenticating By Token Auth**
+ *
+ * Authenticating by token auth is more complicated than by authenticating by password.
+ * There is no LDAP concept of a authentication token, and connecting to the LDAP
+ * server for every token auth authentication would be very wasteful.
+ *
+ * So instead, when a user is synchronized, a token auth is generated using part of
+ * the password hash stored in LDAP. We don't want to store the whole password hash
+ * so attackers cannot get the true hash if they gain access to the MySQL DB.
+ *
+ * Once the token auth is generated, authenticating with it is done in the same way
+ * as with {@link Piwik\Plugins\Login\Auth}. In fact, this class will create an
+ * instance of that one to authenticate.
+ *
+ * **Non-LDAP Users**
+ *
+ * After LoginLdap is enabled, normal Piwik users are not allowed to authenticate.
+ * Only normal super users so the plugin can be managed w/o LDAP users existing.
+ *
+ * **Default View Access**
+ *
+ * When a user is created in Piwik, (s)he must be provided with access to at least
+ * one website. The website(s) new users are given access to is determined by the
+ * `[LoginLdap] new_user_default_sites_view_access` INI config option.
  */
-class LdapAuth extends \Piwik\Plugins\Login\Auth
+class LdapAuth implements Auth
 {
-    protected $password = null;
+    /**
+     * The username to authenticate with.
+     *
+     * @var null|string
+     */
+    private $login = null;
 
     /**
-     * @var bool
+     * The token auth to authenticate with.
+     *
+     * @var null|string
      */
-    private $initializingSession = false;
+    private $token_auth = null;
+
+    /**
+     * The password to authenticate with (unhashed).
+     *
+     * @var null|string
+     */
+    private $password = null;
 
     /**
      * LdapUsers DAO instance.
@@ -57,7 +113,30 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
     private $userSynchronizer;
 
     /**
-     * Authentication module's name, e.g., "Login"
+     * UsersManager API instance.
+     *
+     * @var UsersManagerAPI
+     */
+    private $usersManagerAPI;
+
+    /**
+     * Cache of user info for the current user being authenticated. This is the result of
+     * UserModel::getUser().
+     *
+     * @var string[]
+     */
+    private $userForLogin = null;
+
+    /**
+     * Whether to use web server authentication or not. If true, no LDAP binding is done, instead
+     * the authenticated user is taken from the REMOTE_USER server variable.
+     *
+     * @var bool
+     */
+    private $useWebServerAuthentication;
+
+    /**
+     * Authentication module's name, e.g., "LoginLdap"
      *
      * @return string
      */
@@ -74,38 +153,14 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
         $this->ldapUsers = LdapUsers::makeConfigured();
         $this->userSynchronizer = UserSynchronizer::makeConfigured();
         $this->usersModel = new UserModel();
+        $this->usersManagerAPI = UsersManagerAPI::getInstance();
+
+        $loginLdapConfig = Config::getInstance()->LoginLdap;
+        $this->useWebServerAuthentication = @$loginLdapConfig['useKerberos'] == 1; // TODO: change config name
     }
 
     /**
-     * Authenticates user
-     *
-     * @return AuthResult
-     */
-    public function authenticate()
-    {
-        $kerberosEnabled = @Config::getInstance()->LoginLdap['useKerberos'] == 1;
-        if ($kerberosEnabled) {
-            $httpAuthUser = $this->getAlreadyAuthenticatedLogin();
-
-            if (!empty($httpAuthUser)) {
-                $this->login = preg_replace('/@.*/', '', $httpAuthUser);
-                $this->password = '';
-
-                Log::info("Performing authentication with HTTP auth user '%s'.", $this->login);
-            }
-        }
-
-        if (!$this->initializingSession
-            && !empty($this->token_auth)
-        ) {
-            return $this->authenticateByTokenAuth();
-        } else {
-            return $this->authenticateByLoginAndPassword($kerberosEnabled);
-        }
-    }
-
-    /**
-     * Accessor to set password
+     * Sets the password to authenticate with.
      *
      * @param string $password password
      */
@@ -114,73 +169,97 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
         $this->password = $password;
     }
 
-    private function getConfigValue($optionName, $default = false)
-    {
-        $config = Config::getInstance()->LoginLdap;
-        return isset($config[$optionName]) ? $config[$optionName] : $default;
-    }
-
     /**
-     * This method is used for LDAP authentication.
+     * Sets the authentication token to authenticate with.
+     *
+     * @param string $token_auth authentication token
      */
-    private function authenticateLDAP($userLogin, $password, $useWebServerAuth)
+    public function setTokenAuth($token_auth)
     {
-        $ldapUser = $this->ldapUsers->authenticate($userLogin, $password, $useWebServerAuth);
-        if (!empty($ldapUser)) {
-            $user = $this->usersModel->getUser($userLogin); // TODO: is setting the token auth necessary?
-
-            if (empty($user['token_auth'])) {
-                Log::debug("Token auth for user '%s' not found in Piwik DB, synchronizing user.", $user);
-
-                $user = $this->userSynchronizer->synchronizeLdapUser($ldapUser);
-            }
-
-            $this->token_auth = $user['token_auth'];
-
-            // TODO: if token auth in DB is wrong, should we update it when syncing?
-
-            return true;
-        } else {
-            return false;
-        }
+        $this->token_auth = $token_auth;
     }
 
     /**
-    * Authenticates the user and initializes the session.
-    */
-    public function initSession($login, $password, $rememberMe)
+     * Returns the login of the user being authenticated.
+     *
+     * @return string
+     */
+    public function getLogin()
     {
-        $this->setPassword($password);
-
-        $this->initializingSession = true;
-        parent::initSession($login, md5($password), $rememberMe);
-        $this->initializingSession = false;
-
-        // remove password reset entry if it exists
-        LoginLdap::removePasswordResetInfo($login);
+        return $this->login;
     }
 
-    private function getAlreadyAuthenticatedLogin()
+    /**
+     * Returns the secret used to calculate a user's token auth.
+     *
+     * @return string
+     * @throws Exception if the token auth cannot be calculated at the current time.
+     */
+    public function getTokenAuthSecret()
     {
-        if (!isset($_SERVER['REMOTE_USER'])) {
-            Log::debug("useKerberos set to 1, but REMOTE_USER not found.");
-            return null;
+        $user = $this->getUserForLogin();
+
+        if (empty($user)) {
+            throw new Exception("Cannot find user '{$this->login}', if the user is in LDAP, he/she has not been synchronized with Piwik.");
         }
 
-        $remoteUser = $_SERVER['REMOTE_USER'];
-        if (strlen($remoteUser) <= 1) {
-            Log::debug("REMOTE_USER string length too short (== %s).", strlen($remoteUser));
+        return $user['password'];
+    }
+
+    /**
+     * Sets the login name to authenticate with.
+     *
+     * @param string $login The username.
+     */
+    public function setLogin($login)
+    {
+        $this->login = $login;
+    }
+
+    /**
+     * Unsupported (unless web server authentication is being used).
+     *
+     * @param string $passwordHash The hashed password.
+     * @throws Exception if authentication by hashed password is not supported.
+     */
+    public function setPasswordHash($passwordHash)
+    {
+        // if using web server auth, do nothing since the password isn't used anyway
+        if ($this->useWebServerAuthentication) {
+            return;
         }
 
-        return $remoteUser;
+        throw new Exception("LdapLogin: authentication by password hash not supported.");
     }
 
-    private function authenticateByTokenAuth()
+    /**
+     * Attempts to authenticate a user.
+     *
+     * @return AuthResult
+     */
+    public function authenticate()
     {
-        return parent::authenticate();
+        if ($this->useWebServerAuthentication) {
+            $webServerAuthUser = $this->getAlreadyAuthenticatedLogin();
+
+            if (empty($webServerAuthUser)) {
+                return $this->makeAuthFailure();
+            } else {
+                $this->login = preg_replace('/@.*/', '', $webServerAuthUser);
+                $this->password = '';
+
+                Log::info("User '%s' authenticated by webserver.", $this->login);
+
+                return $this->authenticateByPassword();
+            }
+        } else if (!empty($this->password)) {
+            return $this->authenticateByPassword();
+        } else {
+            return $this->authenticateByTokenAuth();
+        }
     }
 
-    private function authenticateByLoginAndPassword($usingWebServerAuth)
+    private function authenticateByPassword()
     {
         if (empty($this->login)) { // sanity check
             Log::warning("authenticateByLoginAndPassword: empty login encountered.");
@@ -195,18 +274,16 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
         }
 
         try {
-            if ($this->authenticateLDAP($this->login, $this->password, $usingWebServerAuth)) {
-                $user = $this->getUserByTokenAuth();
-
+            if ($this->authenticateByLdap()) {
+                $user = $this->getUserForLogin();
                 return $this->makeSuccessLogin($user);
             } else {
-                if (empty($this->token_auth)) {
-                    $this->token_auth = UsersManagerApi::getInstance()->getTokenAuth($this->login, md5($this->password));
-                }
-
                 // if LDAP auth failed, try normal auth. if we have a login for a superuser, let it through.
                 // this way, LoginLdap can be managed even if no users exist in LDAP.
-                $result = parent::authenticate();
+                $auth = new \Piwik\Plugins\Login\Auth();
+                $auth->setLogin($this->login);
+                $auth->setPassword($this->password);
+                $result = $auth->authenticate();
 
                 if ($result->getCode() == AuthResult::SUCCESS_SUPERUSER_AUTH_CODE) {
                     return $result;
@@ -221,16 +298,77 @@ class LdapAuth extends \Piwik\Plugins\Login\Auth
         return self::makeAuthFailure();
     }
 
-    private function getUserByTokenAuth()
+    private function authenticateByTokenAuth()
     {
-        $model = new UserModel();
-        return $model->getUserByTokenAuth($this->token_auth);
+        $auth = new \Piwik\Plugins\Login\Auth();
+        $auth->setLogin($this->login);
+        $auth->setTokenAuth($this->token_auth);
+        $result = $auth->authenticate();
+
+        // allow all super users to authenticate, even if they are not LDAP users, but stop
+        // normal non-LDAP users to authenticate.
+        if ($result->getCode() == AuthResult::SUCCESS_SUPERUSER_AUTH_CODE
+            || ($result->getCode() == AuthResult::SUCCESS
+                && $this->isUserAllowedToAuthenticateByTokenAuth())
+        ) {
+            return $result;
+        } else {
+            return $this->makeAuthFailure();
+        }
+    }
+
+    private function authenticateByLdap()
+    {
+        $ldapUser = $this->ldapUsers->authenticate($this->login, $this->password, $this->useWebServerAuthentication);
+        if (!empty($ldapUser)) {
+            $this->userForLogin = $this->userSynchronizer->synchronizeLdapUser($ldapUser);
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function getAlreadyAuthenticatedLogin()
+    {
+        if (!isset($_SERVER['REMOTE_USER'])) {
+            Log::debug("using web server authentication, but REMOTE_USER server variable not found.");
+            return null;
+        }
+
+        return $_SERVER['REMOTE_USER'];
+    }
+
+    private function isUserAllowedToAuthenticateByTokenAuth()
+    {
+        if ($this->token_auth == 'anonymous') {
+            return true;
+        }
+
+        $user = $this->getUserForLogin();
+        return UserMapper::isUserLdapUser($user);
+    }
+
+    private function getUserForLogin()
+    {
+        if (empty($this->userForLogin)) {
+            if (!empty($this->login)) {
+                $this->userForLogin = $this->usersModel->getUser($this->login);
+            } else if (!empty($this->token_auth)) {
+                $this->userForLogin = $this->usersModel->getUserByTokenAuth($this->token_auth);
+            } else {
+                throw new Exception("Cannot get user details, neither login nor token auth are set.");
+            }
+        }
+        return $this->userForLogin;
     }
 
     private function makeSuccessLogin($userInfo)
     {
         $successCode = $userInfo['superuser_access'] ? AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
-        return new AuthResult($successCode, $userInfo['login'], $this->token_auth);
+        $tokenAuth = $this->usersManagerAPI->getTokenAuth($userInfo['login'], $this->getTokenAuthSecret());
+
+        return new AuthResult($successCode, $userInfo['login'], $tokenAuth);
     }
 
     private function makeAuthFailure()
