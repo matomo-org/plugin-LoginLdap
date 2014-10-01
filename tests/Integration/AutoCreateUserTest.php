@@ -48,7 +48,7 @@ class AutoCreateUserTest extends LdapIntegrationTest
 
         $this->assertEquals(1, $authResult->getCode());
 
-        $addedPass = '{LDAP}0efeb2893fd6e05bda33980176';
+        $addedPass = '{LDAP}Dv6yiT/W4FvaM5gBdqHwlQ==--';
 
         $user = Db::fetchRow("SELECT login, password, alias, email, token_auth FROM " . Common::prefixTable('user') . " WHERE login = ?", array(self::TEST_LOGIN));
         $this->assertNotEmpty($user);
