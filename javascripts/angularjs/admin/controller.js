@@ -23,15 +23,6 @@ angular.module('piwikApp').controller('LoginLdapAdminController', function ($sco
         };
 
     // TODO: use nonces as in old controller method way
-    $scope.synchronizeLdapUser = function (ldapUserName) {
-        $scope.isSynchronizingUser = true;
-        piwikApi.fetch({
-            method: "LoginLdap.synchronizeLdapUser",
-            ldapUserName: ldapUserName
-        }).then(displaySuccessMessage)['finally'](function () {
-            $scope.isSynchronizingUser = false;
-        });
-    };
 
     $scope.isSavingLdapConfig = false;
     $scope.saveLoginLdapConfig = function (config) {

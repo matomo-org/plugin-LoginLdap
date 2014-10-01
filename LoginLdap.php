@@ -53,7 +53,8 @@ class LoginLdap extends \Piwik\Plugin
             'Request.initAuthenticationObject' => 'initAuthenticationObject',
             'User.isNotAuthorized'             => 'noAccess',
             'API.Request.authenticate'         => 'ApiRequestAuthenticate',
-            'AssetManager.getJavaScriptFiles'  => 'getJsFiles'
+            'AssetManager.getJavaScriptFiles'  => 'getJsFiles',
+            'AssetManager.getStylesheetFiles'  => 'getStylesheetFiles'
         );
         return $hooks;
     }
@@ -62,6 +63,11 @@ class LoginLdap extends \Piwik\Plugin
     {
         $jsFiles[] = "plugins/Login/javascripts/login.js"; // TODO: shouldn't disable Login plugin
         $jsFiles[] = "plugins/LoginLdap/javascripts/angularjs/admin/controller.js";
+    }
+
+    public function getStylesheetFiles(&$stylesheetFiles)
+    {
+        $stylesheetFiles[] = "plugins/LoginLdap/javascripts/angularjs/admin/admin.less";
     }
 
     /**
