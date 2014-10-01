@@ -36,7 +36,7 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
     /**
      * @var array
      */
-    private $userAccess;
+    public $userAccess;
 
     public function setUp()
     {
