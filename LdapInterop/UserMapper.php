@@ -100,6 +100,7 @@ class UserMapper
         $password = $this->getRequiredLdapUserField($ldapUser, 'userpassword');
         $password = preg_replace("/^(?:\\{[^}]*\\})?/", self::MAPPED_USER_PASSWORD_PREFIX, $password);
         $password = substr($password, 0, 32);
+        $password = str_pad($password, 32, '-');
         return $password;
     }
 
