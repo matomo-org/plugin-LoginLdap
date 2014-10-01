@@ -223,7 +223,7 @@ class AuthenticationTest extends LdapIntegrationTest
         $ldapAuth->setTokenAuth($this->getNonLdapNormalUserTokenAuth());
         $authResult = $ldapAuth->authenticate();
 
-        $this->assertEquals(self::NON_LDAP_NORMAL_USER, null);
+        $this->assertEquals(null, $authResult->getIdentity());
         $this->assertEquals(0, $authResult->getCode());
     }
 
