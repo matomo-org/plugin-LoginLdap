@@ -59,7 +59,20 @@
                 <span class='form-description'>{{ 'LoginLdap_MemberOfDescription'|translate }}</span>
             </td>
             <td>
-                <input size="25" id="memberOf" ng-model="loginLdapConfig.memberOf"/>
+                <input size="25" id="memberOf" ng-model="loginLdapConfig.memberOf" piwik-onenter="queryMemberOfCount()"
+                       ng-change="countUsersFoundWithMemberOf=loginLdapConfig.memberOf?countUsersFoundWithMemberOf:null;
+                                  currentMemberOfRequestError=loginLdapConfig.memberOf?currentMemberOfRequestError:null"/>
+                <a class="test-config-option-link" ng-click="queryMemberOfCount()" ng-show="loginLdapConfig.memberOf">{{ 'LoginLdap_Test'|translate }}</a>
+
+                <div piwik-translate="LoginLdap_MemberOfCount" piwik-notification style="display:inline-block" context="success" noclear="1" ng-show="countUsersFoundWithMemberOf!==null">
+                    <strong>
+                        <span ng-if="countUsersFoundWithMemberOf==1">{% verbatim %}{{ 'LoginLdap_OneUser'|translate }}{% endverbatim %}</span>
+                        <span ng-if="countUsersFoundWithMemberOf!=1">{% verbatim %}{{ 'General_NUsers'|translate:countUsersFoundWithMemberOf }}{% endverbatim %}</span>
+                    </strong>
+                </div>
+                <div piwik-notification style="display:inline-block" context="error" noclear="1" ng-show="currentMemberOfRequestError!==null">
+                    {% verbatim %}{{ currentMemberOfRequestError }}{% endverbatim %}
+                </div>
             </td>
         </tr>
 
@@ -70,7 +83,20 @@
                 <span class='form-description'>{{ 'LoginLdap_FilterDescription'|translate }}</span>
             </td>
             <td>
-                <input size="25" id="filter" ng-model="loginLdapConfig.filter"/>
+                <input size="25" id="filter" ng-model="loginLdapConfig.filter" piwik-onenter="queryFilterCount()"
+                       ng-change="countUsersFoundMatchingFilter=loginLdapConfig.filter?countUsersFoundMatchingFilter:null;
+                                  currentFilterCountRequestError=loginLdapConfig.filter?currentFilterCountRequestError:null" />
+                <a class="test-config-option-link" ng-click="queryFilterCount()" ng-show="loginLdapConfig.filter">{{ 'LoginLdap_Test'|translate }}</a>
+
+                <div piwik-translate="LoginLdap_FilterCount" piwik-notification style="display:inline-block" context="success" noclear="1" ng-show="countUsersFoundMatchingFilter!==null">
+                    <strong>
+                        <span ng-if="countUsersFoundMatchingFilter==1">{% verbatim %}{{ 'LoginLdap_OneUser'|translate }}{% endverbatim %}</span>
+                        <span ng-if="countUsersFoundMatchingFilter!=1">{% verbatim %}{{ 'General_NUsers'|translate:countUsersFoundMatchingFilter }}{% endverbatim %}</span>
+                    </strong>
+                </div>
+                <div piwik-notification style="display:inline-block" context="error" noclear="1" ng-show="currentFilterCountRequestError!==null">
+                    {% verbatim %}{{ currentFilterCountRequestError }}{% endverbatim %}
+                </div>
             </td>
         </tr>
 

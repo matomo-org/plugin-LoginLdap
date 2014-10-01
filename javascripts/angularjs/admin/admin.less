@@ -2,11 +2,22 @@
   display: inline-table;
 
   td {
-    vertical-align: middle;
+    vertical-align: top;
   }
 
   tr > td:first-child {
     width:50%;
+    > *:first-child {
+      margin-top:8px;
+      display:inline-block;
+      min-height: initial;
+    }
+  }
+
+  input:not(.submit) {
+    margin-top:0;
+    width:179px;
+    padding-right:36px;
   }
 
   .form-description {
@@ -17,4 +28,19 @@
   }
 
   border-spacing: 0 1.5em;
+
+  .notification {
+    font-size: 12px;
+    padding: 8px;
+    margin-bottom:0;
+  }
+
+  .test-config-option-link {
+    font-size:.8em;
+    position:relative;
+    display:inline-block;
+    font-style:italic;
+    right:36px;
+    margin-right:-12px;
+  }
 }

@@ -49,12 +49,13 @@ class LoginLdap extends \Piwik\Plugin
     public function getListHooksRegistered()
     {
         $hooks = array(
-            'Menu.Admin.addItems'              => 'addMenu',
-            'Request.initAuthenticationObject' => 'initAuthenticationObject',
-            'User.isNotAuthorized'             => 'noAccess',
-            'API.Request.authenticate'         => 'ApiRequestAuthenticate',
-            'AssetManager.getJavaScriptFiles'  => 'getJsFiles',
-            'AssetManager.getStylesheetFiles'  => 'getStylesheetFiles'
+            'Menu.Admin.addItems'                    => 'addMenu',
+            'Request.initAuthenticationObject'       => 'initAuthenticationObject',
+            'User.isNotAuthorized'                   => 'noAccess',
+            'API.Request.authenticate'               => 'ApiRequestAuthenticate',
+            'AssetManager.getJavaScriptFiles'        => 'getJsFiles',
+            'AssetManager.getStylesheetFiles'        => 'getStylesheetFiles',
+            'Translate.getClientSideTranslationKeys' => 'getClientSideTranslationKeys'
         );
         return $hooks;
     }
@@ -68,6 +69,14 @@ class LoginLdap extends \Piwik\Plugin
     public function getStylesheetFiles(&$stylesheetFiles)
     {
         $stylesheetFiles[] = "plugins/LoginLdap/javascripts/angularjs/admin/admin.less";
+    }
+
+    public function getClientSideTranslationKeys(&$keys)
+    {
+        $keys[] = "General_NUsers";
+        $keys[] = "LoginLdap_OneUser";
+        $keys[] = "LoginLdap_MemberOfCount";
+        $keys[] = "LoginLdap_FilterCount";
     }
 
     /**

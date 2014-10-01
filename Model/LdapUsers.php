@@ -188,12 +188,7 @@ class LdapUsers
 
         $result = $this->doWithClient(function (LdapUsers $self, LdapClient $ldapClient, ServerInfo $server)
             use ($username) {
-            $adminUserName = $self->addUsernameSuffix($server->getAdminUsername());
-
-            // bind using the admin user which has at least read access to LDAP users
-            if (!$ldapClient->bind($adminUserName, $server->getAdminPassword())) {
-                throw new Exception("Could not bind as LDAP admin.");
-            }
+            $self->bindAsAdmin($ldapClient, $server);
 
             // look for the user, applying extra filters
             list($filter, $bind) = $self->getUserEntryQuery($username);
@@ -209,6 +204,30 @@ class LdapUsers
             } else {
                 return $userEntries[0];
             }
+        });
+
+        Log::debug(self::FUNCTION_END_LOG_MESSAGE, __FUNCTION__, $result);
+
+        return $result;
+    }
+
+    /**
+     * Returns count of users in LDAP that match an LDAP filter.
+     *
+     * @param string $filter The filter to match.
+     * @return int
+     * @throws Exception if no LDAP server can be reached, if we cannot bind to the admin user, if
+     *                   the LDAP filter is incorrect, or if something else goes wrong during LDAP.
+     */
+    public function getCountOfUsersMatchingFilter($filter, $filterBind = array())
+    {
+        Log::debug(self::FUNCTION_START_LOG_MESSAGE, __FUNCTION__, $filter);
+
+        $result = $this->doWithClient(function (LdapUsers $self, LdapClient $ldapClient, ServerInfo $server)
+            use ($filter, $filterBind) {
+            $self->bindAsAdmin($ldapClient, $server);
+
+            return $ldapClient->count($server->getBaseDn(), $filter, $filterBind);
         });
 
         Log::debug(self::FUNCTION_END_LOG_MESSAGE, __FUNCTION__, $result);
@@ -408,13 +427,26 @@ class LdapUsers
 
     private function throwCouldNotConnectException()
     {
-        if (count($this->ldapServers) > 1) { // TODO: translate this message
+        if (count($this->ldapServers) > 1) {
             $message = Piwik::translate('LoginLdap_CannotConnectToServers', count($this->ldapServers));
         } else {
             $message = Piwik::translate("CannotConnectToServer");
         }
 
         throw new ConnectionException($message);
+    }
+
+    /**
+     * Public only for use in closure.
+     */
+    public function bindAsAdmin(LdapClient $ldapClient, ServerInfo $server)
+    {
+        $adminUserName = $this->addUsernameSuffix($server->getAdminUsername());
+
+        // bind using the admin user which has at least read access to LDAP users
+        if (!$ldapClient->bind($adminUserName, $server->getAdminPassword())) {
+            throw new Exception("Could not bind as LDAP admin.");
+        }
     }
 
     /**

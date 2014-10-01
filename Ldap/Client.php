@@ -136,18 +136,10 @@ class Client
     {
         $ldapFilter = $this->bindFilterParameters($ldapFilter, $filterBind);
 
-        $connectionResource = $this->connectionResource;
-        $searchResultResource = $this->throwPhpErrors(function () use ($connectionResource, $baseDn, $ldapFilter) {
-            Log::debug("Calling ldap_search(%s, '%s', '%s')", $connectionResource, $baseDn, $ldapFilter);
-
-            $result = ldap_search($connectionResource, $baseDn, $ldapFilter);
-
-            Log::debug("ldap_search result is %s", $result);
-
-            return $result;
-        });
+        $searchResultResource = $this->initiateSearch($baseDn, $ldapFilter);
 
         if (!empty($searchResultResource)) {
+            $connectionResource = $this->connectionResource;
             $ldapInfo = $this->throwPhpErrors(function () use ($connectionResource, $searchResultResource) {
                 Log::debug("Calling ldap_get_entries(%s, %s)", $connectionResource, $searchResultResource);
 
@@ -161,6 +153,41 @@ class Client
             return $this->transformLdapInfo($ldapInfo);
         } else {
             return null;
+        }
+    }
+
+    /**
+     * Returns the count of LDAP entries that match a filter.
+     *
+     * All PHP errors triggered by ldap_* calls are wrapped in exceptions and thrown.
+     *
+     * @param string $baseDn The base DN to use.
+     * @param string $ldapFilter The LDAP filter string, ie, `"(&(...)(...))"`. This client allows you to use
+     *                           `"?"` placeholders in the string.
+     * @param array $filterBind Bind parameters for $ldapFilter.
+     * @return int The count of matched entries.
+     * @throws Exception If an error occurs during the `ldap_search` or `ldap_count_entries` calls, or if
+     *                   `ldap_search` returns null.
+     */
+    public function count($baseDn, $ldapFilter, $filterBind = array())
+    {
+        $ldapFilter = $this->bindFilterParameters($ldapFilter, $filterBind);
+
+        $searchResultResource = $this->initiateSearch($baseDn, $ldapFilter);
+
+        if (!empty($searchResultResource)) {
+            $connectionResource = $this->connectionResource;
+            return $this->throwPhpErrors(function () use ($connectionResource, $searchResultResource) {
+                Log::debug("Calling ldap_count_entries(%s, %s)", $connectionResource, $searchResultResource);
+
+                $result = ldap_count_entries($connectionResource, $searchResultResource);
+
+                Log::debug("ldap_count_entries returned %s", $result);
+
+                return $result;
+            });
+        } else {
+            throw new Exception("Unexpected error: ldap_search returned null.");
         }
     }
 
@@ -328,6 +355,20 @@ class Client
         }
 
         return $result;
+    }
+
+    private function initiateSearch($baseDn, $ldapFilter)
+    {
+        $connectionResource = $this->connectionResource;
+        return $this->throwPhpErrors(function () use ($connectionResource, $baseDn, $ldapFilter) {
+            Log::debug("Calling ldap_search(%s, '%s', '%s')", $connectionResource, $baseDn, $ldapFilter);
+
+            $result = ldap_search($connectionResource, $baseDn, $ldapFilter);
+
+            Log::debug("ldap_search result is %s", $result);
+
+            return $result;
+        });
     }
 
     /**

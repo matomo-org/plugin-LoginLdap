@@ -12,7 +12,6 @@ use Piwik\Config;
 use Piwik\Piwik;
 use Piwik\Plugins\LoginLdap\Ldap\ServerInfo;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
-use Piwik\Plugins\UsersManager\API as UsersManagerApi;
 use Exception;
 
 /**
@@ -20,30 +19,18 @@ use Exception;
 class API extends \Piwik\Plugin\API
 {
     /**
-     * Creates a Piwik user using LDAP information.
+     * The LdapUsers instance to use when executing LDAP logic regarding LDAP users.
      *
-     * @param string $ldapUserName The username in LDAP.
-     * @throws Exception if no user is found or an error occurs while connecting to LDAP.
-     * @return array
+     * @var LdapUsers
      */
-    public function synchronizeLdapUser($ldapUserName)
+    private $ldapUsers;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
     {
-        $this->checkHttpMethodIsPost();
-        Piwik::checkUserHasSuperUserAccess();
-
-        $ldapUsers = LdapUsers::makeConfigured();
-        $ldapUser = $ldapUsers->getUser(Common::unsanitizeInputValue($ldapUserName));
-
-        if (empty($ldapUser)) {
-            throw new Exception(Piwik::translate('LoginLdap_UserNotFound', $ldapUserName));
-        }
-
-        $piwikUser = $ldapUsers->createPiwikUserEntryForLdapUser($ldapUser);
-
-        UsersManagerApi::getInstance()->addUser(
-            $piwikUser['login'], $piwikUser['password'], $piwikUser['email'], $piwikUser['alias']);
-
-        return array('result' => 'success', 'message' => Piwik::translate('LoginLdap_LdapUserAdded'));
+        $this->ldapUsers = LdapUsers::makeConfigured();
     }
 
     /**
@@ -97,6 +84,44 @@ class API extends \Piwik\Plugin\API
         Config::getInstance()->forceSave();
 
         return array('result' => 'success', 'message' => Piwik::translate("General_YourChangesHaveBeenSaved"));
+    }
+
+    /**
+     * Returns count of users in LDAP that are member of a specific group of names. Uses a search
+     * filter with memberof=?.
+     *
+     * @param string $memberOf The group to check.
+     * @return int
+     * @throws Exception if the current user is not a Super User or something goes wrong with LDAP.
+     */
+    public function getCountOfUsersMemberOf($memberOf)
+    {
+        Piwik::checkUserHasSuperUserAccess();
+
+        return $this->ldapUsers->getCountOfUsersMatchingFilter("(memberof=?", array($memberOf));
+    }
+
+    /**
+     * Returns count of users in LDAP that match an LDAP filter. If the filter is incorrect,
+     * `null` is returned.
+     *
+     * @param string $filter The filter to match.
+     * @return int|null
+     * @throws Exception if the current user is not a Super User or something goes wrong with LDAP.
+     */
+    public function getCountOfUsersMatchingFilter($filter)
+    {
+        Piwik::checkUserHasSuperUserAccess();
+
+        try {
+            return $this->ldapUsers->getCountOfUsersMatchingFilter($filter);
+        } catch (Exception $ex) {
+            if (stripos($ex->getMessage(), "Bad search filter") !== false) {
+                throw new Exception(Piwik::translate("LoginLdap_InvalidFilter"));
+            } else {
+                throw $ex;
+            }
+        }
     }
 
     private function checkHttpMethodIsPost()

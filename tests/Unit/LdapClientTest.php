@@ -8,6 +8,7 @@
  */
 namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
+use Exception;
 use Piwik\Log;
 use Piwik\Plugins\LoginLdap\Ldap\Client as LdapClient;
 use Piwik\Plugins\LoginLdap\Ldap\LdapFunctions;
@@ -30,7 +31,8 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
         Log::getInstance()->setLogLevel(Log::VERBOSE);
 
         LdapFunctions::$phpUnitMock = $this->getMock('stdClass', array(
-            'ldap_connect', 'ldap_close', 'ldap_bind', 'ldap_search', 'ldap_set_option', 'ldap_get_entries'
+            'ldap_connect', 'ldap_close', 'ldap_bind', 'ldap_search', 'ldap_set_option', 'ldap_get_entries',
+            'ldap_count_entries'
         ));
     }
 
@@ -41,14 +43,14 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
         Log::unsetInstance();
     }
 
-    public function testConstructionWithNoArgumentsDoesNotConnect()
+    public function test_construction_WithNoArguments_DoesNotConnect()
     {
         $ldapClient = new LdapClient();
 
         $this->assertFalse($ldapClient->isOpen());
     }
 
-    public function testConstructionWithHostnameAndPortAttemptsToConnect()
+    public function test_construction_WithHostnameAndPort_AttemptsToConnect()
     {
         $this->addLdapConnectMethodMock("hostname", 1234);
 
@@ -57,7 +59,7 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($ldapClient->isOpen());
     }
 
-    public function testConnectClosesIfConnectionCurrentlyOpen()
+    public function test_connect_Closes_IfConnectionCurrentlyOpen()
     {
         $this->addLdapConnectMethodMock();
 
@@ -78,7 +80,7 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
      * @expectedException \Exception
      * @expectedExceptionMessage triggered error
      */
-    public function testConnectThrowsPhpErrors()
+    public function test_connect_ThrowsPhpErrors()
     {
         $this->addLdapMethodThatTriggersPhpError('ldap_connect');
 
@@ -86,7 +88,7 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
         $ldapClient->connect("hostname", 1234);
     }
 
-    public function testCloseSucceedsIfConnectionAlreadyClosed()
+    public function test_close_Succeeds_IfConnectionAlreadyClosed()
     {
         $ldapClient = new LdapClient();
         $ldapClient->close();
@@ -96,7 +98,7 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
      * @expectedException \Exception
      * @expectedExceptionMessage triggered error
      */
-    public function testCloseThrowsPhpErrors()
+    public function test_close_ThrowsPhpErrors()
     {
         $this->addLdapConnectMethodMock();
         $this->addLdapMethodThatTriggersPhpError('ldap_close');
@@ -105,7 +107,7 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
         $ldapClient->close();
     }
 
-    public function testBindForwardsLdapBindResult()
+    public function test_bind_ForwardsLdapBindResult()
     {
         LdapFunctions::$phpUnitMock->expects($this->once())->method('ldap_bind')->will($this->returnValue("ldap_bind result"));
 
@@ -118,7 +120,7 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
      * @expectedException \Exception
      * @expectedExceptionMessage triggered error
      */
-    public function testBindThrowsPhpErrors()
+    public function test_bind_ThrowsPhpErrors()
     {
         $this->addLdapMethodThatTriggersPhpError('ldap_bind');
 
@@ -130,7 +132,7 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
      * @expectedException \Exception
      * @expectedExceptionMessage triggered error
      */
-    public function testFetchAllThrowsPhpErrors()
+    public function test_fetchAll_ThrowsPhpErrors()
     {
         $this->addLdapMethodThatTriggersPhpError('ldap_search');
         $this->addLdapMethodThatTriggersPhpError('ldap_get_entries');
@@ -139,7 +141,7 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
         $ldapClient->fetchAll("base dn", "filter");
     }
 
-    public function testFetchAllReturnsNullIfLdapSearchFailsSilently()
+    public function test_fetchAll_ReturnsNull_IfLdapSearchFailsSilently()
     {
         LdapFunctions::$phpUnitMock->expects($this->any())->method('ldap_search')->will($this->returnValue(null));
 
@@ -149,7 +151,7 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
         $this->assertNull($result);
     }
 
-    public function testFetchAllCorrectlyEscapesFilterParameters()
+    public function test_fetchAll_CorrectlyEscapesFilterParameters()
     {
         $escapedFilter = null;
 
@@ -227,7 +229,7 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider getLdapTransformTestData
      */
-    public function testFetchAllCorrectlyProcessesLdapSearchResults($ldapData, $expectedData)
+    public function test_fetchAll_CorrectlyProcessesLdapSearchResults($ldapData, $expectedData)
     {
         LdapFunctions::$phpUnitMock->expects($this->any())->method('ldap_search')->will($this->returnValue("resource"));
         LdapFunctions::$phpUnitMock->expects($this->any())->method('ldap_get_entries')->will($this->returnValue($ldapData));
@@ -235,6 +237,40 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
         $ldapClient = new LdapClient();
         $result = $ldapClient->fetchAll("base dn", "filter");
         $this->assertEquals($expectedData, $result);
+    }
+
+    /**
+     * @expectedException Exception
+     * @expectedExceptionMessage triggered error
+     */
+    public function test_count_ThrowsPhpErrors()
+    {
+        LdapFunctions::$phpUnitMock->expects($this->any())->method('ldap_search')->will($this->returnValue("resource"));
+        $this->addLdapMethodThatTriggersPhpError('ldap_count_entries');
+
+        $ldapClient = new LdapClient();
+        $ldapClient->count("base dn", "filter");
+    }
+
+    /**
+     * @expectedException Exception
+     */
+    public function test_count_Throws_IfLdapSearchReturnsNull()
+    {
+        LdapFunctions::$phpUnitMock->expects($this->any())->method('ldap_search')->will($this->returnValue(null));
+
+        $ldapClient = new LdapClient();
+        $ldapClient->count("base dn", "filter");
+    }
+
+    public function test_count_ReturnsCorrectValue()
+    {
+        LdapFunctions::$phpUnitMock->expects($this->any())->method('ldap_search')->will($this->returnValue("resource"));
+        LdapFunctions::$phpUnitMock->expects($this->any())->method('ldap_count_entries')->will($this->returnValue(8));
+
+        $ldapClient = new LdapClient();
+        $result = $ldapClient->count("base dn", "filter");
+        $this->assertEquals(8, $result);
     }
 
     private function addLdapConnectMethodMock($hostname = null, $port = null)

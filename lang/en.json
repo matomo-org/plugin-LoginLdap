@@ -41,6 +41,11 @@
         "autoCreateUser": "Add users if they match LDAP user settings",
         "CannotConnectToServer": "Could not connect to the LDAP server.",
         "CannotConnectToServers": "Could not connect to any of the %s LDAP servers.",
-        "LDAPServers": "LDAP Servers"
+        "LDAPServers": "LDAP Servers",
+        "OneUser": "1 user",
+        "MemberOfCount": "%s are a member of this group.",
+        "FilterCount": "%s are matched by this query.",
+        "Test": "Test",
+        "InvalidFilter": "Invalid filter."
     }
 }
