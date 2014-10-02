@@ -344,7 +344,9 @@ class Client
         if (function_exists('ldap_escape')) { // available in PHP 5.6
             return ldap_escape($value, $ignoreChars = "", LDAP_ESCAPE_FILTER);
         } else {
-            return preg_replace("/([*()\\?])/", "\\\\$1", $value); // replace special filter characters
+            return preg_replace_callback("/[*()\\\\]/", function ($matches) { // replace special filter characters
+                return "\\" . bin2hex($matches[0]);
+            }, $value);
         }
     }
 }

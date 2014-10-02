@@ -166,13 +166,13 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
         $this->assertEquals("(uid=name?)", $escapedFilter);
 
         $ldapClient->fetchAll("base dn", "(uid=?)", array("na(m)e?'!"));
-        $this->assertEquals('(uid=na\\(m\\)e\\?\'!)', $escapedFilter);
+        $this->assertEquals('(uid=na\\28m\\29e?\'!)', $escapedFilter);
 
         $ldapClient->fetchAll("base dn", "(&(uid=?,?)(whatev=?))", array("on()e", "tw?", "(thre"));
-        $this->assertEquals("(&(uid=on\\(\\)e,tw\\?)(whatev=\\(thre))", $escapedFilter);
+        $this->assertEquals("(&(uid=on\\28\\29e,tw?)(whatev=\\28thre))", $escapedFilter);
 
-        $ldapClient->fetchAll("base dn", "(&(uid=?,?)(whatev=?))", array("t*w()o", "thr??e"));
-        $this->assertEquals("(&(uid=t\\*w\\(\\)o,thr\\?\\?e)(whatev=?))", $escapedFilter);
+        $ldapClient->fetchAll("base dn", "(&(uid=?,?)(whatev=?))", array("t*w()o", "t\\hr??e"));
+        $this->assertEquals("(&(uid=t\\2aw\\28\\29o,t\\5chr??e)(whatev=?))", $escapedFilter);
     }
 
     public function getLdapTransformTestData()
