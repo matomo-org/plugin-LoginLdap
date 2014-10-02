@@ -98,6 +98,8 @@ class API extends \Piwik\Plugin\API
     {
         Piwik::checkUserHasSuperUserAccess();
 
+        $memberOf = Common::unsanitizeInputValue($memberOf);
+
         return $this->ldapUsers->getCountOfUsersMatchingFilter("(memberof=?)", array($memberOf));
     }
 
@@ -112,6 +114,8 @@ class API extends \Piwik\Plugin\API
     public function getCountOfUsersMatchingFilter($filter)
     {
         Piwik::checkUserHasSuperUserAccess();
+
+        $filter = Common::unsanitizeInputValue($filter);
 
         try {
             return $this->ldapUsers->getCountOfUsersMatchingFilter($filter);
