@@ -98,7 +98,7 @@ class API extends \Piwik\Plugin\API
     {
         Piwik::checkUserHasSuperUserAccess();
 
-        return $this->ldapUsers->getCountOfUsersMatchingFilter("(memberof=?", array($memberOf));
+        return $this->ldapUsers->getCountOfUsersMatchingFilter("(memberof=?)", array($memberOf));
     }
 
     /**
