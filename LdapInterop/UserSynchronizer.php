@@ -7,7 +7,6 @@
  */
 namespace Piwik\Plugins\LoginLdap\LdapInterop;
 
-use Exception;
 use Piwik\Access;
 use Piwik\Config;
 use Piwik\Log;
@@ -28,6 +27,13 @@ class UserSynchronizer
      * @var UserMapper
      */
     private $userMapper;
+
+    /**
+     * UserAccessMapper instance used to determine Piwik user access using LDAP user entities.
+     *
+     * @var UserAccessMapper
+     */
+    private $userAccessMapper;
 
     /**
      * UsersManager API instance used to add and get users.
@@ -64,16 +70,21 @@ class UserSynchronizer
     {
         $user = $this->userMapper->createPiwikUserFromLdapUser($ldapUser);
 
+        $self = $this;
         $usersManagerApi = $this->usersManagerApi;
         $userModel = $this->userModel;
         $newUserDefaultSitesWithViewAccess = $this->newUserDefaultSitesWithViewAccess;
-        return Access::doAsSuperUser(function () use ($user, $usersManagerApi, $userModel, $newUserDefaultSitesWithViewAccess) {
+        return Access::doAsSuperUser(function () use ($self, $ldapUser, $user, $usersManagerApi, $userModel,
+            $newUserDefaultSitesWithViewAccess) {
+
             $existingUser = $userModel->getUser($user['login']);
             if (empty($existingUser)) {
                 $usersManagerApi->addUser($user['login'], $user['password'], $user['email'], $user['alias'], $isPasswordHashed = true);
 
                 // set new user view access
-                $usersManagerApi->setUserAccess($user['login'], 'view', $newUserDefaultSitesWithViewAccess);
+                if (!empty($newUserDefaultSitesWithViewAccess)) {
+                    $usersManagerApi->setUserAccess($user['login'], 'view', $newUserDefaultSitesWithViewAccess);
+                }
             } else {
                 if (!UserMapper::isUserLdapUser($existingUser)) {
                     Log::warning("Unable to synchronize LDAP user '%s', Piwik user with same name exists.", $existingUser['login']);
@@ -81,8 +92,37 @@ class UserSynchronizer
                     $usersManagerApi->updateUser($user['login'], $user['password'], $user['email'], $user['alias'], $isPasswordHashed = true);
                 }
             }
+
+            $self->synchronizePiwikAccessFromLdap($user['login'], $ldapUser);
+
             return $usersManagerApi->getUser($user['login']);
         });
+    }
+
+    /**
+     * Uses information in LDAP user entity to set access levels in Piwik.
+     *
+     * @param string $piwikLogin The username of the Piwik user whose access will be set.
+     * @param string[] $ldapUser The LDAP entity to use when synchronizing.
+     */
+    public function synchronizePiwikAccessFromLdap($piwikLogin, $ldapUser)
+    {
+        if (empty($this->userAccessMapper)) {
+            return;
+        }
+
+        $userAccess = $this->userAccessMapper->getPiwikUserAccessForLdapUser($ldapUser);
+
+        $usersManagerApi = $this->usersManagerApi;
+        foreach ($userAccess as $userAccessLevel => $sites) {
+            Access::doAsSuperUser(function () use ($usersManagerApi, $userAccessLevel, $sites, $piwikLogin) {
+                if ($userAccessLevel == 'superuser') {
+                    $usersManagerApi->setSuperUserAccess($piwikLogin, true);
+                } else {
+                    $usersManagerApi->setUserAccess($piwikLogin, $userAccessLevel, $sites);
+                }
+            });
+        }
     }
 
     /**
@@ -166,6 +206,26 @@ class UserSynchronizer
     }
 
     /**
+     * Gets the {@link $userAccessMapper} property.
+     *
+     * @return UserAccessMapper
+     */
+    public function getUserAccessMapper()
+    {
+        return $this->userAccessMapper;
+    }
+
+    /**
+     * Sets the {@link $userAccessMapper} property.
+     *
+     * @param UserAccessMapper $userAccessMapper
+     */
+    public function setUserAccessMapper($userAccessMapper)
+    {
+        $this->userAccessMapper = $userAccessMapper;
+    }
+
+    /**
      * Creates a UserSynchronizer using INI configuration.
      *
      * @return UserSynchronizer
@@ -178,6 +238,11 @@ class UserSynchronizer
         $result->setUserModel(new UserModel());
 
         $loginLdap = Config::getInstance()->LoginLdap;
+
+        if (!empty($loginLdap['enable_synchronize_access_from_ldap'])) {
+            $result->setUserAccessMapper(UserAccessMapper::makeConfigured());
+        }
+
         if (!empty($loginLdap['new_user_default_sites_view_access'])) {
             $siteIds = Site::getIdSitesFromIdSitesString($loginLdap['new_user_default_sites_view_access']);
             if (empty($siteIds)) {

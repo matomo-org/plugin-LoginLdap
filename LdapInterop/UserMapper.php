@@ -289,6 +289,7 @@ class UserMapper
     {
         $config = Config::getInstance()->LoginLdap;
 
+        // TODO: put config field names as consts in special class
         $result = new UserMapper();
         self::setPropertyFromConfigurationOption($config, $result->ldapUserIdField, 'ldap_user_id_field', 'userIdField');
         self::setPropertyFromConfigurationOption($config, $result->ldapLastNameField, 'ldap_last_name_field');
