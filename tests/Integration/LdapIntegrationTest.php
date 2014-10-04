@@ -12,6 +12,7 @@ use DatabaseTestCase;
 use Piwik\Log;
 use Piwik\Config;
 use Piwik\Plugins\LoginLdap\Ldap\LdapFunctions;
+use Piwik\Tests\Fixture;
 
 abstract class LdapIntegrationTest extends DatabaseTestCase
 {
@@ -55,6 +56,11 @@ abstract class LdapIntegrationTest extends DatabaseTestCase
         );
 
         LdapFunctions::$phpUnitMock = null;
+
+        // create sites referenced in setup_ldap.sh
+        Fixture::createWebsite('2013-01-01 00:00:00');
+        Fixture::createWebsite('2013-01-01 00:00:00');
+        Fixture::createWebsite('2013-01-01 00:00:00');
     }
 
     public function tearDown()

@@ -192,6 +192,9 @@ uid: ironman
 userPassword: `slappasswd -h {md5} -s piedpiper`
 mobile: 555-555-5555
 mail: billionairephilanthropistplayboy@starkindustries.com
+view: 1,2
+view: 3
+admin: 3
 
 # USER ENTRY (pwd: redledger)
 dn: cn=Natalia Romanova,$BASE_DN
@@ -213,6 +216,7 @@ uid: captainamerica
 userPassword: `slappasswd -h {md5} -s thaifood`
 mobile: 123-456-7890
 mail: srodgers@aol.com
+superuser: 1
 
 # group entry
 dn: cn=avengers,$BASE_DN
