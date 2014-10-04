@@ -59,6 +59,15 @@ class UserAccessMapper
     private $superuserAttributeName = 'superuser';
 
     /**
+     * Cache for all site IDs. Set once by {@link getAllSites()}.
+     *
+     * Maps int site IDs w/ unspecified data.
+     *
+     * @var array
+     */
+    private $allSites = null;
+
+    /**
      * Returns an array describing an LDAP user's access to Piwik sites.
      *
      * The array will either mark the user as a superuser, in which case it will look like
@@ -79,7 +88,7 @@ class UserAccessMapper
     public function getPiwikUserAccessForLdapUser($ldapUser)
     {
         // if the user is a superuser, we don't need to check the other attributes
-        if (isset($ldapUser[$this->superuserAttributeName])) {
+        if (array_key_exists($this->superuserAttributeName, $ldapUser)) {
             return array('superuser' => true);
         }
 
@@ -173,9 +182,13 @@ class UserAccessMapper
             }
         });
 
+        Log::debug("UserAccessMapper::%s(): adding %s access for sites %s", __FUNCTION__, $accessLevel, $siteIds);
+
         $allSitesSet = $this->getSetOfAllSites();
         foreach ($siteIds as $idSite) {
             if (!isset($allSitesSet[$idSite])) {
+                Log::debug("UserAccessMapper::%s(): site [ id = %s ] does not exist, ignoring", __FUNCTION__, $idSite);
+
                 continue;
             }
 
@@ -185,15 +198,13 @@ class UserAccessMapper
 
     private function getSetOfAllSites()
     {
-        static $allSites = null;
-
-        if ($allSites === null) {
-            Access::doAsSuperUser(function () {
+        if ($this->allSites === null) {
+            $this->allSites = array_flip(Access::doAsSuperUser(function () {
                 return SitesManagerAPI::getInstance()->getSitesIdWithAtLeastViewAccess();
-            });
+            }));
         }
 
-        return $allSites;
+        return $this->allSites;
     }
 
     /**
@@ -225,6 +236,8 @@ class UserAccessMapper
 
         // TODO: add this logging to all makeConfigured methods that access Config, may help diagnose config errors...
         Log::debug("UserAccessMapper::%s: configuring with viewAttributeName = '%s', adminAttributeName = '%s', superuserAttributeName = '%s'",
-            $viewAttributeName, $adminAttributeName, $superuserAttributeName);
+            __FUNCTION__, $viewAttributeName, $adminAttributeName, $superuserAttributeName);
+
+        return $result;
     }
 }
