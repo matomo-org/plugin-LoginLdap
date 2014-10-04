@@ -80,7 +80,8 @@ class AutoCreateUserTest extends LdapIntegrationTest
     public function test_PiwikUserIsUpdated_IfLdapUserAlreadySynchronized_ButLdapUserInfoIsDifferent()
     {
         Access::doAsSuperUser(function () {
-            UsersManagerAPI::getInstance()->addUser(self::TEST_LOGIN, self::LDAP_ADDED_PASS_DIFF, '', $alias = false, $isPasswordHashed = true);
+            UsersManagerAPI::getInstance()->addUser(
+                AutoCreateUserTest::TEST_LOGIN, AutoCreateUserTest::LDAP_ADDED_PASS_DIFF, '', $alias = false, $isPasswordHashed = true);
         });
 
         $this->authenticateViaLdap();
@@ -112,9 +113,10 @@ class AutoCreateUserTest extends LdapIntegrationTest
         $this->enableAccessSynchronization();
 
         Access::doAsSuperUser(function () {
-            UsersManagerAPI::getInstance()->addUser(self::TEST_LOGIN, self::LDAP_ADDED_PASS_DIFF, '', $alias = false, $isPasswordHashed = true);
-            UsersManagerAPI::getInstance()->setUserAccess(self::TEST_LOGIN, 'view', array(4,5));
-            UsersManagerAPI::getInstance()->setUserAccess(self::TEST_LOGIN, 'admin', array(6));
+            UsersManagerAPI::getInstance()->addUser(
+                AutoCreateUserTest::TEST_LOGIN, AutoCreateUserTest::LDAP_ADDED_PASS_DIFF, '', $alias = false, $isPasswordHashed = true);
+            UsersManagerAPI::getInstance()->setUserAccess(AutoCreateUserTest::TEST_LOGIN, 'view', array(4,5));
+            UsersManagerAPI::getInstance()->setUserAccess(AutoCreateUserTest::TEST_LOGIN, 'admin', array(6));
         });
 
         $this->authenticateViaLdap();
@@ -174,7 +176,7 @@ class AutoCreateUserTest extends LdapIntegrationTest
     private function assertStarkAccessSynchronized()
     {
         $access = Access::doAsSuperUser(function () {
-            return UsersManagerAPI::getInstance()->getSitesAccessFromUser(self::TEST_LOGIN);
+            return UsersManagerAPI::getInstance()->getSitesAccessFromUser(AutoCreateUserTest::TEST_LOGIN);
         });
 
         $this->assertEquals(array(
