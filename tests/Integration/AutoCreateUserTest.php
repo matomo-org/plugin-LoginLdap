@@ -32,12 +32,12 @@ class AutoCreateUserTest extends LdapIntegrationTest
     {
         parent::setUp();
 
-        Access::getInstance()->setSuperUserAccess(false);
-
         // create extra sites that users won't have access to
         Fixture::createWebsite('2013-01-01 00:00:00');
         Fixture::createWebsite('2013-01-01 00:00:00');
         Fixture::createWebsite('2013-01-01 00:00:00');
+
+        Access::getInstance()->setSuperUserAccess(false);
     }
 
     public function tearDown()
