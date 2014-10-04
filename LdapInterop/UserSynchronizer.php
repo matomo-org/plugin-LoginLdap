@@ -74,8 +74,7 @@ class UserSynchronizer
         $usersManagerApi = $this->usersManagerApi;
         $userModel = $this->userModel;
         $newUserDefaultSitesWithViewAccess = $this->newUserDefaultSitesWithViewAccess;
-        return Access::doAsSuperUser(function () use ($self, $ldapUser, $user, $usersManagerApi, $userModel,
-            $newUserDefaultSitesWithViewAccess) {
+        return Access::doAsSuperUser(function () use ($self, $user, $usersManagerApi, $userModel, $newUserDefaultSitesWithViewAccess) {
 
             $existingUser = $userModel->getUser($user['login']);
             if (empty($existingUser)) {
