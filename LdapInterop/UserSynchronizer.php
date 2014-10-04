@@ -247,7 +247,10 @@ class UserSynchronizer
         }
 
         if (!empty($loginLdap['new_user_default_sites_view_access'])) {
-            $siteIds = Site::getIdSitesFromIdSitesString($loginLdap['new_user_default_sites_view_access']);
+            $siteIds = Access::doAsSuperUser(function () use ($loginLdap) {
+                return Site::getIdSitesFromIdSitesString($loginLdap['new_user_default_sites_view_access']);
+            });
+
             if (empty($siteIds)) {
                 Log::warning("UserSynchronizer::%s(): new_user_default_sites_view_access INI config option has no "
                            . "entries. Newly synchronized users will not have any access.", __FUNCTION__);
