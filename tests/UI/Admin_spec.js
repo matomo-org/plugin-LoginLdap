@@ -34,13 +34,14 @@ describe("LoginLdap_Admin", function () {
     it("should load correctly and allow testing the filter and group fields", function (done) {
         expect.screenshot('admin_page').to.be.captureSelector('#content', function (page) {
             page.load(ldapAdminUrl);
-            page.evaluate(function () {
-                $('input#memberOf').attr('placeholder', '');
-                $('input#filter').attr('placeholder', '');
-            });
 
-            page.sendKeys('input#memberOf', 'cn=avengers,dc=avengers,dc=shield,dc=org');
-            page.sendKeys('input#filter', '(objectClass=person)');
+            page.sendKeys('input#memberOf', 'a');
+            page.sendKeys('input#filter', 'a');
+
+            page.evaluate(function () {
+                $('input#memberOf').val('cn=avengers,dc=avengers,dc=shield,dc=org');
+                $('input#filter').val('(objectClass=person)');
+            });
 
             page.click('input#memberOf + .test-config-option-link');
             page.click('input#filter + .test-config-option-link');
