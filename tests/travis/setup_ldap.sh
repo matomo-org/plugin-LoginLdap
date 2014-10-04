@@ -18,6 +18,11 @@ ADMIN_PASS=secrets
 ADMIN_PASS_HASH=`slappasswd -h {md5} -s $ADMIN_PASS`
 BASE_DN="dc=avengers,dc=shield,dc=org"
 
+STR_OID="1.3.6.1.4.1.1466.115.121.1.15"
+VIEW_OID="2.16.840.1.113730.3.1.1.1"
+ADMIN_OID="2.16.840.1.113730.3.1.1.2"
+SUPERUSER_OID="2.16.840.1.113730.3.1.1.3"
+
 sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
 
 dn: cn=config
@@ -49,6 +54,70 @@ olcDbConfig: {3}set_lk_max_lockers 1500
 olcDbIndex: objectClass eq
 
 EOF
+
+sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
+
+# first define custom LDAP attributes for Piwik access
+dn: cn=schema,cn=config
+changetype: modify
+add: olcAttributeTypes
+olcAttributeTypes: ( $VIEW_OID
+  NAME 'view'
+  DESC 'Describes site IDs user has view access to.'
+  EQUALITY caseIgnoreMatch
+  ORDERING caseIgnoreOrderingMatch
+  SYNTAX $STR_OID )
+-
+add: olcAttributeTypes
+olcAttributeTypes: ( $ADMIN_OID
+  NAME 'admin'
+  DESC 'Describes site IDs user has admin access to.'
+  EQUALITY caseIgnoreMatch
+  ORDERING caseIgnoreOrderingMatch
+  SYNTAX $STR_OID )
+-
+add: olcAttributeTypes
+olcAttributeTypes: ( $SUPERUSER_OID
+  NAME 'superuser'
+  DESC 'Marks user as superuser if present.'
+  EQUALITY caseIgnoreMatch
+  ORDERING caseIgnoreOrderingMatch
+  SYNTAX $STR_OID )
+
+EOF
+
+if [ "$?" -ne "0" ]; then
+    echo "Failed to add custom attributes!"
+    echo ""
+    echo "slapd log:"
+    sudo grep slapd /var/log/syslog
+
+    exit 1
+fi
+
+sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
+
+dn: cn=schema,cn=config
+changetype: modify
+add: olcObjectClasses
+olcObjectClasses: ( 2.16.840.1.113730.3.2.3
+   NAME 'piwikPerson'
+   DESC 'Piwik User'
+   SUP inetOrgPerson
+   STRUCTURAL
+   MAY ( view $ admin $ superuser )
+   )
+
+EOF
+
+if [ "$?" -ne "0" ]; then
+    echo "Failed to add piwikPerson class!"
+    echo ""
+    echo "slapd log:"
+    sudo grep slapd /var/log/syslog
+
+    exit 1
+fi
 
 sudo ldapadd -Y EXTERNAL -H ldapi:/// <<EOF
 
@@ -117,7 +186,7 @@ description: all groups
 dn: cn=Tony Stark,$BASE_DN
 cn: Tony Stark
 sn: Stark
-objectClass: inetOrgPerson
+objectClass: piwikPerson
 objectClass: top
 uid: ironman
 userPassword: `slappasswd -h {md5} -s piedpiper`
@@ -128,7 +197,7 @@ mail: billionairephilanthropistplayboy@starkindustries.com
 dn: cn=Natalia Romanova,$BASE_DN
 cn: Natalia Romanova
 objectClass: top
-objectClass: inetOrgPerson
+objectClass: piwikPerson
 sn: Romanova
 uid: blackwidow
 userPassword: `slappasswd -h {md5} -s redledger`
@@ -138,7 +207,7 @@ mobile: none
 dn: cn=Steve Rodgers,$BASE_DN
 cn: Steve Rodgers
 objectClass: top
-objectClass: inetOrgPerson
+objectClass: piwikPerson
 sn: Rodgers
 uid: captainamerica
 userPassword: `slappasswd -h {md5} -s thaifood`
