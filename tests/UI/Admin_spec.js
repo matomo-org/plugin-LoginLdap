@@ -10,7 +10,7 @@
 describe("LoginLdap_Admin", function () {
     this.timeout(0);
 
-    this.fixture = "Piwik\\Tests\\Fixture";
+    this.fixture = "Piwik\\Tests\\Fixtures\\OneVisitorTwoVisits";
 
     before(function () {
         testEnvironment.configOverride = {

@@ -75,7 +75,10 @@ class AutoCreateUserTest extends LdapIntegrationTest
         $this->assertEquals(array(
             array('site' => '1', 'access' => 'view'),
             array('site' => '2', 'access' => 'view'),
-            array('site' => '3', 'access' => 'view')
+            array('site' => '3', 'access' => 'view'),
+            array('site' => '4', 'access' => 'view'),
+            array('site' => '5', 'access' => 'view'),
+            array('site' => '6', 'access' => 'view')
         ), $access);
     }
 
