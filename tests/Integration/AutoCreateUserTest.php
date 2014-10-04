@@ -53,7 +53,14 @@ class AutoCreateUserTest extends LdapIntegrationTest
 
         $this->assertStarkSynchronized();
 
-        $this->assertNoAccessInDb();
+        $superusers = $this->getSuperUsers();
+        $this->assertEquals(array(), $superusers);
+
+        $access = $this->getAccessFor(self::TEST_LOGIN); // access added due to new_user_default_sites_view_access option
+        $this->assertEquals(array(
+            array('site' => '1', 'access' => 'view'),
+            array('site' => '2', 'access' => 'view')
+        ), $access);
     }
 
     public function test_PiwikUserIsNotCreated_IfPiwikUserAlreadyExists()
@@ -127,7 +134,6 @@ class AutoCreateUserTest extends LdapIntegrationTest
     private function assertNoAccessInDb()
     {
         $access = $this->getAccessFor(self::TEST_LOGIN);
-        echo print_r($access, true);
         $this->assertEquals(array(), $access);
 
         $superusers = $this->getSuperUsers();
