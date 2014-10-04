@@ -239,6 +239,10 @@ class UserSynchronizer
 
         if (!empty($loginLdap['enable_synchronize_access_from_ldap'])) {
             $result->setUserAccessMapper(UserAccessMapper::makeConfigured());
+
+            Log::info("UserSynchronizer::%s(): Using UserAccessMapper when synchronizing users.");
+        } else {
+            Log::info("UserSynchronizer::%s(): LDAP access synchronization not enabled.");
         }
 
         if (!empty($loginLdap['new_user_default_sites_view_access'])) {

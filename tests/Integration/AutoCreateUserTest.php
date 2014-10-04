@@ -26,7 +26,7 @@ use Piwik\Tests\Fixture;
 class AutoCreateUserTest extends LdapIntegrationTest
 {
     const LDAP_ADDED_PASS = '{LDAP}Dv6yiT/W4FvaM5gBdqHwlQ==--';
-    const LDAP_ADDED_PASS_DIFF = "{LDAP}...";
+    const LDAP_ADDED_PASS_DIFF = "{LDAP}..........................";
 
     public function setUp()
     {
@@ -114,7 +114,7 @@ class AutoCreateUserTest extends LdapIntegrationTest
 
         Access::doAsSuperUser(function () {
             UsersManagerAPI::getInstance()->addUser(
-                AutoCreateUserTest::TEST_LOGIN, AutoCreateUserTest::LDAP_ADDED_PASS_DIFF, '', $alias = false, $isPasswordHashed = true);
+                AutoCreateUserTest::TEST_LOGIN, AutoCreateUserTest::LDAP_ADDED_PASS_DIFF, 'something@domain.com', $alias = false, $isPasswordHashed = true);
             UsersManagerAPI::getInstance()->setUserAccess(AutoCreateUserTest::TEST_LOGIN, 'view', array(4,5));
             UsersManagerAPI::getInstance()->setUserAccess(AutoCreateUserTest::TEST_LOGIN, 'admin', array(6));
         });

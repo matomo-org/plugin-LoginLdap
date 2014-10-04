@@ -39,7 +39,7 @@ abstract class LdapIntegrationTest extends DatabaseTestCase
         parent::setUp();
 
         // make sure logging logic is executed so we can test whether there are bugs in the logging code
-        Log::getInstance()->setLogLevel(Log::VERBOSE);
+        Log::getInstance()->setLogLevel(Log::DEBUG);
 
         Config::getInstance()->LoginLdap = Config::getInstance()->LoginLdapTest + array(
             'servers' => 'testserver',
