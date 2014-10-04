@@ -35,9 +35,13 @@ describe("LoginLdap_Admin", function () {
         expect.screenshot('admin_page').to.be.captureSelector('#content', function (page) {
             page.load(ldapAdminUrl);
             page.evaluate(function () {
-                $('input#memberOf').val('cn=avengers,dc=avengers,dc=shield,dc=org');
-                $('input#filter').val('(objectClass=person)');
+                $('input#memberOf').attr('placeholder', '');
+                $('input#filter').attr('placeholder', '');
             });
+
+            page.sendKeys('input#memberOf', 'cn=avengers,dc=avengers,dc=shield,dc=org');
+            page.sendKeys('input#filter', '(objectClass=person)');
+
             page.click('input#memberOf + .test-config-option-link');
             page.click('input#filter + .test-config-option-link');
         }, done);
