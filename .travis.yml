@@ -3,10 +3,10 @@
 language: php
 
 php:
-  - 5.3
-  - 5.4
+  #- 5.3
+  #- 5.4
   - 5.5
-  - 5.6
+  #- 5.6
 
 # Separate different test suites
 env:
@@ -16,8 +16,8 @@ env:
     - secure: "iCYpiyZh3YdXdvfbrvDXRG6lsb9iNIFccGPZv2etaVdmaGE3s6NfQLpXxdCk3pV73hXlXAbeP7Z3VsZzxQdvtvjCYDaRsrabydurFFiGrzA3Bn0JKdh8ALu+qWhe93YICC5NMjO4XtfL+5i02fwCmirPFhAus6ybWmWOuOZPaYA="
     - secure: "lUvT7EynuhPCavPAyfbaImwJ9ush1liE2Xob7n8SbW4heSMC3CkpBSni3rPOqxyxiMQ7iCCvtcX5YiH/yk+n8fDcyXESdDEBIUgBWE36UZk+zRsL+tWh96gGJEXFskR9+dhsaATFwLBSVocGZi8AKU48fVbEmOZ3wTXj+6EoXNs="
   matrix:
-    - TEST_SUITE=PluginTests MYSQL_ADAPTER=PDO_MYSQL
-    - TEST_SUITE=PluginTests MYSQL_ADAPTER=PDO_MYSQL TEST_AGAINST_CORE=latest_stable
+    #- TEST_SUITE=PluginTests MYSQL_ADAPTER=PDO_MYSQL
+    #- TEST_SUITE=PluginTests MYSQL_ADAPTER=PDO_MYSQL TEST_AGAINST_CORE=latest_stable
     - TEST_SUITE=UITests MYSQL_ADAPTER=PDO_MYSQL
 
 matrix:
@@ -53,7 +53,7 @@ install:
   - git clone https://github.com/piwik/piwik.git piwik
   - cd piwik
   - git fetch --all
-  - | 
+  - |
     if [ "$TEST_AGAINST_PIWIK_BRANCH" == "" ]; then
         if [ "$TEST_AGAINST_CORE" == "latest_stable" ]; then
             export TEST_AGAINST_PIWIK_BRANCH=$(git describe --tags `git rev-list --tags --max-count=1`)
@@ -122,7 +122,7 @@ before_script:
   - ./tests/travis/setup_webserver.sh
 
   - export GENERATE_TRAVIS_YML_COMMAND="php ./console generate:travis-yml --plugin=\"LoginLdap\" --php-versions=\"5.3,5.4,5.5,5.6\""
-  - ./tests/travis/autoupdate_travis_yml.sh
+  #- ./tests/travis/autoupdate_travis_yml.sh
 
   - cd tests/PHPUnit
 
