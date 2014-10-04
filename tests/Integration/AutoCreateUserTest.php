@@ -81,7 +81,7 @@ class AutoCreateUserTest extends LdapIntegrationTest
     {
         Access::doAsSuperUser(function () {
             UsersManagerAPI::getInstance()->addUser(
-                AutoCreateUserTest::TEST_LOGIN, AutoCreateUserTest::LDAP_ADDED_PASS_DIFF, '', $alias = false, $isPasswordHashed = true);
+                AutoCreateUserTest::TEST_LOGIN, AutoCreateUserTest::LDAP_ADDED_PASS_DIFF, 'something@domain.com', $alias = false, $isPasswordHashed = true);
         });
 
         $this->authenticateViaLdap();
@@ -127,10 +127,10 @@ class AutoCreateUserTest extends LdapIntegrationTest
     private function assertNoAccessInDb()
     {
         $access = $this->getAllAccess();
-        $this->assertEmpty($access);
+        $this->assertEquals(array(), $access);
 
         $superusers = $this->getSuperUsers();
-        $this->assertEmpty($superusers);
+        $this->assertEquals(array(), $superusers);
     }
 
     private function getAllAccess()
@@ -140,7 +140,11 @@ class AutoCreateUserTest extends LdapIntegrationTest
 
     private function getSuperUsers()
     {
-        return Db::fetchAll("SELECT login FROM " . Common::prefixTable('user') . " WHERE superuser_access = 1");
+        $result = array();
+        foreach (Db::fetchAll("SELECT login FROM " . Common::prefixTable('user') . " WHERE superuser_access = 1") as $row) {
+            $result[] = $row['login'];
+        }
+        return $result;
     }
 
     private function authenticateViaLdap($login = self::TEST_LOGIN, $pass = self::TEST_PASS)
@@ -180,9 +184,9 @@ class AutoCreateUserTest extends LdapIntegrationTest
         });
 
         $this->assertEquals(array(
-            '1' => 'view',
-            '2' => 'view',
-            '3' => 'admin'
+            array('site' => '1', 'access' => 'view'),
+            array('site' => '2', 'access' => 'view'),
+            array('site' => '3', 'access' => 'admin')
         ), $access);
     }
 }
