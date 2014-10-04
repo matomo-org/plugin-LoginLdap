@@ -40,7 +40,6 @@ class LoginLdap extends \Piwik\Plugin
         'filter' => "",
         'useKerberos' => "false",
         'debugEnabled' => "false",
-        'autoCreateUser' => "false"
     );
 
     /**

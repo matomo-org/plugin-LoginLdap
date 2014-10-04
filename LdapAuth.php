@@ -64,8 +64,6 @@ use Piwik\Plugins\LoginLdap\Model\LdapUsers;
  * When a user is created in Piwik, (s)he must be provided with access to at least
  * one website. The website(s) new users are given access to is determined by the
  * `[LoginLdap] new_user_default_sites_view_access` INI config option.
- *
- * TODO: see if we should move some of Authentication integration test to unit test for LdapAuth
  */
 class LdapAuth implements Auth
 {
@@ -158,7 +156,8 @@ class LdapAuth implements Auth
         $this->usersManagerAPI = UsersManagerAPI::getInstance();
 
         $loginLdapConfig = Config::getInstance()->LoginLdap;
-        $this->useWebServerAuthentication = @$loginLdapConfig['useKerberos'] == 1; // TODO: change config name
+        $this->useWebServerAuthentication = @$loginLdapConfig['use_webserver_auth'] == 1
+                                         || @$loginLdapConfig['useKerberos'] == 1; // backwards compatibility
     }
 
     /**
