@@ -53,7 +53,7 @@ install:
   - git clone https://github.com/piwik/piwik.git piwik
   - cd piwik
   - git fetch --all
-  - |
+  - | 
     if [ "$TEST_AGAINST_PIWIK_BRANCH" == "" ]; then
         if [ "$TEST_AGAINST_CORE" == "latest_stable" ]; then
             export TEST_AGAINST_PIWIK_BRANCH=$(git describe --tags `git rev-list --tags --max-count=1`)
