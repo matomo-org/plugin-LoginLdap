@@ -118,7 +118,8 @@
     </table>
 
     <h2>{{ 'LoginLdap_LDAPServers'|translate }}</h2>
-    <div ng-repeat="serverInfo in servers">
+    <p class="form-description">{{ 'General_Note'|translate }}: {{ 'LoginLdap_ServerNameEditInstructions'|translate }}</p>
+    <div ng-repeat="serverInfo in servers" id="ldapServersTable">
         <table class="adminTable" style='width:900px'>
             <tr>
                 <td width="150">
@@ -126,35 +127,46 @@
                     <input type="text" size="8" ng-show="serverInfo.isEditingName" ng-blur="serverInfo.isEditingName = false" ng-model="serverInfo.name"/>
                 </td>
                 <td><input type="button" value="{{ 'General_Delete'|translate }}" ng-click="deleteServer(serverInfo.name)" class="submit"/></td>
+                <td>
+                    &nbsp;
+                </td>
             </tr>
             <tr>
                 <td width="150"><label for="serverUrl-\{\{ $index \}\}">{{ 'LoginLdap_ServerUrl'|translate }} </label></td>
                 <td>
-                    <input size="25" id="serverUrl-\{\{ $index \}\}" ng-model="serverInfo.hostname"/>
-                    <span class='form-description'>{{ 'LoginLdap_ServerUrlDescription'|translate }}</span>
+                    <input size="25" id="serverUrl-\{\{ $index \}\}" ng-model="serverInfo.hostname" placeholder="ldap://localhost/" type="text"/>
+                </td>
+                <td>
+                    &nbsp;
                 </td>
             </tr>
 
             <tr>
                 <td><label for="ldapPort-\{\{ $index \}\}">{{ 'LoginLdap_LdapPort'|translate }} </label></td>
                 <td>
-                    <input size="25" id="ldapPort-\{\{ $index \}\}" ng-model="serverInfo.port"/>
-                    <span class='form-description'>{{ 'LoginLdap_LdapPortDescription'|translate }}</span>
+                    <input size="25" id="ldapPort-\{\{ $index \}\}" ng-model="serverInfo.port" type="text" placeholder="389"/>
+                </td>
+                <td>
+                    &nbsp;
                 </td>
             </tr>
 
             <tr>
                 <td><label for="baseDn-\{\{ $index \}\}">{{ 'LoginLdap_BaseDn'|translate }} </label></td>
                 <td>
-                    <input size="25" id="baseDn-\{\{ $index \}\}" ng-model="serverInfo.base_dn"/>
-                    <span class='form-description'>{{ 'LoginLdap_BaseDnDescription'|translate }}</span>
+                    <input size="25" id="baseDn-\{\{ $index \}\}" ng-model="serverInfo.base_dn" placeholder="dc=example,dc=site,dc=org" type="text"/>
+                </td>
+                <td>
+                    &nbsp;
                 </td>
             </tr>
 
             <tr>
                 <td><label for="adminUser-\{\{ $index \}\}">{{ 'LoginLdap_AdminUser'|translate }} </label></td>
                 <td>
-                    <input size="25" id="adminUser-\{\{ $index \}\}" ng-model="serverInfo.admin_user"/>
+                    <input size="25" id="adminUser-\{\{ $index \}\}" ng-model="serverInfo.admin_user" type="text" placeholder="cn=admin,dc=example,dc=site,dc=org"/>
+                </td>
+                <td>
                     <span class='form-description'>{{ 'LoginLdap_AdminUserDescription'|translate }}</span>
                 </td>
             </tr>
@@ -162,7 +174,10 @@
             <tr>
                 <td><label for="adminPass-\{\{ $index \}\}">{{ 'LoginLdap_AdminPass'|translate }} </label></td>
                 <td>
-                    <input size="25" id="adminPass-\{\{ $index \}\}" ng-model="serverInfo.admin_pass" type="password"/>
+                    <input size="25" id="adminPass-\{\{ $index \}\}" ng-model="serverInfo.admin_pass" type="password" />
+                </td>
+                <td>
+                    &nbsp;
                 </td>
             </tr>
         </table>
