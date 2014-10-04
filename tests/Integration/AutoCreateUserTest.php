@@ -63,6 +63,22 @@ class AutoCreateUserTest extends LdapIntegrationTest
         ), $access);
     }
 
+    public function test_PiwikUserIsCreatedWithAccessToAllSites_WhenLdapLoginSucceeds_AndDefaultSitesToAddIsAll()
+    {
+        Config::getInstance()->LoginLdap['new_user_default_sites_view_access'] = 'all';
+
+        $this->authenticateViaLdap();
+
+        $this->assertStarkSynchronized();
+
+        $access = $this->getAccessFor(self::TEST_LOGIN); // access added due to new_user_default_sites_view_access option
+        $this->assertEquals(array(
+            array('site' => '1', 'access' => 'view'),
+            array('site' => '2', 'access' => 'view'),
+            array('site' => '3', 'access' => 'view')
+        ), $access);
+    }
+
     public function test_PiwikUserIsNotCreated_IfPiwikUserAlreadyExists()
     {
         Access::getInstance()->setSuperUserAccess(true);
