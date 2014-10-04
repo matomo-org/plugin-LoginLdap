@@ -39,8 +39,8 @@ describe("LoginLdap_Admin", function () {
             page.sendKeys('input#filter', 'a');
 
             page.evaluate(function () {
-                $('input#memberOf').val('cn=avengers,dc=avengers,dc=shield,dc=org');
-                $('input#filter').val('(objectClass=person)');
+                $('input#memberOf').val('cn=avengers,dc=avengers,dc=shield,dc=org').trigger('input');
+                $('input#filter').val('(objectClass=person)').trigger('input');
             });
 
             page.click('input#memberOf + .test-config-option-link');
