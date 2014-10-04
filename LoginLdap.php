@@ -79,29 +79,6 @@ class LoginLdap extends \Piwik\Plugin
     }
 
     /**
-     * Set config parameters during install
-     */
-    public function install()
-    {
-        Config::getInstance()->LoginLdap = array(
-            'serverUrl'      => 'ldap://localhost/',
-            'ldapPort'       => '389',
-            'baseDn'         => 'OU=users,DC=localhost,DC=com',
-            'userIdField'    => 'userPrincipalName',
-            'mailField'      => 'mail',
-            'aliasField'     => 'cn',
-            'usernameSuffix' => '',
-            'adminUser'      => '',
-            'adminPass'      => '',
-            'memberOf'       => '',
-            'filter'         => '(objectClass=person)',
-            'useKerberos'    => 'false',
-            'debugEnabled'    => 'false'
-        );
-        Config::getInstance()->forceSave();
-    }
-
-    /**
      * Deactivate default Login module, as both cannot be activated together
      */
     public function activate()
