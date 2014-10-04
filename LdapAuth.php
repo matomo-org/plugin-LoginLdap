@@ -324,6 +324,7 @@ class LdapAuth implements Auth
         $ldapUser = $this->ldapUsers->authenticate($this->login, $this->password, $this->useWebServerAuthentication);
         if (!empty($ldapUser)) {
             $this->userForLogin = $this->userSynchronizer->synchronizeLdapUser($ldapUser);
+            $this->userSynchronizer->synchronizePiwikAccessFromLdap($this->login, $ldapUser);
 
             return true;
         } else {

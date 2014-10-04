@@ -93,8 +93,6 @@ class UserSynchronizer
                 }
             }
 
-            $self->synchronizePiwikAccessFromLdap($user['login'], $ldapUser);
-
             return $usersManagerApi->getUser($user['login']);
         });
     }
