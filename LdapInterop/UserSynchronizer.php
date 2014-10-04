@@ -111,6 +111,8 @@ class UserSynchronizer
 
         $userAccess = $this->userAccessMapper->getPiwikUserAccessForLdapUser($ldapUser);
 
+        $this->userModel->deleteUserAccess($piwikLogin);
+
         $usersManagerApi = $this->usersManagerApi;
         foreach ($userAccess as $userAccessLevel => $sites) {
             Access::doAsSuperUser(function () use ($usersManagerApi, $userAccessLevel, $sites, $piwikLogin) {

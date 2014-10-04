@@ -158,7 +158,8 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
     {
         $self = $this;
 
-        $mock = $this->getMock('Piwik\Plugins\LoginLdap\tests\Unit\MockAPI', array('addUser', 'updateUser', 'getUser', 'setUserAccess', 'setSuperUserAccess'));
+        $mock = $this->getMock('Piwik\Plugins\LoginLdap\tests\Unit\MockAPI', array(
+            'addUser', 'updateUser', 'getUser', 'setUserAccess', 'setSuperUserAccess'));
         if ($throwsOnAddUser) {
             $mock->expects($this->any())->method('addUser')->willThrowException(new Exception("dummy message"));
         } else {
@@ -197,7 +198,7 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
 
     private function getUserModelMock($returnValue)
     {
-        $mock = $this->getMock('Piwik\Plugins\UsersManager\Model', array('getUser'));
+        $mock = $this->getMock('Piwik\Plugins\UsersManager\Model', array('getUser', 'deleteUserAccess'));
         $mock->expects($this->any())->method('getUser')->will($this->returnValue($returnValue));
         return $mock;
     }

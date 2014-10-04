@@ -126,16 +126,18 @@ class AutoCreateUserTest extends LdapIntegrationTest
 
     private function assertNoAccessInDb()
     {
-        $access = $this->getAllAccess();
+        $access = $this->getAccessFor(self::TEST_LOGIN);
         $this->assertEquals(array(), $access);
 
         $superusers = $this->getSuperUsers();
         $this->assertEquals(array(), $superusers);
     }
 
-    private function getAllAccess()
+    private function getAccessFor($login)
     {
-        return Db::fetchAll("SELECT * FROM " . Common::prefixTable('access'));
+        return Access::doAsSuperUser(function () use ($login) {
+            return UsersManagerAPI::getInstance()->getSitesAccessFromUser($login);
+        });
     }
 
     private function getSuperUsers()
@@ -179,9 +181,7 @@ class AutoCreateUserTest extends LdapIntegrationTest
 
     private function assertStarkAccessSynchronized()
     {
-        $access = Access::doAsSuperUser(function () {
-            return UsersManagerAPI::getInstance()->getSitesAccessFromUser(AutoCreateUserTest::TEST_LOGIN);
-        });
+        $access = $this->getAccessFor(self::TEST_LOGIN);
 
         $this->assertEquals(array(
             array('site' => '1', 'access' => 'view'),
