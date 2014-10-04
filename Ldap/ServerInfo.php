@@ -182,8 +182,8 @@ class ServerInfo
      */
     public static function makeFromOldConfig($config)
     {
-        $hostname = $config['serverUrl'];
-        $baseDn = $config['baseDn'];
+        $hostname = @$config['serverUrl'];
+        $baseDn = @$config['baseDn'];
 
         $result = new ServerInfo($hostname, $baseDn);
         if (!empty($config['ldapPort'])) {
