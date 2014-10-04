@@ -127,6 +127,7 @@ class AutoCreateUserTest extends LdapIntegrationTest
     private function assertNoAccessInDb()
     {
         $access = $this->getAccessFor(self::TEST_LOGIN);
+        echo print_r($access, true);
         $this->assertEquals(array(), $access);
 
         $superusers = $this->getSuperUsers();
