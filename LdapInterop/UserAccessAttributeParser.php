@@ -364,6 +364,13 @@ class UserAccessAttributeParser
         }
         if (!empty($config[self::SERVER_SPEC_THIS_PIWIK_INSTANCE_NAME])) {
             $result->setThisPiwikInstanceName($config[self::SERVER_SPEC_THIS_PIWIK_INSTANCE_NAME]);
+        } else {
+            if ($result->getServerIdsSeparator() == ':') {
+                Log::info("UserAttributesParser::%s: Configured with no instance name so matching by URL, but server/site IDs"
+                        . " separator set to special ':' character. This character may show up in URLs in LDAP, which will "
+                        . "cause problems. We recommend you use a character not often found in URLs, such as '|'.",
+                    __FUNCTION__);
+            }
         }
         return $result;
     }
