@@ -170,7 +170,7 @@ class AutoCreateUserTest extends LdapIntegrationTest
 
     public function test_SuperUserAccessSynchronized_WhenLdapAccessInfoPresent_AndInstanceNameUsed_AndUserIsSuperUser()
     {
-        $this->setPiwikInstanceUrl('http://localhost/');
+        Config::getInstance()->LoginLdap['instance_name'] = 'myPiwik';
         $this->enableAccessSynchronization();
 
         $this->authenticateViaLdap('thor', 'bilgesnipe');

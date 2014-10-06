@@ -83,12 +83,17 @@ class UserAccessAttributeParserTest extends PHPUnit_Framework_TestCase
             array("https://whatever.com", "whatever.com"),
             array("https://whatever.com", "http://whatever.com"),
             array("https://whatever.com", "https://whatever.com"),
+            array("https://whatever.com", "https://whatever.com:80"),
             array("http://whatever.com/what/ever?abc", "whatever.com/what/ever"),
             array("http://whatever.com/what/ever?abc", "https://whatever.com/what/ever"),
             array("http://whatever.com/what/ever?abc", "http://whatever.com/what/ever"),
             array("http://whatever.com/what/ever?abc", "whatever.com/what/ever?def"),
             array("www.whatever.com", "www.whatever.com"),
-            array("www.whatever.com", "www.whatever.com?abc#def")
+            array("www.whatever.com", "www.whatever.com?abc#def"),
+            array("http://whatever.com:80", "whatever.com"),
+            array("http://whatever.com/", "whatever.com"),
+            array("http://whatever.com/index.php", "whatever.com/index.php"),
+            array("http://whatever.com/index.php", "whatever.com/index.php/"),
         );
     }
 

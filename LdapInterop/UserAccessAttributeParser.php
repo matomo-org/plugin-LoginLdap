@@ -308,22 +308,42 @@ class UserAccessAttributeParser
     protected function isUrlThisInstanceUrl($instanceIdUrl)
     {
         $thisPiwikUrl = SettingsPiwik::getPiwikUrl();
-        $thisPiwikUrlParsed = @parse_url($thisPiwikUrl);
-        if (empty($thisPiwikUrlParsed)) {
-            Log::warning("UserAccessAttributeParser::%s: Invalid Piwik URL found for this instance '%s'.",
-                __FUNCTION__, $thisPiwikUrlParsed);
+        $thisPiwikUrl = $this->getNormalizedUrl($thisPiwikUrl, $isThisPiwikUrl = true);
+
+        $instanceIdUrl = $this->getNormalizedUrl($instanceIdUrl);
+
+        return $thisPiwikUrl == $instanceIdUrl;
+    }
+
+    private function getNormalizedUrl($url, $isThisPiwikUrl = false)
+    {
+        $parsed = @parse_url($url);
+        if (empty($parsed)) {
+            if ($isThisPiwikUrl) {
+                Log::warning("UserAccessAttributeParser::%s: Invalid Piwik URL found for this instance '%s'.",
+                    __FUNCTION__, $url);
+            } else {
+                Log::debug("UserAccessAttributeParser::%s: Invalid instance ID URL found '%s'.",
+                    __FUNCTION__, $url);
+            }
         }
 
-        $url = @parse_url($instanceIdUrl);
-        if (empty($instanceIdUrl)) {
-            Log::debug("UserAccessAttributeParser::%s: Invalid instance ID URL found '%s'.",
-                __FUNCTION__, $instanceIdUrl);
+        if (empty($parsed['scheme'])
+            && empty($parsed['host'])
+        ) { // parse_url will consider www.example.com the path if there is no protocol
+            $url = 'http://' . $url;
+            $parsed = @parse_url($url);
         }
 
-        $thisPiwikUrl = @$thisPiwikUrlParsed['port'] . @$thisPiwikUrlParsed['host'] . @$thisPiwikUrlParsed['path'];
-        $url = @$url['port'] . @$url['host'] . @$url['path'];
+        if (!isset($parsed['port'])) {
+            $parsed['port'] = 80;
+        }
 
-        return $thisPiwikUrl == $url;
+        if (substr(@$parsed['path'], -1) !== '/') {
+            $parsed['path'] = @$parsed['path'] . '/';
+        }
+
+        return $parsed['host'] . ':' . $parsed['port'] . @$parsed['path'];
     }
 
     /**
