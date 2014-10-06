@@ -27,19 +27,14 @@ use Piwik\Session;
 class LoginLdap extends \Piwik\Plugin
 {
     public static $defaultConfig = array(
-        'serverUrl' => "ldap://localhost",
-        'ldapPort' => "389",
-        'baseDn' => "",
-        'userIdField' => "sAMAccountName",
+        'userIdField' => "uid",
         'mailField' => "mail",
         'aliasField' => "cn",
-        'usernameSuffix' => "@dc.com",
-        'adminUser' => "ldap_user",
-        'adminPass' => "ldap_pass",
+        'usernameSuffix' => "",
+        'adminUser' => "",
+        'adminPass' => "",
         'memberOf' => "",
-        'filter' => "",
-        'useKerberos' => "false",
-        'debugEnabled' => "false",
+        'filter' => ""
     );
 
     /**
@@ -61,7 +56,7 @@ class LoginLdap extends \Piwik\Plugin
 
     public function getJsFiles(&$jsFiles)
     {
-        $jsFiles[] = "plugins/Login/javascripts/login.js"; // TODO: shouldn't disable Login plugin
+        $jsFiles[] = "plugins/Login/javascripts/login.js";
         $jsFiles[] = "plugins/LoginLdap/javascripts/angularjs/admin/controller.js";
     }
 
@@ -80,6 +75,8 @@ class LoginLdap extends \Piwik\Plugin
 
     /**
      * Deactivate default Login module, as both cannot be activated together
+     *
+     * TODO: shouldn't disable Login plugin but have to until Dependency Injection is added to core
      */
     public function activate()
     {
@@ -138,40 +135,5 @@ class LoginLdap extends \Piwik\Plugin
         \Piwik\Registry::set('auth', $auth);
 
         Login::initAuthenticationFromCookie($auth, $activateCookieAuth);
-    }
-
-    /**
-    * Removes stored password reset info if it exists.
-    *
-    * @param string $login The user login to check for.
-    */
-    public static function removePasswordResetInfo($login)
-    {
-        $optionName = self::getPasswordResetInfoOptionName($login);
-        Option::delete($optionName);
-    }
-
-    /**
-    * Gets password hash stored in password reset info.
-    *
-    * @param string $login The user login to check for.
-    * @return string|false The hashed password or false if no reset info exists.
-    */
-    public static function getPasswordToResetTo($login)
-    {
-        $optionName = self::getPasswordResetInfoOptionName($login);
-        return Option::get($optionName);
-    }
-
-    /**
-    * Gets the option name for the option that will store a user's password change
-    * request.
-    *
-    * @param string $login The user login for whom a password change was requested.
-    * @return string
-    */
-    public static function getPasswordResetInfoOptionName($login)
-    {
-        return $login . '_reset_password_info';
     }
 }
