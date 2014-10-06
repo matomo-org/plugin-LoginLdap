@@ -287,6 +287,4 @@ class AuthenticationTest extends LdapIntegrationTest
     {
         return UsersManagerAPI::getInstance()->getTokenAuth(self::NON_LDAP_NORMAL_USER, md5(self::NON_LDAP_NORMAL_PASS));
     }
-
-    // TODO: rename kerberos stuff w/ webserver auth
 }

@@ -67,8 +67,6 @@ use Piwik\SettingsPiwik;
  * In order to make error conditions as rare as possible, this parser has been coded
  * to be flexible when identifying instance IDs. Any malformed looking access values are
  * logged with at least DEBUG level.
- *
- * TODO: add diagnostic command to test configuration of user access attribute, ie, loginldap:test-access-attribute '...'
  */
 class UserAccessAttributeParser
 {
