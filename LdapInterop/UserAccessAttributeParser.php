@@ -326,6 +326,8 @@ class UserAccessAttributeParser
                 Log::debug("UserAccessAttributeParser::%s: Invalid instance ID URL found '%s'.",
                     __FUNCTION__, $url);
             }
+
+            return false;
         }
 
         if (empty($parsed['scheme'])
@@ -333,6 +335,10 @@ class UserAccessAttributeParser
         ) { // parse_url will consider www.example.com the path if there is no protocol
             $url = 'http://' . $url;
             $parsed = @parse_url($url);
+        }
+
+        if (empty($parsed['host'])) {
+            Log::debug("UserAccessAttributeParser::%s: Found strange URL - '%s'.", __FUNCTION__, $url);
         }
 
         if (!isset($parsed['port'])) {
