@@ -1,0 +1,348 @@
+<?php
+/**
+ * Piwik - free/libre analytics platform
+ *
+ * @link http://piwik.org
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
+ */
+namespace Piwik\Plugins\LoginLdap\LdapInterop;
+
+use Piwik\Access;
+use Piwik\Config;
+use Piwik\Log;
+use Piwik\Site;
+use Piwik\Url;
+use Piwik\SettingsPiwik;
+
+/**
+ * Parses the values of LDAP attributes that describe an LDAP user's Piwik access.
+ *
+ * ### Access Attribute Format
+ *
+ * Access attributes can have different formats, the simplest is simply a list of IDs
+ * or `'all'`, eg:
+ *
+ *     view: 1,2,3
+ *     admin: all
+ *
+ * ### Managing Multiple Piwik Instances
+ *
+ * If the LDAP server in question manages access for only a single Piwik instance, this
+ * will suffice. To support multiple Piwik instances, it is allowed to identify the
+ * server instance within the attributes, eg:
+ *
+ *     view: piwikServerA:1,2,3
+ *     view: piwikServerB:1,2,3
+ *     admin: piwikServerA:all;piwikServerB:2,3
+ *
+ * In this example, the user is granted view access for sites 1, 2 & 3 for Piwik instance
+ * 'A' and Piwik instance 'B', and is granted admin access for all sites in Piwik instance 'A',
+ * but only sites 2 & 3 in Piwik instance 'B'.
+ *
+ * As demonstrated above, instance ID/site list pairs (ie, `"piwikServerA:1,2,3"`) can be in
+ * multiple values, or in a single value separated by a delimiter.
+ *
+ * The seaparator used to split instance ID/site list pairs and the delimiter used to
+ * separate pair from other pairs can both be customized through INI config options.
+ *
+ * ### Identifying Piwik Instances
+ *
+ * In the above example, Piwik instances are identified by a special name, ie,
+ * `"piwikServerA"` or `"piwikServerB"`. By default, however, instances are identified by
+ * the instance's host, port and url. For example:
+ *
+ *     view: piwikA.myhost.com/path/to/piwik:1,2,3
+ *     view: piwikB.myhost.com/path/to/piwik:all
+ *     admin: piwikC.com:all
+ *     superuser: piwikC.com;piwikD.com
+ *
+ * If you want to use a specific name, you would have to set the `[LoginLdap] instance_name`
+ * INI config option for each of your Piwik instances.
+ *
+ * _Note: If identifying by URLs with port values, the `[LoginLdap] user\_access\_attribute\_server\_separator`
+ * config option should be set to something other than `':'`._
+ *
+ * ### Access Attribute Flexibility
+ *
+ * In order to make error conditions as rare as possible, this parser has been coded
+ * to be flexible when identifying instance IDs. Any malformed looking access values are
+ * logged with at least DEBUG level.
+ *
+ * TODO: unit & integration tests
+ * TODO: add diagnostic command to test configuration of user access attribute, ie, loginldap:test-access-attribute '...'
+ */
+class UserAccessAttributeParser
+{
+    const SERVER_SPEC_DELIMITER_CONFIG_OPTION_NAME = 'user_access_attribute_server_specification_delimiter';
+    const SERVER_SPEC_SERVER_IDS_SEPARATOR_OPTION_NAME = 'user_access_attribute_server_separator';
+    const SERVER_SPEC_THIS_PIWIK_INSTANCE_NAME = 'instance_name';
+
+    /**
+     * The delimiter that separates individual instance ID/site list pairs from other pairs.
+     *
+     * For example, if `'#'` is used, the access attribute will be expected to be like:
+     *
+     *     piwikServerA:1#piwikServerB:2#piwikServerC:3
+     *
+     * @var string
+     */
+    private $serverSpecificationDelimiter = ';';
+
+    /**
+     * The separator used to separate instance IDs from site ID lists.
+     *
+     * For example, if `'#'` is used, the access attribute will be expected be like:
+     *
+     *     piwikServerA#1;piwikServerB#2,3;piwikServerC#3
+     *
+     * @var string
+     */
+    private $serverIdsSeparator = ':';
+
+    /**
+     * A special name for this Piwik instance. If not null, we check if a specification in
+     * an LDAP attribute value applies to this instance if the instance ID contains this value.
+     *
+     * If null, the instance ID is expected to be this Piwik instance's URL.
+     *
+     * @var string
+     */
+    private $thisPiwikInstanceName = null;
+
+    /**
+     * Parses an LDAP access attribute value and returns the list of site IDs that apply to
+     * this specific Piwik instance.
+     *
+     * @var string $attributeValue eg `"piwikServerA:1,2,3;piwikServerB:4,5,6"`.
+     * @return array
+     */
+    public function getSiteIdsFromAccessAttribute($attributeValue)
+    {
+        $result = array();
+
+        $instanceSpecs = explode($this->serverSpecificationDelimiter, $attributeValue);
+        foreach ($instanceSpecs as $spec) {
+            list($instanceId, $sitesSpec) = $this->getInstanceIdAndSitesFromSpec($spec);
+            if ($this->isInstanceIdForThisInstance($instanceId)) {
+                $result = array_merge($result, $this->getSitesFromSitesList($sitesSpec));
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Returns true if an LDAP access attribute value
+     */
+    public function getSuperUserAccessFromSuperUserAttribute($attributeValue)
+    {
+        $attributeValue = trim($attributeValue);
+
+        if ($attributeValue == 1
+            || empty($attributeValue)
+        ) { // special case when not managing multiple Piwik instances
+            return true;
+        }
+
+        $instanceIds = $this->getSuperUserInstancesFromAttribute($attributeValue);
+        foreach ($instanceIds as $instanceId) {
+            if ($this->isInstanceIdForThisInstance($instanceId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns the {@link $serverSpecificationDelimiter} property value.
+     *
+     * @return string
+     */
+    public function getServerSpecificationDelimiter()
+    {
+        return $this->serverSpecificationDelimiter;
+    }
+
+    /**
+     * Sets the {@link $serverSpecificationDelimiter} property.
+     *
+     * @param string $serverSpecificationDelimiter
+     */
+    public function setServerSpecificationDelimiter($serverSpecificationDelimiter)
+    {
+        $this->serverSpecificationDelimiter = $serverSpecificationDelimiter;
+    }
+
+    /**
+     * Returns the {@link $serverIdsSeparator} property value.
+     *
+     * @return string
+     */
+    public function getServerIdsSeparator()
+    {
+        return $this->serverIdsSeparator;
+    }
+
+    /**
+     * Sets the {@link $serverIdsSeparator} property value.
+     *
+     * @param string $serverIdsSeparator
+     */
+    public function setServerIdsSeparator($serverIdsSeparator)
+    {
+        $this->serverIdsSeparator = $serverIdsSeparator;
+    }
+
+    /**
+     * Returns the {@link $thisPiwikInstanceName} property value.
+     *
+     * @return string
+     */
+    public function getThisPiwikInstanceName()
+    {
+        return $this->thisPiwikInstanceName;
+    }
+
+    /**
+     * Sets the {@link $thisPiwikInstanceName} property value.
+     *
+     * @param string $thisPiwikInstanceName
+     */
+    public function setThisPiwikInstanceName($thisPiwikInstanceName)
+    {
+        $this->thisPiwikInstanceName = $thisPiwikInstanceName;
+    }
+
+    /**
+     * Returns the instance ID and list of sites from an instance ID/sites list pair.
+     *
+     * @param string $spec eg, `"piwikServerA:1,2,3"`
+     * @return string[] contains two string elements
+     */
+    protected function getInstanceIdAndSitesFromSpec($spec)
+    {
+        $parts = explode($this->serverIdsSeparator, $spec);
+
+        if (count($parts) == 1) { // there is no instanceId
+            $parts = array(null, $parts[0]);
+        } else if (count($parts) >= 2) { // malformed server access specification
+            Log::debug("UserAccessAttributeParser::%s: Improper server specification in LDAP access attribute: '%s'",
+                __FUNCTION__, $spec);
+
+            $parts = array($parts[0], $parts[1]);
+        }
+
+        return array_map('trim', $parts);
+    }
+
+    /**
+     * Returns true if an instance ID string found in LDAP refers to this instance or not.
+     *
+     * If not instance ID is specified, will always return `true`.
+     *
+     * @param string $instanceId eg, `"piwikServerA"` or `"piwikA.mysite.com"`
+     * @return bool
+     */
+    protected function isInstanceIdForThisInstance($instanceId)
+    {
+        if (empty($instanceId)) {
+            return true;
+        }
+
+        if ($this->thisPiwikInstanceName === null) {
+            $result = $this->isUrlThisInstanceUrl($instanceId);
+        } else {
+            preg_match("/\\b" . preg_quote($this->thisPiwikInstanceName) . "\\b/", $instanceId, $matches);
+
+            if (empty($matches)) {
+                $result = false;
+            } else {
+                if (strlen($matches[0]) != strlen($instanceId)) {
+                    Log::debug("UserAccessAttributeParser::%s: Found extra characters in Piwik instance ID. Whole ID entry = %s.",
+                        __FUNCTION__, $instanceId);
+                }
+
+                $result = true;
+            }
+        }
+
+        if ($result) {
+            Log::debug("UserAccessAttributeParser::%s: Matched this instance with '%s'.", __FUNCTION__, $instanceId);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Returns list of int site IDs from site list found in LDAP.
+     *
+     * @param string $sitesSpec eg, `"1,2,3"` or `"all"`
+     * @return int[]
+     */
+    protected function getSitesFromSitesList($sitesSpec)
+    {
+        return Access::doAsSuperUser(function () use ($sitesSpec) {
+            return Site::getIdSitesFromIdSitesString($sitesSpec);
+        });
+    }
+
+    /**
+     * Returns the list of instance IDs in a superuser access attribute value.
+     *
+     * @return string[]
+     */
+    protected function getSuperUserInstancesFromAttribute($attributeValue)
+    {
+        $delimiters = $this->serverIdsSeparator . $this->serverSpecificationDelimiter;
+        return preg_split("/[" . preg_quote($delimiters) . "]/", $attributeValue);
+    }
+
+    /**
+     * Returns true if the supplied instance ID refers to this Piwik instance, false if otherwise.
+     * Assumes the instance ID is the base URL to the Piwik instance.
+     *
+     * @param string $instanceIdUrl
+     * @return bool
+     */
+    protected function isUrlThisInstanceUrl($instanceIdUrl)
+    {
+        $thisPiwikUrl = SettingsPiwik::getPiwikUrl();
+        $thisPiwikUrlParsed = @parse_url($thisPiwikUrl);
+        if (empty($thisPiwikUrlParsed)) {
+            Log::warning("UserAccessAttributeParser::%s: Invalid Piwik URL found for this instance '%s'.",
+                __FUNCTION__, $thisPiwikUrlParsed);
+        }
+
+        $url = @parse_url($instanceIdUrl);
+        if (empty($instanceIdUrl)) {
+            Log::debug("UserAccessAttributeParser::%s: Invalid instance ID URL found '%s'.",
+                __FUNCTION__, $instanceIdUrl);
+        }
+
+        return @$thisPiwikUrl['host'] == @$url['host']
+            && @$thisPiwikUrl['path'] == @$url['path']
+            && @$thisPiwikUrl['port'] == @$url['port'];
+    }
+
+    /**
+     * Creates a UserAccessAttributeParser instance using INI configuration.
+     *
+     * @return UserAccessAttributeParser
+     */
+    public static function makeConfigured()
+    {
+        $config = Config::getInstance()->LoginLdap;
+
+        $result = new UserAccessAttributeParser();
+        if (!empty($config[self::SERVER_SPEC_DELIMITER_CONFIG_OPTION_NAME])) {
+            $result->setServerSpecificationDelimiter($config[self::SERVER_SPEC_DELIMITER_CONFIG_OPTION_NAME]);
+        }
+        if (!empty($config[self::SERVER_SPEC_SERVER_IDS_SEPARATOR_OPTION_NAME])) {
+            $result->setServerIdsSeparator($config[self::SERVER_SPEC_SERVER_IDS_SEPARATOR_OPTION_NAME]);
+        }
+        if (!empty($config[self::SERVER_SPEC_THIS_PIWIK_INSTANCE_NAME])) {
+            $result->setThisPiwikInstanceName($config[self::SERVER_SPEC_THIS_PIWIK_INSTANCE_NAME]);
+        }
+        return $result;
+    }
+}

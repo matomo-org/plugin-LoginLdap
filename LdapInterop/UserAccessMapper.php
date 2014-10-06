@@ -10,7 +10,6 @@ namespace Piwik\Plugins\LoginLdap\LdapInterop;
 use Piwik\Access;
 use Piwik\Config;
 use Piwik\Log;
-use Piwik\Site;
 use Piwik\Plugins\SitesManager\API as SitesManagerAPI;
 
 /**
@@ -59,6 +58,14 @@ class UserAccessMapper
     private $superuserAttributeName = 'superuser';
 
     /**
+     * The UserAccessAttributeParser instance used to the values of LDAP attributes that
+     * describe Piwik user access.
+     *
+     * @var UserAccessAttributeParser
+     */
+    private $userAccessAttributeParser;
+
+    /**
      * Cache for all site IDs. Set once by {@link getAllSites()}.
      *
      * Maps int site IDs w/ unspecified data.
@@ -88,7 +95,7 @@ class UserAccessMapper
     public function getPiwikUserAccessForLdapUser($ldapUser)
     {
         // if the user is a superuser, we don't need to check the other attributes
-        if (array_key_exists($this->superuserAttributeName, $ldapUser)) {
+        if ($this->isSuperUserAccessGrantedForLdapUser($ldapUser)) {
             return array('superuser' => true);
         }
 
@@ -169,6 +176,26 @@ class UserAccessMapper
         $this->superuserAttributeName = $superuserAttributeName;
     }
 
+    /**
+     * Returns the {@link $userAccessAttributeParser} property.
+     *
+     * @return UserAccessAttributeParser
+     */
+    public function getUserAccessAttributeParser()
+    {
+        return $this->userAccessAttributeParser;
+    }
+
+    /**
+     * Sets the {@link $userAccessAttributeParser} property.
+     *
+     * @param UserAccessAttributeParser $userAccessAttributeParser
+     */
+    public function setUserAccessAttributeParser($userAccessAttributeParser)
+    {
+        $this->userAccessAttributeParser = $userAccessAttributeParser;
+    }
+
     private function addSiteAccess(&$sitesByAccess, $accessLevel, $viewAttributeValues)
     {
         if (!is_array($viewAttributeValues)) {
@@ -176,9 +203,11 @@ class UserAccessMapper
         }
 
         $siteIds = array();
-        Access::doAsSuperUser(function () use (&$siteIds, $viewAttributeValues) {
+
+        $attributeParser = $this->userAccessAttributeParser;
+        Access::doAsSuperUser(function () use (&$siteIds, $viewAttributeValues, $attributeParser) {
             foreach ($viewAttributeValues as $value) {
-                $siteIds = array_merge($siteIds, Site::getIdSitesFromIdSitesString($value));
+                $siteIds = array_merge($siteIds, $attributeParser->getSiteIdsFromAccessAttribute($value));
             }
         });
 
@@ -218,6 +247,7 @@ class UserAccessMapper
         $loginLdapConfig = Config::getInstance()->LoginLdap;
 
         $result = new UserAccessMapper();
+        $result->setUserAccessAttributeParser(UserAccessAttributeParser::makeConfigured());
 
         $viewAttributeName = @$loginLdapConfig['ldap_view_access_field']; // TODO: rename 'field' in config option names to attribute?
         if (!empty($viewAttributeName)) {
@@ -239,5 +269,24 @@ class UserAccessMapper
             __FUNCTION__, $viewAttributeName, $adminAttributeName, $superuserAttributeName);
 
         return $result;
+    }
+
+    private function isSuperUserAccessGrantedForLdapUser($ldapUser)
+    {
+        if (!array_key_exists($this->superuserAttributeName, $ldapUser)) {
+            return false;
+        }
+
+        $attributeValue = $ldapUser[$this->superuserAttributeName];
+        if (!is_array($attributeValue)) {
+            $attributeValue = array($attributeValue);
+        }
+
+        foreach ($attributeValue as $value) {
+            if ($this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute($value)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
