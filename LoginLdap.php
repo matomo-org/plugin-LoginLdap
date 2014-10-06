@@ -4,9 +4,6 @@
  *
  * @link http://piwik.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
- *
- * @category Piwik_Plugins
- * @package LoginLdap
  */
 namespace Piwik\Plugins\LoginLdap;
 
@@ -24,17 +21,6 @@ use Piwik\Session;
  */
 class LoginLdap extends \Piwik\Plugin
 {
-    public static $defaultConfig = array(
-        'userIdField' => "uid",
-        'mailField' => "mail",
-        'aliasField' => "cn",
-        'usernameSuffix' => "",
-        'adminUser' => "",
-        'adminPass' => "",
-        'memberOf' => "",
-        'filter' => ""
-    );
-
     /**
      * @see Piwik_Plugin::getListHooksRegistered
      */

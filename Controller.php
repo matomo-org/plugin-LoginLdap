@@ -7,7 +7,6 @@
  */
 namespace Piwik\Plugins\LoginLdap;
 
-use Piwik\Config;
 use Piwik\Notification;
 use Piwik\Piwik;
 use Piwik\Plugin\ControllerAdmin;
@@ -40,28 +39,18 @@ class Controller extends \Piwik\Plugins\Login\Controller
         $this->setBasicVariablesView($view);
         $view->infoMessage = nl2br($infoMessage);
 
-        $config = Config::getInstance()->LoginLdap;
-
-        $serverNames = @$config['servers'] ?: array();
+        $serverNames = Config::getServerNameList() ?: array();
 
         $view->servers = array();
         foreach ($serverNames as $server) {
-            $configName = 'LoginLdap_' . $server;
-            $serverConfig = Config::getInstance()->__get($configName);
+            $serverConfig = Config::getServerConfig($server);
             if (!empty($serverConfig)) {
                 $serverConfig['name'] = $server;
                 $view->servers[] = $serverConfig;
             }
         }
 
-        $view->ldapConfig = LoginLdap::$defaultConfig;
-
-        unset($config['servers']);
-        foreach ($view->ldapConfig as $name => &$value) {
-            if (isset($config[$name])) {
-                $view->ldapConfig[$name] = $config[$name];
-            }
-        }
+        $view->ldapConfig = Config::getPluginOptionValuesWithDefaults();
 
         return $view->render();
     }

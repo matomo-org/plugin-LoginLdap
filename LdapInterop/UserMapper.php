@@ -8,7 +8,7 @@
 namespace Piwik\Plugins\LoginLdap\LdapInterop;
 
 use Exception;
-use Piwik\Config;
+use Piwik\Plugins\LoginLdap\Config;
 
 /**
  * Maps LDAP users to arrays that can be used to create new Piwik
@@ -287,27 +287,38 @@ class UserMapper
      */
     public static function makeConfigured()
     {
-        $config = Config::getInstance()->LoginLdap;
-
-        // TODO: put config field names as consts in special class
         $result = new UserMapper();
-        self::setPropertyFromConfigurationOption($config, $result->ldapUserIdField, 'ldap_user_id_field', 'userIdField');
-        self::setPropertyFromConfigurationOption($config, $result->ldapLastNameField, 'ldap_last_name_field');
-        self::setPropertyFromConfigurationOption($config, $result->ldapFirstNameField, 'ldap_first_name_field');
-        self::setPropertyFromConfigurationOption($config, $result->ldapAliasField, 'ldap_alias_field', 'aliasField');
-        self::setPropertyFromConfigurationOption($config, $result->ldapMailField, 'ldap_mail_field', 'mailField');
-        self::setPropertyFromConfigurationOption($config, $result->userEmailSuffix, 'user_email_suffix', 'usernameSuffix');
-        return $result;
-    }
 
-    private static function setPropertyFromConfigurationOption($config, &$value, $optionName, $alternateName = false)
-    {
-        if (!empty($config[$optionName])) {
-            $value = $config[$optionName];
-        } else if (!empty($alternateName)
-            && !empty($config[$alternateName])
-        ) {
-            $value = $config[$alternateName];
+        $uidField = Config::getLdapUserIdField();
+        if (!empty($uidField)) {
+            $result->setLdapUserIdField($uidField);
         }
+
+        $lastNameField = Config::getLdapLastNameField();
+        if (!empty($lastNameField)) {
+            $result->setLdapLastNameField($lastNameField);
+        }
+
+        $firstNameField = Config::getLdapFirstNameField();
+        if (!empty($firstNameField)) {
+            $result->setLdapFirstNameField($firstNameField);
+        }
+
+        $aliasField = Config::getLdapAliasField();
+        if (!empty($aliasField)) {
+            $result->setLdapAliasField($aliasField);
+        }
+
+        $mailField = Config::getLdapMailField();
+        if (!empty($mailField)) {
+            $result->setLdapMailField($mailField);
+        }
+
+        $userEmailSuffix = Config::getLdapUserEmailSuffix();
+        if (!empty($userEmailSuffix)) {
+            $result->setUserEmailSuffix($userEmailSuffix);
+        }
+
+        return $result;
     }
 }

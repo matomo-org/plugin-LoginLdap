@@ -10,7 +10,6 @@ namespace Piwik\Plugins\LoginLdap;
 use Exception;
 use Piwik\Auth;
 use Piwik\AuthResult;
-use Piwik\Config;
 use Piwik\Db;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
@@ -155,9 +154,7 @@ class LdapAuth implements Auth
         $this->usersModel = new UserModel();
         $this->usersManagerAPI = UsersManagerAPI::getInstance();
 
-        $loginLdapConfig = Config::getInstance()->LoginLdap;
-        $this->useWebServerAuthentication = @$loginLdapConfig['use_webserver_auth'] == 1
-                                         || @$loginLdapConfig['useKerberos'] == 1; // backwards compatibility
+        $this->useWebServerAuthentication = Config::shouldUseWebServerAuthentication();
     }
 
     /**

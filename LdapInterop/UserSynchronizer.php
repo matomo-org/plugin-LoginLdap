@@ -8,8 +8,8 @@
 namespace Piwik\Plugins\LoginLdap\LdapInterop;
 
 use Piwik\Access;
-use Piwik\Config;
 use Piwik\Log;
+use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Plugins\UsersManager\Model as UserModel;
 use Piwik\Site;
@@ -236,9 +236,7 @@ class UserSynchronizer
         $result->setUsersManagerApi(UsersManagerAPI::getInstance());
         $result->setUserModel(new UserModel());
 
-        $loginLdap = Config::getInstance()->LoginLdap;
-
-        if (!empty($loginLdap['enable_synchronize_access_from_ldap'])) {
+        if (Config::isAccessSynchronizationEnabled()) {
             $result->setUserAccessMapper(UserAccessMapper::makeConfigured());
 
             Log::info("UserSynchronizer::%s(): Using UserAccessMapper when synchronizing users.", __FUNCTION__);
@@ -246,9 +244,10 @@ class UserSynchronizer
             Log::info("UserSynchronizer::%s(): LDAP access synchronization not enabled.", __FUNCTION__);
         }
 
-        if (!empty($loginLdap['new_user_default_sites_view_access'])) {
-            $siteIds = Access::doAsSuperUser(function () use ($loginLdap) {
-                return Site::getIdSitesFromIdSitesString($loginLdap['new_user_default_sites_view_access']);
+        $defaultSitesWithViewAccess = Config::getDefaultSitesToGiveViewAccessTo();
+        if (!empty($defaultSitesWithViewAccess)) {
+            $siteIds = Access::doAsSuperUser(function () use ($defaultSitesWithViewAccess) {
+                return Site::getIdSitesFromIdSitesString($defaultSitesWithViewAccess);
             });
 
             if (empty($siteIds)) {

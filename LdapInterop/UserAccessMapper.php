@@ -8,8 +8,8 @@
 namespace Piwik\Plugins\LoginLdap\LdapInterop;
 
 use Piwik\Access;
-use Piwik\Config;
 use Piwik\Log;
+use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\SitesManager\API as SitesManagerAPI;
 
 /**
@@ -244,22 +244,21 @@ class UserAccessMapper
      */
     public static function makeConfigured()
     {
-        $loginLdapConfig = Config::getInstance()->LoginLdap;
-
         $result = new UserAccessMapper();
         $result->setUserAccessAttributeParser(UserAccessAttributeParser::makeConfigured());
 
-        $viewAttributeName = @$loginLdapConfig['ldap_view_access_field']; // TODO: rename 'field' in config option names to attribute?
+        // TODO: rename 'field' in config option names to attribute?
+        $viewAttributeName = Config::getLdapViewAccessField();
         if (!empty($viewAttributeName)) {
             $result->setViewAttributeName($viewAttributeName);
         }
 
-        $adminAttributeName = @$loginLdapConfig['ldap_admin_access_field'];
+        $adminAttributeName = Config::getLdapAdminAccessField();
         if (!empty($adminAttributeName)) {
             $result->setAdminAttributeName($adminAttributeName);
         }
 
-        $superuserAttributeName = @$loginLdapConfig['ldap_superuser_access_field'];
+        $superuserAttributeName = Config::getSuperUserAccessField();
         if (!empty($superuserAttributeName)) {
             $result->setSuperuserAttributeName($superuserAttributeName);
         }

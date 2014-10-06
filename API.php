@@ -8,7 +8,6 @@
 namespace Piwik\Plugins\LoginLdap;
 
 use Piwik\Common;
-use Piwik\Config;
 use Piwik\Piwik;
 use Piwik\Plugins\LoginLdap\Ldap\ServerInfo;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
@@ -48,13 +47,7 @@ class API extends \Piwik\Plugin\API
 
         $config = json_decode(Common::unsanitizeInputValue($config), true);
 
-        foreach (LoginLdap::$defaultConfig as $name => $value) {
-            if (isset($config[$name])) {
-                Config::getInstance()->LoginLdap[$name] = $config[$name];
-            }
-        }
-
-        Config::getInstance()->forceSave();
+        Config::savePluginOptions($config);
 
         return array('result' => 'success', 'message' => Piwik::translate("General_YourChangesHaveBeenSaved"));
     }
@@ -73,15 +66,7 @@ class API extends \Piwik\Plugin\API
 
         $servers = json_decode(Common::unsanitizeInputValue($servers), true);
 
-        $serverNames = array();
-        foreach ($servers as $serverInfo) {
-            ServerInfo::saveServerConfig($serverInfo, $forceSave = false);
-
-            $serverNames[] = $serverInfo['name'];
-        }
-        Config::getInstance()->LoginLdap['servers']= $serverNames;
-
-        Config::getInstance()->forceSave();
+        Config::saveLdapServerConfigs($servers);
 
         return array('result' => 'success', 'message' => Piwik::translate("General_YourChangesHaveBeenSaved"));
     }

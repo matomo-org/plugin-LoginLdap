@@ -8,11 +8,10 @@
 namespace Piwik\Plugins\LoginLdap\Model;
 
 use Piwik\Db;
-use Piwik\Config;
 use Piwik\Log;
 use Piwik\Piwik;
+use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
-use Piwik\Plugins\UsersManager\UsersManager;
 use Piwik\Plugins\LoginLdap\Ldap\Client as LdapClient;
 use Piwik\Plugins\LoginLdap\Ldap\ServerInfo;
 use Piwik\Plugins\LoginLdap\Ldap\Exceptions\ConnectionException;
@@ -458,58 +457,27 @@ class LdapUsers
      */
     public static function makeConfigured()
     {
-        $config = Config::getInstance()->LoginLdap;
-
         $result = new LdapUsers();
 
-        $result->setLdapServers(self::getConfiguredLdapServers($config));
+        $result->setLdapServers(Config::getConfiguredLdapServers());
 
-        if (!empty($config['usernameSuffix'])) {
-            $result->setAuthenticationUsernameSuffix($config['usernameSuffix']);
+        $usernameSuffix = Config::getLdapUserEmailSuffix();
+        if (!empty($usernameSuffix)) {
+            $result->setAuthenticationUsernameSuffix($usernameSuffix);
         }
 
-        if (!empty($config['memberOf'])) {
-            $result->setAuthenticationRequiredMemberOf($config['memberOf']);
+        $requiredMemberOf = Config::getRequiredMemberOf();
+        if (!empty($requiredMemberOf)) {
+            $result->setAuthenticationRequiredMemberOf($requiredMemberOf);
         }
 
-        if (!empty($config['filter'])) {
-            $result->setAuthenticationLdapFilter($config['filter']);
+        $filter = Config::getLdapUserFilter();
+        if (!empty($filter)) {
+            $result->setAuthenticationLdapFilter($filter);
         }
 
         $result->setLdapUserMapper(UserMapper::makeConfigured());
 
         return $result;
-    }
-
-    /**
-     * Returns a list of {@link ServerInfo} instances describing the LDAP servers
-     * that should be connected to.
-     *
-     * @param array $config The `[LoginLdap]` INI config section.
-     * @return ServerInfo[]
-     */
-    private static function getConfiguredLdapServers($config)
-    {
-        $serverNameList = @$config['servers'];
-
-        if (empty($serverNameList)) {
-            $server = ServerInfo::makeFromOldConfig($config);
-            return array($server);
-        } else {
-            if (is_string($serverNameList)) {
-                $serverNameList = explode(',', $serverNameList);
-            }
-
-            $servers = array();
-            foreach ($serverNameList as $name) {
-                try {
-                    $servers[] = ServerInfo::makeConfigured($name);
-                } catch (Exception $ex) {
-                    Log::debug("Model\\LdapUsers::%s: LDAP server info '%s' is configured incorrectly: %s",
-                        __FUNCTION__, $name, $ex->getMessage());
-                }
-            }
-            return $servers;
-        }
     }
 }

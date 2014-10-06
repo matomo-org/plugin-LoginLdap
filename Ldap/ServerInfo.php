@@ -7,8 +7,8 @@
  */
 namespace Piwik\Plugins\LoginLdap\Ldap;
 
-use Piwik\Config;
 use Exception;
+use Piwik\Plugins\LoginLdap\Config;
 
 /**
  * Describes an LDAP server LoginLdap can connect to.
@@ -169,32 +169,23 @@ class ServerInfo
     /**
      * Creates a ServerInfo instance from an array of old LoginLdap config data.
      *
-     * @param string[] $config Options and their values. Can have the following keys:
-     *
-     *                         - **serverUrl**: _(Required)_ The hostname for the server.
-     *                         - **baseDn**: _(Required)_ The base DN for the server.
-     *                         - **ldapPort**: The port to use when connecting to the server.
-     *                         - **adminUser**: The username of a user with read access to other
-     *                                          users.
-     *                         - **adminPass**: The password to use when binding with the
-     *                                          admin user.
      * @return ServerInfo
      */
-    public static function makeFromOldConfig($config)
+    public static function makeFromOldConfig()
     {
-        $hostname = @$config['serverUrl'];
-        $baseDn = @$config['baseDn'];
+        $hostname = Config::getConfigOption('serverUrl');
+        $baseDn = Config::getConfigOption('baseDn');
 
         $result = new ServerInfo($hostname, $baseDn);
-        if (!empty($config['ldapPort'])) {
-            $result->setServerPort((int) $config['ldapPort']);
+
+        $ldapPort = Config::getConfigOption('ldapPort');
+        if (!empty($ldapPort)) {
+            $result->setServerPort((int) $ldapPort);
         }
-        if (!empty($config['adminUser'])) {
-            $result->setAdminUserName($config['adminUser']);
-        }
-        if (!empty($config['adminPass'])) {
-            $result->setAdminPassword($config['adminPass']);
-        }
+
+        $result->setAdminUsername(Config::getConfigOption('adminUser'));
+        $result->setAdminPassword(Config::getConfigOption('adminPass'));
+
         return $result;
     }
 
@@ -221,8 +212,7 @@ class ServerInfo
      */
     public static function makeConfigured($name)
     {
-        $configSectionName = 'LoginLdap_' . $name;
-        $config = Config::getInstance()->$configSectionName;
+        $config = Config::getServerConfig($name);
 
         if (empty($config)) {
             throw new Exception("No configuration section [$name] found.");
@@ -283,10 +273,10 @@ class ServerInfo
 
         $configSectionName = 'LoginLdap_' . $serverInfo['name'];
 
-        Config::getInstance()->__set($configSectionName, $configSection);
+        \Piwik\Config::getInstance()->__set($configSectionName, $configSection);
 
         if ($forceSave) {
-            Config::getInstance()->forceSave();
+            \Piwik\Config::getInstance()->forceSave();
         }
     }
 }
