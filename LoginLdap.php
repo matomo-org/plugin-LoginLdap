@@ -11,10 +11,8 @@
 namespace Piwik\Plugins\LoginLdap;
 
 use Exception;
-use Piwik\Config;
 use Piwik\FrontController;
 use Piwik\Menu\MenuAdmin;
-use Piwik\Option;
 use Piwik\Piwik;
 use Piwik\Plugin\Manager;
 use Piwik\Plugins\Login\Login;
