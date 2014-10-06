@@ -8,6 +8,7 @@
 namespace Piwik\Plugins\LoginLdap\LdapInterop;
 
 use Exception;
+use Piwik\Log;
 use Piwik\Plugins\LoginLdap\Config;
 
 /**
@@ -318,6 +319,10 @@ class UserMapper
         if (!empty($userEmailSuffix)) {
             $result->setUserEmailSuffix($userEmailSuffix);
         }
+
+        Log::debug("UserMapper::%s: configuring with uidField = %s, aliasField = %s firstNameField = %s, lastNameField = %s"
+                 . " mailField = %s, userEmailSuffix = %s", __FUNCTION__, $uidField, $aliasField, $firstNameField, $lastNameField,
+                   $mailField, $userEmailSuffix);
 
         return $result;
     }

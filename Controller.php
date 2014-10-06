@@ -23,7 +23,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
     /**
      * @return string
      */
-    public function admin($infoMessage = false)
+    public function admin()
     {
         Piwik::checkUserHasSuperUserAccess();
         $view = new View('@LoginLdap/index');
@@ -37,7 +37,6 @@ class Controller extends \Piwik\Plugins\Login\Controller
         }
 
         $this->setBasicVariablesView($view);
-        $view->infoMessage = nl2br($infoMessage);
 
         $serverNames = Config::getServerNameList() ?: array();
 

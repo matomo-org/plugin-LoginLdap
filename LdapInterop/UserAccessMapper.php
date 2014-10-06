@@ -247,7 +247,6 @@ class UserAccessMapper
         $result = new UserAccessMapper();
         $result->setUserAccessAttributeParser(UserAccessAttributeParser::makeConfigured());
 
-        // TODO: rename 'field' in config option names to attribute?
         $viewAttributeName = Config::getLdapViewAccessField();
         if (!empty($viewAttributeName)) {
             $result->setViewAttributeName($viewAttributeName);
@@ -263,7 +262,6 @@ class UserAccessMapper
             $result->setSuperuserAttributeName($superuserAttributeName);
         }
 
-        // TODO: add this logging to all makeConfigured methods that access Config, may help diagnose config errors...
         Log::debug("UserAccessMapper::%s: configuring with viewAttributeName = '%s', adminAttributeName = '%s', superuserAttributeName = '%s'",
             __FUNCTION__, $viewAttributeName, $adminAttributeName, $superuserAttributeName);
 

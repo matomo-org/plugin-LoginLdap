@@ -8,6 +8,7 @@
 namespace Piwik\Plugins\LoginLdap\Ldap;
 
 use Exception;
+use Piwik\Log;
 use Piwik\Plugins\LoginLdap\Config;
 
 /**
@@ -230,15 +231,25 @@ class ServerInfo
         $baseDn = $config['base_dn'];
 
         $result = new ServerInfo($hostname, $baseDn);
-        if (!empty($config['port'])) {
-            $result->setServerPort((int) $config['port']);
+
+        $port = $config['port'];
+        if (!empty($port)) {
+            $result->setServerPort((int) $port);
         }
-        if (!empty($config['admin_user'])) {
-            $result->setAdminUsername($config['admin_user']);
+
+        $adminUser = $config['admin_user'];
+        if (!empty($adminUser)) {
+            $result->setAdminUsername($adminUser);
         }
-        if (!empty($config['admin_pass'])) {
-            $result->setAdminPassword($config['admin_pass']);
+
+        $adminPass = $config['admin_pass'];
+        if (!empty($adminPass)) {
+            $result->setAdminPassword($adminPass);
         }
+
+        Log::debug("ServerInfo::%s: configuring with hostname = %s, baseDn = %s, port = %s, adminUser = %s, adminPass = %s",
+            __FUNCTION__, $hostname, $baseDn, $port, substr($adminUser, 3) . '...', '<len=' . strlen($adminPass) . '>');
+
         return $result;
     }
 

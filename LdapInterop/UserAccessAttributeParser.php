@@ -8,8 +8,8 @@
 namespace Piwik\Plugins\LoginLdap\LdapInterop;
 
 use Piwik\Access;
-use Piwik\Config;
 use Piwik\Log;
+use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Site;
 use Piwik\Url;
 use Piwik\SettingsPiwik;
@@ -72,10 +72,6 @@ use Piwik\SettingsPiwik;
  */
 class UserAccessAttributeParser
 {
-    const SERVER_SPEC_DELIMITER_CONFIG_OPTION_NAME = 'user_access_attribute_server_specification_delimiter';
-    const SERVER_SPEC_SERVER_IDS_SEPARATOR_OPTION_NAME = 'user_access_attribute_server_separator';
-    const SERVER_SPEC_THIS_PIWIK_INSTANCE_NAME = 'instance_name';
-
     /**
      * The delimiter that separates individual instance ID/site list pairs from other pairs.
      *
@@ -359,17 +355,21 @@ class UserAccessAttributeParser
      */
     public static function makeConfigured()
     {
-        $config = Config::getInstance()->LoginLdap;
-
         $result = new UserAccessAttributeParser();
-        if (!empty($config[self::SERVER_SPEC_DELIMITER_CONFIG_OPTION_NAME])) {
-            $result->setServerSpecificationDelimiter($config[self::SERVER_SPEC_DELIMITER_CONFIG_OPTION_NAME]);
+
+        $serverSpecificationDelimiter = Config::getUserAccessAttributeServerSpecificationDelimiter();
+        if (!empty($serverSpecificationDelimiter)) {
+            $result->setServerSpecificationDelimiter($serverSpecificationDelimiter);
         }
-        if (!empty($config[self::SERVER_SPEC_SERVER_IDS_SEPARATOR_OPTION_NAME])) {
-            $result->setServerIdsSeparator($config[self::SERVER_SPEC_SERVER_IDS_SEPARATOR_OPTION_NAME]);
+
+        $serverListSeparator = Config::getUserAccessAttributeServerSiteListSeparator();
+        if (!empty($serverListSeparator)) {
+            $result->setServerIdsSeparator($serverListSeparator);
         }
-        if (!empty($config[self::SERVER_SPEC_THIS_PIWIK_INSTANCE_NAME])) {
-            $result->setThisPiwikInstanceName($config[self::SERVER_SPEC_THIS_PIWIK_INSTANCE_NAME]);
+
+        $thisPiwikInstanceName = Config::getDesignatedPiwikInstanceName();
+        if (!empty($thisPiwikInstanceName)) {
+            $result->setThisPiwikInstanceName($thisPiwikInstanceName);
         } else {
             if ($result->getServerIdsSeparator() == ':') {
                 Log::info("UserAttributesParser::%s: Configured with no instance name so matching by URL, but server/site IDs"
@@ -378,6 +378,10 @@ class UserAccessAttributeParser
                     __FUNCTION__);
             }
         }
+
+        Log::debug("UserAccessAttributeParser::%s: configuring with serverSpecificationDelimiter = %s, serverSiteIdListSeparator = %s, "
+                 . "thisPiwikInstanceName = %s", __FUNCTION__, $serverSpecificationDelimiter, $serverListSeparator, $thisPiwikInstanceName);
+
         return $result;
     }
 }

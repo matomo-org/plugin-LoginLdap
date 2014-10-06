@@ -44,7 +44,7 @@ class UserSynchronizer
 
     /**
      * UserModel instance used to access user data. We don't go through the API in
-     * order to avoid thrown exceptions.
+   * order to avoid thrown exceptions.
      *
      * @var UserModel
      */
@@ -75,7 +75,6 @@ class UserSynchronizer
         $userModel = $this->userModel;
         $newUserDefaultSitesWithViewAccess = $this->newUserDefaultSitesWithViewAccess;
         return Access::doAsSuperUser(function () use ($self, $user, $usersManagerApi, $userModel, $newUserDefaultSitesWithViewAccess) {
-
             $existingUser = $userModel->getUser($user['login']);
             if (empty($existingUser)) {
                 $usersManagerApi->addUser($user['login'], $user['password'], $user['email'], $user['alias'], $isPasswordHashed = true);
@@ -257,6 +256,8 @@ class UserSynchronizer
 
             $result->setNewUserDefaultSitesWithViewAccess($siteIds);
         }
+
+        Log::debug("UserSynchronizer::%s: configuring with defaultSitesWithViewAccess = %s", __FUNCTION__, $defaultSitesWithViewAccess);
 
         return $result;
     }

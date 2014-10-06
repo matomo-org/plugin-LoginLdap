@@ -60,7 +60,7 @@ class LoginLdap extends \Piwik\Plugin
     /**
      * Deactivate default Login module, as both cannot be activated together
      *
-     * TODO: shouldn't disable Login plugin but have to until Dependency Injection is added to core
+     * TODO: shouldn't disable Login plugin but have to wait until Dependency Injection is added to core
      */
     public function activate()
     {

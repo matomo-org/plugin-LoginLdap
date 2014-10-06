@@ -32,9 +32,13 @@ class Config
         'ldap_view_access_field' => 'view',
         'ldap_admin_access_field' => 'admin',
         'ldap_superuser_access_field' => 'superuser',
-        'use_webserver_auth' => 0
+        'use_webserver_auth' => 0,
+        'user_access_attribute_server_specification_delimiter',
+        'user_access_attribute_server_separator',
+        'instance_name'
     );
 
+    // for backwards compatibility
     public static $alternateOptionNames = array(
         'user_email_suffix' => array('usernameSuffix'),
         'required_member_of' => array('memberOf'),
@@ -143,6 +147,21 @@ class Config
     public static function shouldUseWebServerAuthentication()
     {
         return self::getConfigOption('use_webserver_auth') == 1;
+    }
+
+    public static function getUserAccessAttributeServerSpecificationDelimiter()
+    {
+        return self::getConfigOption('user_access_attribute_server_specification_delimiter');
+    }
+
+    public static function getUserAccessAttributeServerSiteListSeparator()
+    {
+        return self::getConfigOption('user_access_attribute_server_separator');
+    }
+
+    public static function getDesignatedPiwikInstanceName()
+    {
+        return self::getConfigOption('instance_name');
     }
 
     public static function getServerConfig($server)
