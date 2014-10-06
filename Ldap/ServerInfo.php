@@ -44,9 +44,6 @@ class ServerInfo
      * The 'admin' LDAP user to use when authenticating. This user must have read
      * access to other users so we can search for the person attempting login.
      *
-     * TODO: is this needed? ie, since we only want the user's data and not others, can we just bind w/ the user?
-     *       if it works, allow adminUserName to be null.
-     *
      * @var string
      */
     private $adminUsername;
