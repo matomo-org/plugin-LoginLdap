@@ -68,7 +68,6 @@ use Piwik\SettingsPiwik;
  * to be flexible when identifying instance IDs. Any malformed looking access values are
  * logged with at least DEBUG level.
  *
- * TODO: unit & integration tests
  * TODO: add diagnostic command to test configuration of user access attribute, ie, loginldap:test-access-attribute '...'
  */
 class UserAccessAttributeParser
@@ -139,6 +138,7 @@ class UserAccessAttributeParser
         $attributeValue = trim($attributeValue);
 
         if ($attributeValue == 1
+            || strtolower($attributeValue) == 'true'
             || empty($attributeValue)
         ) { // special case when not managing multiple Piwik instances
             return true;
@@ -294,7 +294,8 @@ class UserAccessAttributeParser
     protected function getSuperUserInstancesFromAttribute($attributeValue)
     {
         $delimiters = $this->serverIdsSeparator . $this->serverSpecificationDelimiter;
-        return preg_split("/[" . preg_quote($delimiters) . "]/", $attributeValue);
+        $result = preg_split("/[" . preg_quote($delimiters) . "]/", $attributeValue);
+        return array_map('trim', $result);
     }
 
     /**
@@ -319,9 +320,10 @@ class UserAccessAttributeParser
                 __FUNCTION__, $instanceIdUrl);
         }
 
-        return @$thisPiwikUrl['host'] == @$url['host']
-            && @$thisPiwikUrl['path'] == @$url['path']
-            && @$thisPiwikUrl['port'] == @$url['port'];
+        $thisPiwikUrl = @$thisPiwikUrlParsed['port'] . @$thisPiwikUrlParsed['host'] . @$thisPiwikUrlParsed['path'];
+        $url = @$url['port'] . @$url['host'] . @$url['path'];
+
+        return $thisPiwikUrl == $url;
     }
 
     /**

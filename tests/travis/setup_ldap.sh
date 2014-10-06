@@ -205,6 +205,9 @@ sn: Romanova
 uid: blackwidow
 userPassword: `slappasswd -h {md5} -s redledger`
 mobile: none
+view: myPiwik:1,2;anotherPiwik:3,4
+admin: myPiwik:3,4
+admin: anotherPiwik:5,6
 
 # USER ENTRY (pwd: thaifood)
 dn: cn=Steve Rodgers,$BASE_DN
@@ -217,6 +220,20 @@ userPassword: `slappasswd -h {md5} -s thaifood`
 mobile: 123-456-7890
 mail: srodgers@aol.com
 superuser: 1
+superuser: anotherPiwik
+
+# USER ENTRY (pwd: bilgesnipe)
+dn: cn=Thor,$BASE_DN
+cn: Thor
+objectClass: top
+objectClass: piwikPerson
+sn: Odinson
+uid: thor
+userPassword: `slappasswd -h {md5} -s bilgesnipe`
+view: localhost:1,2;whatever.com:3,4
+admin: whatever.com:1,2
+admin: localhost:3,4
+superuser: myPiwik:myOtherPiwik;localhost
 
 # group entry
 dn: cn=avengers,$BASE_DN
