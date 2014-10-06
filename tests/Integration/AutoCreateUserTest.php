@@ -176,7 +176,7 @@ class AutoCreateUserTest extends LdapIntegrationTest
 
         $this->authenticateViaLdap('thor', 'bilgesnipe');
 
-        $access = $this->getAccessFor('blackwidow');
+        $access = $this->getAccessFor('thor');
         $this->assertEquals(array(
             array('site' => '1', 'access' => 'view'),
             array('site' => '2', 'access' => 'view'),

@@ -39,7 +39,7 @@ class ApiTest extends LdapIntegrationTest
     public function test_getCountOfUsersMemberOf_ReturnsCorrectResponse_WhenUsersAreMemberOfGroup()
     {
         $count = $this->api->getCountOfUsersMemberOf("cn=avengers," . self::SERVER_BASE_DN);
-        $this->assertEquals(3, $count);
+        $this->assertEquals(4, $count);
     }
 
     public function test_getCountOfUsersMatchingFilter_ReturnsZero_WhenNoUsersMatchTheFilter()
@@ -60,6 +60,6 @@ class ApiTest extends LdapIntegrationTest
     public function test_getCountOfUsersMatchingFilter_ReturnsCorrectResult_WhenUsersMatchFilter()
     {
         $count = $this->api->getCountOfUsersMatchingFilter("(objectClass=person)");
-        $this->assertEquals(3, $count);
+        $this->assertEquals(4, $count);
     }
 }

@@ -243,6 +243,7 @@ objectClass: top
 member: cn=Tony Stark,$BASE_DN
 member: cn=Natalia Romanova,$BASE_DN
 member: cn=Steve Rodgers,$BASE_DN
+member: cn=Thor,$BASE_DN
 
 # another group entry
 dn: cn=S.H.I.E.L.D.,$BASE_DN
