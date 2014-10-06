@@ -114,7 +114,7 @@ class AuthenticationTest extends LdapIntegrationTest
 
     public function testWebServerAuthWorksIfUserExistsRegardlessOfPassword()
     {
-        Config::getInstance()->LoginLdap['useKerberos'] = 1;
+        Config::getInstance()->LoginLdap['use_web_server_auth'] = 1;
 
         $_SERVER['REMOTE_USER'] = self::TEST_LOGIN;
 
@@ -133,7 +133,7 @@ class AuthenticationTest extends LdapIntegrationTest
 
     public function testWebServerAuthFailsIfUserDoesNotExist()
     {
-        Config::getInstance()->LoginLdap['useKerberos'] = 1;
+        Config::getInstance()->LoginLdap['use_web_server_auth'] = 1;
 
         $_SERVER['REMOTE_USER'] = 'abcdefghijk';
 
@@ -145,7 +145,7 @@ class AuthenticationTest extends LdapIntegrationTest
 
     public function testWebServerAuthFailsIfUserIsNotPartOfRequiredGroup()
     {
-        Config::getInstance()->LoginLdap['useKerberos'] = 1;
+        Config::getInstance()->LoginLdap['use_web_server_auth'] = 1;
         Config::getInstance()->LoginLdap['memberOf'] = "cn=S.H.I.E.L.D.," . self::SERVER_BASE_DN;
 
         $_SERVER['REMOTE_USER'] = self::TEST_LOGIN;
@@ -158,7 +158,7 @@ class AuthenticationTest extends LdapIntegrationTest
 
     public function testWebServerAuthFailsIfUserIsNotMatchedByCustomFilter()
     {
-        Config::getInstance()->LoginLdap['useKerberos'] = 1;
+        Config::getInstance()->LoginLdap['use_web_server_auth'] = 1;
         Config::getInstance()->LoginLdap['filter'] = "(mobile=none)";
 
         $_SERVER['REMOTE_USER'] = self::TEST_LOGIN;
@@ -173,7 +173,7 @@ class AuthenticationTest extends LdapIntegrationTest
     // TODO: rewrite test function names
     public function testWebServerAuthFailsIfUserIsNoRemoteUserExists()
     {
-        Config::getInstance()->LoginLdap['useKerberos'] = 1;
+        Config::getInstance()->LoginLdap['use_web_server_auth'] = 1;
 
         unset($_SERVER['REMOTE_USER']);
 
@@ -229,7 +229,7 @@ class AuthenticationTest extends LdapIntegrationTest
 
     public function testWebServerAuthReturnsCorrectCodeForSuperUsers()
     {
-        Config::getInstance()->LoginLdap['useKerberos'] = 1;
+        Config::getInstance()->LoginLdap['use_web_server_auth'] = 1;
 
         $_SERVER['REMOTE_USER'] = self::TEST_SUPERUSER_LOGIN;
 

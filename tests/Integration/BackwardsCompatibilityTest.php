@@ -28,7 +28,8 @@ class BackwardsCompatibilityTest extends LdapIntegrationTest
             'ldapPort' => @Config::getInstance()->LoginLdap_testserver['port'] ?: self::SERVER_PORT,
             'baseDn' => self::SERVER_BASE_DN,
             'adminUser' => 'cn=fury,' . self::SERVER_BASE_DN,
-            'adminPass' => 'secrets'
+            'adminPass' => 'secrets',
+            'useKerberos' => 'false'
         );
 
         UsersManagerAPI::getInstance()->addUser(self::TEST_LOGIN, self::TEST_PASS, 'billionairephilanthropistplayboy@starkindustries.com', $alias = false);
