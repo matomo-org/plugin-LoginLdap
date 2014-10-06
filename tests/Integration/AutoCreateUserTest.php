@@ -181,7 +181,7 @@ class AutoCreateUserTest extends LdapIntegrationTest
 
     public function test_AdminAndViewAccessSynchronized_WhenLdapAccessInfoPresent_AndInstancePiwikUrlUsed()
     {
-        Config::getInstance()->LoginLdap['instance_name'] = 'myPiwik';
+        $this->setPiwikInstanceUrl('http://localhost/');
         Config::getInstance()->LoginLdap['ldap_superuser_access_field'] = 'isasuperuser'; // disable superuser check so we can check user's normal access
 
         $this->enableAccessSynchronization();

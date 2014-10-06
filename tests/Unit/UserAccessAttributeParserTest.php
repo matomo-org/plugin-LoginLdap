@@ -213,15 +213,16 @@ class UserAccessAttributeParserTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($hasSuperUserAccess);
 
         $this->userAccessAttributeParser->setThisPiwikInstanceName(null);
+        $this->userAccessAttributeParser->setServerIdsSeparator('|');
         $this->setThisPiwikUrl("https://whatever.com/piwik");
 
         $hasSuperUserAccess = $this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute("whatever.com/piwik");
         $this->assertTrue($hasSuperUserAccess);
 
-        $hasSuperUserAccess = $this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute("http://whatever.com/piwik:anotherpiwik.com");
+        $hasSuperUserAccess = $this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute("http://whatever.com/piwik|anotherpiwik.com");
         $this->assertTrue($hasSuperUserAccess);
 
-        $hasSuperUserAccess = $this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute(" anotherpiwik.com  :  https://whatever.com/piwik ");
+        $hasSuperUserAccess = $this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute(" anotherpiwik.com  |  https://whatever.com/piwik ");
         $this->assertTrue($hasSuperUserAccess);
     }
 

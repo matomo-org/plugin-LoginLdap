@@ -343,7 +343,7 @@ class UserAccessAttributeParser
             $parsed['path'] = @$parsed['path'] . '/';
         }
 
-        return $parsed['host'] . ':' . $parsed['port'] . @$parsed['path'];
+        return $parsed['host'] . ':' . $parsed['port'] . $parsed['path'];
     }
 
     /**
