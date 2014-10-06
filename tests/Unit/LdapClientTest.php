@@ -184,6 +184,7 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
                 array('count' => 0),
                 array()
             ),
+            // test pair
             array(
                 array(
                     'count' => 1,
@@ -199,6 +200,7 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
                     array('cn' => 'value', 'dn' => 'the dn')
                 )
             ),
+            // test pair
             array(
                 array(
                     'count' => 2,
@@ -221,6 +223,24 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
                 array(
                     array('cn' => 'value2', 'objectclass' => 'top', 'dn' => 'the dn'),
                     array('objectclass' => array('top', 'inetOrgPersion'), 'cn' => 'value3'),
+                )
+            ),
+            // test pair
+            array(
+                array(
+                    'count' => 1,
+                    0 => array(
+                        'count' => 1,
+                        'superuser' => array(
+                            'count' => 2,
+                            0 => '1',
+                            1 => 'anotherpiwik'
+                        ),
+                        0 => 'superuser'
+                    )
+                ),
+                array(
+                    array('superuser' => array('1', 'anotherpiwik'))
                 )
             )
         );

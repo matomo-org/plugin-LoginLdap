@@ -10,6 +10,7 @@ namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
 use PHPUnit_Framework_TestCase;
 use Piwik\Config;
+use Piwik\Plugins\LoginLdap\LdapInterop\UserAccessAttributeParser;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserAccessMapper;
 use Piwik\Plugins\SitesManager\API as SitesManagerAPI;
 
@@ -35,6 +36,10 @@ class UserAccessMapperTest extends PHPUnit_Framework_TestCase
         $this->setSitesManagerApiMock();
 
         $this->userAccessMapper = new UserAccessMapper();
+
+        $attributeParser = new UserAccessAttributeParser();
+        $attributeParser->setThisPiwikInstanceName('thisPiwik');
+        $this->userAccessMapper->setUserAccessAttributeParser($attributeParser);
     }
 
     public function tearDown()
@@ -90,7 +95,7 @@ class UserAccessMapperTest extends PHPUnit_Framework_TestCase
             'superuser' => array()
         ));
 
-        $this->checkSuperUserAccess($access);
+        $this->assertEquals(array(), $access);
     }
 
     public function test_getPiwikUserAccessForLdapUser_CorrectlyMapsAccess_WhenUserHasViewAndAdminAccess()

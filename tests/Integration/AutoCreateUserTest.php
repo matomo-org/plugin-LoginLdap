@@ -14,6 +14,7 @@ use Piwik\Db;
 use Piwik\Common;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Plugins\LoginLdap\LdapAuth;
+use Piwik\SettingsPiwik;
 use Piwik\Tests\Fixture;
 
 /**
@@ -150,6 +151,63 @@ class AutoCreateUserTest extends LdapIntegrationTest
         $this->assertStarkAccessSynchronized();
     }
 
+    public function test_AdminAndViewAccessSynchronized_WhenLdapAccessInfoPresent_AndInstanceNameUsed()
+    {
+        Config::getInstance()->LoginLdap['instance_name'] = 'myPiwik';
+
+        $this->enableAccessSynchronization();
+
+        $this->authenticateViaLdap('blackwidow', 'redledger');
+
+        $access = $this->getAccessFor('blackwidow');
+        $this->assertEquals(array(
+            array('site' => '1', 'access' => 'view'),
+            array('site' => '2', 'access' => 'view'),
+            array('site' => '3', 'access' => 'admin'),
+            array('site' => '4', 'access' => 'admin'),
+        ), $access);
+    }
+
+    public function test_SuperUserAccessSynchronized_WhenLdapAccessInfoPresent_AndInstanceNameUsed_AndUserIsSuperUser()
+    {
+        Config::getInstance()->LoginLdap['instance_name'] = 'myPiwik';
+        $this->enableAccessSynchronization();
+
+        $this->authenticateViaLdap('thor', 'bilgesnipe');
+
+        $superusers = $this->getSuperUsers();
+        $this->assertEquals(array('thor'), $superusers);
+    }
+
+    public function test_AdminAndViewAccessSynchronized_WhenLdapAccessInfoPresent_AndInstancePiwikUrlUsed()
+    {
+        $this->setPiwikInstanceUrl('http://localhost/');
+        Config::getInstance()->LoginLdap['ldap_superuser_access_field'] = 'isasuperuser'; // disable superuser check so we can check user's normal access
+
+        $this->enableAccessSynchronization();
+
+        $this->authenticateViaLdap('thor', 'bilgesnipe');
+
+        $access = $this->getAccessFor('thor');
+        $this->assertEquals(array(
+            array('site' => '1', 'access' => 'view'),
+            array('site' => '2', 'access' => 'view'),
+            array('site' => '3', 'access' => 'admin'),
+            array('site' => '4', 'access' => 'admin'),
+        ), $access);
+    }
+
+    public function test_SuperUserAccessSynchronized_WhenLdapAccessInfoPresent_AndInstancePiwikUrlUsed_AndUserIsSuperUser()
+    {
+        $this->setPiwikInstanceUrl('http://localhost/');
+        $this->enableAccessSynchronization();
+
+        $this->authenticateViaLdap('thor', 'bilgesnipe');
+
+        $superusers = $this->getSuperUsers();
+        $this->assertEquals(array('thor'), $superusers);
+    }
+
     private function assertNoAccessInDb()
     {
         $access = $this->getAccessFor(self::TEST_LOGIN);
@@ -214,5 +272,10 @@ class AutoCreateUserTest extends LdapIntegrationTest
             array('site' => '2', 'access' => 'view'),
             array('site' => '3', 'access' => 'admin')
         ), $access);
+    }
+
+    private function setPiwikInstanceUrl($url)
+    {
+        SettingsPiwik::overwritePiwikUrl($url);
     }
 }

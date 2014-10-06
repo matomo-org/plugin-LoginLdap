@@ -321,7 +321,9 @@ class Client
 
             if (is_array($value)) { // index is for array, ie 0 => array(...)
                 $result[$i] = $this->transformLdapInfo($value);
-            } else if (isset($ldapInfo[$value])) { // index is for name of attribute, ie 0 => 'cn', 'cn' => array(...)
+            } else if (!is_numeric($value)
+                && isset($ldapInfo[$value])
+            ) { // index is for name of attribute, ie 0 => 'cn', 'cn' => array(...)
                 $key = strtolower($value);
 
                 if (is_array($ldapInfo[$value])) {
@@ -340,7 +342,7 @@ class Client
             }
         }
 
-        // process keys that have no addociated index (ie, a 'dn' => that has no N => 'dn')
+        // process keys that have no associated index (ie, a 'dn' => that has no N => 'dn')
         foreach ($ldapInfo as $key => $value) {
             if (is_int($key)) {
                 continue;
