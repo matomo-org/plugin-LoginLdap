@@ -24,7 +24,7 @@ use Piwik\Tests\Fixture;
  */
 class LdapUserSynchronizationTest extends LdapIntegrationTest
 {
-    const LDAP_ADDED_PASS = '{LDAP}Dv6yiT/W4FvaM5gBdqHwlQ==--';
+    const LDAP_ADDED_PASS = '{LDAP}e40511e34ec2ee1cc75d42c926';
     const LDAP_ADDED_PASS_DIFF = "{LDAP}..........................";
 
     public function setUp()
