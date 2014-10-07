@@ -96,6 +96,8 @@ class UserAccessMapper
     {
         // if the user is a superuser, we don't need to check the other attributes
         if ($this->isSuperUserAccessGrantedForLdapUser($ldapUser)) {
+            Log::debug("UserAccessMapper::%s: user '%s' found to be superuser", __FUNCTION__, $ldapUser);
+
             return array('superuser' => true);
         }
 
@@ -202,6 +204,8 @@ class UserAccessMapper
             $viewAttributeValues = array($viewAttributeValues);
         }
 
+        Log::debug("UserAccessMapper::%s(): attribute value for %s access is %s", __FUNCTION__, $accessLevel, $viewAttributeValues);
+
         $siteIds = array();
 
         $attributeParser = $this->userAccessAttributeParser;
@@ -236,6 +240,25 @@ class UserAccessMapper
         return $this->allSites;
     }
 
+    private function isSuperUserAccessGrantedForLdapUser($ldapUser)
+    {
+        if (!array_key_exists($this->superuserAttributeName, $ldapUser)) {
+            return false;
+        }
+
+        $attributeValue = $ldapUser[$this->superuserAttributeName];
+        if (!is_array($attributeValue)) {
+            $attributeValue = array($attributeValue);
+        }
+
+        foreach ($attributeValue as $value) {
+            if ($this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute($value)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Returns a configured UserAccessMapper instance. The instance is configured
      * using INI config option values.
@@ -266,24 +289,5 @@ class UserAccessMapper
             __FUNCTION__, $viewAttributeName, $adminAttributeName, $superuserAttributeName);
 
         return $result;
-    }
-
-    private function isSuperUserAccessGrantedForLdapUser($ldapUser)
-    {
-        if (!array_key_exists($this->superuserAttributeName, $ldapUser)) {
-            return false;
-        }
-
-        $attributeValue = $ldapUser[$this->superuserAttributeName];
-        if (!is_array($attributeValue)) {
-            $attributeValue = array($attributeValue);
-        }
-
-        foreach ($attributeValue as $value) {
-            if ($this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute($value)) {
-                return true;
-            }
-        }
-        return false;
     }
 }

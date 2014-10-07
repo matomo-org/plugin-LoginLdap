@@ -37,7 +37,7 @@ class LdapUsers
 
     /**
      * If set, this value is added to the end of usernames before authentication
-     * is attempted. This includes the admin user in addition to attempted logins.
+     * is attempted.
      *
      * @var string
      */
@@ -128,6 +128,8 @@ class LdapUsers
         if (empty($password)
             && !$alreadyAuthenticated
         ) {
+            Log::debug("LdapUsers::%s: empty password, skipping authentication", __FUNCTION__);
+
             return null;
         }
 
@@ -139,18 +141,21 @@ class LdapUsers
                 $user = $self->getUser($username, $ldapClient);
 
                 if (empty($user)) {
-                    Log::debug("ModelUsers\\LdapUsers::%s: No such user '%s' or user is not a member of '%s'.",
+                    Log::debug("LdapUsers::%s: No such user '%s' or user is not a member of '%s'.",
                         __FUNCTION__, $username, $authenticationRequiredMemberOf);
 
                     return null;
                 }
 
                 if ($alreadyAuthenticated) {
+                    Log::debug("LdapUsers::%s: assuming user %s already authenticated, skipping LDAP authentication",
+                        __FUNCTION__, $username);
+
                     return $user;
                 }
 
                 if (empty($user['dn'])) {
-                    Log::debug("ModelUsers\\LdapUsers::%s: LDAP user info for '%s' has no dn attribute! (info = %s)",
+                    Log::debug("LdapUsers::%s: LDAP user info for '%s' has no dn attribute! (info = %s)",
                         __FUNCTION__, $username, $user);
 
                     return null;
@@ -440,7 +445,7 @@ class LdapUsers
      */
     public function bindAsAdmin(LdapClient $ldapClient, ServerInfo $server)
     {
-        $adminUserName = $this->addUsernameSuffix($server->getAdminUsername());
+        $adminUserName = $server->getAdminUsername();
 
         // bind using the admin user which has at least read access to LDAP users
         if (!$ldapClient->bind($adminUserName, $server->getAdminPassword())) {

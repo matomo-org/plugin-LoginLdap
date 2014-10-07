@@ -248,6 +248,7 @@ class LdapAuth implements Auth
 
                 Log::info("User '%s' authenticated by webserver.", $this->login);
 
+                // still need to synchronize user details & check required group/filter
                 return $this->authenticateByPassword();
             }
         } else if (!empty($this->password)) {
@@ -304,7 +305,7 @@ class LdapAuth implements Auth
         $result = $auth->authenticate();
 
         // allow all super users to authenticate, even if they are not LDAP users, but stop
-        // normal non-LDAP users to authenticate.
+        // normal non-LDAP users from authenticating.
         if ($result->getCode() == AuthResult::SUCCESS_SUPERUSER_AUTH_CODE
             || ($result->getCode() == AuthResult::SUCCESS
                 && $this->isUserAllowedToAuthenticateByTokenAuth())
