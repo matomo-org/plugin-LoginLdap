@@ -26,8 +26,12 @@ SUPERUSER_OID="2.16.840.1.113730.3.1.1.3"
 sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
 
 dn: cn=config
+changetype: modify
 replace: olcLogLevel
 olcLogLevel: -1
+-
+add: olcDisallows
+olcDisallows: bind_anon
 
 EOF
 
@@ -42,9 +46,10 @@ olcRootDN: cn=$ADMIN_USER,$BASE_DN
 olcRootPW: $ADMIN_PASS_HASH
 olcDbDirectory: $TRAVIS_BUILD_DIR/ldap
 olcSuffix: $BASE_DN
-olcAccess: {0}to attrs=userPassword,shadowLastChange by self write by anonymous auth by dn="cn=$ADMIN_USER,$BASE_DN" write by * none
-olcAccess: {1}to dn.base="" by * read
+olcAccess: {0}to attrs=userPassword,shadowLastChange by self write by dn="cn=$ADMIN_USER,$BASE_DN" write by * auth
+olcAccess: {1}to dn.base="" by dn="cn=$ADMIN_USER,$BASE_DN" write by * read
 olcAccess: {2}to * by self write by dn="cn=$ADMIN_USER,$BASE_DN" write by * read
+olcRequires: authc
 olcLastMod: TRUE
 olcDbCheckpoint: 512 30
 olcDbConfig: {0}set_cachesize 0 2097152 0
@@ -52,6 +57,36 @@ olcDbConfig: {1}set_lk_max_objects 1500
 olcDbConfig: {2}set_lk_max_locks 1500
 olcDbConfig: {3}set_lk_max_lockers 1500
 olcDbIndex: objectClass eq
+
+# modules
+dn: cn=module,cn=config
+cn: module
+objectClass: olcModuleList
+objectClass: top
+olcModulePath: /usr/lib/ldap
+olcModuleLoad: memberof.la
+
+dn: olcOverlay={0}memberof,olcDatabase={2}hdb,cn=config
+objectClass: olcConfig
+objectClass: olcMemberOf
+objectClass: olcOverlayConfig
+objectClass: top
+olcOverlay: memberof
+
+dn: cn=module,cn=config
+cn: module
+objectclass: olcModuleList
+objectClass: top
+olcModuleLoad: refint.la
+olcModulePath: /usr/lib/ldap
+
+dn: olcOverlay={1}refint,olcDatabase={2}hdb,cn=config
+objectClass: olcConfig
+objectClass: olcOverlayConfig
+objectClass: olcRefintConfig
+objectClass: top
+olcOverlay: {1}refint
+olcRefintAttribute: memberof member manager owner
 
 EOF
 
@@ -119,50 +154,7 @@ if [ "$?" -ne "0" ]; then
     exit 1
 fi
 
-sudo ldapadd -Y EXTERNAL -H ldapi:/// <<EOF
-
-# modules
-dn: cn=module,cn=config
-cn: module
-objectClass: olcModuleList
-objectClass: top
-olcModulePath: /usr/lib/ldap
-olcModuleLoad: memberof.la
-
-dn: olcOverlay={0}memberof,olcDatabase={2}hdb,cn=config
-objectClass: olcConfig
-objectClass: olcMemberOf
-objectClass: olcOverlayConfig
-objectClass: top
-olcOverlay: memberof
-
-dn: cn=module,cn=config
-cn: module
-objectclass: olcModuleList
-objectClass: top
-olcModuleLoad: refint.la
-olcModulePath: /usr/lib/ldap
-
-dn: olcOverlay={1}refint,olcDatabase={2}hdb,cn=config
-objectClass: olcConfig
-objectClass: olcOverlayConfig
-objectClass: olcRefintConfig
-objectClass: top
-olcOverlay: {1}refint
-olcRefintAttribute: memberof member manager owner
-
-EOF
-
-if [ "$?" -eq "0" ]; then
-    echo "Configured."
-else
-    echo "Failed to configure ldap."
-    echo ""
-    echo "slapd log:"
-    sudo grep slapd /var/log/syslog
-
-    exit 1
-fi
+echo "Configured."
 
 # add entries to LDAP
 echo ""

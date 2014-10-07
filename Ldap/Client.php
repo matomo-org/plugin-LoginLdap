@@ -18,6 +18,13 @@ use Piwik\Error;
  */
 class Client
 {
+    private static $initialBindErrorCodesToIgnore = array(
+        7, // LDAP_AUTH_METHOD_NOT_SUPPORTED
+        8, // LDAP_STRONG_AUTH_REQUIRED
+        48, // LDAP_INAPPROPRIATE_AUTH
+        49, // LDAP_INVALID_CREDENTIALS
+        50, // LDAP_INSUFFICIENT_ACCESS
+    );
 
     /**
      * The LDAP connection resource. Set to the result of `ldap_connect`.
@@ -50,7 +57,8 @@ class Client
      *
      * @param string $serverHostName The hostname of the LDAP server.
      * @param int $port The server port to use.
-     * @throws Exception If an error occurs during the `ldap_connect` call.
+     * @throws Exception If an error occurs during the `ldap_connect` call or if there is a connection
+     *                   issue during the subsequent anonymous bind.
      */
     public function connect($serverHostName, $port = ServerInfo::DEFAULT_LDAP_PORT)
     {
@@ -66,14 +74,24 @@ class Client
 
             Log::debug("ldap_connect result is %s", $result);
 
-            // ldap_connect will not always try to connect to the server, so execute a bind
-            // to test the connection
-            ldap_bind($result); // TODO: test w/ anonymous bind not allowed
-
-            Log::debug("anonymous ldap_bind call finished; connection ok");
-
             return $result;
         });
+
+        // ldap_connect will not always try to connect to the server, so execute a bind
+        // to test the connection
+        $connectionResource = $this->connectionResource;
+        try {
+            $this->throwPhpErrors(function () use ($connectionResource) {
+                ldap_bind($connectionResource);
+
+                Log::debug("anonymous ldap_bind call finished; connection ok");
+            });
+        } catch (Exception $ex) {
+            // if the error was due to a connection error, rethrow, otherwise ignore it
+            if (!in_array(ldap_errno($connectionResource), self::$initialBindErrorCodesToIgnore)) {
+                throw $ex;
+            }
+        }
 
         if (!$this->isOpen()) { // sanity check
             throw new Exception("sanity check failed: ldap_connect did not return a connection resource!");
