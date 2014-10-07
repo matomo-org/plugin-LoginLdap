@@ -17,7 +17,34 @@ use Piwik\Site;
 /**
  * Synchronizes LDAP user information with the Piwik database.
  *
- * TODO: general information about the synchronization implementation
+ * LDAP user information is synchronized with the Piwik database every time a user
+ * logs in.
+ *
+ * ### Synchronizing User Information
+ *
+ * In order to display and use LDAP information without having to connect to LDAP
+ * on every request, some LDAP information is synchronized with Piwik's database.
+ *
+ * This information includes:
+ *
+ * - first name
+ * - last name
+ * - alias
+ * - email address
+ *
+ * **Allowing token_auth authentication**
+ *
+ * To allow authenticating by token auth for LDAP users, a dummy password is generated
+ * and stored in Piwik's database. Token auth authentication is then done in the same
+ * way as w/o any special Login.
+ *
+ * The generated password is prefixed with `{LDAP}` so LDAP users can be differentiated
+ * from normal users.
+ *
+ * ### Synchronizing User Access
+ *
+ * User access can be specified in custom LDAP attributes. To learn more, read the
+ * {@link UserAccessMapper} and {@link UserAccessAttributeParser} docs.
  */
 class UserSynchronizer
 {
