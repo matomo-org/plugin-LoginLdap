@@ -193,9 +193,8 @@ class LdapUsers
             list($filter, $bind) = $self->getUserEntryQuery($username);
             $userEntries = $ldapClient->fetchAll($server->getBaseDn(), $filter, $bind);
 
-            // TODO: test anonymous bind (for validity of old error message in LdapFunctions.php)
             if ($userEntries === null) { // sanity check
-                throw new Exception("LDAP search for entries failed.");
+                throw new Exception("LDAP search for entries failed. (Unexpected Error, ldap_search returned null)");
             }
 
             if (empty($userEntries)) {
@@ -411,7 +410,6 @@ class LdapUsers
             } catch (Exception $ex) {
                 Log::debug($ex);
 
-                // TODO: should be warning but default Piwik logger is 'screen'
                 Log::info("Model\\LdapUsers::%s: Could not connect to LDAP server %s:%s: %s",
                     __FUNCTION__, $server->getServerHostname(), $server->getServerPort(), $ex->getMessage());
             }
