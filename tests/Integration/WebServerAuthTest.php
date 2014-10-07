@@ -20,6 +20,13 @@ use Piwik\Plugins\LoginLdap\LdapAuth;
  */
 class WebServerAuthTest extends LdapIntegrationTest
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->addPreexistingSuperUser();
+    }
+
     public function testWebServerAuthWorksIfUserExistsRegardlessOfPassword()
     {
         Config::getInstance()->LoginLdap['use_webserver_auth'] = 1;

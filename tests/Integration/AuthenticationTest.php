@@ -34,8 +34,7 @@ class AuthenticationTest extends LdapIntegrationTest
 
         // test superusers should not have {LDAP} password to test that superusers can
         // login, even if they are not in LDAP
-        UsersManagerAPI::getInstance()->addUser(self::TEST_SUPERUSER_LOGIN, self::TEST_SUPERUSER_PASS, 'srodgers@aol.com', $alias = false);
-        UsersManagerAPI::getInstance()->setSuperUserAccess(self::TEST_SUPERUSER_LOGIN, true);
+        $this->addPreexistingSuperUser();
 
         UsersManagerAPI::getInstance()->addUser(self::NON_LDAP_USER, self::NON_LDAP_PASS, 'whatever@aol.com', $alias = false);
         UsersManagerAPI::getInstance()->setSuperUserAccess(self::NON_LDAP_USER, true);

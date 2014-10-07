@@ -13,6 +13,7 @@ use Piwik\Log;
 use Piwik\Config;
 use Piwik\Plugins\LoginLdap\Ldap\LdapFunctions;
 use Piwik\Tests\Fixture;
+use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 
 abstract class LdapIntegrationTest extends DatabaseTestCase
 {
@@ -68,5 +69,11 @@ abstract class LdapIntegrationTest extends DatabaseTestCase
         Log::unsetInstance();
 
         parent::tearDown();
+    }
+
+    protected function addPreexistingSuperUser()
+    {
+        UsersManagerAPI::getInstance()->addUser(self::TEST_SUPERUSER_LOGIN, self::TEST_SUPERUSER_PASS, 'srodgers@aol.com', $alias = false);
+        UsersManagerAPI::getInstance()->setSuperUserAccess(self::TEST_SUPERUSER_LOGIN, true);
     }
 }
