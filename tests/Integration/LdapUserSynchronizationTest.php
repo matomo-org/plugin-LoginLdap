@@ -20,11 +20,9 @@ use Piwik\Tests\Fixture;
 /**
  * @group LoginLdap
  * @group LoginLdap_Integration
- * @group LoginLdap_AutoCreateUserTest
- *
- * TODO: rename LdapUserSynchronizationTest
+ * @group LoginLdap_LdapUserSynchronizationTest
  */
-class AutoCreateUserTest extends LdapIntegrationTest
+class LdapUserSynchronizationTest extends LdapIntegrationTest
 {
     const LDAP_ADDED_PASS = '{LDAP}Dv6yiT/W4FvaM5gBdqHwlQ==--';
     const LDAP_ADDED_PASS_DIFF = "{LDAP}..........................";
@@ -108,7 +106,7 @@ class AutoCreateUserTest extends LdapIntegrationTest
     {
         Access::doAsSuperUser(function () {
             UsersManagerAPI::getInstance()->addUser(
-                AutoCreateUserTest::TEST_LOGIN, AutoCreateUserTest::LDAP_ADDED_PASS_DIFF, 'something@domain.com', $alias = false, $isPasswordHashed = true);
+                LdapUserSynchronizationTest::TEST_LOGIN, LdapUserSynchronizationTest::LDAP_ADDED_PASS_DIFF, 'something@domain.com', $alias = false, $isPasswordHashed = true);
         });
 
         $this->authenticateViaLdap();
@@ -141,9 +139,9 @@ class AutoCreateUserTest extends LdapIntegrationTest
 
         Access::doAsSuperUser(function () {
             UsersManagerAPI::getInstance()->addUser(
-                AutoCreateUserTest::TEST_LOGIN, AutoCreateUserTest::LDAP_ADDED_PASS_DIFF, 'something@domain.com', $alias = false, $isPasswordHashed = true);
-            UsersManagerAPI::getInstance()->setUserAccess(AutoCreateUserTest::TEST_LOGIN, 'view', array(4,5));
-            UsersManagerAPI::getInstance()->setUserAccess(AutoCreateUserTest::TEST_LOGIN, 'admin', array(6));
+                LdapUserSynchronizationTest::TEST_LOGIN, LdapUserSynchronizationTest::LDAP_ADDED_PASS_DIFF, 'something@domain.com', $alias = false, $isPasswordHashed = true);
+            UsersManagerAPI::getInstance()->setUserAccess(LdapUserSynchronizationTest::TEST_LOGIN, 'view', array(4,5));
+            UsersManagerAPI::getInstance()->setUserAccess(LdapUserSynchronizationTest::TEST_LOGIN, 'admin', array(6));
         });
 
         $this->authenticateViaLdap();
