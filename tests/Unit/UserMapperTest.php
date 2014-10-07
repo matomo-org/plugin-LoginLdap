@@ -97,7 +97,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(array(
             'login' => 'martha',
-            'password' => '{LDAP}pass----------------------',
+            'password' => '{LDAP}1a1dc91c907325c69271ddf0c9',
             'email' => 'martha@unit.co.uk',
             'alias' => 'A real doctor'
         ), $result);
@@ -123,7 +123,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(array(
             'login' => 'donna',
-            'password' => '{LDAP}pass----------------------',
+            'password' => '{LDAP}1a1dc91c907325c69271ddf0c9',
             'email' => 'donna@rstad.com',
             'alias' => 'am i bovvered?'
         ), $result);
@@ -139,7 +139,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(array(
             'login' => 'donna',
-            'password' => '{LDAP}pass----------------------',
+            'password' => '{LDAP}1a1dc91c907325c69271ddf0c9',
             'email' => 'donna@rstad.com',
             'alias' => 'Donna Noble'
         ), $result);
@@ -193,7 +193,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(array(
             'login' => 'pond',
-            'password' => '{LDAP}pass----------------------',
+            'password' => '{LDAP}1a1dc91c907325c69271ddf0c9',
             'email' => 'pond@mydomain.com',
             'alias' => 'kissogram'
         ), $result);
@@ -207,7 +207,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(array(
             'login' => 'mrpond',
-            'password' => '{LDAP}pass----------------------',
+            'password' => '{LDAP}1a1dc91c907325c69271ddf0c9',
             'email' => 'mrpond@royalleadworthhospital.co.uk',
             'alias' => 'not quite Bond'
         ), $result);
@@ -225,7 +225,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(array(
             'login' => 'harkness',
-            'password' => '{LDAP}pass----------------------',
+            'password' => '{LDAP}1a1dc91c907325c69271ddf0c9',
             'email' => 'harkness@mydomain.com',
             'alias' => 'Captain Harkness'
         ), $result);
@@ -245,7 +245,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(array(
             'login' => 'rose',
-            'password' => '{LDAP}pass----------------------',
+            'password' => '{LDAP}1a1dc91c907325c69271ddf0c9',
             'email' => 'rose@linda.com',
             'alias' => 'bad wolf'
         ), $result);

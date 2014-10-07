@@ -93,12 +93,12 @@ class UserMapper
     /**
      * The password we store for a mapped user isn't used to authenticate, it's just
      * data used to generate a user's token auth.
-     *
-     * TODO: maybe it's better to create a random password for token auth
      */
     private function getPiwikPasswordForLdapUser($ldapUser)
     {
         $password = $this->getRequiredLdapUserField($ldapUser, 'userpassword');
+        $password = $this->hashLdapPassword($password);
+
         $password = preg_replace("/^(?:\\{[^}]*\\})?/", self::MAPPED_USER_PASSWORD_PREFIX, $password);
         $password = substr($password, 0, 32);
         $password = str_pad($password, 32, '-');
@@ -262,6 +262,15 @@ class UserMapper
     public function setUserEmailSuffix($userEmailSuffix)
     {
         $this->userEmailSuffix = $userEmailSuffix;
+    }
+
+    /**
+     * Hashes the LDAP password so no part the real LDAP password (or the hash stored in
+     * LDAP) will be stored in Piwik's DB.
+     */
+    protected function hashLdapPassword($password)
+    {
+        return md5($password);
     }
 
     /**
