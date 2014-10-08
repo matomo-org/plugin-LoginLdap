@@ -44,9 +44,10 @@ describe("LoginLdap_Admin", function () {
                 $('input#filter').val('(objectClass=person)').trigger('input');
             });
 
+            page.wait(1000);
+
             page.click('input#memberOf + .test-config-option-link');
             page.click('input#filter + .test-config-option-link');
-            page.wait(1000);
         }, done);
     });
 });
