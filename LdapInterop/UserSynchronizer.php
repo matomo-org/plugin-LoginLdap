@@ -135,6 +135,12 @@ class UserSynchronizer
         }
 
         $userAccess = $this->userAccessMapper->getPiwikUserAccessForLdapUser($ldapUser);
+        if (empty($userAccess)) {
+            Log::warning("UserSynchronizer::%s: User '%s' has no access in LDAP, but access synchronization is enabled.",
+                __FUNCTION__, $piwikLogin);
+
+            return;
+        }
 
         $this->userModel->deleteUserAccess($piwikLogin);
 
