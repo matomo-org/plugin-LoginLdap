@@ -66,6 +66,7 @@
         "LdapUserAccessAttributeServerSeparator": "User Access Attribute Server & Site List Separator",
         "LdapUserAccessAttributeServerSeparatorDescription": "The string used to separate Piwik server instance IDs with site ID lists. If set to ':', the access attribute will be expected to look like '<server-id>:<site-list>;<server-id>:<site-list>'.",
         "ThisPiwikInstanceName": "Special Name For This Piwik Instance",
-        "ThisPiwikInstanceNameDescription": "A special name used to identify this Piwik instance in an access attribute. If none is specified, we expect the base URL of this Piwik."
+        "ThisPiwikInstanceNameDescription": "A special name used to identify this Piwik instance in an access attribute. If none is specified, we expect the base URL of this Piwik.",
+        "UnsupportedPasswordReset": "Cannot reset this user's password, please contact an administrator."
     }
 }

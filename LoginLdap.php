@@ -8,12 +8,17 @@
 namespace Piwik\Plugins\LoginLdap;
 
 use Exception;
+use Piwik\Access;
+use Piwik\Common;
 use Piwik\FrontController;
 use Piwik\Menu\MenuAdmin;
 use Piwik\Piwik;
 use Piwik\Plugin\Manager;
 use Piwik\Plugins\Login\Login;
+use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
+use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Session;
+use Piwik\View;
 
 /**
  *
@@ -33,7 +38,11 @@ class LoginLdap extends \Piwik\Plugin
             'API.Request.authenticate'               => 'ApiRequestAuthenticate',
             'AssetManager.getJavaScriptFiles'        => 'getJsFiles',
             'AssetManager.getStylesheetFiles'        => 'getStylesheetFiles',
-            'Translate.getClientSideTranslationKeys' => 'getClientSideTranslationKeys'
+            'Translate.getClientSideTranslationKeys' => 'getClientSideTranslationKeys',
+            'Controller.Login.resetPassword'         => 'disablePasswordResetForLdapUsers',
+            'Controller.LoginLdap.resetPassword'     => 'disablePasswordResetForLdapUsers',
+            'Controller.Login.confirmResetPassword'  => 'disableConfirmResetPasswordForLdapUsers',
+            'Controller.Login.confirmResetPassword'  => 'disableConfirmResetPasswordForLdapUsers'
         );
         return $hooks;
     }
@@ -86,6 +95,42 @@ class LoginLdap extends \Piwik\Plugin
         }
     }
 
+    public function disableConfirmResetPasswordForLdapUsers()
+    {
+        $login = Common::getRequestVar('login', false);
+        if (empty($login)) {
+            return;
+        }
+
+        if ($this->isUserLdapUser($login)) {
+            // redirect to login w/ error message
+            $errorMessage = Piwik::translate("LoginLdap_UnsupportedPasswordReset");
+            echo FrontController::getInstance()->dispatch('LoginLdap', 'login', array($errorMessage));
+
+            exit;
+        }
+    }
+
+    public function disablePasswordResetForLdapUsers()
+    {
+        $login = Common::getRequestVar('form_login', false);
+        if (empty($login)) {
+            return;
+        }
+
+        if ($this->isUserLdapUser($login)) {
+            $errorMessage = Piwik::translate("LoginLdap_UnsupportedPasswordReset");
+
+            $view = new View("@Login/resetPassword");
+            $view->infoMessage = null;
+            $view->formErrors = array($errorMessage);
+
+            echo $view->render();
+
+            exit;
+        }
+    }
+
     /**
      * Redirects to Login form with error message.
      * Listens to User.isNotAuthorized hook.
@@ -126,5 +171,14 @@ class LoginLdap extends \Piwik\Plugin
         \Piwik\Registry::set('auth', $auth);
 
         Login::initAuthenticationFromCookie($auth, $activateCookieAuth);
+    }
+
+    private function isUserLdapUser($login)
+    {
+        $user = Access::doAsSuperUser(function () use ($login) {
+            return UsersManagerAPI::getInstance()->getUser($login);
+        });
+
+        return UserMapper::isUserLdapUser($user);
     }
 }
