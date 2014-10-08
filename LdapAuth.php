@@ -11,6 +11,7 @@ use Exception;
 use Piwik\Auth;
 use Piwik\AuthResult;
 use Piwik\Db;
+use Piwik\Piwik;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
@@ -318,6 +319,8 @@ class LdapAuth implements Auth
 
     private function authenticateByLdap()
     {
+        $this->checkLdapFunctionsAvailable();
+
         $ldapUser = $this->ldapUsers->authenticate($this->login, $this->password, $this->useWebServerAuthentication);
         if (!empty($ldapUser)) {
             $this->userForLogin = $this->userSynchronizer->synchronizeLdapUser($ldapUser);
@@ -374,5 +377,12 @@ class LdapAuth implements Auth
     private function makeAuthFailure()
     {
         return new AuthResult(AuthResult::FAILURE, $this->login, $this->token_auth);
+    }
+
+    private function checkLdapFunctionsAvailable()
+    {
+        if (!function_exists('ldap_connect')) {
+            throw new Exception(Piwik::translate('LoginLdap_LdapExtensionMissing'));
+        }
     }
 }

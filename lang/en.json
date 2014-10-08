@@ -35,7 +35,7 @@
         "DisplayLogDescription": "Displays last 20 rows from \"tmp/logs/ldap.log\".",
         "LogEmpty": "Log file seems to be empty",
         "DownloadLog": "Download full logfile",
-        "LdapFunctionsMissing": "PHP ldap_connect() function missing, please enable LDAP on your PHP config!",
+        "LdapExtensionMissing": "The PHP LDAP extension does not appear to be enabled. It is required for this plugin, please install it.",
         "Debug": "Debug mode enabled",
         "autoCreateUser": "Add users if they match LDAP user settings",
         "CannotConnectToServer": "Could not connect to the LDAP server.",
