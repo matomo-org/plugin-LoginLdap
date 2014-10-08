@@ -434,7 +434,7 @@ class LdapUsers
         if (count($this->ldapServers) > 1) {
             $message = Piwik::translate('LoginLdap_CannotConnectToServers', count($this->ldapServers));
         } else {
-            $message = Piwik::translate("CannotConnectToServer");
+            $message = Piwik::translate("LoginLdap_CannotConnectToServer");
         }
 
         throw new ConnectionException($message);

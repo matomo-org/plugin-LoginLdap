@@ -41,12 +41,16 @@ class LoginLdap extends \Piwik\Plugin
     public function getJsFiles(&$jsFiles)
     {
         $jsFiles[] = "plugins/Login/javascripts/login.js";
-        $jsFiles[] = "plugins/LoginLdap/javascripts/angularjs/admin/controller.js";
+
+        $jsFiles[] = "plugins/LoginLdap/angularjs/admin/admin.controller.js";
+
+        $jsFiles[] = "plugins/LoginLdap/angularjs/login-ldap-testable-field/login-ldap-testable-field.controller.js";
+        $jsFiles[] = "plugins/LoginLdap/angularjs/login-ldap-testable-field/login-ldap-testable-field.directive.js";
     }
 
     public function getStylesheetFiles(&$stylesheetFiles)
     {
-        $stylesheetFiles[] = "plugins/LoginLdap/javascripts/angularjs/admin/admin.less";
+        $stylesheetFiles[] = "plugins/LoginLdap/angularjs/admin/admin.controller.less";
     }
 
     public function getClientSideTranslationKeys(&$keys)
@@ -55,6 +59,9 @@ class LoginLdap extends \Piwik\Plugin
         $keys[] = "LoginLdap_OneUser";
         $keys[] = "LoginLdap_MemberOfCount";
         $keys[] = "LoginLdap_FilterCount";
+        $keys[] = "LoginLdap_Test";
+        $keys[] = "LoginLdap_OneUser";
+        $keys[] = "General_NUsers";
     }
 
     /**

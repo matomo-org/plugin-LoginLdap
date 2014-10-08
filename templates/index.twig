@@ -1,13 +1,15 @@
 {% extends 'admin.twig' %}
 
 {% block content %}
-<div ng-controller="LoginLdapAdminController"
-        data-loginLdapConfig="{{ ldapConfig|json_encode }}"
-        data-servers="{{ servers|json_encode }}">
-
+<div ng-controller="LoginLdapAdminController as adminController"
+     data-servers="{{ servers|json_encode }}">
     <h2>{{ 'LoginLdap_Settings'|translate }}</h2>
 
-    <table id='ldapSettingsTable' class="adminTable">
+    <table id='ldapSettingsTable'
+           class="adminTable"
+           piwik-ajax-form
+           submit-api-method="'LoginLdap.saveLdapConfig'"
+           send-json-payload="true">
         <tr>
             <td>
                 <label for="userIdField">{{ 'LoginLdap_UserIdField'|translate }} </label>
@@ -15,7 +17,7 @@
                 <span class='form-description'>{{ 'LoginLdap_UserIdFieldDescription'|translate }}</span>
             </td>
             <td>
-                <input size="25" id="userIdField" ng-model="loginLdapConfig.userIdField"/>
+                <input size="25" id="userIdField" value="{{ ldapConfig.ldap_user_id_field }}" name="ldap_user_id_field"/>
             </td>
         </tr>
 
@@ -26,7 +28,7 @@
                 <span class='form-description'>{{ 'LoginLdap_MailFieldDescription'|translate }}</span>
             </td>
             <td>
-                <input size="25" id="mailField" ng-model="loginLdapConfig.mailField"/>
+                <input size="25" id="mailField" value="{{ ldapConfig.ldap_mail_field }}" name="ldap_mail_field"/>
             </td>
         </tr>
 
@@ -37,7 +39,29 @@
                 <span class='form-description'>{{ 'LoginLdap_AliasFieldDescription'|translate }}</span>
             </td>
             <td>
-                <input size="25" id="aliasField" ng-model="loginLdapConfig.aliasField"/>
+                <input size="25" id="aliasField" value="{{ ldapConfig.ldap_alias_field }}" name="ldap_alias_field"/>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <label for="firstNameField">{{ 'LoginLdap_FirstNameField'|translate }}</label>
+                <br/>
+                <span class='form-description'>{{ 'LoginLdap_FirstNameFieldDescription'|translate }}</span>
+            </td>
+            <td>
+                <input size="25" type="text" id="firstNameField" value="{{ ldapConfig.ldap_first_name_field }}" name="ldap_first_name_field"/>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <label for="lastNameField">{{ 'LoginLdap_LastNameField'|translate }}</label>
+                <br/>
+                <span class="form-description">{{ 'LoginLdap_LastNameFieldDescription'|translate }}</span>
+            </td>
+            <td>
+                <input size="25" type="text" id="lastNameField" value="{{ ldapConfig.ldap_last_name_field }}" name="ldap_last_name_field"/>
             </td>
         </tr>
 
@@ -48,7 +72,7 @@
                 <span class='form-description'>{{ 'LoginLdap_UsernameSuffixDescription'|translate }}</span>
             </td>
             <td>
-                <input size="25" id="usernameSuffix" ng-model="loginLdapConfig.usernameSuffix"/>
+                <input size="25" id="usernameSuffix" value="{{ ldapConfig.user_email_suffix }}" name="user_email_suffix"/>
             </td>
         </tr>
 
@@ -58,21 +82,15 @@
                 <br/>
                 <span class='form-description'>{{ 'LoginLdap_MemberOfDescription'|translate }}</span>
             </td>
-            <td>
-                <input size="25" id="memberOf" ng-model="loginLdapConfig.memberOf" piwik-onenter="queryMemberOfCount()"
-                       ng-change="countUsersFoundWithMemberOf=loginLdapConfig.memberOf?countUsersFoundWithMemberOf:null;
-                                  currentMemberOfRequestError=loginLdapConfig.memberOf?currentMemberOfRequestError:null"/>
-                <a class="test-config-option-link" ng-click="queryMemberOfCount()" ng-show="loginLdapConfig.memberOf">{{ 'LoginLdap_Test'|translate }}</a>
-
-                <div piwik-translate="LoginLdap_MemberOfCount" piwik-notification style="display:inline-block" context="success" noclear="1" ng-show="countUsersFoundWithMemberOf!==null">
-                    <strong>
-                        <span ng-if="countUsersFoundWithMemberOf==1">{% verbatim %}{{ 'LoginLdap_OneUser'|translate }}{% endverbatim %}</span>
-                        <span ng-if="countUsersFoundWithMemberOf!=1">{% verbatim %}{{ 'General_NUsers'|translate:countUsersFoundWithMemberOf }}{% endverbatim %}</span>
-                    </strong>
-                </div>
-                <div piwik-notification style="display:inline-block" context="error" noclear="1" ng-show="currentMemberOfRequestError!==null">
-                    {% verbatim %}{{ currentMemberOfRequestError }}{% endverbatim %}
-                </div>
+            <td><label></label>
+                <div piwik-login-ldap-testable-field
+                     input-id="memberOf"
+                     test-api-method="'LoginLdap.getCountOfUsersMemberOf'"
+                     test-api-method-arg="'memberOf'"
+                     name="required_member_of"
+                     value="{{ ldapConfig.required_member_of }}"
+                     success-translation="LoginLdap_MemberOfCount">
+                 </div>
             </td>
         </tr>
 
@@ -83,20 +101,25 @@
                 <span class='form-description'>{{ 'LoginLdap_FilterDescription'|translate }}</span>
             </td>
             <td>
-                <input size="25" id="filter" ng-model="loginLdapConfig.filter" piwik-onenter="queryFilterCount()"
-                       ng-change="countUsersFoundMatchingFilter=loginLdapConfig.filter?countUsersFoundMatchingFilter:null;
-                                  currentFilterCountRequestError=loginLdapConfig.filter?currentFilterCountRequestError:null" />
-                <a class="test-config-option-link" ng-click="queryFilterCount()" ng-show="loginLdapConfig.filter">{{ 'LoginLdap_Test'|translate }}</a>
+                <div piwik-login-ldap-testable-field
+                     input-id="filter"
+                     test-api-method="'LoginLdap.getCountOfUsersMatchingFilter'"
+                     test-api-method-arg="'filter'"
+                     name="ldap_user_filter"
+                     value="{{ ldapConfig.ldap_user_filter }}"
+                     success-translation="LoginLdap_FilterCount">
+                </div>
+            </td>
+        </tr>
 
-                <div piwik-translate="LoginLdap_FilterCount" piwik-notification style="display:inline-block" context="success" noclear="1" ng-show="countUsersFoundMatchingFilter!==null">
-                    <strong>
-                        <span ng-if="countUsersFoundMatchingFilter==1">{% verbatim %}{{ 'LoginLdap_OneUser'|translate }}{% endverbatim %}</span>
-                        <span ng-if="countUsersFoundMatchingFilter!=1">{% verbatim %}{{ 'General_NUsers'|translate:countUsersFoundMatchingFilter }}{% endverbatim %}</span>
-                    </strong>
-                </div>
-                <div piwik-notification style="display:inline-block" context="error" noclear="1" ng-show="currentFilterCountRequestError!==null">
-                    {% verbatim %}{{ currentFilterCountRequestError }}{% endverbatim %}
-                </div>
+        <tr>
+            <td>
+                <label for="newUserDefaultSitesViewAccess">{{ 'LoginLdap_NewUserDefaultSitesViewAccess'|translate }}</label>
+                <br/>
+                <span class="form-description">{{ 'LoginLdap_NewUserDefaultSitesViewAccessDescription'|translate }}</span>
+            </td>
+            <td>
+                <input size="25" type="text" value="{{ ldapConfig.new_user_default_sites_view_access }}" name="new_user_default_sites_view_access" id="newUserDefaultSitesViewAccess" />
             </td>
         </tr>
 
@@ -105,85 +128,171 @@
                 <label for="useKerberos">{{ 'LoginLdap_Kerberos'|translate }} </label>
             </td>
             <td>
-                <input type="checkbox" ng-model="loginLdapConfig.useKerberos" id="useKerberos"/>
+                <input type="checkbox" {% if ldapConfig.use_webserver_auth %}checked="checked"{% endif %} id="useKerberos" name="use_webserver_auth"/>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <label for="enableLdapAccessSync">{{ 'LoginLdap_EnableLdapAccessSynchronization'|translate }}</label>
+                <br/>
+                <span class="form-description">{{ 'LoginLdap_EnableLdapAccessSynchronizationDescription'|translate }}</span>
+            </td>
+            <td>
+                <input type="checkbox" {% if ldapConfig.enable_synchronize_access_from_ldap %}checked="checked"{% endif %} id="enableLdapAccessSync"
+                       name="enable_synchronize_access_from_ldap"/>
+            </td>
+        </tr>
+
+        <tr ng-if="ajaxForm.data.enable_synchronize_access_from_ldap">
+            <td>
+                <label for="ldapViewAccessField">{{ 'LoginLdap_LdapViewAccessField'|translate }}</label>
+                <br/>
+                <span class="form-description">{{ 'LoginLdap_LdapViewAccessFieldDescription'|translate }}</span>
+            </td>
+            <td>
+                <input size="25" type="text" id="ldapViewAccessField" value="{{ ldapConfig.ldap_view_access_field }}" name="ldap_view_access_field" />
+            </td>
+        </tr>
+
+        <tr ng-if="ajaxForm.data.enable_synchronize_access_from_ldap">
+            <td>
+                <label for="ldapAdminAccessField">{{ 'LoginLdap_LdapAdminAccessField'|translate }}</label>
+                <br/>
+                <span class="form-description">{{ 'LoginLdap_LdapAdminAccessFieldDescription'|translate }}</span>
+            </td>
+            <td>
+                <input size="25" type="text" id="ldapAdminAccessField" value="{{ ldapConfig.ldap_admin_access_field }}" name="ldap_admin_access_field" />
+            </td>
+        </tr>
+
+        <tr ng-if="ajaxForm.data.enable_synchronize_access_from_ldap">
+            <td>
+                <label for="ldapSuperUserAccessField">{{ 'LoginLdap_LdapSuperUserAccessField'|translate }}</label>
+                <br/>
+                <span class="form-description">{{ 'LoginLdap_LdapSuperUserAccessFieldDescription'|translate }}</span>
+            </td>
+            <td>
+                <input size="25" type="text" id="ldapSuperUserAccessField" value="{{ ldapConfig.ldap_superuser_access_field }}" name="ldap_superuser_access_field" />
+            </td>
+        </tr>
+
+        <tr ng-if="ajaxForm.data.enable_synchronize_access_from_ldap">
+            <td>
+                <label for="userAccessAttributeServerSpecDelimiter">{{ 'LoginLdap_LdapUserAccessAttributeServerSpecDelimiter'|translate }}</label>
+                <br/>
+                <span class="form-description">{{ 'LoginLdap_LdapUserAccessAttributeServerSpecDelimiterDescription'|translate }}</span>
+            </td>
+            <td>
+                <input size="25" type="text" id="userAccessAttributeServerSpecDelimiter" value="{{ ldapConfig.user_access_attribute_server_specification_delimiter }}"
+                       name="user_access_attribute_server_specification_delimiter"/>
+            </td>
+        </tr>
+
+        <tr ng-if="ajaxForm.data.enable_synchronize_access_from_ldap">
+            <td>
+                <label for="userAccessAttributeServerSeparator">{{ 'LoginLdap_LdapUserAccessAttributeServerSeparator'|translate }}</label>
+                <br/>
+                <span class="form-description">{{ 'LoginLdap_LdapUserAccessAttributeServerSeparatorDescription'|translate }}</span>
+            </td>
+            <td>
+                <input size="25" type="text" id="userAccessAttributeServerSeparator" value="{{ ldapConfig.user_access_attribute_server_separator }}"
+                       name="user_access_attribute_server_separator" />
+            </td>
+        </tr>
+
+        <tr ng-if="ajaxForm.data.enable_synchronize_access_from_ldap">
+            <td>
+                <label for="instanceName">{{ 'LoginLdap_ThisPiwikInstanceName'|translate }}</label>
+                <br/>
+                <span class="form-description">{{ 'LoginLdap_ThisPiwikInstanceNameDescription'|translate }}</span>
+            </td>
+            <td>
+                <input size="25" type="text" id="instanceName" value="{{ ldapConfig.instance_name }}" name="instance_name" />
             </td>
         </tr>
 
         <tr>
             <td align="left">
-                <input class="submit" type="submit" value="{{ 'General_Save'|translate }}" ng-click="saveLoginLdapConfig(loginLdapConfig)"/>
+                <input class="submit" type="submit" value="{{ 'General_Save'|translate }}" ng-disabled="ajaxForm.isSubmitting"/>
             </td>
-            <td></td>
+            <td> </td>
         </tr>
     </table>
 
     <h2>{{ 'LoginLdap_LDAPServers'|translate }}</h2>
     <p class="form-description">{{ 'General_Note'|translate }}: {{ 'LoginLdap_ServerNameEditInstructions'|translate }}</p>
-    <div ng-repeat="serverInfo in servers" id="ldapServersTable">
-        <table class="adminTable" style='width:900px'>
-            <tr>
-                <td width="150">
-                    <h3 style="margin-top:0;" ng-show="!serverInfo.isEditingName" ng-click="serverInfo.isEditingName = true">{% verbatim %}{{ serverInfo.name }}{% endverbatim %}</h3>
-                    <input type="text" size="8" ng-show="serverInfo.isEditingName" ng-blur="serverInfo.isEditingName = false" ng-model="serverInfo.name"/>
-                </td>
-                <td><input type="button" value="{{ 'General_Delete'|translate }}" ng-click="deleteServer(serverInfo.name)" class="submit"/></td>
-                <td>
-                    &nbsp;
-                </td>
-            </tr>
-            <tr>
-                <td width="150"><label for="serverUrl-\{\{ $index \}\}">{{ 'LoginLdap_ServerUrl'|translate }} </label></td>
-                <td>
-                    <input size="25" id="serverUrl-\{\{ $index \}\}" ng-model="serverInfo.hostname" placeholder="ldap://localhost/" type="text"/>
-                </td>
-                <td>
-                    &nbsp;
-                </td>
-            </tr>
+    <div piwik-ajax-form
+         ng-model="servers"
+         submit-api-method="'LoginLdap.saveServersInfo'"
+         send-json-payload="true"
+         use-custom-data-binding="true">
+        <div ng-repeat="serverInfo in ajaxForm.data" id="ldapServersTable">
+            <table class="adminTable" style='width:900px'>
+                <tr>
+                    <td width="150">
+                        <h3 style="margin-top:0;" ng-show="!serverInfo.isEditingName" ng-click="serverInfo.isEditingName = true">{% verbatim %}{{ serverInfo.name }}{% endverbatim %}</h3>
+                        <input type="text" size="8" ng-show="serverInfo.isEditingName" ng-blur="serverInfo.isEditingName = false" ng-model="serverInfo.name"/>
+                    </td>
+                    <td><input type="button" value="{{ 'General_Delete'|translate }}" ng-click="ajaxForm.data.splice($index, 1)" class="submit"/></td>
+                    <td>
+                        &nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td width="150"><label for="serverUrl-\{\{ $index \}\}">{{ 'LoginLdap_ServerUrl'|translate }} </label></td>
+                    <td>
+                        <input size="25" id="serverUrl-\{\{ $index \}\}" ng-model="serverInfo.hostname" placeholder="ldap://localhost/" type="text"/>
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                </tr>
 
-            <tr>
-                <td><label for="ldapPort-\{\{ $index \}\}">{{ 'LoginLdap_LdapPort'|translate }} </label></td>
-                <td>
-                    <input size="25" id="ldapPort-\{\{ $index \}\}" ng-model="serverInfo.port" type="text" placeholder="389"/>
-                </td>
-                <td>
-                    &nbsp;
-                </td>
-            </tr>
+                <tr>
+                    <td><label for="ldapPort-\{\{ $index \}\}">{{ 'LoginLdap_LdapPort'|translate }} </label></td>
+                    <td>
+                        <input size="25" id="ldapPort-\{\{ $index \}\}" ng-model="serverInfo.port" type="text" placeholder="389"/>
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                </tr>
 
-            <tr>
-                <td><label for="baseDn-\{\{ $index \}\}">{{ 'LoginLdap_BaseDn'|translate }} </label></td>
-                <td>
-                    <input size="25" id="baseDn-\{\{ $index \}\}" ng-model="serverInfo.base_dn" placeholder="dc=example,dc=site,dc=org" type="text"/>
-                </td>
-                <td>
-                    &nbsp;
-                </td>
-            </tr>
+                <tr>
+                    <td><label for="baseDn-\{\{ $index \}\}">{{ 'LoginLdap_BaseDn'|translate }} </label></td>
+                    <td>
+                        <input size="25" id="baseDn-\{\{ $index \}\}" ng-model="serverInfo.base_dn" placeholder="dc=example,dc=site,dc=org" type="text"/>
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                </tr>
 
-            <tr>
-                <td><label for="adminUser-\{\{ $index \}\}">{{ 'LoginLdap_AdminUser'|translate }} </label></td>
-                <td>
-                    <input size="25" id="adminUser-\{\{ $index \}\}" ng-model="serverInfo.admin_user" type="text" placeholder="cn=admin,dc=example,dc=site,dc=org"/>
-                </td>
-                <td>
-                    <span class='form-description'>{{ 'LoginLdap_AdminUserDescription'|translate }}</span>
-                </td>
-            </tr>
+                <tr>
+                    <td><label for="adminUser-\{\{ $index \}\}">{{ 'LoginLdap_AdminUser'|translate }} </label></td>
+                    <td>
+                        <input size="25" id="adminUser-\{\{ $index \}\}" ng-model="serverInfo.admin_user" type="text" placeholder="cn=admin,dc=example,dc=site,dc=org"/>
+                    </td>
+                    <td>
+                        <span class='form-description'>{{ 'LoginLdap_AdminUserDescription'|translate }}</span>
+                    </td>
+                </tr>
 
-            <tr>
-                <td><label for="adminPass-\{\{ $index \}\}">{{ 'LoginLdap_AdminPass'|translate }} </label></td>
-                <td>
-                    <input size="25" id="adminPass-\{\{ $index \}\}" ng-model="serverInfo.admin_pass" type="password" />
-                </td>
-                <td>
-                    &nbsp;
-                </td>
-            </tr>
-        </table>
+                <tr>
+                    <td><label for="adminPass-\{\{ $index \}\}">{{ 'LoginLdap_AdminPass'|translate }} </label></td>
+                    <td>
+                        <input size="25" id="adminPass-\{\{ $index \}\}" ng-model="serverInfo.admin_pass" type="password" />
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <input type="button" value="{{ 'General_Add'|translate }}" ng-click="ajaxForm.data.addServer()" class="submit"/>
+        <input type="submit" value="{{ 'General_Save'|translate }}" class="submit" ng-disabled="ajaxForm.isSubmitting"/>
     </div>
-
-    <input type="button" value="{{ 'General_Add'|translate }}" ng-click="addServer()" class="submit"/>
-    <input type="button" value="{{ 'General_Save'|translate }}" ng-click="saveServers(servers)" class="submit"/>
 </div>
 {% endblock %}

@@ -28,14 +28,13 @@ class Config
         'ldap_first_name_field' => 'givenName',
         'ldap_alias_field' => 'cn',
         'ldap_mail_field' => 'mail',
-        'user_email_suffix' => '',
         'ldap_view_access_field' => 'view',
         'ldap_admin_access_field' => 'admin',
         'ldap_superuser_access_field' => 'superuser',
         'use_webserver_auth' => 0,
-        'user_access_attribute_server_specification_delimiter',
-        'user_access_attribute_server_separator',
-        'instance_name'
+        'user_access_attribute_server_specification_delimiter' => ';',
+        'user_access_attribute_server_separator' => ':',
+        'instance_name' => ''
     );
 
     // for backwards compatibility
@@ -46,7 +45,6 @@ class Config
         'ldap_user_id_field' => array('userIdField'),
         'ldap_alias_field' => array('aliasField'),
         'ldap_mail_field' => array('mailField'),
-        'user_email_suffix' => array('usernameSuffix'),
         'use_webserver_auth' => array('useKerberos'),
     );
 
@@ -220,12 +218,15 @@ class Config
 
     public static function savePluginOptions($config)
     {
+        $loginLdap = PiwikConfig::getInstance()->LoginLdap;
+
         foreach (self::$defaultConfig as $name => $value) {
             if (isset($config[$name])) {
-                PiwikConfig::getInstance()->LoginLdap[$name] = $config[$name];
+                $loginLdap[$name] = $config[$name];
             }
         }
 
+        PiwikConfig::getInstance()->LoginLdap = $loginLdap;
         PiwikConfig::getInstance()->forceSave();
     }
 

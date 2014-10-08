@@ -1,0 +1,24 @@
+<input size="25"
+       ng-attr-id="{{ testableField.inputId }}"
+       ng-attr-name="{{ testableField.inputName }}"
+       ng-attr-type="{{ testableField.inputType }}"
+       ng-attr-value="{{ testableField.inputValue }}"
+       piwik-onenter="testableField.testValue()"
+       ng-model="testableField.inputValue"
+       ng-change="testableField.testResult = testableField.inputValue ? testableField.testResult : null;
+                  testableField.testError = testableField.inputValue ? testableField.testError : null" />
+
+<a class="test-config-option-link" ng-click="testableField.testValue()" ng-show="testableField.inputValue">{{ 'LoginLdap_Test'|translate }}</a>
+
+<img src="plugins/Morpheus/images/loading-blue.gif" ng-show="testableField.currentRequest !== null" />
+
+<div piwik-translate piwik-notification style="display:inline-block;" context="success" noclear="1" ng-show="testableField.testResult !== null">
+       <strong>
+              <span ng-if="testableField.testResult==1">{{ 'LoginLdap_OneUser'|translate }}</span>
+              <span ng-if="testableField.testResult!=1">{{ 'General_NUsers'|translate:testableField.testResult }}</span>
+       </strong>
+</div>
+<div piwik-notification style="display:inline-block" context="error" noclear="1" ng-show="testableField.testError">
+       {{ testableField.testError }}
+</div>
+

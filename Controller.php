@@ -7,6 +7,7 @@
  */
 namespace Piwik\Plugins\LoginLdap;
 
+use Piwik\Nonce;
 use Piwik\Notification;
 use Piwik\Piwik;
 use Piwik\Plugin\ControllerAdmin;

@@ -46,6 +46,26 @@
         "FilterCount": "%s are matched by this query.",
         "Test": "Test",
         "InvalidFilter": "Invalid filter.",
-        "ServerNameEditInstructions": "To edit a server name, click it."
+        "ServerNameEditInstructions": "To edit a server name, click it.",
+        "FirstNameField": "First Name Field",
+        "FirstNameFieldDescription": "The LDAP attribute containing a user's first name.",
+        "LastNameField": "Last Name Field",
+        "LastNameFieldDescription": "The LDAP attribute containing a user's last name.",
+        "NewUserDefaultSitesViewAccess": "Initial Sites With View Access For New Users",
+        "NewUserDefaultSitesViewAccessDescription": "If specified, when an LDAP user is synchronized for the first time (s)he is given view access to these sites. Should be set to a list of IDs or 'all'.",
+        "EnableLdapAccessSynchronization": "Enable User Access Synchronization from LDAP",
+        "EnableLdapAccessSynchronizationDescription": "If enabled, user access levels are determined by custom LDAP attributes. Note: To use this feature you will have to modify your LDAP server's schema.",
+        "LdapViewAccessField": "LDAP View Access Field",
+        "LdapViewAccessFieldDescription": "The custom LDAP attribute that determines which sites a user has view access to.",
+        "LdapAdminAccessField": "LDAP Admin Access Field",
+        "LdapAdminAccessFieldDescription": "The custom LDAP attribute that determines which sites a user has admin access to.",
+        "LdapSuperUserAccessField": "LDAP Super User Access Field",
+        "LdapSuperUserAccessFieldDescription": "The custom LDAP attribute that determines whether a user is a superuser or not.",
+        "LdapUserAccessAttributeServerSpecDelimiter": "User Access Attribute Server Specification Delimiter",
+        "LdapUserAccessAttributeServerSpecDelimiterDescription": "The string used to delimit server specifications in a user access attribute. If set to ';', the access attribute will be expected to look like '<server-spec>;<server-spec>;...'.",
+        "LdapUserAccessAttributeServerSeparator": "User Access Attribute Server & Site List Separator",
+        "LdapUserAccessAttributeServerSeparatorDescription": "The string used to separate Piwik server instance IDs with site ID lists. If set to ':', the access attribute will be expected to look like '<server-id>:<site-list>;<server-id>:<site-list>'.",
+        "ThisPiwikInstanceName": "Special Name For This Piwik Instance",
+        "ThisPiwikInstanceNameDescription": "A special name used to identify this Piwik instance in an access attribute. If none is specified, we expect the base URL of this Piwik."
     }
 }

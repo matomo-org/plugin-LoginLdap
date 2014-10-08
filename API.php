@@ -35,19 +35,19 @@ class API extends \Piwik\Plugin\API
     /**
      * Saves LoginLdap config.
      *
-     * @param string $config JSON encoded config array.
+     * @param string $data JSON encoded config array.
      * @return array
      * @throws Exception if user does not have super access, if this is not a POST method or
      *                   if JSON is not supplied.
      */
-    public function saveLdapConfig($config)
+    public function saveLdapConfig($data)
     {
         $this->checkHttpMethodIsPost();
         Piwik::checkUserHasSuperUserAccess();
 
-        $config = json_decode(Common::unsanitizeInputValue($config), true);
+        $data = json_decode(Common::unsanitizeInputValue($data), true);
 
-        Config::savePluginOptions($config);
+        Config::savePluginOptions($data);
 
         return array('result' => 'success', 'message' => Piwik::translate("General_YourChangesHaveBeenSaved"));
     }
@@ -55,16 +55,16 @@ class API extends \Piwik\Plugin\API
     /**
      * Saves LDAP server config.
      *
-     * @param string $servers JSON encoded server info array.
+     * @param string $data JSON encoded array w/ server info.
      * @return array
      * @throws Exception
      */
-    public function saveServersInfo($servers)
+    public function saveServersInfo($data)
     {
         $this->checkHttpMethodIsPost();
         Piwik::checkUserHasSuperUserAccess();
 
-        $servers = json_decode(Common::unsanitizeInputValue($servers), true);
+        $servers = json_decode(Common::unsanitizeInputValue($data), true);
 
         Config::saveLdapServerConfigs($servers);
 
