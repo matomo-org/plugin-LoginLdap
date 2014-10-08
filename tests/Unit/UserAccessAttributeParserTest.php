@@ -34,6 +34,7 @@ class UserAccessAttributeParserTest extends PHPUnit_Framework_TestCase
 
         Config::unsetInstance();
         Config::getInstance()->setTestEnvironment();
+        Config::getInstance()->LoginLdap = array();
 
         $this->setSitesManagerApiMock();
 

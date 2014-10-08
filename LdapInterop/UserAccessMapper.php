@@ -135,7 +135,7 @@ class UserAccessMapper
      */
     public function setViewAttributeName($viewAttributeName)
     {
-        $this->viewAttributeName = $viewAttributeName;
+        $this->viewAttributeName = strtolower($viewAttributeName);
     }
 
     /**
@@ -155,7 +155,7 @@ class UserAccessMapper
      */
     public function setAdminAttributeName($adminAttributeName)
     {
-        $this->adminAttributeName = $adminAttributeName;
+        $this->adminAttributeName = strtolower($adminAttributeName);
     }
 
     /**
@@ -175,7 +175,7 @@ class UserAccessMapper
      */
     public function setSuperuserAttributeName($superuserAttributeName)
     {
-        $this->superuserAttributeName = $superuserAttributeName;
+        $this->superuserAttributeName = strtolower($superuserAttributeName);
     }
 
     /**

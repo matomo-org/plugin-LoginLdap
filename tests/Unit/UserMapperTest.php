@@ -89,7 +89,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
             'uid' => 'martha',
             'cn' => 'A real doctor',
             'sn' => 'Jones',
-            'givenName' => 'Martha',
+            'givenname' => 'Martha',
             'mail' => 'martha@unit.co.uk',
             'userpassword' => 'pass',
             'other' => 'sfdklsdjf'
@@ -153,7 +153,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
         $this->userMapper->createPiwikUserFromLdapUser(array(
             'cn' => 'the impossible girl',
             'sn' => 'Oswald',
-            'givenName' => 'Clara',
+            'givenname' => 'Clara',
             'mail' => 'clara@coalhill.co.uk',
             'userpassword' => 'pass'
         ));
@@ -178,7 +178,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
         $this->userMapper->createPiwikUserFromLdapUser(array(
             'uid' => 'clara',
             'sn' => 'Oswald',
-            'givenName' => 'Clara',
+            'givenname' => 'Clara',
             'mail' => 'clara@coalhill.co.uk'
         ));
     }
@@ -218,7 +218,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
         $result = $this->userMapper->createPiwikUserFromLdapUser(array(
             'uid' => 'harkness',
             'sn' => 'Harkness',
-            'givenName' => 'Captain',
+            'givenname' => 'Captain',
             'userpassword' => 'pass',
             'other' => 'sfdklsdjf'
         ));
@@ -237,7 +237,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
             'uid' => array('rose'),
             'cn' => array('bad wolf'),
             'sn' => array('Tyler'),
-            'givenName' => array('Rose'),
+            'givenname' => array('Rose'),
             'mail' => array('rose@linda.com'),
             'userpassword' => array('pass'),
             'other' => array('sfdklsdjf)')
@@ -265,11 +265,11 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
 
     private function assertUserMapperIsCorrectlyConfigured(UserMapper $userMapper)
     {
-        $this->assertEquals('userIdField', $userMapper->getLdapUserIdField());
-        $this->assertEquals('lastNameField', $userMapper->getLdapLastNameField());
-        $this->assertEquals('firstNameField', $userMapper->getLdapFirstNameField());
-        $this->assertEquals('aliasField', $userMapper->getLdapAliasField());
-        $this->assertEquals('mailField', $userMapper->getLdapMailField());
+        $this->assertEquals('useridfield', $userMapper->getLdapUserIdField());
+        $this->assertEquals('lastnamefield', $userMapper->getLdapLastNameField());
+        $this->assertEquals('firstnamefield', $userMapper->getLdapFirstNameField());
+        $this->assertEquals('aliasfield', $userMapper->getLdapAliasField());
+        $this->assertEquals('mailfield', $userMapper->getLdapMailField());
         $this->assertEquals('userEmailSuffix', $userMapper->getUserEmailSuffix());
     }
 
@@ -277,7 +277,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
     {
         $this->assertEquals('uid', $userMapper->getLdapUserIdField());
         $this->assertEquals('sn', $userMapper->getLdapLastNameField());
-        $this->assertEquals('givenName', $userMapper->getLdapFirstNameField());
+        $this->assertEquals('givenname', $userMapper->getLdapFirstNameField());
         $this->assertEquals('cn', $userMapper->getLdapAliasField());
         $this->assertEquals('mail', $userMapper->getLdapMailField());
         $this->assertEquals('@mydomain.com', $userMapper->getUserEmailSuffix());

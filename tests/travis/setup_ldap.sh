@@ -178,6 +178,7 @@ description: all groups
 dn: cn=Tony Stark,$BASE_DN
 cn: Tony Stark
 sn: Stark
+givenName: Tony
 objectClass: piwikPerson
 objectClass: top
 uid: ironman
@@ -194,6 +195,7 @@ cn: Natalia Romanova
 objectClass: top
 objectClass: piwikPerson
 sn: Romanova
+givenName: Natalia
 uid: blackwidow
 userPassword: `slappasswd -h {md5} -s redledger`
 mobile: none
@@ -207,6 +209,7 @@ cn: Steve Rodgers
 objectClass: top
 objectClass: piwikPerson
 sn: Rodgers
+givenName: Steve
 uid: captainamerica
 userPassword: `slappasswd -h {md5} -s thaifood`
 mobile: 123-456-7890
@@ -220,6 +223,7 @@ cn: Thor
 objectClass: top
 objectClass: piwikPerson
 sn: Odinson
+givenName: Thor
 uid: thor
 userPassword: `slappasswd -h {md5} -s bilgesnipe`
 view: localhost:1,2;whatever.com:3,4

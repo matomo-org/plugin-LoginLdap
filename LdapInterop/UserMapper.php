@@ -52,7 +52,7 @@ class UserMapper
      *
      * @var string
      */
-    private $ldapFirstNameField = 'givenName';
+    private $ldapFirstNameField = 'givenname';
 
     /**
      * The LDAP resource field to use when determining a user's last name.
@@ -161,7 +161,7 @@ class UserMapper
      */
     public function setLdapUserIdField($ldapUserIdField)
     {
-        $this->ldapUserIdField = $ldapUserIdField;
+        $this->ldapUserIdField = strtolower($ldapUserIdField);
     }
 
     /**
@@ -181,7 +181,7 @@ class UserMapper
      */
     public function setLdapAliasField($ldapAliasField)
     {
-        $this->ldapAliasField = $ldapAliasField;
+        $this->ldapAliasField = strtolower($ldapAliasField);
     }
 
     /**
@@ -201,7 +201,7 @@ class UserMapper
      */
     public function setLdapMailField($ldapMailField)
     {
-        $this->ldapMailField = $ldapMailField;
+        $this->ldapMailField = strtolower($ldapMailField);
     }
 
     /**
@@ -221,7 +221,7 @@ class UserMapper
      */
     public function setLdapFirstNameField($ldapFirstNameField)
     {
-        $this->ldapFirstNameField = $ldapFirstNameField;
+        $this->ldapFirstNameField = strtolower($ldapFirstNameField);
     }
 
     /**
@@ -241,7 +241,7 @@ class UserMapper
      */
     public function setLdapLastNameField($ldapLastNameField)
     {
-        $this->ldapLastNameField = $ldapLastNameField;
+        $this->ldapLastNameField = strtolower($ldapLastNameField);
     }
 
     /**
