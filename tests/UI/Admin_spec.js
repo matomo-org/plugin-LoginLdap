@@ -16,7 +16,8 @@ describe("LoginLdap_Admin", function () {
         testEnvironment.configOverride = {
             LoginLdap: {
                 servers: ['testserver'],
-                new_user_default_sites_view_access: '1,2'
+                new_user_default_sites_view_access: '1,2',
+                enable_synchronize_access_from_ldap: 1
             },
             LoginLdap_testserver: {
                 hostname: 'localhost',

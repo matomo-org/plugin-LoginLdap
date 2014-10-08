@@ -213,7 +213,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
         $this->ldapUsers->setAuthenticationUsernameSuffix('whoa');
         $this->ldapUsers->authenticate(self::TEST_USER, self::PASSWORD);
 
-        $this->assertEquals(self::TEST_ADMIN_USER . 'whoa', $adminUserName);
+        $this->assertEquals(self::TEST_ADMIN_USER, $adminUserName);
         $this->assertEquals('thedn', $userName);
         $this->assertContains("uid=?", $filterUsed);
         $this->assertEquals(array(self::TEST_USER . 'whoa'), $filterBind);
