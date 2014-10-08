@@ -46,6 +46,7 @@ describe("LoginLdap_Admin", function () {
 
             page.click('input#memberOf + .test-config-option-link');
             page.click('input#filter + .test-config-option-link');
+            page.wait(1000);
         }, done);
     });
 });
