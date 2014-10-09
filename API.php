@@ -9,7 +9,7 @@ namespace Piwik\Plugins\LoginLdap;
 
 use Piwik\Common;
 use Piwik\Piwik;
-use Piwik\Plugins\LoginLdap\Ldap\ServerInfo;
+use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
 use Exception;
 
@@ -25,11 +25,19 @@ class API extends \Piwik\Plugin\API
     private $ldapUsers;
 
     /**
+     * The UserSynchronizer instance to use when synchronizing users.
+     *
+     * @var UserSynchronizer
+     */
+    private $userSynchronizer;
+
+    /**
      * Constructor.
      */
     public function __construct()
     {
         $this->ldapUsers = LdapUsers::makeConfigured();
+        $this->userSynchronizer = UserSynchronizer::makeConfigured();
     }
 
     /**
@@ -111,6 +119,26 @@ class API extends \Piwik\Plugin\API
                 throw $ex;
             }
         }
+    }
+
+    /**
+     * Synchronizes a single user in LDAP. This method can be used by superusers to synchronize
+     * a user before (s)he logs in.
+     *
+     * @param string $login The login of the user.
+     * @throws Exception if the user cannot be found or a problem occurs during synchronization.
+     */
+    public function synchronizeUser($login)
+    {
+        Piwik::checkUserHasSuperUserAccess();
+
+        $ldapUser = $this->ldapUsers->getUser($login);
+        if (empty($ldapUser)) {
+            throw new Exception(Piwik::translate('LoginLdap_UserNotFound', $login));
+        }
+
+        $this->userSynchronizer->synchronizeLdapUser($login, $ldapUser);
+        $this->userSynchronizer->synchronizePiwikAccessFromLdap($login, $ldapUser);
     }
 
     private function checkHttpMethodIsPost()

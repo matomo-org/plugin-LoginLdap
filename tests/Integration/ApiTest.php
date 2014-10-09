@@ -60,6 +60,21 @@ class ApiTest extends LdapIntegrationTest
     public function test_getCountOfUsersMatchingFilter_ReturnsCorrectResult_WhenUsersMatchFilter()
     {
         $count = $this->api->getCountOfUsersMatchingFilter("(objectClass=person)");
-        $this->assertEquals(4, $count);
+        $this->assertEquals(5, $count);
+    }
+
+    /**
+     * @expectedException Exception
+     * @expectedExceptionMessage LoginLdap_UserNotFound
+     */
+    public function test_synchronizeUser_Throws_WhenLdapUserDoesNotExist()
+    {
+        $this->api->synchronizeUser('unknownuser');
+    }
+
+    public function test_synchronizeUser_Succeeds_WhenLdapUserExistsAndIsValid()
+    {
+        $this->api->synchronizeUser(self::TEST_LOGIN);
+        $this->assertStarkSynchronized();
     }
 }

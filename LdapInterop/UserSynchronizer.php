@@ -89,7 +89,7 @@ class UserSynchronizer
      * Converts a supplied LDAP entity into a Piwik user that is persisted in
      * the MySQL DB.
      *
-     * @param string $piwikLogin The username of the Piwik user whose access will be set.
+     * @param string $piwikLogin The username of the user who will be synchronized.
      * @param string[] $ldapUser The LDAP user, eg, `array('uid' => ..., 'objectclass' => array(...), ...)`.
      * @return string[] The Piwik user that was added. Will not contain the MD5 password
      *                  hash in order to prevent accidental leaks.

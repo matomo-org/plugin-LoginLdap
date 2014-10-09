@@ -6,12 +6,13 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
  */
-namespace Piwik\Plugins\LoginLdap\tests\Integration;
+namespace Piwik\Plugins\LoginLdap\tests\Integration\Commands;
 
 use Piwik\Common;
 use Piwik\Config;
 use Piwik\Console;
 use Piwik\Db;
+use Piwik\Plugins\LoginLdap\tests\Integration\LdapIntegrationTest;
 use Symfony\Component\Console\Tester\ApplicationTester;
 
 /**

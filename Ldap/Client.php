@@ -147,14 +147,15 @@ class Client
      * @param string $ldapFilter The LDAP filter string, ie, `"(&(...)(...))"`. This client allows you to use
      *                           `"?"` placeholders in the string.
      * @param array $filterBind Bind parameters for $ldapFilter.
+     * @param array $attributes The LDAP entry attributes to fetch. If empty, selects all of them.
      * @return array|null The result of `ldap_get_entries` or null if `ldap_search` fails somehow.
      * @throws Exception If an error occurs during the `ldap_search` or `ldap_get_entries` calls.
      */
-    public function fetchAll($baseDn, $ldapFilter, $filterBind = array())
+    public function fetchAll($baseDn, $ldapFilter, $filterBind = array(), $attributes = array())
     {
         $ldapFilter = $this->bindFilterParameters($ldapFilter, $filterBind);
 
-        $searchResultResource = $this->initiateSearch($baseDn, $ldapFilter);
+        $searchResultResource = $this->initiateSearch($baseDn, $ldapFilter, $attributes);
 
         if (!empty($searchResultResource)) {
             $connectionResource = $this->connectionResource;
@@ -377,13 +378,13 @@ class Client
         return $result;
     }
 
-    private function initiateSearch($baseDn, $ldapFilter)
+    private function initiateSearch($baseDn, $ldapFilter, $attributes = array())
     {
         $connectionResource = $this->connectionResource;
-        return $this->throwPhpErrors(function () use ($connectionResource, $baseDn, $ldapFilter) {
+        return $this->throwPhpErrors(function () use ($connectionResource, $baseDn, $ldapFilter, $attributes) {
             Log::debug("Calling ldap_search(%s, '%s', '%s')", $connectionResource, $baseDn, $ldapFilter);
 
-            $result = ldap_search($connectionResource, $baseDn, $ldapFilter);
+            $result = ldap_search($connectionResource, $baseDn, $ldapFilter, $attributes);
 
             Log::debug("ldap_search result is %s", $result);
 

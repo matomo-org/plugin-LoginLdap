@@ -231,6 +231,15 @@ admin: whatever.com:1,2
 admin: localhost:3,4
 superuser: myPiwik:myOtherPiwik;localhost
 
+# USER ENTRY (pwd: enrogue)
+dn: cn=Ms Marvel,$BASE_DN
+objectClass: top
+objectClass: piwikPerson
+cn: Ms Marvel
+uid: msmarvel
+userPassword: `slappasswd -h {md5} -s enrogue`
+sn: Danvers
+
 # group entry
 dn: cn=avengers,$BASE_DN
 cn: avengers
