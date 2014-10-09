@@ -9,6 +9,8 @@
 namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
 use DatabaseTestCase;
+use Piwik\Common;
+use Piwik\Db;
 use Piwik\Log;
 use Piwik\Config;
 use Piwik\Plugins\LoginLdap\Ldap\LdapFunctions;

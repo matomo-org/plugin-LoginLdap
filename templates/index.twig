@@ -87,7 +87,7 @@
                 <span class='form-description'>{{ 'LoginLdap_GenerateRandomTokenAuthDescription2'|translate }}</span>
             </td>
             <td>
-                <input size="25" id="generateRandomTokenAuth" value="{{ ldapConfig.enable_random_token_auth_generation }}" name="enable_random_token_auth_generation"/>
+                <input size="25" type="checkbox" id="generateRandomTokenAuth" {% if ldapConfig.enable_random_token_auth_generation %}checked="checked"{% endif %} name="enable_random_token_auth_generation"/>
             </td>
         </tr>
 
