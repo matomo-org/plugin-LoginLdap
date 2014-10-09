@@ -260,6 +260,10 @@ class LdapUsers
 
             $userIds = array();
             foreach ($entries as $entry) {
+                if (empty($entry[$userIdField])) {
+                    continue;
+                }
+
                 $userIds[] = $entry[$userIdField];
             }
             return $userIds;

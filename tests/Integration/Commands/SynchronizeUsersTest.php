@@ -63,7 +63,7 @@ class SynchronizeUsersTest extends LdapIntegrationTest
     {
         $result = $this->applicationTester->run(array(
             'command' => 'loginldap:synchronize-users',
-            '--login' => 'ironman',
+            '--login' => array('ironman'),
             '-v' => true
         ));
 
@@ -108,6 +108,12 @@ class SynchronizeUsersTest extends LdapIntegrationTest
 
     private function getLdapUserLogins()
     {
-        return Db::fetchAll("SELECT login from " . Common::prefixTable('user') . " WHERE password LIKE '{LDAP}%'");
+        $rows = Db::fetchAll("SELECT login from " . Common::prefixTable('user') . " WHERE password LIKE '{LDAP}%'");
+
+        $result = array();
+        foreach ($rows as $row) {
+            $result[] = $row['login'];
+        }
+        return $result;
     }
 }
