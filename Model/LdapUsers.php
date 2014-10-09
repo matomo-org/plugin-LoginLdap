@@ -209,7 +209,7 @@ class LdapUsers
             }
         });
 
-        Log::debug(self::FUNCTION_END_LOG_MESSAGE, __FUNCTION__, array_keys($result));
+        Log::debug(self::FUNCTION_END_LOG_MESSAGE, __FUNCTION__, $result === null ? 'null' : array_keys($result));
 
         return $result;
     }
