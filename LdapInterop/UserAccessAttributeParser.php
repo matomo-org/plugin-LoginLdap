@@ -125,7 +125,10 @@ class UserAccessAttributeParser
     }
 
     /**
-     * Returns true if an LDAP access attribute value
+     * Returns true if an LDAP access attribute value marks a user as a superuser.
+     *
+     * The superuser attribute doesn't need to have a site list so it just contains
+     * a list of instances.
      */
     public function getSuperUserAccessFromSuperUserAttribute($attributeValue)
     {
