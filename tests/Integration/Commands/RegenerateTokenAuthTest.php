@@ -100,7 +100,7 @@ class RegenerateTokenAuthTest extends LdapIntegrationTest
     private function addPreexistingLdapUser()
     {
         $usersTable = Common::prefixTable('user');
-        Db::exec("INSERT INTO $usersTable (login, password, email, alias, token_auth) VALUES (?, ?, ?, ?, ?)",
+        Db::query("INSERT INTO `$usersTable` (login, password, email, alias, token_auth) VALUES (?, ?, ?, ?, ?)",
             array(self::PREEXISTING_LDAP_USER, self::PREEXISTING_PASSWORD, 'email@email.com', 'alias', self::PREEXISTING_TOKEN_AUTH));
     }
 }
