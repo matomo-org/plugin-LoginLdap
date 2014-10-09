@@ -70,21 +70,30 @@ class UserMapper
     private $userEmailSuffix = '@mydomain.com';
 
     /**
+     * If true, the password in Piwik DB's is set to a randomly generated string.
+     * This results in a token auth that is not related to a user's password in LDAP.
+     *
+     * @var bool
+     */
+    private $isRandomTokenAuthGenerationEnabled = false;
+
+    /**
      * Creates an array with normal Piwik user information using LDAP data for the user. The
      * information in the result should be used with the **UsersManager.addUser** API method.
      *
      * This method is used in syncing LDAP user information with Piwik user info.
      *
      * @param string[] $ldapUser Associative array containing LDAP field data, eg, `array('dn' => '...')`
+     * @param string[]|null $piwikUser The existing Piwik user or null if none exists yet.
      * @return string[]
      */
-    public function createPiwikUserFromLdapUser($ldapUser)
+    public function createPiwikUserFromLdapUser($ldapUser, $user = null)
     {
         $login = $this->getRequiredLdapUserField($ldapUser, $this->ldapUserIdField);
 
         return array(
             'login' => $login,
-            'password' => $this->getPiwikPasswordForLdapUser($ldapUser),
+            'password' => $this->getPiwikPasswordForLdapUser($ldapUser, $user),
             'email' => $this->getEmailAddressForLdapUser($ldapUser, $login),
             'alias' => $this->getAliasForLdapUser($ldapUser)
         );
@@ -94,12 +103,34 @@ class UserMapper
      * The password we store for a mapped user isn't used to authenticate, it's just
      * data used to generate a user's token auth.
      */
-    private function getPiwikPasswordForLdapUser($ldapUser)
+    private function getPiwikPasswordForLdapUser($ldapUser, $user)
     {
-        $password = $this->getRequiredLdapUserField($ldapUser, 'userpassword');
-        $password = $this->hashLdapPassword($password);
+        if ($this->isRandomTokenAuthGenerationEnabled) {
+            if (!empty($user['password'])) { // do not generate new passwords for users that are already synchronized
+                return $user['password'];
+            } else {
+                return $this->generateRandomPassword();
+            }
+        } else {
+            $password = $this->getRequiredLdapUserField($ldapUser, 'userpassword');
+            return $this->processPassword($password);
+        }
+    }
 
-        $password = preg_replace("/^(?:\\{[^}]*\\})?/", self::MAPPED_USER_PASSWORD_PREFIX, $password);
+    /**
+     * Generates a random string to be used as the 'dummy' password stored in the MySQL DB.
+     *
+     * @return string
+     */
+    public function generateRandomPassword()
+    {
+        return $this->processPassword(uniqid());
+    }
+
+    private function processPassword($password)
+    {
+        $password = $this->hashLdapPassword($password);
+        $password = self::MAPPED_USER_PASSWORD_PREFIX . $password;
         $password = substr($password, 0, 32);
         $password = str_pad($password, 32, '-');
         return $password;
@@ -265,6 +296,26 @@ class UserMapper
     }
 
     /**
+     * Gets the {@link $isRandomTokenAuthGenerationEnabled} property.
+     *
+     * @return boolean
+     */
+    public function isRandomTokenAuthGenerationEnabled()
+    {
+        return $this->isRandomTokenAuthGenerationEnabled;
+    }
+
+    /**
+     * Sets the {@link $isRandomTokenAuthGenerationEnabled} property.
+     *
+     * @param boolean $isRandomTokenAuthGenerationEnabled
+     */
+    public function setIsRandomTokenAuthGenerationEnabled($isRandomTokenAuthGenerationEnabled)
+    {
+        $this->isRandomTokenAuthGenerationEnabled = $isRandomTokenAuthGenerationEnabled;
+    }
+
+    /**
      * Hashes the LDAP password so no part the real LDAP password (or the hash stored in
      * LDAP) will be stored in Piwik's DB.
      */
@@ -329,9 +380,15 @@ class UserMapper
             $result->setUserEmailSuffix($userEmailSuffix);
         }
 
+        $isRandomTokenAuthGenerationEnabled = Config::isRandomTokenAuthGenerationEnabled();
+        if (!empty($isRandomTokenAuthGenerationEnabled)) {
+            $result->setIsRandomTokenAuthGenerationEnabled($isRandomTokenAuthGenerationEnabled);
+        }
+
         Log::debug("UserMapper::%s: configuring with uidField = %s, aliasField = %s firstNameField = %s, lastNameField = %s"
-                 . " mailField = %s, userEmailSuffix = %s", __FUNCTION__, $uidField, $aliasField, $firstNameField, $lastNameField,
-                   $mailField, $userEmailSuffix);
+                 . " mailField = %s, userEmailSuffix = %s, isRandomTokenAuthGenerationEnabled = %s",
+                   __FUNCTION__, $uidField, $aliasField, $firstNameField, $lastNameField, $mailField, $userEmailSuffix,
+                   $isRandomTokenAuthGenerationEnabled);
 
         return $result;
     }

@@ -19,6 +19,7 @@ class Config
 {
     public static $defaultConfig = array(
         'enable_synchronize_access_from_ldap' => 0,
+        'enable_random_token_auth_generation' => 0,
         'new_user_default_sites_view_access' => '',
         'user_email_suffix' => '',
         'required_member_of' => '',
@@ -34,7 +35,7 @@ class Config
         'use_webserver_auth' => 0,
         'user_access_attribute_server_specification_delimiter' => ';',
         'user_access_attribute_server_separator' => ':',
-        'instance_name' => ''
+        'instance_name' => '',
     );
 
     // for backwards compatibility
@@ -80,6 +81,11 @@ class Config
     public static function isAccessSynchronizationEnabled()
     {
         return self::getConfigOption('enable_synchronize_access_from_ldap');
+    }
+
+    public static function isRandomTokenAuthGenerationEnabled()
+    {
+        return self::getConfigOption('enable_random_token_auth_generation');
     }
 
     public static function getDefaultSitesToGiveViewAccessTo()

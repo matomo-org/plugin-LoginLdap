@@ -206,6 +206,24 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
         $this->assertEquals(array('thor'), $superusers);
     }
 
+    public function test_RandomPasswordGenerated_WhenGenerateRandomTokenAuthUsed()
+    {
+        Config::getInstance()->LoginLdap['enable_random_token_auth_generation'] = 1;
+
+        $this->authenticateViaLdap();
+
+        $user = $this->getUser(self::TEST_LOGIN);
+
+        $this->assertNotEquals(self::LDAP_ADDED_PASS, $user['password']);
+
+        // test that password doesn't change after re-synchronizing
+        $this->authenticateViaLdap();
+
+        $userAgain = $this->getUser(self::TEST_LOGIN);
+
+        $this->assertEquals($user['password'], $userAgain['password']);
+    }
+
     private function assertNoAccessInDb()
     {
         $access = $this->getAccessFor(self::TEST_LOGIN);
@@ -245,7 +263,7 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
 
     private function assertStarkSynchronized()
     {
-        $user = Db::fetchRow("SELECT login, password, alias, email, token_auth FROM " . Common::prefixTable('user') . " WHERE login = ?", array(self::TEST_LOGIN));
+        $user = $this->getUser(self::TEST_LOGIN);
         $this->assertNotEmpty($user);
         $this->assertEquals(array(
             'login' => self::TEST_LOGIN,

@@ -80,6 +80,19 @@
 
         <tr>
             <td>
+                <label for="generateRandomTokenAuth">{{ 'LoginLdap_GenerateRandomTokenAuth'|translate }}</label>
+                <br/>
+                <span class='form-description'>{{ 'LoginLdap_GenerateRandomTokenAuthDescription'|translate }}</span><br/>
+                <br/>
+                <span class='form-description'>{{ 'LoginLdap_GenerateRandomTokenAuthDescription2'|translate }}</span>
+            </td>
+            <td>
+                <input size="25" type="checkbox" id="generateRandomTokenAuth" {% if ldapConfig.enable_random_token_auth_generation %}checked="checked"{% endif %} name="enable_random_token_auth_generation"/>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
                 <label for="memberOf">{{ 'LoginLdap_MemberOf'|translate }} </label>
                 <br/>
                 <span class='form-description'>{{ 'LoginLdap_MemberOfDescription'|translate }}</span>

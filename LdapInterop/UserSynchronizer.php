@@ -89,20 +89,22 @@ class UserSynchronizer
      * Converts a supplied LDAP entity into a Piwik user that is persisted in
      * the MySQL DB.
      *
+     * @param string $piwikLogin The username of the Piwik user whose access will be set.
      * @param string[] $ldapUser The LDAP user, eg, `array('uid' => ..., 'objectclass' => array(...), ...)`.
      * @return string[] The Piwik user that was added. Will not contain the MD5 password
      *                  hash in order to prevent accidental leaks.
      */
-    public function synchronizeLdapUser($ldapUser)
+    public function synchronizeLdapUser($piwikLogin, $ldapUser)
     {
-        $user = $this->userMapper->createPiwikUserFromLdapUser($ldapUser);
-
-        $self = $this;
+        $userMapper = $this->userMapper;
         $usersManagerApi = $this->usersManagerApi;
         $userModel = $this->userModel;
         $newUserDefaultSitesWithViewAccess = $this->newUserDefaultSitesWithViewAccess;
-        return Access::doAsSuperUser(function () use ($self, $user, $usersManagerApi, $userModel, $newUserDefaultSitesWithViewAccess) {
-            $existingUser = $userModel->getUser($user['login']);
+        return Access::doAsSuperUser(function () use ($piwikLogin, $ldapUser, $userMapper, $usersManagerApi, $userModel, $newUserDefaultSitesWithViewAccess) {
+            $existingUser = $userModel->getUser($piwikLogin);
+
+            $user = $userMapper->createPiwikUserFromLdapUser($ldapUser, $existingUser);
+
             if (empty($existingUser)) {
                 $usersManagerApi->addUser($user['login'], $user['password'], $user['email'], $user['alias'], $isPasswordHashed = true);
 
