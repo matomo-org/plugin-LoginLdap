@@ -22,7 +22,7 @@ use Symfony\Component\Console\Tester\ApplicationTester;
 class RegenerateTokenAuthTest extends LdapIntegrationTest
 {
     const PREEXISTING_LDAP_USER = 'preexistinguser';
-    const PREEXISTING_PASSWORD = 'preexistingpass';
+    const PREEXISTING_PASSWORD = '{LDAP}preexistingpass';
     const PREEXISTING_TOKEN_AUTH = 'preexistingta';
 
     /**
@@ -36,6 +36,10 @@ class RegenerateTokenAuthTest extends LdapIntegrationTest
 
         $this->addNonLdapUsers();
         $this->addPreexistingLdapUser();
+
+        $plugins = Config::getInstance()->Plugins;
+        $plugins['Plugins'][] = 'LoginLdap';
+        Config::getInstance()->Plugins = $plugins;
 
         $application = new Console();
         $application->setAutoExit(false);
