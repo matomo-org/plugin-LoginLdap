@@ -39,6 +39,8 @@ abstract class LdapIntegrationTest extends DatabaseTestCase
     const NON_LDAP_NORMAL_USER = 'amber';
     const NON_LDAP_NORMAL_PASS = 'crossingthefourthwall';
 
+    const LDAP_ADDED_PASS = '{LDAP}e40511e34ec2ee1cc75d42c926';
+
     public function setUp()
     {
         if (!function_exists('ldap_bind')) {
@@ -95,5 +97,18 @@ abstract class LdapIntegrationTest extends DatabaseTestCase
     protected function getUser($login)
     {
         return Db::fetchRow("SELECT login, password, alias, email, token_auth FROM " . Common::prefixTable('user') . " WHERE login = ?", array($login));
+    }
+
+    protected function assertStarkSynchronized()
+    {
+        $user = $this->getUser(self::TEST_LOGIN);
+        $this->assertNotEmpty($user);
+        $this->assertEquals(array(
+            'login' => self::TEST_LOGIN,
+            'password' => self::LDAP_ADDED_PASS,
+            'alias' => 'Tony Stark',
+            'email' => 'billionairephilanthropistplayboy@starkindustries.com',
+            'token_auth' => UsersManagerAPI::getInstance()->getTokenAuth(self::TEST_LOGIN, self::LDAP_ADDED_PASS)
+        ), $user);
     }
 }

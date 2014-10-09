@@ -24,7 +24,6 @@ use Piwik\Tests\Fixture;
  */
 class LdapUserSynchronizationTest extends LdapIntegrationTest
 {
-    const LDAP_ADDED_PASS = '{LDAP}e40511e34ec2ee1cc75d42c926';
     const LDAP_ADDED_PASS_DIFF = "{LDAP}..........................";
 
     public function setUp()
@@ -259,19 +258,6 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
         $this->assertEquals(1, $authResult->getCode());
 
         return $authResult;
-    }
-
-    private function assertStarkSynchronized()
-    {
-        $user = $this->getUser(self::TEST_LOGIN);
-        $this->assertNotEmpty($user);
-        $this->assertEquals(array(
-            'login' => self::TEST_LOGIN,
-            'password' => self::LDAP_ADDED_PASS,
-            'alias' => 'Tony Stark',
-            'email' => 'billionairephilanthropistplayboy@starkindustries.com',
-            'token_auth' => UsersManagerAPI::getInstance()->getTokenAuth(self::TEST_LOGIN, self::LDAP_ADDED_PASS)
-        ), $user);
     }
 
     private function enableAccessSynchronization()

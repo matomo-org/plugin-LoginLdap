@@ -436,6 +436,54 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(10, $count);
     }
 
+    /**
+     * @expectedException Exception
+     * @expectedExceptionMessage Could not bind as LDAP admin.
+     */
+    public function test_getAllUserLogins_Throws_IfAdminBindFails()
+    {
+        $mockLdapClient = $this->makeMockLdapClient();
+        $this->makeMockLdapClientFailOnBind($mockLdapClient);
+
+        $this->ldapUsers->setLdapClientClass($mockLdapClient);
+        $this->setSingleLdapServer();
+        $this->ldapUsers->getAllUserLogins();
+    }
+
+    /**
+     * @expectedException Exception
+     * @expectedExceptionMessage dummy error
+     */
+    public function test_getAllUserLogins_Throws_IfLdapClientConnectThrows()
+    {
+        $mockLdapClient = $this->makeMockLdapClient();
+        $this->makeMockLdapClientThrowOnBind($mockLdapClient);
+
+        $this->ldapUsers->setLdapClientClass($mockLdapClient);
+        $this->setSingleLdapServer();
+        $this->ldapUsers->getAllUserLogins();
+    }
+
+    public function test_getAllUserLogins_ReturnsLdapEntities()
+    {
+        $mockLdapClient = $this->makeMockLdapClient($forSuccess = false);
+
+        $usedFilter = null;
+
+        $mockLdapClient->method('bind')->will($this->returnValue(true));
+        $mockLdapClient->method('fetchAll')->will($this->returnCallback(function ($baseDn, $filter, $bind) use (&$usedFilter) {
+            $usedFilter = $filter;
+
+            return array(array('uid' => LdapUsersTest::TEST_USER), array('uid' => LdapUsersTest::TEST_ADMIN_USER));
+        }));
+
+        $this->ldapUsers->setLdapClientClass($mockLdapClient);
+        $this->setSingleLdapServer();
+
+        $logins = $this->ldapUsers->getAllUserLogins();
+        $this->assertEquals(array(self::TEST_USER, self::TEST_ADMIN_USER), $logins);
+    }
+
     private function makeMockLdapClient($forSuccess = false)
     {
         $methods = array('__construct', 'connect', 'close', 'bind', 'fetchAll', 'isOpen', 'count');

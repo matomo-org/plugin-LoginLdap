@@ -42,7 +42,7 @@ class RegenerateTokenAuth extends ConsoleCommand
     {
         $this->setName('loginldap:generate-token-auth');
         $this->setDescription('Generates a new token auth for an LDAP user. The LDAP user must have been synchronized already.');
-        $this->addArgument('login', InputArgument::REQUIRED, 'The login of the user to regenerate a token auth form.');
+        $this->addArgument('login', InputArgument::REQUIRED, 'The login of the user to regenerate a token auth for.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

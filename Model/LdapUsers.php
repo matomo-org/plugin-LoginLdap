@@ -218,6 +218,7 @@ class LdapUsers
      * Returns count of users in LDAP that match an LDAP filter.
      *
      * @param string $filter The filter to match.
+     * @param string[] $filterBind Bind parameters for the filter.
      * @return int
      * @throws Exception if no LDAP server can be reached, if we cannot bind to the admin user, if
      *                   the LDAP filter is incorrect, or if something else goes wrong during LDAP.
@@ -231,6 +232,38 @@ class LdapUsers
             $self->bindAsAdmin($ldapClient, $server);
 
             return $ldapClient->count($server->getBaseDn(), $filter, $filterBind);
+        });
+
+        Log::debug(self::FUNCTION_END_LOG_MESSAGE, __FUNCTION__, $result);
+
+        return $result;
+    }
+
+    /**
+     * Returns all usernames found in LDAP after applying the configured filter and memberof
+     * requirement.
+     *
+     * @return string[]
+     * @throws Exception if no LDAP server can be reached, if we cannot bind to the admin user,
+     *                   or if something else goes wrong during LDAP.
+     */
+    public function getAllUserLogins()
+    {
+        Log::debug(self::FUNCTION_START_LOG_MESSAGE, __FUNCTION__, '');
+
+        $userIdField = $this->ldapUserMapper->getLdapUserIdField();
+        $usernamesFilter = $this->getUserEntryQuery($username = null);
+        $result = $this->doWithClient(function (LdapUsers $self, LdapClient $ldapClient, ServerInfo $server) use ($userIdField, $usernamesFilter) {
+            $self->bindAsAdmin($ldapClient, $server);
+
+            $entries = $ldapClient->fetchAll(
+                $server->getBaseDn(), $usernamesFilter, $bind = array(), $attributes = array($userIdField));
+
+            $userIds = array();
+            foreach ($entries as $entry) {
+                $userIds[] = $entry[$userIdField];
+            }
+            return $userIds;
         });
 
         Log::debug(self::FUNCTION_END_LOG_MESSAGE, __FUNCTION__, $result);
@@ -311,7 +344,7 @@ class LdapUsers
     /**
      * Public only for use in closure.
      */
-    public function getUserEntryQuery($username)
+    public function getUserEntryQuery($username = null)
     {
         $bind = array();
         $conditions = array();
@@ -325,8 +358,10 @@ class LdapUsers
             $bind[] = $this->authenticationRequiredMemberOf;
         }
 
-        $conditions[] = "(" . $this->ldapUserMapper->getLdapUserIdField() . "=?)";
-        $bind[] = $this->addUsernameSuffix($username);
+        if (!empty($username)) {
+            $conditions[] = "(" . $this->ldapUserMapper->getLdapUserIdField() . "=?)";
+            $bind[] = $this->addUsernameSuffix($username);
+        }
 
         $filter = "(&" . implode('', $conditions) . ")";
 
