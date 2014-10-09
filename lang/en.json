@@ -68,6 +68,9 @@
         "LdapUserAccessAttributeServerSeparatorDescription": "The string used to separate Piwik server instance IDs with site ID lists. If set to ':', the access attribute will be expected to look like '<server-id>:<site-list>;<server-id>:<site-list>'.",
         "ThisPiwikInstanceName": "Special Name For This Piwik Instance",
         "ThisPiwikInstanceNameDescription": "A special name used to identify this Piwik instance in an access attribute. If none is specified, we expect the base URL of this Piwik.",
-        "UnsupportedPasswordReset": "Cannot reset this user's password, please contact an administrator."
+        "UnsupportedPasswordReset": "Cannot reset this user's password, please contact an administrator.",
+        "GenerateRandomTokenAuth": "Generate Random token_auth For New Users",
+        "GenerateRandomTokenAuthDescription": "By default, a user's token auth is generated using the user's LDAP password. Check this option to generate a random token auth for each user.",
+        "GenerateRandomTokenAuthDescription2": "If your LDAP server does not allow access to a hash of the password in LDAP, you must check this option."
     }
 }

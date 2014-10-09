@@ -87,7 +87,7 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
     {
         $this->setUserMapperMock($value = null, $throws = true);
 
-        $this->userSynchronizer->synchronizeLdapUser(array());
+        $this->userSynchronizer->synchronizeLdapUser('piwikuser', array());
     }
 
     public function test_synchronizeLdapUser_ReturnsUserManagerApiResultWithoutPassword()
@@ -95,7 +95,7 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
         $this->setUserManagerApiMock($throws = false);
         $this->setUserModelMock(null);
 
-        $result = $this->userSynchronizer->synchronizeLdapUser(array());
+        $result = $this->userSynchronizer->synchronizeLdapUser('piwikuser', array());
 
         $this->assertTrue(empty($result['password']), "Password set in synchronizeLdapUser result, it shouldn't be.");
         $this->assertEquals(array(
@@ -111,7 +111,7 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
         $this->setUserManagerApiMock($throwsInAddUser = true, $throwsInUpdateUser = true);
         $this->setUserModelMock(null);
 
-        $this->userSynchronizer->synchronizeLdapUser(array());
+        $this->userSynchronizer->synchronizeLdapUser('piwikuser', array());
     }
 
     public function test_synchronizeLdapUser_Succeeds_IfUserDoesNotExistInDb()
@@ -119,7 +119,7 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
         $this->setUserManagerApiMock($throws = false);
         $this->setUserModelMock(null);
 
-        $this->userSynchronizer->synchronizeLdapUser(array());
+        $this->userSynchronizer->synchronizeLdapUser('piwikuser', array());
     }
 
     public function test_synchronizeLdapUser_DoesNotSynchronizeUserAccessOnUpdate_WhenUserAccessMapperNotUsed()

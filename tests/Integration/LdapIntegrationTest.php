@@ -31,6 +31,12 @@ abstract class LdapIntegrationTest extends DatabaseTestCase
     const TEST_SUPERUSER_LOGIN = 'captainamerica';
     const TEST_SUPERUSER_PASS = 'thaifood';
 
+    const NON_LDAP_USER = 'stan';
+    const NON_LDAP_PASS = 'whereisthefourthwall?';
+
+    const NON_LDAP_NORMAL_USER = 'amber';
+    const NON_LDAP_NORMAL_PASS = 'crossingthefourthwall';
+
     public function setUp()
     {
         if (!function_exists('ldap_bind')) {
@@ -75,5 +81,17 @@ abstract class LdapIntegrationTest extends DatabaseTestCase
     {
         UsersManagerAPI::getInstance()->addUser(self::TEST_SUPERUSER_LOGIN, self::TEST_SUPERUSER_PASS, 'srodgers@aol.com', $alias = false);
         UsersManagerAPI::getInstance()->setSuperUserAccess(self::TEST_SUPERUSER_LOGIN, true);
+    }
+
+    protected function addNonLdapUsers()
+    {
+        UsersManagerAPI::getInstance()->addUser(self::NON_LDAP_USER, self::NON_LDAP_PASS, 'whatever@aol.com', $alias = false);
+        UsersManagerAPI::getInstance()->setSuperUserAccess(self::NON_LDAP_USER, true);
+        UsersManagerAPI::getInstance()->addUser(self::NON_LDAP_NORMAL_USER, self::NON_LDAP_NORMAL_PASS, 'witchy@sdhs.edu', $alias = false);
+    }
+
+    protected function getUser($login)
+    {
+        return Db::fetchRow("SELECT login, password, alias, email, token_auth FROM " . Common::prefixTable('user') . " WHERE login = ?", array($login));
     }
 }

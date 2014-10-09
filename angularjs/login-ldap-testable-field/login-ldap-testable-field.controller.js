@@ -7,7 +7,6 @@
 (function () {
     angular.module('piwikApp').controller('LoginLdapTestableFieldController', LoginLdapTestableFieldController);
 
-    // TODO: rename files so not prefixed w/ Piwik
     LoginLdapTestableFieldController.$inject = ['piwikApi'];
 
     function LoginLdapTestableFieldController(piwikApi) {

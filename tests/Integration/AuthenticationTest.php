@@ -22,12 +22,6 @@ use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
  */
 class AuthenticationTest extends LdapIntegrationTest
 {
-    const NON_LDAP_USER = 'stan';
-    const NON_LDAP_PASS = 'whereisthefourthwall?';
-
-    const NON_LDAP_NORMAL_USER = 'amber';
-    const NON_LDAP_NORMAL_PASS = 'crossingthefourthwall';
-
     public function setUp()
     {
         parent::setUp();
@@ -36,9 +30,7 @@ class AuthenticationTest extends LdapIntegrationTest
         // login, even if they are not in LDAP
         $this->addPreexistingSuperUser();
 
-        UsersManagerAPI::getInstance()->addUser(self::NON_LDAP_USER, self::NON_LDAP_PASS, 'whatever@aol.com', $alias = false);
-        UsersManagerAPI::getInstance()->setSuperUserAccess(self::NON_LDAP_USER, true);
-        UsersManagerAPI::getInstance()->addUser(self::NON_LDAP_NORMAL_USER, self::NON_LDAP_NORMAL_PASS, 'witchy@sdhs.edu', $alias = false);
+        $this->addNonLdapUsers();
     }
 
     public function testLdapAuthSucceedsWithCorrectCredentials()
