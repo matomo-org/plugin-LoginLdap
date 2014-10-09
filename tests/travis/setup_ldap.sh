@@ -238,6 +238,7 @@ objectClass: piwikPerson
 cn: Ms Marvel
 uid: msmarvel
 userPassword: `slappasswd -h {md5} -s enrogue`
+sn: Danvers
 
 # group entry
 dn: cn=avengers,$BASE_DN
