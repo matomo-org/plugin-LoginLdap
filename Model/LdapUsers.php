@@ -156,7 +156,7 @@ class LdapUsers
 
                 if (empty($user['dn'])) {
                     Log::debug("LdapUsers::%s: LDAP user info for '%s' has no dn attribute! (info = %s)",
-                        __FUNCTION__, $username, $user);
+                        __FUNCTION__, $username, array_keys($user));
 
                     return null;
                 }
@@ -209,7 +209,7 @@ class LdapUsers
             }
         });
 
-        Log::debug(self::FUNCTION_END_LOG_MESSAGE, __FUNCTION__, $result);
+        Log::debug(self::FUNCTION_END_LOG_MESSAGE, __FUNCTION__, array_keys($result));
 
         return $result;
     }

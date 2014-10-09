@@ -96,7 +96,7 @@ class UserAccessMapper
     {
         // if the user is a superuser, we don't need to check the other attributes
         if ($this->isSuperUserAccessGrantedForLdapUser($ldapUser)) {
-            Log::debug("UserAccessMapper::%s: user '%s' found to be superuser", __FUNCTION__, $ldapUser);
+            Log::debug("UserAccessMapper::%s: user '%s' found to be superuser", __FUNCTION__, array_keys($ldapUser));
 
             return array('superuser' => true);
         }

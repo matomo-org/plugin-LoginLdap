@@ -43,7 +43,7 @@
         "LDAPServers": "LDAP Servers",
         "OneUser": "1 user",
         "MemberOfCount": "%s are a member of this group.",
-        "FilterCount": "%s are matched by this query.",
+        "FilterCount": "%s are matched by this filter.",
         "Test": "Test",
         "InvalidFilter": "Invalid filter.",
         "ServerNameEditInstructions": "To edit a server name, click it.",

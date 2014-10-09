@@ -163,7 +163,7 @@ class Client
 
                 $result = ldap_get_entries($connectionResource, $searchResultResource);
 
-                Log::debug("ldap_get_entries result is %s", $result);
+                Log::debug("ldap_get_entries result is %s", $result === null ? 'null' : 'not null');
 
                 return $result;
             });

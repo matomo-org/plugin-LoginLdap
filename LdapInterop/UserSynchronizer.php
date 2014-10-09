@@ -112,7 +112,7 @@ class UserSynchronizer
                 }
             } else {
                 if (!UserMapper::isUserLdapUser($existingUser)) {
-                    Log::warning("Unable to synchronize LDAP user '%s', Piwik user with same name exists.", $existingUser['login']);
+                    Log::warning("Unable to synchronize LDAP user '%s', non-LDAP user with same name exists.", $existingUser['login']);
                 } else {
                     $usersManagerApi->updateUser($user['login'], $user['password'], $user['email'], $user['alias'], $isPasswordHashed = true);
                 }
