@@ -252,12 +252,11 @@ class LdapUsers
         Log::debug(self::FUNCTION_START_LOG_MESSAGE, __FUNCTION__, '');
 
         $userIdField = $this->ldapUserMapper->getLdapUserIdField();
-        $usernamesFilter = $this->getUserEntryQuery($username = null);
-        $result = $this->doWithClient(function (LdapUsers $self, LdapClient $ldapClient, ServerInfo $server) use ($userIdField, $usernamesFilter) {
+        list($filter, $bind) = $this->getUserEntryQuery($username = null);
+        $result = $this->doWithClient(function (LdapUsers $self, LdapClient $ldapClient, ServerInfo $server) use ($userIdField, $filter, $bind) {
             $self->bindAsAdmin($ldapClient, $server);
 
-            $entries = $ldapClient->fetchAll(
-                $server->getBaseDn(), $usernamesFilter, $bind = array(), $attributes = array($userIdField));
+            $entries = $ldapClient->fetchAll($server->getBaseDn(), $filter, $bind, $attributes = array($userIdField));
 
             $userIds = array();
             foreach ($entries as $entry) {

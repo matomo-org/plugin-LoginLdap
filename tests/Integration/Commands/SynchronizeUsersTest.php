@@ -63,7 +63,7 @@ class SynchronizeUsersTest extends LdapIntegrationTest
     {
         $result = $this->applicationTester->run(array(
             'command' => 'loginldap:synchronize-users',
-            'login' => 'ironman',
+            '--login' => 'ironman',
             '-v' => true
         ));
 
@@ -77,7 +77,7 @@ class SynchronizeUsersTest extends LdapIntegrationTest
     {
         $result = $this->applicationTester->run(array(
             'command' => 'loginldap:synchronize-users',
-            'login' => array('ironman', 'blackwidow'),
+            '--login' => array('ironman', 'blackwidow'),
             '-v' => true
         ));
 
@@ -93,7 +93,7 @@ class SynchronizeUsersTest extends LdapIntegrationTest
 
         $result = $this->applicationTester->run(array(
             'command' => 'loginldap:synchronize-users',
-            'login' => array('ironman', 'blackwidow', 'missinguser', 'msmarvel'),
+            '--login' => array('ironman', 'blackwidow', 'missinguser', 'msmarvel'),
             '-v' => true
         ));
 
