@@ -60,7 +60,7 @@ class ApiTest extends LdapIntegrationTest
     public function test_getCountOfUsersMatchingFilter_ReturnsCorrectResult_WhenUsersMatchFilter()
     {
         $count = $this->api->getCountOfUsersMatchingFilter("(objectClass=person)");
-        $this->assertEquals(4, $count);
+        $this->assertEquals(5, $count);
     }
 
     /**

@@ -49,7 +49,8 @@ class SynchronizeUsersTest extends LdapIntegrationTest
     public function test_CommandSynchronizesAllUsers_WhenLoginNotSpecified()
     {
         $result = $this->applicationTester->run(array(
-            'command' => 'loginldap:synchronize-users'
+            'command' => 'loginldap:synchronize-users',
+            '-v' => true
         ));
 
         $this->assertEquals(0, $result, $this->getCommandDisplayOutputErrorMessage());
@@ -62,7 +63,8 @@ class SynchronizeUsersTest extends LdapIntegrationTest
     {
         $result = $this->applicationTester->run(array(
             'command' => 'loginldap:synchronize-users',
-            'login' => 'ironman'
+            'login' => 'ironman',
+            '-v' => true
         ));
 
         $this->assertEquals(0, $result, $this->getCommandDisplayOutputErrorMessage());
@@ -75,7 +77,8 @@ class SynchronizeUsersTest extends LdapIntegrationTest
     {
         $result = $this->applicationTester->run(array(
             'command' => 'loginldap:synchronize-users',
-            'login' => array('ironman', 'blackwidow')
+            'login' => array('ironman', 'blackwidow'),
+            '-v' => true
         ));
 
         $this->assertEquals(0, $result, $this->getCommandDisplayOutputErrorMessage());
@@ -90,7 +93,8 @@ class SynchronizeUsersTest extends LdapIntegrationTest
 
         $result = $this->applicationTester->run(array(
             'command' => 'loginldap:synchronize-users',
-            'login' => array('ironman', 'blackwidow', 'missinguser', 'msmarvel')
+            'login' => array('ironman', 'blackwidow', 'missinguser', 'msmarvel'),
+            '-v' => true
         ));
 
         $this->assertEquals(2, $result, $this->getCommandDisplayOutputErrorMessage());

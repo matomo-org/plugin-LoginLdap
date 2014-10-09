@@ -378,13 +378,13 @@ class Client
         return $result;
     }
 
-    private function initiateSearch($baseDn, $ldapFilter, $attributes = null)
+    private function initiateSearch($baseDn, $ldapFilter, $attributes = array())
     {
         $connectionResource = $this->connectionResource;
         return $this->throwPhpErrors(function () use ($connectionResource, $baseDn, $ldapFilter, $attributes) {
             Log::debug("Calling ldap_search(%s, '%s', '%s')", $connectionResource, $baseDn, $ldapFilter);
 
-            $result = ldap_search($connectionResource, $baseDn, $ldapFilter, empty($attributes) ? null : $attributes);
+            $result = ldap_search($connectionResource, $baseDn, $ldapFilter, $attributes);
 
             Log::debug("ldap_search result is %s", $result);
 
