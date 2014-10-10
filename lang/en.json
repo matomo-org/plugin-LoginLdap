@@ -26,6 +26,7 @@
         "Filter": "LDAP Search Filter",
         "FilterDescription": "An LDAP filter used to determine which entities are allowed to be used for authentication, e.g. \"(objectClass=person)\".",
         "Kerberos": "Use Web Server Auth (e.g. Kerberos SSO)",
+        "KerberosDescription": "If enabled, the plugin will check the $_SERVER['REMOTE_USER'] variable and assume the user is already authenticated. Normal super users are still allowed to authenticate normally.",
         "LdapUserAdded": "LDAP user added successfully!",
         "LdapFunctionsMissing": "The PHP LDAP extension does not appear to be enabled. It is required for this plugin, please install it.",
         "CannotConnectToServer": "Could not connect to the LDAP server.",
@@ -63,6 +64,11 @@
         "GenerateRandomTokenAuthDescription": "By default, a user's token auth is generated using the user's LDAP password. Check this option to generate a random token auth for each user.",
         "GenerateRandomTokenAuthDescription2": "If your LDAP server does not allow access to a hash of the password in LDAP, you must check this option.",
         "UserSyncSettings": "User Synchronization Settings",
-        "AccessSyncSettings": "Access Synchronization Settings"
+        "AccessSyncSettings": "Access Synchronization Settings",
+        "SynchronizeUsersAfterLogin": "Synchronize Users After Successful Login",
+        "SynchronizeUsersAfterLoginDescription": "If enabled, user details in LDAP will always be synchronized after a successful login.",
+        "SynchronizeUsersAfterLoginDescription2": "If disabled, the plugin will not synchronize details, unless LDAP authentication is enabled. When no synchronization happens, LDAP connections will be avoided.",
+        "UseLdapForAuthentication": "Use LDAP for authentication",
+        "UseLdapForAuthenticationDescription": "If disabled, LDAP connections will be made only to synchronize user data. Additionally, user passwords will be stored in Piwik's DB."
     }
 }

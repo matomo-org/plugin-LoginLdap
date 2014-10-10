@@ -12,7 +12,7 @@ use Piwik\AuthResult;
 use Piwik\Common;
 use Piwik\Config;
 use Piwik\Db;
-use Piwik\Plugins\LoginLdap\LdapAuth;
+use Piwik\Plugins\LoginLdap\Auth\LdapAuth;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 
 /**
