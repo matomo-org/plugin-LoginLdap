@@ -9,6 +9,10 @@ namespace Piwik\Plugins\LoginLdap\Auth;
 
 use Piwik\Log;
 use Piwik\Plugins\LoginLdap\Config;
+use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
+use Piwik\Plugins\LoginLdap\Model\LdapUsers;
+use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
+use Piwik\Plugins\UsersManager\Model as UserModel;
 
 /**
  * TODO
@@ -86,6 +90,10 @@ class SynchronizedAuth extends Base
     public static function makeConfigured()
     {
         $result = new SynchronizedAuth();
+        $result->setLdapUsers(LdapUsers::makeConfigured());
+        $result->setUsersManagerAPI(UsersManagerAPI::getInstance());
+        $result->setUsersModel(new UserModel());
+        $result->setUserSynchronizer(UserSynchronizer::makeConfigured());
         $result->setSynchronizeUsersAfterSuccessfulLogin(Config::getShouldSynchronizeUsersAfterLogin());
         return $result;
     }

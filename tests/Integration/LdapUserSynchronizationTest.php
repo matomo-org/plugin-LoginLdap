@@ -250,7 +250,7 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
 
     private function authenticateViaLdap($login = self::TEST_LOGIN, $pass = self::TEST_PASS)
     {
-        $ldapAuth = new LdapAuth();
+        $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin($login);
         $ldapAuth->setPassword($pass);
         $authResult = $ldapAuth->authenticate();

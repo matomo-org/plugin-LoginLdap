@@ -10,6 +10,10 @@ namespace Piwik\Plugins\LoginLdap\Auth;
 use Exception;
 use Piwik\Log;
 use Piwik\Plugins\LoginLdap\Config;
+use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
+use Piwik\Plugins\LoginLdap\Model\LdapUsers;
+use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
+use Piwik\Plugins\UsersManager\Model as UserModel;
 
 /**
  * TODO
@@ -93,6 +97,10 @@ class WebServerAuth extends Base
     public static function makeConfigured()
     {
         $result = new WebServerAuth();
+        $result->setLdapUsers(LdapUsers::makeConfigured());
+        $result->setUsersManagerAPI(UsersManagerAPI::getInstance());
+        $result->setUsersModel(new UserModel());
+        $result->setUserSynchronizer(UserSynchronizer::makeConfigured());
         $result->setSynchronizeUsersAfterSuccessfulLogin(Config::getShouldSynchronizeUsersAfterLogin());
         return $result;
     }

@@ -11,6 +11,10 @@ use Exception;
 use Piwik\AuthResult;
 use Piwik\Log;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
+use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
+use Piwik\Plugins\LoginLdap\Model\LdapUsers;
+use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
+use Piwik\Plugins\UsersManager\Model as UserModel;
 
 /**
  * LDAP based authentication implementation: allows authenticating to Piwik via
@@ -142,6 +146,11 @@ class LdapAuth extends Base
      */
     public static function makeConfigured()
     {
-        return new LdapAuth();
+        $result = new LdapAuth();
+        $result->setLdapUsers(LdapUsers::makeConfigured());
+        $result->setUsersManagerAPI(UsersManagerAPI::getInstance());
+        $result->setUsersModel(new UserModel());
+        $result->setUserSynchronizer(UserSynchronizer::makeConfigured());
+        return $result;
     }
 }

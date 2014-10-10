@@ -60,7 +60,7 @@ abstract class Base implements Auth
     /**
      * Piwik Users model. Used to query for data in the Piwik users table.
      *
-     * @var \Piwik\Plugins\UsersManager\Model
+     * @var UserModel
      */
     protected $usersModel;
 
@@ -331,18 +331,11 @@ abstract class Base implements Auth
     public static function factory()
     {
         if (Config::shouldUseWebServerAuthentication()) {
-            $result = WebServerAuth::makeConfigured();
+            return WebServerAuth::makeConfigured();
         } else if (Config::getUseLdapForAuthentication()) {
-            $result = LdapAuth::makeConfigured();
+            return LdapAuth::makeConfigured();
         } else {
-            $result = SynchronizedAuth::makeConfigured();
+            return SynchronizedAuth::makeConfigured();
         }
-
-        $result->setLdapUsers(LdapUsers::makeConfigured());
-        $result->setUsersManagerAPI(UsersManagerAPI::getInstance());
-        $result->setUsersModel(new UserModel());
-        $result->setUserSynchronizer(UserSynchronizer::makeConfigured());
-
-        return $result;
     }
 }
