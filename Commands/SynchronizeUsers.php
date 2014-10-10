@@ -68,7 +68,7 @@ class SynchronizeUsers extends ConsoleCommand
 
                 $output->writeln("<info>success!</info>");
             } catch (Exception $ex) {
-                $failed = array('login' => $login, 'reason' => $ex->getMessage());
+                $failed[] = array('login' => $login, 'reason' => $ex->getMessage());
 
                 $output->writeln("<error>failed!</error>");
             }
