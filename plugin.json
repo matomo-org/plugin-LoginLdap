@@ -10,9 +10,6 @@
         "piwik": ">=2.8.0-b2",
         "php": ">=5.3.0"
     },
-    "donate": {
-        "paypal": "aivo.koger@gmail.com"
-    },
     "authors": [
         {
             "name": "Piwik",
