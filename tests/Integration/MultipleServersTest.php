@@ -9,7 +9,7 @@
 namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
 use Piwik\Config;
-use Piwik\Plugins\LoginLdap\LdapAuth;
+use Piwik\Plugins\LoginLdap\Auth\LdapAuth;
 
 /**
  * @group LoginLdap
@@ -69,7 +69,7 @@ class MultipleServersTest extends LdapIntegrationTest
 
     private function doAuthTest()
     {
-        $ldapAuth = new LdapAuth();
+        $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin(self::TEST_LOGIN);
         $ldapAuth->setPassword(self::TEST_PASS);
         $authResult = $ldapAuth->authenticate();
