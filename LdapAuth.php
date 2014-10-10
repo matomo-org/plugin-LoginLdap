@@ -242,7 +242,7 @@ class LdapAuth implements Auth
             $webServerAuthUser = $this->getAlreadyAuthenticatedLogin();
 
             if (empty($webServerAuthUser)) {
-                return $this->makeAuthFailure();
+                return $this->tryNormalAuthForSuperUsers();
             } else {
                 $this->login = preg_replace('/@.*/', '', $webServerAuthUser);
                 $this->password = '';
@@ -280,22 +280,13 @@ class LdapAuth implements Auth
             } else {
                 // if LDAP auth failed, try normal auth. if we have a login for a superuser, let it through.
                 // this way, LoginLdap can be managed even if no users exist in LDAP.
-                $auth = new \Piwik\Plugins\Login\Auth();
-                $auth->setLogin($this->login);
-                $auth->setPassword($this->password);
-                $result = $auth->authenticate();
-
-                if ($result->getCode() == AuthResult::SUCCESS_SUPERUSER_AUTH_CODE) {
-                    return $result;
-                }
+                return $this->tryNormalAuthForSuperUsers();
             }
         } catch (Exception $ex) {
             Log::debug($ex);
 
             throw $ex;
         }
-
-        return self::makeAuthFailure();
     }
 
     private function authenticateByTokenAuth()
@@ -383,6 +374,24 @@ class LdapAuth implements Auth
     {
         if (!function_exists('ldap_connect')) {
             throw new Exception(Piwik::translate('LoginLdap_LdapFunctionsMissing'));
+        }
+    }
+
+    private function tryNormalAuthForSuperUsers()
+    {
+        $auth = new \Piwik\Plugins\Login\Auth();
+        $auth->setLogin($this->login);
+        if (!empty($this->password)) {
+            $auth->setPassword($this->password);
+        } else {
+            $auth->setTokenAuth($this->token_auth);
+        }
+        $result = $auth->authenticate();
+
+        if ($result->getCode() == AuthResult::SUCCESS_SUPERUSER_AUTH_CODE) {
+            return $result;
+        } else {
+            return $this->makeAuthFailure();
         }
     }
 }
