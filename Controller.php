@@ -32,10 +32,10 @@ class Controller extends \Piwik\Plugins\Login\Controller
         ControllerAdmin::setBasicVariablesAdminView($view);
 
         if (!function_exists('ldap_connect')) {
-            $notification = new Notification(Piwik::translate('LoginLdap_LdapExtensionMissing'));
+            $notification = new Notification(Piwik::translate('LoginLdap_LdapFunctionsMissing'));
             $notification->context = Notification::CONTEXT_ERROR;
             $notification->type = Notification::TYPE_PERSISTENT;
-            Notification\Manager::notify('LoginLdap_LdapExtensionMissing', $notification);
+            Notification\Manager::notify('LoginLdap_LdapFunctionsMissing', $notification);
         }
 
         $this->setBasicVariablesView($view);

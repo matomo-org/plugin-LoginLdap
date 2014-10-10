@@ -382,7 +382,7 @@ class LdapAuth implements Auth
     private function checkLdapFunctionsAvailable()
     {
         if (!function_exists('ldap_connect')) {
-            throw new Exception(Piwik::translate('LoginLdap_LdapExtensionMissing'));
+            throw new Exception(Piwik::translate('LoginLdap_LdapFunctionsMissing'));
         }
     }
 }
