@@ -9,7 +9,7 @@
 namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
 use Piwik\Config;
-use Piwik\Plugins\LoginLdap\LdapAuth;
+use Piwik\Plugins\LoginLdap\Auth\LdapAuth;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 
 /**
@@ -37,7 +37,7 @@ class BackwardsCompatibilityTest extends LdapIntegrationTest
 
     public function testAuthenticationWithOldServerConfig()
     {
-        $ldapAuth = new LdapAuth();
+        $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin(self::TEST_LOGIN);
         $ldapAuth->setPassword(self::TEST_PASS);
         $authResult = $ldapAuth->authenticate();
