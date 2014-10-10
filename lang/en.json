@@ -23,7 +23,7 @@
         "UsernameSuffix": "E-mail Address Suffix",
         "UsernameSuffixDescription": "Appended to usernames to generate e-mail addresses for users that have none in LDAP. Set to, e.g., \"@localhost.com\".",
         "AdminUser": "LDAP Bind Username",
-        "AdminUserDescription": "User with access to other user entries, or or blank for anonymous bind.",
+        "AdminUserDescription": "User with access to other user entries, or blank for anonymous bind.",
         "AdminPass": "LDAP Password",
         "MemberOf": "Required User Group",
         "MemberOfDescription": "A group the user is required to be a member of, e.g. \"cn=Piwik User,cn=Users,dc=organization,dc=com\".",

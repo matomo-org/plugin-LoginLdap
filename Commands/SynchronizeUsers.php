@@ -59,7 +59,7 @@ class SynchronizeUsers extends ConsoleCommand
         $failed = array();
 
         foreach ($logins as $login) {
-            $output->write("Synchronizing '$login'...");
+            $output->write("Synchronizing '$login'...  ");
 
             try {
                 $this->loginLdapAPI->synchronizeUser($login);
