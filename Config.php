@@ -215,6 +215,14 @@ class Config
         $result = self::$defaultConfig;
         foreach ($result as $name => $ignore) {
             $actualValue = Config::getConfigOption($name);
+
+            // special check for useKerberos which can be a string
+            if ($name == 'use_webserver_auth'
+                && $actualValue === 'false'
+            ) {
+                $actualValue = 0;
+            }
+
             if (isset($actualValue)) {
                 $result[$name] = $actualValue;
             }

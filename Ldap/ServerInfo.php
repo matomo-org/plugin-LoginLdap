@@ -165,6 +165,23 @@ class ServerInfo
     }
 
     /**
+     * Returns ServerInfo properties as an array. Array keys are the same keys used in INI
+     * config.
+     *
+     * @return array
+     */
+    public function getProperties()
+    {
+        return array(
+            'hostname' => $this->getServerHostname(),
+            'port' => $this->getServerPort(),
+            'base_dn' => $this->getBaseDn(),
+            'admin_user' => $this->getAdminUsername(),
+            'admin_pass' => $this->getAdminPassword()
+        );
+    }
+
+    /**
      * Creates a ServerInfo instance from an array of old LoginLdap config data.
      *
      * @return ServerInfo

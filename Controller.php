@@ -7,10 +7,12 @@
  */
 namespace Piwik\Plugins\LoginLdap;
 
+use Exception;
 use Piwik\Nonce;
 use Piwik\Notification;
 use Piwik\Piwik;
 use Piwik\Plugin\ControllerAdmin;
+use Piwik\Plugins\LoginLdap\Ldap\ServerInfo;
 use Piwik\Session;
 use Piwik\View;
 
@@ -43,11 +45,21 @@ class Controller extends \Piwik\Plugins\Login\Controller
         $serverNames = Config::getServerNameList() ?: array();
 
         $view->servers = array();
-        foreach ($serverNames as $server) {
-            $serverConfig = Config::getServerConfig($server);
-            if (!empty($serverConfig)) {
-                $serverConfig['name'] = $server;
-                $view->servers[] = $serverConfig;
+        if (empty($serverNames)) {
+            try {
+                $serverInfo = ServerInfo::makeFromOldConfig()->getProperties();
+                $serverInfo['name'] = 'server';
+                $view->servers[] = $serverInfo;
+            } catch (Exception $ex) {
+                // ignore
+            }
+        } else {
+            foreach ($serverNames as $server) {
+                $serverConfig = Config::getServerConfig($server);
+                if (!empty($serverConfig)) {
+                    $serverConfig['name'] = $server;
+                    $view->servers[] = $serverConfig;
+                }
             }
         }
 
