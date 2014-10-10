@@ -46,6 +46,8 @@ class WebServerAuth extends Base
 
             if ($this->synchronizeUsersAfterSuccessfulLogin) {
                 $this->synchronizeLoggedInUser();
+            } else {
+                Log::debug("WebServerAuth::%s: not synchronizing user '%s'.", __FUNCTION__, $this->login);
             }
 
             return $this->makeSuccessLogin($this->getUserForLogin());
