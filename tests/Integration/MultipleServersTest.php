@@ -64,16 +64,16 @@ class MultipleServersTest extends LdapIntegrationTest
     {
         Config::getInstance()->LoginLdap['servers'] = array('dummyserver1', 'dummyserver2');
 
-        $this->doAuthTest();
+        $this->doAuthTest($expectCode = 0);
     }
 
-    private function doAuthTest()
+    private function doAuthTest($expectCode = 1)
     {
         $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin(self::TEST_LOGIN);
         $ldapAuth->setPassword(self::TEST_PASS);
         $authResult = $ldapAuth->authenticate();
 
-        $this->assertEquals(1, $authResult->getCode());
+        $this->assertEquals($expectCode, $authResult->getCode());
     }
 }
