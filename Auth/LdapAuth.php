@@ -88,26 +88,32 @@ class LdapAuth extends Base
 
     private function authenticateByPassword()
     {
-        if (empty($this->login)) { // sanity check
-            Log::warning("authenticateByPassword: empty login encountered.");
+        try {
+            if (empty($this->login)) { // sanity check
+                Log::warning("authenticateByPassword: empty login encountered.");
 
-            return $this->makeAuthFailure();
+                return $this->makeAuthFailure();
+            }
+
+            if ($this->login == 'anonymous') { // sanity check
+                Log::warning("authenticateByPassword: login is 'anonymous', this is not expected.");
+
+                return $this->makeAuthFailure();
+            }
+
+            if ($this->authenticateByLdap()) {
+                $user = $this->getUserForLogin();
+                return $this->makeSuccessLogin($user);
+            } else {
+                // if LDAP auth failed, try normal auth. if we have a login for a superuser, let it through.
+                // this way, LoginLdap can be managed even if no users exist in LDAP.
+                return $this->tryNormalAuth($onlySuperUsers = true);
+            }
+        } catch (Exception $ex) {
+            Log::debug($ex);
         }
 
-        if ($this->login == 'anonymous') { // sanity check
-            Log::warning("authenticateByPassword: login is 'anonymous', this is not expected.");
-
-            return $this->makeAuthFailure();
-        }
-
-        if ($this->authenticateByLdap()) {
-            $user = $this->getUserForLogin();
-            return $this->makeSuccessLogin($user);
-        } else {
-            // if LDAP auth failed, try normal auth. if we have a login for a superuser, let it through.
-            // this way, LoginLdap can be managed even if no users exist in LDAP.
-            return $this->tryNormalAuth($onlySuperUsers = true);
-        }
+        return $this->makeAuthFailure();
     }
 
     private function isUserAllowedToAuthenticateByTokenAuth()

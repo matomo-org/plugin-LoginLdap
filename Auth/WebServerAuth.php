@@ -32,26 +32,32 @@ class WebServerAuth extends Base
      */
     public function authenticate()
     {
-        $webServerAuthUser = $this->getAlreadyAuthenticatedLogin();
+        try {
+            $webServerAuthUser = $this->getAlreadyAuthenticatedLogin();
 
-        if (empty($webServerAuthUser)) {
-            Log::debug("using web server authentication, but REMOTE_USER server variable not found.");
+            if (empty($webServerAuthUser)) {
+                Log::debug("using web server authentication, but REMOTE_USER server variable not found.");
 
-            return $this->tryNormalAuth($onlySuperUser = true);
-        } else {
-            $this->login = preg_replace('/@.*/', '', $webServerAuthUser);
-            $this->password = '';
-
-            Log::info("User '%s' authenticated by webserver.", $this->login);
-
-            if ($this->synchronizeUsersAfterSuccessfulLogin) {
-                $this->synchronizeLoggedInUser();
+                return $this->tryNormalAuth($onlySuperUser = true);
             } else {
-                Log::debug("WebServerAuth::%s: not synchronizing user '%s'.", __FUNCTION__, $this->login);
-            }
+                $this->login = preg_replace('/@.*/', '', $webServerAuthUser);
+                $this->password = '';
 
-            return $this->makeSuccessLogin($this->getUserForLogin());
+                Log::info("User '%s' authenticated by webserver.", $this->login);
+
+                if ($this->synchronizeUsersAfterSuccessfulLogin) {
+                    $this->synchronizeLoggedInUser();
+                } else {
+                    Log::debug("WebServerAuth::%s: not synchronizing user '%s'.", __FUNCTION__, $this->login);
+                }
+
+                return $this->makeSuccessLogin($this->getUserForLogin());
+            }
+        } catch (Exception $ex) {
+            Log::debug($ex);
         }
+
+        return $this->makeAuthFailure();
     }
 
     /**

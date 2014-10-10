@@ -7,6 +7,7 @@
  */
 namespace Piwik\Plugins\LoginLdap\Auth;
 
+use Exception;
 use Piwik\Log;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
@@ -31,33 +32,39 @@ class SynchronizedAuth extends Base
      */
     public function authenticate()
     {
-        $result = $this->tryNormalAuth($onlySuperUsers = false);
-        if ($result->wasAuthenticationSuccessful()) {
-            return $result;
+        try {
+            $result = $this->tryNormalAuth($onlySuperUsers = false);
+            if ($result->wasAuthenticationSuccessful()) {
+                return $result;
+            }
+
+            if ($this->synchronizeUsersAfterSuccessfulLogin) {
+                Log::debug("SynchronizedAuth::%s: synchronizing users after login disabled, not attempting LDAP authenticate for '%s'.",
+                    __FUNCTION__, $this->login);
+
+                return $this->makeAuthFailure();
+            }
+
+            if (empty($this->password)) {
+                Log::debug("SynchronizedAuth::%s: cannot attempt fallback LDAP login for '%s', password not set.",
+                    __FUNCTION__, $this->login);
+
+                return $this->makeAuthFailure();
+            }
+
+            $successful = $this->authenticateByLdap();
+            if ($successful) {
+                $this->updateUserPassword();
+
+                return $this->makeSuccessLogin($this->getUserForLogin());
+            } else {
+                return $this->makeAuthFailure();
+            }
+        } catch (Exception $ex) {
+            Log::debug($ex);
         }
 
-        if ($this->synchronizeUsersAfterSuccessfulLogin) {
-            Log::debug("SynchronizedAuth::%s: synchronizing users after login disabled, not attempting LDAP authenticate for '%s'.",
-                __FUNCTION__, $this->login);
-
-            return $this->makeAuthFailure();
-        }
-
-        if (empty($this->password)) {
-            Log::debug("SynchronizedAuth::%s: cannot attempt fallback LDAP login for '%s', password not set.",
-                __FUNCTION__, $this->login);
-
-            return $this->makeAuthFailure();
-        }
-
-        $successful = $this->authenticateByLdap();
-        if ($successful) {
-            $this->updateUserPassword();
-
-            return $this->makeSuccessLogin($this->getUserForLogin());
-        } else {
-            return $this->makeAuthFailure();
-        }
+        return $this->makeAuthFailure();
     }
 
     /**
