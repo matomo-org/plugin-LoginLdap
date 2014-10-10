@@ -8,6 +8,7 @@
 namespace Piwik\Plugins\LoginLdap\Auth;
 
 use Exception;
+use Piwik\AuthResult;
 use Piwik\Log;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
@@ -16,19 +17,35 @@ use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Plugins\UsersManager\Model as UserModel;
 
 /**
- * TODO
+ * Auth implementation that assumes the web server that hosts Piwik has authenticated
+ * users.
+ *
+ * Supports every type of authentication since authentication is delegated to the web server.
+ *
+ * ## Implementation Details
+ *
+ * Checks for the $_SERVER['REMOTE_USER'] variable, if present assumes the user was authenticated
+ * by the web server.
+ *
+ * This auth implementation will still connect to LDAP in order to synchronize user details.
+ *
+ * If the `[LoginLdap] synchronize_users_after_login` option is set to 0, synchronization
+ * will not occur after login.
  */
 class WebServerAuth extends Base
 {
     /**
-     * TODO
+     * Whether a user's LDAP information should be synchronized with Piwik's DB after each
+     * successful login or not.
      *
      * @var bool
      */
     private $synchronizeUsersAfterSuccessfulLogin = true;
 
     /**
-     * TODO
+     * Attempts to authenticate with the information set on this instance.
+     *
+     * @return AuthResult
      */
     public function authenticate()
     {
@@ -98,7 +115,7 @@ class WebServerAuth extends Base
     }
 
     /**
-     * TODO
+     * Returns a WebServerAuth instance configured with INI config.
      *
      * @return WebServerAuth
      */

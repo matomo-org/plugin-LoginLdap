@@ -18,7 +18,7 @@ use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Plugins\UsersManager\Model as UserModel;
 
 /**
- * TODO
+ * Base class for LoginLdap authentication implementations.
  */
 abstract class Base implements Auth
 {
@@ -44,7 +44,7 @@ abstract class Base implements Auth
     protected $password = null;
 
     /**
-     * TODO
+     * The password hash to authenticate with.
      *
      * @var string
      */
@@ -324,7 +324,8 @@ abstract class Base implements Auth
     }
 
     /**
-     * TODO
+     * Returns the authentication implementation to use in LoginLdap based on certain
+     * INI configuration values.
      *
      * @return Base
      */

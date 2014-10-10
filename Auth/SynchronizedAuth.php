@@ -8,6 +8,7 @@
 namespace Piwik\Plugins\LoginLdap\Auth;
 
 use Exception;
+use Piwik\AuthResult;
 use Piwik\Log;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
@@ -16,19 +17,41 @@ use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Plugins\UsersManager\Model as UserModel;
 
 /**
- * TODO
+ * Auth implementation that only uses LDAP to synchronize user details.
+ *
+ * Supports authenticating by password, authenticating by token auth and authenticating
+ * by password hash.
+ *
+ * ## Implementation Details
+ *
+ * SynchronizedAuth uses the normal Piwik authentication class (Piwik\Plugins\Login\Auth).
+ * If login via this class fails, then SynchronizedAuth tries to login via LDAP, and on
+ * success, synchronizes user details, including the password in LDAP.
+ *
+ * This means that if this auth implementation is used, the password will be stored in
+ * Piwik's DB in addition to LDAP.
+ *
+ * Synchronizing after login can be disabled via the `[LoginLdap] synchronize_users_after_login` option.
+ *
+ * Note: A user's password will always be updated after a successful LDAP login, since
+ * if we can't authenticate normally for the user, the password has changed in LDAP.
+ *
+ * Users that do not exist in LDAP, but exist in Piwik's DB will be able to authenticate.
  */
 class SynchronizedAuth extends Base
 {
     /**
-     * TODO
+     * Whether a user's LDAP information should be synchronized with Piwik's DB after each
+     * successful login or not.
      *
      * @var bool
      */
     private $synchronizeUsersAfterSuccessfulLogin = true;
 
     /**
-     * TODO
+     * Attempts to authenticate with the information set on this instance.
+     *
+     * @return AuthResult
      */
     public function authenticate()
     {
@@ -94,6 +117,11 @@ class SynchronizedAuth extends Base
         $this->usersModel->updateUser($this->login, $this->password, $user['email'], $user['alias'], $user['token_auth']);
     }
 
+    /**
+     * Returns a WebServerAuth instance configured with INI config.
+
+     * @return SynchronizedAuth
+     */
     public static function makeConfigured()
     {
         $result = new SynchronizedAuth();

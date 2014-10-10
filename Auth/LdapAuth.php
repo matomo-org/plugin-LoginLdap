@@ -75,7 +75,9 @@ class LdapAuth extends Base
     }
 
     /**
-     * TODO
+     * Attempts to authenticate with the information set on this instance.
+     *
+     * @return AuthResult
      */
     public function authenticate()
     {
@@ -146,7 +148,7 @@ class LdapAuth extends Base
     }
 
     /**
-     * TODO
+     * Returns a WebServerAuth instance configured with INI config.
      *
      * @return LdapAuth
      */
