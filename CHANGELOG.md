@@ -4,6 +4,7 @@
 
 * Automatic creation of Piwik users using LDAP (old 'auto create users' feature) is now standard.
 * Default access permissions can be specified for newly synchronized users.
+* Only super users are allowed to login w/o authenticating to LDAP now. Normal users stored in Piwik will not be allowed to authenticate if using LoginLdap.
 * It is possible now to test memberOf and filter settings from within the LDAP settings page.
 * Piwik access permissions can be specified from within LDAP using custom attributes.
 * It is allowed to specify multiple LDAP fallback servers. If one fails, the others are used.
