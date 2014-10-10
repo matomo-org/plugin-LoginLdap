@@ -10,6 +10,78 @@
            piwik-ajax-form
            submit-api-method="'LoginLdap.saveLdapConfig'"
            send-json-payload="true">
+
+        <tr>
+            <td>
+                <label for="memberOf">{{ 'LoginLdap_MemberOf'|translate }} </label>
+                <br/>
+                <span class='form-description'>{{ 'LoginLdap_MemberOfDescription'|translate }}</span>
+            </td>
+            <td><label></label>
+                <div piwik-login-ldap-testable-field
+                     input-id="memberOf"
+                     test-api-method="'LoginLdap.getCountOfUsersMemberOf'"
+                     test-api-method-arg="'memberOf'"
+                     name="required_member_of"
+                     value="{{ ldapConfig.required_member_of }}"
+                     success-translation="LoginLdap_MemberOfCount">
+                 </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <label for="filter">{{ 'LoginLdap_Filter'|translate }} </label>
+                <br/>
+                <span class='form-description'>{{ 'LoginLdap_FilterDescription'|translate }}</span>
+            </td>
+            <td>
+                <div piwik-login-ldap-testable-field
+                     input-id="filter"
+                     test-api-method="'LoginLdap.getCountOfUsersMatchingFilter'"
+                     test-api-method-arg="'filter'"
+                     name="ldap_user_filter"
+                     value="{{ ldapConfig.ldap_user_filter }}"
+                     success-translation="LoginLdap_FilterCount">
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <label for="useKerberos">{{ 'LoginLdap_Kerberos'|translate }} </label>
+            </td>
+            <td>
+                <input type="checkbox" {% if ldapConfig.use_webserver_auth %}checked="checked"{% endif %} id="useKerberos" name="use_webserver_auth"/>
+            </td>
+        </tr>
+
+        <tr>
+            <td align="left">
+                <input class="submit" type="submit" value="{{ 'General_Save'|translate }}" ng-disabled="ajaxForm.isSubmitting"/>
+            </td>
+            <td> </td>
+        </tr>
+    </table>
+
+    <h2>{{ 'LoginLdap_UserSyncSettings'|translate }}</h2>
+    <table id="ldapUserMappingSettingsTable"
+           class="adminTable"
+           piwik-ajax-form
+           submit-api-method="'LoginLdap.saveLdapConfig'"
+           send-json-payload="true">
+        <tr>
+            <td>
+                <label for="generateRandomTokenAuth">{{ 'LoginLdap_GenerateRandomTokenAuth'|translate }}</label>
+                <br/>
+                <span class='form-description'>{{ 'LoginLdap_GenerateRandomTokenAuthDescription'|translate }}</span><br/>
+                <br/>
+                <span class='form-description'>{{ 'LoginLdap_GenerateRandomTokenAuthDescription2'|translate }}</span>
+            </td>
+            <td>
+                <input size="25" type="checkbox" id="generateRandomTokenAuth" {% if ldapConfig.enable_random_token_auth_generation %}checked="checked"{% endif %} name="enable_random_token_auth_generation"/>
+            </td>
+        </tr>
         <tr>
             <td>
                 <label for="userIdField">{{ 'LoginLdap_UserIdField'|translate }} </label>
@@ -80,55 +152,6 @@
 
         <tr>
             <td>
-                <label for="generateRandomTokenAuth">{{ 'LoginLdap_GenerateRandomTokenAuth'|translate }}</label>
-                <br/>
-                <span class='form-description'>{{ 'LoginLdap_GenerateRandomTokenAuthDescription'|translate }}</span><br/>
-                <br/>
-                <span class='form-description'>{{ 'LoginLdap_GenerateRandomTokenAuthDescription2'|translate }}</span>
-            </td>
-            <td>
-                <input size="25" type="checkbox" id="generateRandomTokenAuth" {% if ldapConfig.enable_random_token_auth_generation %}checked="checked"{% endif %} name="enable_random_token_auth_generation"/>
-            </td>
-        </tr>
-
-        <tr>
-            <td>
-                <label for="memberOf">{{ 'LoginLdap_MemberOf'|translate }} </label>
-                <br/>
-                <span class='form-description'>{{ 'LoginLdap_MemberOfDescription'|translate }}</span>
-            </td>
-            <td><label></label>
-                <div piwik-login-ldap-testable-field
-                     input-id="memberOf"
-                     test-api-method="'LoginLdap.getCountOfUsersMemberOf'"
-                     test-api-method-arg="'memberOf'"
-                     name="required_member_of"
-                     value="{{ ldapConfig.required_member_of }}"
-                     success-translation="LoginLdap_MemberOfCount">
-                 </div>
-            </td>
-        </tr>
-
-        <tr>
-            <td>
-                <label for="filter">{{ 'LoginLdap_Filter'|translate }} </label>
-                <br/>
-                <span class='form-description'>{{ 'LoginLdap_FilterDescription'|translate }}</span>
-            </td>
-            <td>
-                <div piwik-login-ldap-testable-field
-                     input-id="filter"
-                     test-api-method="'LoginLdap.getCountOfUsersMatchingFilter'"
-                     test-api-method-arg="'filter'"
-                     name="ldap_user_filter"
-                     value="{{ ldapConfig.ldap_user_filter }}"
-                     success-translation="LoginLdap_FilterCount">
-                </div>
-            </td>
-        </tr>
-
-        <tr>
-            <td>
                 <label for="newUserDefaultSitesViewAccess">{{ 'LoginLdap_NewUserDefaultSitesViewAccess'|translate }}</label>
                 <br/>
                 <span class="form-description">{{ 'LoginLdap_NewUserDefaultSitesViewAccessDescription'|translate }}</span>
@@ -139,13 +162,18 @@
         </tr>
 
         <tr>
-            <td>
-                <label for="useKerberos">{{ 'LoginLdap_Kerberos'|translate }} </label>
+            <td align="left">
+                <input class="submit" type="submit" value="{{ 'General_Save'|translate }}" ng-disabled="ajaxForm.isSubmitting"/>
             </td>
-            <td>
-                <input type="checkbox" {% if ldapConfig.use_webserver_auth %}checked="checked"{% endif %} id="useKerberos" name="use_webserver_auth"/>
-            </td>
+            <td> </td>
         </tr>
+    </table>
+
+    <h2>{{ 'LoginLdap_AccessSyncSettings'|translate }}</h2>
+    <table id="accessSyncSettings"
+           piwik-ajax-form
+           submit-api-method="'LoginLdap.saveLdapConfig'"
+           send-json-payload="true">
 
         <tr>
             <td>
