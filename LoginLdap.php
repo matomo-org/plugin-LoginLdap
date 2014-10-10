@@ -15,6 +15,7 @@ use Piwik\Menu\MenuAdmin;
 use Piwik\Piwik;
 use Piwik\Plugin\Manager;
 use Piwik\Plugins\Login\Login;
+use Piwik\Plugins\LoginLdap\Auth\Base as AuthBase;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Session;
@@ -167,7 +168,7 @@ class LoginLdap extends \Piwik\Plugin
      */
     function initAuthenticationObject($activateCookieAuth = false)
     {
-        $auth = new LdapAuth();
+        $auth = AuthBase::factory();
         \Piwik\Registry::set('auth', $auth);
 
         Login::initAuthenticationFromCookie($auth, $activateCookieAuth);
