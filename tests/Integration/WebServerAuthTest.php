@@ -12,6 +12,7 @@ use Piwik\AuthResult;
 use Piwik\Config;
 use Piwik\Db;
 use Piwik\Plugins\LoginLdap\LdapAuth;
+use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 
 /**
  * @group LoginLdap
@@ -95,6 +96,7 @@ class WebServerAuthTest extends LdapIntegrationTest
 
         $this->assertEquals(0, $authResult->getCode());
     }
+
     public function testWebServerAuthReturnsCorrectCodeForSuperUsers()
     {
         Config::getInstance()->LoginLdap['use_webserver_auth'] = 1;
@@ -107,4 +109,22 @@ class WebServerAuthTest extends LdapIntegrationTest
         $this->assertEquals(AuthResult::SUCCESS_SUPERUSER_AUTH_CODE, $authResult->getCode());
     }
 
+    public function test_SuperUsersCanLogin_IfWebServerAuthUsed_AndWebServerAuthSetupIncorreclty()
+    {
+        unset($_SERVER['REMOTE_USER']);
+
+        $ldapAuth = new LdapAuth();
+        $ldapAuth->setLogin(self::TEST_SUPERUSER_LOGIN);
+        $ldapAuth->setPassword(self::TEST_SUPERUSER_PASS);
+        $authResult = $ldapAuth->authenticate();
+
+        $this->assertEquals(AuthResult::SUCCESS_SUPERUSER_AUTH_CODE, $authResult->getCode());
+
+        $ldapAuth = new LdapAuth();
+        $ldapAuth->setLogin(self::TEST_SUPERUSER_LOGIN);
+        $ldapAuth->setTokenAuth(UsersManagerAPI::getInstance()->getTokenAuth(self::TEST_SUPERUSER_LOGIN, md5(self::TEST_SUPERUSER_PASS)));
+        $authResult = $ldapAuth->authenticate();
+
+        $this->assertEquals(AuthResult::SUCCESS_SUPERUSER_AUTH_CODE, $authResult->getCode());
+    }
 }
