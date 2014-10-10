@@ -19,6 +19,12 @@ To start using LoginLdap, follow these steps:
 
    _Note: You can test your servers by entering something into the 'Required User Group' and clicking the test link that appears.
    An error message will display if LoginLdap cannot connect to the LDAP server._
+
+   **Settings to pay attention to**
+
+   * `Generate Random token_auth For New Users`: If your LDAP server does not serve either a hash of a user's password or an encrypted password for a user,
+     this option must be checked. Read more about random token_auth generation in **Security Considerations**.
+
 5. You can now login with LDAP cedentials.
 
 _**Note:** LDAP users are not synchronized with Piwik until they are first logged in. This means you cannot access a token auth for an LDAP user until the user is synchronized.
@@ -26,7 +32,13 @@ To synchronize all of your LDAP users at once, use the `./console loginldap:sync
 
 ## Upgrading from 2.2.7
 
-TODO
+Version 3.0.0 is a major rewrite of the plugin, so if you are upgrading for 2.2.7 you will have to do some extra work when upgrading:
+
+- Enable the `Generate Random token_auth For New Users` option.
+
+  v2.2.7 and below generated token auth's randomly, so to keep current users token auth's from changing, this option should be selected.
+
+- The admin user for servers must now be a full DN. In the LDAP settings page, change the admin name to be the full DN (ie, cn=...,dc=...).
 
 ## Features
 
@@ -76,6 +88,8 @@ address suffix, for example:
 
 The suffix will be added to usernames to generate an e-mail address for your users.
 
+Users are synchronized every time they log in. You can use the `loginldap:synchronize-users` command to synchronize users manually.
+
 ### Piwik Access Synchronization
 
 LoginLdap also supports synchronizing access levels using attributes found in LDAP. To use this feature, first, you will need to modify your LDAP server's
@@ -89,28 +103,30 @@ _Note: You can choose whatever names you want for these attributes. You will be 
 
 Then you must set these attributes correctly within LDAP, for example:
 
-- **view: all**
-- **admin: 1,2,3**
-- **superuser: 1**
+- `view: all`
+- `admin: 1,2,3`
+- `superuser: 1`
 
 Finally, in the LDAP settings page, check the **Enable User Access Synchronization from LDAP** checkbox and fill out the settings that appear below it.
+
+User access synchronization occurs with normal user synchronization. So the `loginldap:synchronize-users` command can be used for this as well.
 
 #### Managing Access for Multiple Piwik Instances
 
 LoginLdap supports using a single LDAP server to manage access for multiple Piwik instances. If you'd like to use this feature, you must specify special values
 for LDAP access attributes. For example:
 
-- **view: mypiwikserver.whatever.com:1,2,3;myotherserver.com:all**
-- **admin: mypiwikserver.whatever.com:all;mythirdserver.com:3,4**
-- **superuser: myotherserver.com;myotherserver.com/otherpiwik**
+- `view: mypiwikserver.whatever.com:1,2,3;myotherserver.com:all`
+- `admin: mypiwikserver.whatever.com:all;mythirdserver.com:3,4`
+- `superuser: myotherserver.com;myotherserver.com/otherpiwik`
 
 If you don't want to use URLs in your access attributes, you can use the **Special Name For This Piwik Instance** setting to specify a special name
 for each of your Piwiks. For example, if you set it to 'piwikServerA' in one Piwik and 'piwikServerB' in another, your LDAP attributes might look
 like:
 
-- **view: piwikServerA:1,2,3;piwikServerB:all**
-- **admin: piwikServerA:4,5,6**
-- **superuser: piwikServerC**
+- `view: piwikServerA:1,2,3;piwikServerB:all`
+- `admin: piwikServerA:4,5,6`
+- `superuser: piwikServerC`
 
 **Using a custom access attribute format**
 
@@ -119,11 +135,11 @@ You can customize the separators used in access attributes by setting the **User
 
 If you set the **User Access Attribute Server Specification Delimiter** option to `'#'`, access attributes can be specified as:
 
-**view: piwikServerA:1,2,3#piwikServerB:all**
+`view: piwikServerA:1,2,3#piwikServerB:all`
 
 If you set the **User Access Attribute Server & Site List Separator** option to `'#'`, access attributes can be specified as:
 
-**view: piwikServerA#1,2,3;piwikServerB#all**
+`view: piwikServerA#1,2,3;piwikServerB#all`
 
 ## Security Considerations
 
@@ -137,17 +153,26 @@ for whatever reason, user passwords will not be compromised.
 LDAP has no concept of authentication tokens, so user token_auths are stored exclusively in Piwik's MySQL DB. If a token auth is compromised,
 you can have Piwik generate a new one by changing a user's password in LDAP.
 
+If you've enabled the `Generate Random token_auth For New Users` option, then in order to generate a new token auth you'll have to run the
+`loginldap:generate-token-auth` command if a token auth is compromised.
+
 **Logging**
 
-LoginLdap uses debug logging extensively so problems can be diagnosed quickly. The logs should not contain sensitive information, but **you
-should still disable DEBUG logging in production**.
+LoginLdap uses debug logging extensively so problems can be diagnosed quickly. The logs should not contain sensitive information, but _you
+should still disable DEBUG logging in production_.
 
 If you need to debug a problem, enable it temporarily by changing the `[log] log_level` and `[log] log_writers` core INI config options.
 If you use file logs, make sure to delete the logs after you are finished debugging.
 
 ## Commands
 
-TODO
+LoginLdap comes with the following console commands:
+
+* `loginldap:generate-token-auth`: Regenerates a token auth for a user if the `Generate Random token_auth For New Users` option is currently
+  enabled.
+
+* `loginldap:synchronize-users`: Can be used to synchronize one, multiple, or all users in LDAP at once. If you'd like to setup user access
+  within Piwik before a user logs in, this command should be used.
 
 ## FAQ
 
