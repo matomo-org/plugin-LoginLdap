@@ -71,6 +71,7 @@ class Client
 
             ldap_set_option($result, LDAP_OPT_PROTOCOL_VERSION, 3);
             ldap_set_option($result, LDAP_OPT_REFERRALS, 0);
+            ldap_set_option($result, LDAP_OPT_NETWORK_TIMEOUT, 15);
 
             Log::debug("ldap_connect result is %s", $result);
 
