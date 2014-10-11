@@ -112,15 +112,21 @@ class UserMapper
      */
     private function getPiwikPasswordForLdapUser($ldapUser, $user)
     {
-        if ($this->isRandomTokenAuthGenerationEnabled) {
+        $ldapPassword = $this->getLdapUserField($ldapUser, $this->ldapUserPasswordField);
+        if ($this->isRandomTokenAuthGenerationEnabled
+            || empty($ldapPassword)
+        ) {
             if (!empty($user['password'])) { // do not generate new passwords for users that are already synchronized
                 return $user['password'];
             } else {
+                if (!$this->isRandomTokenAuthGenerationEnabled) {
+                    Log::warning("UserMapper::%s: Could not find LDAP password for user '%s', generating random one.", __FUNCTION__, @$ldapUser[$this->ldapUserIdField]);
+                }
+
                 return $this->generateRandomPassword();
             }
         } else {
-            $password = $this->getRequiredLdapUserField($ldapUser, $this->ldapUserPasswordField);
-            return $this->processPassword($password);
+            return $this->processPassword($ldapPassword);
         }
     }
 
