@@ -232,10 +232,6 @@ LoginLdap comes with the following console commands:
 * `loginldap:synchronize-users`: Can be used to synchronize one, multiple, or all users in LDAP at once. If you'd like to setup user access
   within Piwik before a user logs in, this command should be used.
 
-## FAQ
-
-* [https://github.com/piwik/plugin-LoginLdap/wiki](https://github.com/piwik/plugin-LoginLdap/wiki)
-
 ## Changelog
 
 See [https://github.com/piwik/plugin-LoginLdap/blob/master/CHANGELOG.md](https://github.com/piwik/plugin-LoginLdap/blob/master/CHANGELOG.md).
