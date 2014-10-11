@@ -69,6 +69,8 @@
         "SynchronizeUsersAfterLoginDescription": "If enabled, user details in LDAP will always be synchronized after a successful login.",
         "SynchronizeUsersAfterLoginDescription2": "If disabled, the plugin will not synchronize details, unless LDAP authentication is enabled. When no synchronization happens, LDAP connections will be avoided.",
         "UseLdapForAuthentication": "Use LDAP for authentication",
-        "UseLdapForAuthenticationDescription": "If disabled, LDAP connections will be made only to synchronize user data. Additionally, user passwords will be stored in Piwik's DB."
+        "UseLdapForAuthenticationDescription": "If disabled, LDAP connections will be made only to synchronize user data. Additionally, user passwords will be stored in Piwik's DB.",
+        "PasswordField": "User Password Field",
+        "PasswordFieldDescription": "The LDAP attribute containing a user's password. If authenticating by LDAP alone and not generating a random token auth, the value of this field must be a hashed or encrypted password."
     }
 }

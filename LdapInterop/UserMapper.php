@@ -62,6 +62,13 @@ class UserMapper
     private $ldapLastNameField = 'sn';
 
     /**
+     * The LDAP resource field to use when determining a user's password.
+     *
+     * @var string
+     */
+    private $ldapUserPasswordField = 'userpassword';
+
+    /**
      * Suffix to be appended to user names of LDAP users that have no email address.
      * Email addresses are required for Piwik users, so something must be entered.
      *
@@ -112,7 +119,7 @@ class UserMapper
                 return $this->generateRandomPassword();
             }
         } else {
-            $password = $this->getRequiredLdapUserField($ldapUser, 'userpassword');
+            $password = $this->getRequiredLdapUserField($ldapUser, $this->ldapUserPasswordField);
             return $this->processPassword($password);
         }
     }
@@ -276,6 +283,26 @@ class UserMapper
     }
 
     /**
+     * Returns the {@link $ldapUserPasswordField} property.
+     *
+     * @return string
+     */
+    public function getLdapUserPasswordField()
+    {
+        return $this->ldapUserPasswordField;
+    }
+
+    /**
+     * Sets the {@link $ldapUserPasswordField} property.
+     *
+     * @param string $userPasswordField
+     */
+    public function setLdapUserPasswordField($userPasswordField)
+    {
+        $this->ldapUserPasswordField = strtolower($userPasswordField);
+    }
+
+    /**
      * Returns the {@link $userEmailSuffix} property.
      *
      * @return string
@@ -375,6 +402,11 @@ class UserMapper
             $result->setLdapMailField($mailField);
         }
 
+        $userPasswordField = Config::getLdapPasswordField();
+        if (!empty($userPasswordField)) {
+            $result->setLdapUserPasswordField($userPasswordField);
+        }
+
         $userEmailSuffix = Config::getLdapUserEmailSuffix();
         if (!empty($userEmailSuffix)) {
             $result->setUserEmailSuffix($userEmailSuffix);
@@ -386,9 +418,9 @@ class UserMapper
         }
 
         Log::debug("UserMapper::%s: configuring with uidField = %s, aliasField = %s firstNameField = %s, lastNameField = %s"
-                 . " mailField = %s, userEmailSuffix = %s, isRandomTokenAuthGenerationEnabled = %s",
-                   __FUNCTION__, $uidField, $aliasField, $firstNameField, $lastNameField, $mailField, $userEmailSuffix,
-                   $isRandomTokenAuthGenerationEnabled);
+                 . " mailField = %s, ldapUserPasswordField = %s, userEmailSuffix = %s, isRandomTokenAuthGenerationEnabled = %s",
+                   __FUNCTION__, $uidField, $aliasField, $firstNameField, $lastNameField, $mailField, $userPasswordField,
+                   $userEmailSuffix, $isRandomTokenAuthGenerationEnabled);
 
         return $result;
     }
