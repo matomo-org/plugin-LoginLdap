@@ -75,9 +75,9 @@ class Config
                     return $config[$alternateName];
                 }
             }
-            return null;
+            return self::$defaultConfig[$optionName];
         } else {
-            return null;
+            return self::$defaultConfig[$optionName];
         }
     }
 
