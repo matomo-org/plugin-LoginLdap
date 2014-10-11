@@ -11,6 +11,7 @@ use Exception;
 use Piwik\AuthResult;
 use Piwik\Log;
 use Piwik\Plugins\LoginLdap\Config;
+use Piwik\Plugins\LoginLdap\Ldap\Exceptions\ConnectionException;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
@@ -61,7 +62,7 @@ class SynchronizedAuth extends Base
                 return $result;
             }
 
-            if ($this->synchronizeUsersAfterSuccessfulLogin) {
+            if (!$this->synchronizeUsersAfterSuccessfulLogin) {
                 Log::debug("SynchronizedAuth::%s: synchronizing users after login disabled, not attempting LDAP authenticate for '%s'.",
                     __FUNCTION__, $this->login);
 
@@ -83,6 +84,8 @@ class SynchronizedAuth extends Base
             } else {
                 return $this->makeAuthFailure();
             }
+        } catch (ConnectionException $ex) {
+            throw $ex;
         } catch (Exception $ex) {
             Log::debug($ex);
         }

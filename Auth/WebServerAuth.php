@@ -11,6 +11,7 @@ use Exception;
 use Piwik\AuthResult;
 use Piwik\Log;
 use Piwik\Plugins\LoginLdap\Config;
+use Piwik\Plugins\LoginLdap\Ldap\Exceptions\ConnectionException;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
@@ -70,6 +71,8 @@ class WebServerAuth extends Base
 
                 return $this->makeSuccessLogin($this->getUserForLogin());
             }
+        } catch (ConnectionException $ex) {
+            throw $ex;
         } catch (Exception $ex) {
             Log::debug($ex);
         }

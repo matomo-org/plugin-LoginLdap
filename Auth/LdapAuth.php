@@ -10,6 +10,7 @@ namespace Piwik\Plugins\LoginLdap\Auth;
 use Exception;
 use Piwik\AuthResult;
 use Piwik\Log;
+use Piwik\Plugins\LoginLdap\Ldap\Exceptions\ConnectionException;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
@@ -111,6 +112,8 @@ class LdapAuth extends Base
                 // this way, LoginLdap can be managed even if no users exist in LDAP.
                 return $this->tryNormalAuth($onlySuperUsers = true);
             }
+        } catch (ConnectionException $ex) {
+            throw $ex;
         } catch (Exception $ex) {
             Log::debug($ex);
         }
