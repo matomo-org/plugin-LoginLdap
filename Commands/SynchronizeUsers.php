@@ -42,7 +42,7 @@ class SynchronizeUsers extends ConsoleCommand
     protected function configure()
     {
         $this->setName('loginldap:synchronize-users');
-        $this->setDescription('Generates a new token auth for an LDAP user. The LDAP user must have been synchronized already.');
+        $this->setDescription('Synchronizes one, multiple or all LDAP users that the current config has access to.');
         $this->addOption('login', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED,
             'List of users to synchronize. If not specified, all users in LDAP are synchronized.');
     }
