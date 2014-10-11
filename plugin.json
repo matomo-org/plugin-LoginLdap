@@ -1,9 +1,9 @@
 {
     "name": "LoginLdap",
     "version": "2.2.7",
-    "description": "LDAP authentication for Piwik.",
+    "description": "LDAP authentication and synchronization for Piwik.",
     "theme": false,
-    "keywords": ["ldap", "login", "authentication", "active", "directory", "kerberos"],
+    "keywords": ["ldap", "login", "authentication", "active", "directory", "kerberos", "sso"],
     "license": "GPL v3+",
     "homepage": "https://github.com/piwik/plugin-LoginLdap",
     "require": {
