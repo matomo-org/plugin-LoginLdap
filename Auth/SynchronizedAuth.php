@@ -57,7 +57,7 @@ class SynchronizedAuth extends Base
     public function authenticate()
     {
         try {
-            $result = $this->tryNormalAuth($onlySuperUsers = false);
+            $result = $this->tryNormalAuth($onlySuperUsers = false, $forceTokenAuth = true);
             if ($result->wasAuthenticationSuccessful()) {
                 return $result;
             }

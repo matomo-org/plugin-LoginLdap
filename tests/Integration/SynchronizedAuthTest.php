@@ -126,17 +126,18 @@ class SynchronizedAuthTest extends LdapIntegrationTest
         $this->assertEquals(self::LDAP_ADDED_PASS, $user['password']);
     }
 
-    private function addPreSynchronizedUser($pass = self::LDAP_ADDED_PASS)
+    private function addPreSynchronizedUser($pass = self::TEST_PASS)
     {
-        $tokenAuth = UsersManagerAPI::getInstance()->getTokenAuth(self::TEST_LOGIN, $pass);
+        $md5Pass = md5($pass);
+        $tokenAuth = UsersManagerAPI::getInstance()->getTokenAuth(self::TEST_LOGIN, $md5Pass);
 
         Db::query("INSERT INTO ".Common::prefixTable('user')." (login, password, alias, email, token_auth) VALUES (?, ?, ?, ?, ?)",
-            array(self::TEST_LOGIN, $pass, 'Tony Stark', 'billionairephilanthropistplayboy@starkindustries.com', $tokenAuth));
+            array(self::TEST_LOGIN, $md5Pass, 'Tony Stark', 'billionairephilanthropistplayboy@starkindustries.com', $tokenAuth));
     }
 
     private function addLdapUserWithWrongPassword()
     {
-        $this->addPreSynchronizedUser(md5('averywrongpassword'));
+        $this->addPreSynchronizedUser('averywrongpassword');
     }
 
     private function doAuthTest($expectCode, $login = self::TEST_LOGIN, $pass = self::TEST_PASS)
@@ -151,7 +152,7 @@ class SynchronizedAuthTest extends LdapIntegrationTest
 
     private function doAuthTestByTokenAuth($expectCode, $login = self::TEST_LOGIN, $pass = self::TEST_PASS)
     {
-        $tokenAuth = UsersManagerAPI::getInstance()->getTokenAuth($login, $pass);
+        $tokenAuth = UsersManagerAPI::getInstance()->getTokenAuth($login, md5($pass));
 
         $auth = SynchronizedAuth::makeConfigured();
         $auth->setLogin($login);
