@@ -11,7 +11,7 @@ namespace Piwik\Plugins\LoginLdap\tests\Integration;
 use Piwik\AuthResult;
 use Piwik\Config;
 use Piwik\Db;
-use Piwik\Plugins\LoginLdap\LdapAuth;
+use Piwik\Plugins\LoginLdap\Auth\WebServerAuth;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 
 /**
@@ -34,13 +34,13 @@ class WebServerAuthTest extends LdapIntegrationTest
 
         $_SERVER['REMOTE_USER'] = self::TEST_LOGIN;
 
-        $ldapAuth = new LdapAuth();
+        $ldapAuth = WebServerAuth::makeConfigured();
         $ldapAuth->setPassword('slkdjfdslf');
         $authResult = $ldapAuth->authenticate();
 
         $this->assertEquals(1, $authResult->getCode());
 
-        $ldapAuth = new LdapAuth();
+        $ldapAuth = WebServerAuth::makeConfigured();
         $ldapAuth->setPassword(self::TEST_PASS);
         $authResult = $ldapAuth->authenticate();
 
@@ -53,7 +53,7 @@ class WebServerAuthTest extends LdapIntegrationTest
 
         $_SERVER['REMOTE_USER'] = 'abcdefghijk';
 
-        $ldapAuth = new LdapAuth();
+        $ldapAuth = WebServerAuth::makeConfigured();
         $authResult = $ldapAuth->authenticate();
 
         $this->assertEquals(0, $authResult->getCode());
@@ -66,7 +66,7 @@ class WebServerAuthTest extends LdapIntegrationTest
 
         $_SERVER['REMOTE_USER'] = self::TEST_LOGIN;
 
-        $ldapAuth = new LdapAuth();
+        $ldapAuth = WebServerAuth::makeConfigured();
         $authResult = $ldapAuth->authenticate();
 
         $this->assertEquals(0, $authResult->getCode());
@@ -79,7 +79,7 @@ class WebServerAuthTest extends LdapIntegrationTest
 
         $_SERVER['REMOTE_USER'] = self::TEST_LOGIN;
 
-        $ldapAuth = new LdapAuth();
+        $ldapAuth = WebServerAuth::makeConfigured();
         $authResult = $ldapAuth->authenticate();
 
         $this->assertEquals(0, $authResult->getCode());
@@ -91,7 +91,7 @@ class WebServerAuthTest extends LdapIntegrationTest
 
         unset($_SERVER['REMOTE_USER']);
 
-        $ldapAuth = new LdapAuth();
+        $ldapAuth = WebServerAuth::makeConfigured();
         $authResult = $ldapAuth->authenticate();
 
         $this->assertEquals(0, $authResult->getCode());
@@ -103,7 +103,7 @@ class WebServerAuthTest extends LdapIntegrationTest
 
         $_SERVER['REMOTE_USER'] = self::TEST_SUPERUSER_LOGIN;
 
-        $ldapAuth = new LdapAuth();
+        $ldapAuth = WebServerAuth::makeConfigured();
         $authResult = $ldapAuth->authenticate();
 
         $this->assertEquals(AuthResult::SUCCESS_SUPERUSER_AUTH_CODE, $authResult->getCode());
@@ -113,14 +113,14 @@ class WebServerAuthTest extends LdapIntegrationTest
     {
         unset($_SERVER['REMOTE_USER']);
 
-        $ldapAuth = new LdapAuth();
+        $ldapAuth = WebServerAuth::makeConfigured();
         $ldapAuth->setLogin(self::TEST_SUPERUSER_LOGIN);
         $ldapAuth->setPassword(self::TEST_SUPERUSER_PASS);
         $authResult = $ldapAuth->authenticate();
 
         $this->assertEquals(AuthResult::SUCCESS_SUPERUSER_AUTH_CODE, $authResult->getCode());
 
-        $ldapAuth = new LdapAuth();
+        $ldapAuth = WebServerAuth::makeConfigured();
         $ldapAuth->setLogin(self::TEST_SUPERUSER_LOGIN);
         $ldapAuth->setTokenAuth(UsersManagerAPI::getInstance()->getTokenAuth(self::TEST_SUPERUSER_LOGIN, md5(self::TEST_SUPERUSER_PASS)));
         $authResult = $ldapAuth->authenticate();

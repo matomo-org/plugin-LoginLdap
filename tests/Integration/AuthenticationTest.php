@@ -12,7 +12,7 @@ use Piwik\AuthResult;
 use Piwik\Common;
 use Piwik\Config;
 use Piwik\Db;
-use Piwik\Plugins\LoginLdap\LdapAuth;
+use Piwik\Plugins\LoginLdap\Auth\LdapAuth;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 
 /**
@@ -35,7 +35,7 @@ class AuthenticationTest extends LdapIntegrationTest
 
     public function testLdapAuthSucceedsWithCorrectCredentials()
     {
-        $ldapAuth = new LdapAuth();
+        $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin(self::TEST_LOGIN);
         $ldapAuth->setPassword(self::TEST_PASS);
         $authResult = $ldapAuth->authenticate();
@@ -45,7 +45,7 @@ class AuthenticationTest extends LdapIntegrationTest
 
     public function testLdapAuthFailsWithIncorrectPassword()
     {
-        $ldapAuth = new LdapAuth();
+        $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin(self::TEST_LOGIN);
         $ldapAuth->setPassword('slkdjfsd');
         $authResult = $ldapAuth->authenticate();
@@ -55,7 +55,7 @@ class AuthenticationTest extends LdapIntegrationTest
 
     public function testLdapAuthFailsWithNonexistantUser()
     {
-        $ldapAuth = new LdapAuth();
+        $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin('skldfjsd');
         $ldapAuth->setPassword(self::TEST_PASS);
         $authResult = $ldapAuth->authenticate();
@@ -67,7 +67,7 @@ class AuthenticationTest extends LdapIntegrationTest
     {
         Config::getInstance()->LoginLdap['memberOf'] = "cn=S.H.I.E.L.D.," . self::SERVER_BASE_DN;
 
-        $ldapAuth = new LdapAuth();
+        $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin(self::TEST_LOGIN);
         $ldapAuth->setPassword(self::TEST_PASS);
         $authResult = $ldapAuth->authenticate();
@@ -76,7 +76,7 @@ class AuthenticationTest extends LdapIntegrationTest
 
         Config::getInstance()->LoginLdap['memberOf'] = "cn=avengers," . self::SERVER_BASE_DN;
 
-        $ldapAuth = new LdapAuth();
+        $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin(self::TEST_LOGIN);
         $ldapAuth->setPassword(self::TEST_PASS);
         $authResult = $ldapAuth->authenticate();
@@ -88,14 +88,14 @@ class AuthenticationTest extends LdapIntegrationTest
     {
         Config::getInstance()->LoginLdap['filter'] = "(!(mobile=none))";
 
-        $ldapAuth = new LdapAuth();
+        $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin(self::TEST_LOGIN);
         $ldapAuth->setPassword(self::TEST_PASS);
         $authResult = $ldapAuth->authenticate();
 
         $this->assertEquals(1, $authResult->getCode());
 
-        $ldapAuth = new LdapAuth();
+        $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin(self::OTHER_TEST_LOGIN);
         $ldapAuth->setPassword(self::OTHER_TEST_PASS);
         $authResult = $ldapAuth->authenticate();
@@ -105,7 +105,7 @@ class AuthenticationTest extends LdapIntegrationTest
 
     public function testLdapAuthReturnsCorrectCodeForSuperUsers()
     {
-        $ldapAuth = new LdapAuth();
+        $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin(self::TEST_SUPERUSER_LOGIN);
         $ldapAuth->setPassword(self::TEST_SUPERUSER_PASS);
         $authResult = $ldapAuth->authenticate();
@@ -115,14 +115,14 @@ class AuthenticationTest extends LdapIntegrationTest
 
     public function testLdapAuthReturnsCorrectCodeForNonLdapSuperUsers()
     {
-        $ldapAuth = new LdapAuth();
+        $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin(self::NON_LDAP_USER);
         $ldapAuth->setPassword(self::NON_LDAP_PASS);
         $authResult = $ldapAuth->authenticate();
 
         $this->assertEquals(AuthResult::SUCCESS_SUPERUSER_AUTH_CODE, $authResult->getCode());
 
-        $ldapAuth = new LdapAuth();
+        $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setTokenAuth($this->getNonLdapUserTokenAuth());
         $authResult = $ldapAuth->authenticate();
 
@@ -132,14 +132,14 @@ class AuthenticationTest extends LdapIntegrationTest
 
     public function testLdapAuthReturnsCorrectCodeForNonLdapNormalUsers()
     {
-        $ldapAuth = new LdapAuth();
+        $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin(self::NON_LDAP_NORMAL_USER);
         $ldapAuth->setPassword(self::NON_LDAP_NORMAL_PASS);
         $authResult = $ldapAuth->authenticate();
 
         $this->assertEquals(0, $authResult->getCode());
 
-        $ldapAuth = new LdapAuth();
+        $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setTokenAuth($this->getNonLdapNormalUserTokenAuth());
         $authResult = $ldapAuth->authenticate();
 
@@ -153,7 +153,7 @@ class AuthenticationTest extends LdapIntegrationTest
 
         $tokenAuth = Db::fetchOne("SELECT token_auth FROM " . Common::prefixTable("user") . " WHERE login = ?", array(self::TEST_LOGIN));
 
-        $ldapAuth = new LdapAuth();
+        $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin(self::TEST_LOGIN);
         $ldapAuth->setTokenAuth($tokenAuth);
         $authResult = $ldapAuth->authenticate();
@@ -166,7 +166,7 @@ class AuthenticationTest extends LdapIntegrationTest
         UsersManagerAPI::getInstance()->addUser('zola', 'hydra___', 'zola@shield.org', $alias = false);
         UsersManagerAPI::getInstance()->setSuperUserAccess('zola', true);
 
-        $ldapAuth = new LdapAuth();
+        $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin('zola');
         $ldapAuth->setPassword('hydra___');
         $authResult = $ldapAuth->authenticate();
@@ -178,7 +178,7 @@ class AuthenticationTest extends LdapIntegrationTest
     {
         UsersManagerAPI::getInstance()->addUser('pcoulson', 'vintage', 'pcoulson@shield.org', $alias = false);
 
-        $ldapAuth = new LdapAuth();
+        $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin('pcoulson');
         $ldapAuth->setPassword('vintage');
         $authResult = $ldapAuth->authenticate();

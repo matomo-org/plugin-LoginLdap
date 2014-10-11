@@ -13,7 +13,7 @@ use Piwik\Config;
 use Piwik\Db;
 use Piwik\Common;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
-use Piwik\Plugins\LoginLdap\LdapAuth;
+use Piwik\Plugins\LoginLdap\Auth\LdapAuth;
 use Piwik\SettingsPiwik;
 use Piwik\Tests\Fixture;
 
@@ -250,7 +250,7 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
 
     private function authenticateViaLdap($login = self::TEST_LOGIN, $pass = self::TEST_PASS)
     {
-        $ldapAuth = new LdapAuth();
+        $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin($login);
         $ldapAuth->setPassword($pass);
         $authResult = $ldapAuth->authenticate();

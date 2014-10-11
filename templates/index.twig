@@ -13,6 +13,38 @@
 
         <tr>
             <td>
+                <label for="use_ldap_for_authentication">{{ 'LoginLdap_UseLdapForAuthentication'|translate }}</label><br/>
+                <span class='form-description'>{{ 'LoginLdap_UseLdapForAuthenticationDescription'|translate }}</span>
+            </td>
+            <td>
+                <input type="checkbox" {% if ldapConfig.use_ldap_for_authentication %}checked="checked"{% endif %} id="use_ldap_for_authentication" name="use_ldap_for_authentication"/>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <label for="synchronize_users_after_login">{{ 'LoginLdap_SynchronizeUsersAfterLogin'|translate }}</label><br/>
+                <span class='form-description'>{{ 'LoginLdap_SynchronizeUsersAfterLoginDescription'|translate }}</span><br/>
+                <br/>
+                <span class='form-description'>{{ 'LoginLdap_SynchronizeUsersAfterLoginDescription2'|translate }}</span>
+            </td>
+            <td>
+                <input type="checkbox" {% if ldapConfig.synchronize_users_after_login %}checked="checked"{% endif %} id="synchronize_users_after_login" name="synchronize_users_after_login"/>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <label for="useKerberos">{{ 'LoginLdap_Kerberos'|translate }} </label><br/>
+                <span class='form-description'>{{ 'LoginLdap_KerberosDescription'|translate }}</span>
+            </td>
+            <td>
+                <input type="checkbox" {% if ldapConfig.use_webserver_auth %}checked="checked"{% endif %} id="useKerberos" name="use_webserver_auth"/>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
                 <label for="memberOf">{{ 'LoginLdap_MemberOf'|translate }} </label>
                 <br/>
                 <span class='form-description'>{{ 'LoginLdap_MemberOfDescription'|translate }}</span>
@@ -44,15 +76,6 @@
                      value="{{ ldapConfig.ldap_user_filter }}"
                      success-translation="LoginLdap_FilterCount">
                 </div>
-            </td>
-        </tr>
-
-        <tr>
-            <td>
-                <label for="useKerberos">{{ 'LoginLdap_Kerberos'|translate }} </label>
-            </td>
-            <td>
-                <input type="checkbox" {% if ldapConfig.use_webserver_auth %}checked="checked"{% endif %} id="useKerberos" name="use_webserver_auth"/>
             </td>
         </tr>
 

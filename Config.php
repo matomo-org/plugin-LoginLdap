@@ -18,6 +18,8 @@ use Piwik\Plugins\LoginLdap\Ldap\ServerInfo;
 class Config
 {
     public static $defaultConfig = array(
+        'use_ldap_for_authentication' => 1,
+        'synchronize_users_after_login' => 1,
         'enable_synchronize_access_from_ldap' => 0,
         'enable_random_token_auth_generation' => 0,
         'new_user_default_sites_view_access' => '',
@@ -166,6 +168,16 @@ class Config
     public static function getDesignatedPiwikInstanceName()
     {
         return self::getConfigOption('instance_name');
+    }
+
+    public static function getUseLdapForAuthentication()
+    {
+        return self::getConfigOption('use_ldap_for_authentication') == 1;
+    }
+
+    public static function getShouldSynchronizeUsersAfterLogin()
+    {
+        return self::getConfigOption('synchronize_users_after_login') == 1;
     }
 
     public static function getServerConfig($server)
