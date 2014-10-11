@@ -214,7 +214,13 @@ class Config
 
         if (empty($serverNameList)) {
             $server = ServerInfo::makeFromOldConfig();
-            return array($server);
+            $serverHost = $server->getServerHostname();
+
+            if (empty($serverHost)) {
+                return array();
+            } else {
+                return array($server);
+            }
         } else {
             if (is_string($serverNameList)) {
                 $serverNameList = explode(',', $serverNameList);
