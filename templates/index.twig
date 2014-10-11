@@ -118,6 +118,16 @@
 
         <tr>
             <td>
+                <label for="ldap_password_field">{{ 'LoginLdap_PasswordField'|translate }}</label>
+                <br/>
+                <span class='form-description'>{{ 'LoginLdap_PasswordFieldDescription'|translate }}</span>
+            </td>
+            <td>
+                <input size="25" id="ldap_password_field" value="{{ ldapConfig.ldap_password_field }}" name="ldap_password_field" />
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <label for="mailField">{{ 'LoginLdap_MailField'|translate }} </label>
                 <br/>
                 <span class='form-description'>{{ 'LoginLdap_MailFieldDescription'|translate }}</span>

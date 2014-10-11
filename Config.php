@@ -31,6 +31,7 @@ class Config
         'ldap_first_name_field' => 'givenName',
         'ldap_alias_field' => 'cn',
         'ldap_mail_field' => 'mail',
+        'ldap_password_field' => 'userPassword',
         'ldap_view_access_field' => 'view',
         'ldap_admin_access_field' => 'admin',
         'ldap_superuser_access_field' => 'superuser',
@@ -128,6 +129,11 @@ class Config
     public static function getLdapMailField()
     {
         return self::getConfigOption('ldap_mail_field');
+    }
+
+    public static function getLdapPasswordField()
+    {
+        return self::getConfigOption('ldap_password_field');
     }
 
     public static function getLdapUserEmailSuffix()

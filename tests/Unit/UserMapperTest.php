@@ -50,6 +50,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
             'ldap_first_name_field' => 'firstNameField',
             'ldap_alias_field' => 'aliasField',
             'ldap_mail_field' => 'mailField',
+            'ldap_password_field' => 'passwordField',
             'user_email_suffix' => 'userEmailSuffix',
         );
 
@@ -66,6 +67,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
             'ldap_first_name_field' => 'firstNameField',
             'aliasField' => 'aliasField',
             'mailField' => 'mailField',
+            'ldap_password_field' => 'passwordField',
             'usernameSuffix' => 'userEmailSuffix',
         );
 
@@ -110,6 +112,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
         $this->userMapper->setLdapMailField('testfield3');
         $this->userMapper->setLdapFirstNameField('testfield4');
         $this->userMapper->setLdapLastNameField('testfield5');
+        $this->userMapper->setLdapUserPasswordField('testfield6');
 
         $result = $this->userMapper->createPiwikUserFromLdapUser(array(
             'testfield1' => 'am i bovvered?',
@@ -117,7 +120,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
             'testfield3' => 'donna@rstad.com',
             'testfield4' => 'Donna',
             'testfield5' => 'Noble',
-            'userpassword' => 'pass',
+            'testfield6' => 'pass',
             'other3' => 'sdlfdsf'
         ));
 
@@ -133,7 +136,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
             'testfield3' => 'donna@rstad.com',
             'testfield4' => 'Donna',
             'testfield5' => 'Noble',
-            'userpassword' => 'pass',
+            'testfield6' => 'pass',
             'other3' => 'sdlfdsf'
         ));
 
@@ -313,6 +316,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('firstnamefield', $userMapper->getLdapFirstNameField());
         $this->assertEquals('aliasfield', $userMapper->getLdapAliasField());
         $this->assertEquals('mailfield', $userMapper->getLdapMailField());
+        $this->assertEquals('passwordfield', $userMapper->getLdapUserPasswordField());
         $this->assertEquals('userEmailSuffix', $userMapper->getUserEmailSuffix());
     }
 
@@ -323,6 +327,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('givenname', $userMapper->getLdapFirstNameField());
         $this->assertEquals('cn', $userMapper->getLdapAliasField());
         $this->assertEquals('mail', $userMapper->getLdapMailField());
+        $this->assertEquals('userpassword', $userMapper->getLdapUserPasswordField());
         $this->assertEquals('@mydomain.com', $userMapper->getUserEmailSuffix());
     }
 }

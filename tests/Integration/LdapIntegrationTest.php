@@ -47,6 +47,12 @@ abstract class LdapIntegrationTest extends DatabaseTestCase
             throw new \Exception("PHP not compiled w/ --with-ldap!");
         }
 
+        if (!$this->isLdapServerRunning()) {
+            throw new \Exception("LDAP server not found on port localhost:389. For integration tests, an LDAP server must be running with the "
+                               . "data and configuration found in tests/travis/setup_ldap.sh script. An OpenLDAP server is expected, but any "
+                               . "will work assuming the attributes names & data are the same.");
+        }
+
         parent::setUp();
 
         // make sure logging logic is executed so we can test whether there are bugs in the logging code
@@ -111,5 +117,16 @@ abstract class LdapIntegrationTest extends DatabaseTestCase
             'email' => 'billionairephilanthropistplayboy@starkindustries.com',
             'token_auth' => UsersManagerAPI::getInstance()->getTokenAuth(self::TEST_LOGIN, self::LDAP_ADDED_PASS)
         ), $user);
+    }
+
+    private function isLdapServerRunning()
+    {
+        $fp = @fsockopen(self::SERVER_HOST_NAME, self::SERVER_PORT, $errno, $errstr, 5);
+        if (empty($fp)) {
+            return false;
+        } else {
+            fclose($fp);
+            return true;
+        }
     }
 }
