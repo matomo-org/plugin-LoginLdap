@@ -16,6 +16,7 @@ use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Plugins\UsersManager\Model as UserModel;
+use Piwik\Plugins\UsersManager\UsersManager;
 
 /**
  * Auth implementation that only uses LDAP to synchronize user details.
@@ -117,7 +118,8 @@ class SynchronizedAuth extends Base
     {
         $user = $this->getUserForLogin();
 
-        $this->usersModel->updateUser($this->login, $this->password, $user['email'], $user['alias'], $user['token_auth']);
+        $passwordHash = UsersManager::getPasswordHash($this->password);
+        $this->usersModel->updateUser($this->login, $passwordHash, $user['email'], $user['alias'], $user['token_auth']);
     }
 
     /**

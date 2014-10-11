@@ -123,7 +123,7 @@ class SynchronizedAuthTest extends LdapIntegrationTest
         $this->doAuthTest($code = 1);
 
         $user = $this->getUser(self::TEST_LOGIN);
-        $this->assertEquals(self::LDAP_ADDED_PASS, $user['password']);
+        $this->assertEquals(md5(self::TEST_PASS), $user['password']);
     }
 
     private function addPreSynchronizedUser($pass = self::TEST_PASS)
