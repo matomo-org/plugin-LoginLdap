@@ -1,5 +1,7 @@
 #ldapSettingsTable,#accessSyncSettings,#ldapUserMappingSettingsTable {
-  display: inline-table;
+  &,>table {
+    display: inline-table;
+  }
 
   td {
     vertical-align: top;
@@ -14,6 +16,10 @@
     }
   }
 
+  tr > td:last-child {
+    width:179px;
+  }
+
   input:not(.submit) {
     margin-top:0;
     width:179px;
@@ -25,6 +31,7 @@
     margin-top: .6em;
     margin-left: 2em;
     display: inline-block;
+    padding-right:1em;
   }
 
   border-spacing: 0 1.5em;
@@ -52,5 +59,16 @@
 
   table {
     border-spacing: 1.5em 0;
+  }
+}
+
+#expectedAccessAttributeFormat {
+  display:inline-block;
+  vertical-align:top;
+  width: 300px;
+  left:100%;
+  margin-left:1.5em;
+  .notification {
+    font-size:.9em;
   }
 }
