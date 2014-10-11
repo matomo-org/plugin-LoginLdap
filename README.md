@@ -63,6 +63,8 @@ a hash of a hash of the password, or is generated randomly.
 
 This means that if the Piwik DB is ever compromised, your LDAP users' passwords will still be safe.
 
+_Note: With this auth strategy, non-LDAP users cannot login unless they are superusers._
+
 **Steps to enable**
 
 _Note: this is the default configuration._
@@ -77,6 +79,8 @@ method. If your Piwik DB is compromised, your LDAP users' passwords will be in g
 But, this strategy does allow you to use LDAP authentication with normal Piwik authentication. And it opens up the possibility
 of not communicating with LDAP servers at all during authentication, which may provide a better user experience.
 
+_Note: With this auth strategy, non-LDAP users can login to Piwik._
+
 **Steps to enable**
 
 1. Uncheck the `Use LDAP for authentication` option and uncheck the `Use Web Server Auth (e.g. Kerberos SSO)` option.
@@ -90,6 +94,8 @@ This strategy delegates authentication to the webserver. You setup a system wher
 sets the `$_SERVER['REMOTE_USER']` server variable, and LoginLdap will assume the user is already authenticated.
 
 This strategy will still connect to an LDAP server in order to synchronize user information, unless configured not to.
+
+_Note: With this auth strategy, any user that appears as a REMOTE_USER can login, even if they are not in LDAP._
 
 **Steps to enable**
 
