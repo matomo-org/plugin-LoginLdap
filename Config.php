@@ -67,11 +67,11 @@ class Config
 
     public static function getConfigOptionFrom($config, $optionName)
     {
-        if (!empty($config[$optionName])) {
+        if (isset($config[$optionName])) {
             return $config[$optionName];
-        } else if (!empty(self::$alternateOptionNames[$optionName])) {
+        } else if (isset(self::$alternateOptionNames[$optionName])) {
             foreach (self::$alternateOptionNames[$optionName] as $alternateName) {
-                if (!empty($config[$alternateName])) {
+                if (isset($config[$alternateName])) {
                     return $config[$alternateName];
                 }
             }
