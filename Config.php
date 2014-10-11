@@ -75,10 +75,15 @@ class Config
                     return $config[$alternateName];
                 }
             }
-            return self::$defaultConfig[$optionName];
+            return self::getDefaultConfigOptionValue($optionName);
         } else {
-            return self::$defaultConfig[$optionName];
+            return self::getDefaultConfigOptionValue($optionName);
         }
+    }
+
+    public static function getDefaultConfigOptionValue($optionName)
+    {
+        return @self::$defaultConfig[$optionName];
     }
 
     public static function isAccessSynchronizationEnabled()
