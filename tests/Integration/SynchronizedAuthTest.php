@@ -22,6 +22,8 @@ class SynchronizedAuthTest extends LdapIntegrationTest
 {
     public function setUp()
     {
+        parent::setUp();
+
         Config::getInstance()->LoginLdap_brokenserver = array(
             'hostname' => "localhost",
             'port' => 999,
