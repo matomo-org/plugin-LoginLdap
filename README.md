@@ -24,6 +24,8 @@ To start using LoginLdap, follow these steps:
 
    * `Generate Random token_auth For New Users`: If your LDAP server does not serve either a hash of a user's password or an encrypted password for a user,
      this option must be checked. Read more about random token_auth generation in **Security Considerations**.
+     
+     _Note: This is only important if you plan on using the first authentication strategy described below. (See [Configurations](https://github.com/piwik/plugin-LoginLdap#configurations))._
 
 5. You can now login with LDAP cedentials.
 
