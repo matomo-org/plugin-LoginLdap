@@ -134,7 +134,13 @@ class SynchronizedAuth extends Base
         $result->setUsersManagerAPI(UsersManagerAPI::getInstance());
         $result->setUsersModel(new UserModel());
         $result->setUserSynchronizer(UserSynchronizer::makeConfigured());
-        $result->setSynchronizeUsersAfterSuccessfulLogin(Config::getShouldSynchronizeUsersAfterLogin());
+
+        $synchronizeUsersAfterSuccessfulLogin = Config::getShouldSynchronizeUsersAfterLogin();
+        $result->setSynchronizeUsersAfterSuccessfulLogin($synchronizeUsersAfterSuccessfulLogin);
+
+        Log::debug("SynchronizedAuth::%s: configuring with synchronizeUsersAfterSuccessfulLogin = %s",
+            __FUNCTION__, $synchronizeUsersAfterSuccessfulLogin);
+
         return $result;
     }
 }

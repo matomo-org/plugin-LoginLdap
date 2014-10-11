@@ -162,6 +162,9 @@ class LdapAuth extends Base
         $result->setUsersManagerAPI(UsersManagerAPI::getInstance());
         $result->setUsersModel(new UserModel());
         $result->setUserSynchronizer(UserSynchronizer::makeConfigured());
+
+        Log::debug("SynchronizedAuth::%s: creating with configured components", __FUNCTION__);
+
         return $result;
     }
 }
