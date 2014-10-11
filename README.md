@@ -85,6 +85,7 @@ _Note: With this auth strategy, non-LDAP users can login to Piwik._
 
 1. Uncheck the `Use LDAP for authentication` option and uncheck the `Use Web Server Auth (e.g. Kerberos SSO)` option.
 2. If you don't want to connect to LDAP while logging in, uncheck the `Synchronize Users After Successful Login` option.
+   
    a. If you uncheck this option, make sure your users are synchronized in some other way (eg, by using the `loginldap:synchronize-users` command).
       Piwik still needs information about your LDAP users in order to let them authenticate.
 
@@ -101,6 +102,7 @@ _Note: With this auth strategy, any user that appears as a REMOTE_USER can login
 
 1. Check the `Use Web Server Auth (e.g. Kerberos SSO)` option.
 2. If you don't want to connect to LDAP while logging in, uncheck the `Synchronize Users After Successful Login` option.
+   
    a. If you uncheck this option, make sure your users are synchronized in some other way (eg, by using the `loginldap:synchronize-users` command).
       Piwik still needs information about your LDAP users in order to let them authenticate.
 
