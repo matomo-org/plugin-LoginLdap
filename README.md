@@ -34,11 +34,67 @@ To synchronize all of your LDAP users at once, use the `./console loginldap:sync
 
 Version 3.0.0 is a major rewrite of the plugin, so if you are upgrading for 2.2.7 you will have to do some extra work when upgrading:
 
-- Enable the `Generate Random token_auth For New Users` option.
-
-  v2.2.7 and below generated token auth's randomly, so to keep current users token auth's from changing, this option should be selected.
-
 - The admin user for servers must now be a full DN. In the LDAP settings page, change the admin name to be the full DN (ie, cn=...,dc=...).
+
+- Uncheck the `Use LDAP for authentication` checkbox
+
+  Version 2.2.7 and below used an authentication strategy where user passwords were stored both in Piwik and in LDAP. In order to keep your current
+  users' token auths from changing, that same strategy has to be used.
+
+## Configurations
+
+LoginLdap supports three different LDAP authentication strategies:
+
+- logging in via LDAP only
+- using LDAP for synchronization only
+- logging in with Kerberos SSO (or something similar)
+
+Each strategy has advantages and disadvantages. What you should use depends on your needs.
+
+### Logging in via LDAP only
+
+This strategy is more secure than the one below, but it requires connecting to the LDAP server on login.
+
+With this strategy, every time a user logs in, LoginLdap will connect to LDAP to authenticate. On successful login, the user can
+be synchronised, but the user's password is never stored in Piwik's DB, just LDAP. Additionally, the token auth is generated using
+a hash of a hash of the password, or is generated randomly.
+
+This means that if the Piwik DB is ever compromised, your LDAP users' passwords will still be safe.
+
+**Steps to enable**
+
+_Note: this is the default configuration._
+
+1. Check the `Use LDAP for authentication` option and uncheck the `Use Web Server Auth (e.g. Kerberos SSO)` option.
+
+### Using LDAP for synchronization only
+
+This strategy involves storing the user's passwords in the Piwik DB using Piwik's hashing, so it is not as secure as the above
+method. If your Piwik DB is compromised, your LDAP users' passwords will be in greater danger of being cracked.
+
+But, this strategy does allow you to use LDAP authentication with normal Piwik authentication. And it opens up the possibility
+of not communicating with LDAP servers at all during authentication, which may provide a better user experience.
+
+**Steps to enable**
+
+1. Uncheck the `Use LDAP for authentication` option and uncheck the `Use Web Server Auth (e.g. Kerberos SSO)` option.
+2. If you don't want to connect to LDAP while logging in, uncheck the `Synchronize Users After Successful Login` option.
+   a. If you uncheck this option, make sure your users are synchronized in some other way (eg, by using the `loginldap:synchronize-users` command).
+      Piwik still needs information about your LDAP users in order to let them authenticate.
+
+### Logging in with Kerberos SSO (or something similar)
+
+This strategy delegates authentication to the webserver. You setup a system where the webserver authenticates the user and
+sets the `$_SERVER['REMOTE_USER']` server variable, and LoginLdap will assume the user is already authenticated.
+
+This strategy will still connect to an LDAP server in order to synchronize user information, unless configured not to.
+
+**Steps to enable**
+
+1. Check the `Use Web Server Auth (e.g. Kerberos SSO)` option.
+2. If you don't want to connect to LDAP while logging in, uncheck the `Synchronize Users After Successful Login` option.
+   a. If you uncheck this option, make sure your users are synchronized in some other way (eg, by using the `loginldap:synchronize-users` command).
+      Piwik still needs information about your LDAP users in order to let them authenticate.
 
 ## Features
 
