@@ -148,8 +148,8 @@ class LoginLdap extends \Piwik\Plugin
      */
     function addMenu()
     {
-        MenuAdmin::getInstance()->add('CoreAdminHome_MenuManage', 'LoginLdap_MenuLdap', array('module' => 'LoginLdap', 'action' => 'admin'),
-            Piwik::hasUserSuperUserAccess(), $order = 3);
+        MenuAdmin::getInstance()->add('General_Settings', 'LDAP', array('module' => 'LoginLdap', 'action' => 'admin'),
+            Piwik::hasUserSuperUserAccess(), $order = 30);
     }
 
     /**
