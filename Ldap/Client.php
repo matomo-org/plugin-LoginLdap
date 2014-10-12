@@ -212,6 +212,8 @@ class Client
             });
 
             Log::debug("ldap_count_entries returned %s", $result);
+
+            return $result;
         } else {
             throw new Exception("Unexpected error: ldap_search returned null.");
         }
