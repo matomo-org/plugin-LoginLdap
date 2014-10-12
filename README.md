@@ -14,23 +14,16 @@ To start using LoginLdap, follow these steps:
 
 1. Login as a superuser
 2. On the _Manager > Plugins_ admin page, enable the LoginLdap plugin
-3. Navigate to the _Manage > LDAP Users_ page
+3. Navigate to the _Settings > LDAP_ page
 4. Enter and save settings for your LDAP servers
 
    _Note: You can test your servers by entering something into the 'Required User Group' and clicking the test link that appears.
    An error message will display if LoginLdap cannot connect to the LDAP server._
 
-   **Settings to pay attention to**
-
-   * `Generate Random token_auth For New Users`: If your LDAP server does not serve either a hash of a user's password or an encrypted password for a user,
-     this option must be checked. Read more about random token_auth generation in **Security Considerations**.
-     
-     _Note: This is only important if you plan on using the first authentication strategy described below. (See [Configurations](https://github.com/piwik/plugin-LoginLdap#configurations))._
-
 5. You can now login with LDAP cedentials.
 
 _**Note:** LDAP users are not synchronized with Piwik until they are first logged in. This means you cannot access a token auth for an LDAP user until the user is synchronized.
-To synchronize all of your LDAP users at once, use the `./console loginldap:synchronize-users` command._
+If you use the default LoginLdap configuration, you can synchronize all of your LDAP users at once using the `./console loginldap:synchronize-users` command._
 
 ## Upgrading from 2.2.7
 
@@ -120,9 +113,9 @@ _Note: The plugin will still communicate with the LDAP server in order to synchr
 
 ### Specifying Fallback Servers
 
-LoginLdap v3.0.0 and greater supports specifying multiple LDAP servers to use. If connecting to a server fails, the other servers are used as fallbacks.
+LoginLdap v3.0.0 and greater supports specifying multiple LDAP servers to use. If connecting to one server fails, the other servers are used as fallbacks.
 
-You can enter fallback servers by adding new servers at the bottom of the _Manage > LDAP Users_ page.
+You can enter fallback servers by adding new servers at the bottom of the _Settings > LDAP_ page.
 
 ### Filtering Users in LDAP
 
@@ -130,7 +123,7 @@ You can use the **Required User Group** and **LDAP Search Filter** settings to f
 will not be allowed to authenticate.
 
 Set **Required User Group** to the full DN of a group the user should be a member of. _Note: Internally, LoginLdap will issue a query using `(memberof=?)`
-to find users of a certain group._
+to find users of a certain group. Your server may require additional configuration to support `memberof`._
 
 Set **LDAP Search Filter** to an LDAP filter string to use, for example: `(objectClass=person)` or
 `(&(resMemberOf=cn=mygroup,ou=commonOU,dc=www,dc=example,dc=org)(objectclass=person))`.
@@ -139,7 +132,7 @@ You can test both of these settings from within the LDAP settings page.
 
 ### LDAP User Synchronization
 
-LoginLdap will use information in LDAP to determine a user's alias and email address. On the _Manage > LDAP Users_ page, you can specify which LDAP attributes should be
+LoginLdap will use information in LDAP to determine a user's alias and email address. On the _Settings > LDAP_ page, you can specify which LDAP attributes should be
 use to determine these fields.
 
 _Note: If the LDAP attribute for a user's alias is not found, the user's alias is defaulted to the first and last names of the user. On the settings page you can
@@ -211,7 +204,7 @@ If you set the **User Access Attribute Server & Site List Separator** option to 
 
 **User passwords**
 
-For added security, LoginLdap will not store user passwords or a hash of a user password within Piwik's DB. So if the Piwik DB is compromised
+For added security, LoginLdap's default configuration will not store user passwords or a hash of a user password within Piwik's DB. So if the Piwik DB is compromised
 for whatever reason, user passwords will not be compromised.
 
 **Token Auths**
@@ -219,8 +212,8 @@ for whatever reason, user passwords will not be compromised.
 LDAP has no concept of authentication tokens, so user token_auths are stored exclusively in Piwik's MySQL DB. If a token auth is compromised,
 you can have Piwik generate a new one by changing a user's password in LDAP.
 
-If you've enabled the `Generate Random token_auth For New Users` option, then in order to generate a new token auth you'll have to run the
-`loginldap:generate-token-auth` command if a token auth is compromised.
+If you've enabled the `Generate Random token_auth For New Users` option and a token auth is compromised, you'll have to run the
+`loginldap:generate-token-auth` command to generate a new one.
 
 **Logging**
 

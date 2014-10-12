@@ -8,8 +8,12 @@
 * It is possible now to test memberOf and filter settings from within the LDAP settings page.
 * Piwik access permissions can be specified from within LDAP using custom attributes.
 * It is allowed to specify multiple LDAP fallback servers. If one fails, the others are used.
-* Tests that make sure the PHP LDAP extension exists were upgraded.
+* Tests that make sure the PHP LDAP extension exists were fixed and also implemented in loginpage.
 * Special LDAP log was removed. Logging is done through Piwik\\Log now.
+* New setting for LDAP network timeout.
+* Menu entry is LDAP > Settings now instead of Manage > LDAP Users.
+* The synchronize single user feature in the settings page was removed.
+* Supports three types of authentication strategies.
 * Only compatible with Piwik 2.8 and above.
 
 #### LoginLdap 2.2.7:
