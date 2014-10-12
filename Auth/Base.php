@@ -88,7 +88,7 @@ abstract class Base implements Auth
      *
      * @var string[]
      */
-    private $userForLogin = null;
+    protected  $userForLogin = null;
 
     /**
      * Authentication module's name, e.g., "LoginLdap"

@@ -121,6 +121,10 @@ class SynchronizedAuth extends Base
         $passwordHash = UsersManager::getPasswordHash($this->password);
         $newTokenAuth = $this->usersManagerAPI->getTokenAuth($this->login, $passwordHash);
         $this->usersModel->updateUser($this->login, $passwordHash, $user['email'], $user['alias'], $newTokenAuth);
+
+        // make sure cookie has corresct token auth
+        $this->userForLogin['password'] = $passwordHash;
+        $this->token_auth = $this->userForLogin['token_auth'] = $newTokenAuth;
     }
 
     /**
