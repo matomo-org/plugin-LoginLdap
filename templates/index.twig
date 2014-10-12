@@ -45,6 +45,18 @@
 
         <tr>
             <td>
+                <label for="ldap_network_timeout">{{ 'LoginLdap_NetworkTimeout'|translate }}</label><br/>
+                <span class='form-description'>{{ 'LoginLdap_NetworkTimeoutDescription'|translate }}</span><br/>
+                <br/>
+                <span class='form-description'>{{ 'LoginLdap_NetworkTimeoutDescription2'|translate }}</span>
+            </td>
+            <td>
+                <input type="text" value="{{ ldapConfig.ldap_network_timeout }}" id="ldap_network_timeout" name="ldap_network_timeout"/>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
                 <label for="memberOf">{{ 'LoginLdap_MemberOf'|translate }} </label>
                 <br/>
                 <span class='form-description'>{{ 'LoginLdap_MemberOfDescription'|translate }}</span><br/>

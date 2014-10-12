@@ -10,6 +10,7 @@ namespace Piwik\Plugins\LoginLdap;
 use Exception;
 use Piwik\Config as PiwikConfig;
 use Piwik\Log;
+use Piwik\Plugins\LoginLdap\Ldap\Client;
 use Piwik\Plugins\LoginLdap\Ldap\ServerInfo;
 
 /**
@@ -39,6 +40,7 @@ class Config
         'user_access_attribute_server_specification_delimiter' => ';',
         'user_access_attribute_server_separator' => ':',
         'instance_name' => '',
+        'ldap_network_timeout' => Client::DEFAULT_TIMEOUT_SECS
     );
 
     // for backwards compatibility
@@ -189,6 +191,11 @@ class Config
     public static function getShouldSynchronizeUsersAfterLogin()
     {
         return self::getConfigOption('synchronize_users_after_login') == 1;
+    }
+
+    public static function getLdapNetworkTimeout()
+    {
+        return self::getConfigOption('ldap_network_timeout');
     }
 
     public static function getServerConfig($server)

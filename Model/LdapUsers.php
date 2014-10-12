@@ -95,6 +95,13 @@ class LdapUsers
     private $ldapUserMapper;
 
     /**
+     * The timeout value in seconds for all LDAP network requests.
+     *
+     * @var int
+     */
+    private $ldapNetworkTimeout = LdapClient::DEFAULT_TIMEOUT_SECS;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -345,6 +352,26 @@ class LdapUsers
     }
 
     /**
+     * Gets the {@link $ldapNetworkTimeout} member.
+     *
+     * @return int
+     */
+    public function getLdapNetworkTimeout()
+    {
+        return $this->ldapNetworkTimeout;
+    }
+
+    /**
+     * Sets the {@link $ldapNetworkTimeout} member.
+     *
+     * @param int $ldapNetworkTimeout
+     */
+    public function setLdapNetworkTimeout($ldapNetworkTimeout)
+    {
+        $this->ldapNetworkTimeout = $ldapNetworkTimeout;
+    }
+
+    /**
      * Public only for use in closure.
      */
     public function getUserEntryQuery($username = null)
@@ -444,7 +471,7 @@ class LdapUsers
 
         foreach ($this->ldapServers as $server) {
             try {
-                $this->ldapClient->connect($server->getServerHostname(), $server->getServerPort());
+                $this->ldapClient->connect($server->getServerHostname(), $server->getServerPort(), $this->getLdapNetworkTimeout());
                 $this->currentServerInfo = $server;
 
                 Log::info("LdapUsers::%s: Using LDAP server %s:%s", __FUNCTION__, $server->getServerHostname(), $server->getServerPort());
@@ -517,10 +544,15 @@ class LdapUsers
             $result->setAuthenticationLdapFilter($filter);
         }
 
+        $timeoutSecs = Config::getLdapNetworkTimeout();
+        if (!empty($timeoutSecs)) {
+            $result->setLdapNetworkTimeout($timeoutSecs);
+        }
+
         $result->setLdapUserMapper(UserMapper::makeConfigured());
 
-        Log::debug("LdapUsers::%s: configuring with userEmailSuffix = %s, requiredMemberOf = %s, filter = %s",
-            __FUNCTION__, $usernameSuffix, $requiredMemberOf, $filter);
+        Log::debug("LdapUsers::%s: configuring with userEmailSuffix = %s, requiredMemberOf = %s, filter = %s, timeoutSecs = %s",
+            __FUNCTION__, $usernameSuffix, $requiredMemberOf, $filter, $timeoutSecs);
 
         return $result;
     }

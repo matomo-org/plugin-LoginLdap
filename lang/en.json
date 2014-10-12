@@ -76,6 +76,9 @@
         "PasswordFieldDescription2": "If 'Use LDAP for Authentication' is enabled and 'Generate Random token_auth For New Users' is disabled, the value of this field in LDAP must be a user's hashed or encrypted password.",
         "ReadMoreAboutAccessSynchronization": "To learn more about user access synchronization, %1$sread our docs%2$s.",
         "ExpectedLdapAttributes": "Expected LDAP attributes",
-        "ExpectedLdapAttributesPrelude": "With this configuration, LoginLdap will expect attributes in LDAP that look like"
+        "ExpectedLdapAttributesPrelude": "With this configuration, LoginLdap will expect attributes in LDAP that look like",
+        "NetworkTimeout": "LDAP Network Request Timeout (in secs)",
+        "NetworkTimeoutDescription": "The time limit in seconds for an LDAP network request.",
+        "NetworkTimeoutDescription2": "The larger the timeout, the more time your users may have to wait before Piwik can log them in through LDAP, if one or more of your servers becomes unresponsive."
     }
 }

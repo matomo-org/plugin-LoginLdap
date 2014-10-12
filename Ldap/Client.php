@@ -18,6 +18,8 @@ use Piwik\Error;
  */
 class Client
 {
+    const DEFAULT_TIMEOUT_SECS = 15;
+
     private static $initialBindErrorCodesToIgnore = array(
         7, // LDAP_AUTH_METHOD_NOT_SUPPORTED
         8, // LDAP_STRONG_AUTH_REQUIRED
@@ -41,10 +43,10 @@ class Client
      * @param int $port The server port to use.
      * @throws Exception if a connection is attempted and it fails.
      */
-    public function __construct($serverHostName = null, $port = ServerInfo::DEFAULT_LDAP_PORT)
+    public function __construct($serverHostName = null, $port = ServerInfo::DEFAULT_LDAP_PORT, $timeout = self::DEFAULT_TIMEOUT_SECS)
     {
         if (!empty($serverHostName)) {
-            $this->connect($serverHostName, $port);
+            $this->connect($serverHostName, $port, $timeout);
         }
     }
 
@@ -57,21 +59,22 @@ class Client
      *
      * @param string $serverHostName The hostname of the LDAP server.
      * @param int $port The server port to use.
+     * @param int $timeout The timeout in seconds of the network connection.
      * @throws Exception If an error occurs during the `ldap_connect` call or if there is a connection
      *                   issue during the subsequent anonymous bind.
      */
-    public function connect($serverHostName, $port = ServerInfo::DEFAULT_LDAP_PORT)
+    public function connect($serverHostName, $port = ServerInfo::DEFAULT_LDAP_PORT, $timeout = self::DEFAULT_TIMEOUT_SECS)
     {
         $this->closeIfCurrentlyOpen();
 
         Log::debug("Calling ldap_connect('%s', %s)", $serverHostName, $port);
 
-        $this->connectionResource = $this->throwPhpErrors(function () use ($serverHostName, $port) {
+        $this->connectionResource = $this->throwPhpErrors(function () use ($serverHostName, $port, $timeout) {
             $result = ldap_connect($serverHostName, $port);
 
             ldap_set_option($result, LDAP_OPT_PROTOCOL_VERSION, 3);
             ldap_set_option($result, LDAP_OPT_REFERRALS, 0);
-            ldap_set_option($result, LDAP_OPT_NETWORK_TIMEOUT, 15);
+            ldap_set_option($result, LDAP_OPT_NETWORK_TIMEOUT, $timeout);
 
             return $result;
         });
