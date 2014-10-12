@@ -104,13 +104,29 @@ class LdapAuth extends Base
                 return $this->makeAuthFailure();
             }
 
-            if ($this->authenticateByLdap()) {
+            $ldapException = null;
+            $authenticationSucceeded = false;
+            try {
+                $authenticationSucceeded = $this->authenticateByLdap();
+            } catch (Exception $ex) {
+                $ldapException = $ex; // don't rethrow until after we try normal auth for superusers
+            }
+
+            if ($authenticationSucceeded) {
                 $user = $this->getUserForLogin();
                 return $this->makeSuccessLogin($user);
             } else {
                 // if LDAP auth failed, try normal auth. if we have a login for a superuser, let it through.
                 // this way, LoginLdap can be managed even if no users exist in LDAP.
-                return $this->tryNormalAuth($onlySuperUsers = true);
+                $result = $this->tryNormalAuth($onlySuperUsers = true);
+
+                if (!$result->wasAuthenticationSuccessful()
+                    && !empty($ldapException)
+                ) {
+                    throw $ldapException;
+                }
+
+                return $result;
             }
         } catch (ConnectionException $ex) {
             throw $ex;
