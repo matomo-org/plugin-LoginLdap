@@ -173,7 +173,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
         $this->assertEmpty($result['alias']);
     }
 
-    public function test_createPiwikUserFromLdapUser_CreatesPiwikUserWithRandomTokenAuth_WhenUserPasswordIsMissing()
+    public function test_createPiwikUserFromLdapUser_CreatesPiwikUserWithRandomPassword_WhenUserPasswordIsMissing()
     {
         $result = $this->userMapper->createPiwikUserFromLdapUser(array(
             'uid' => 'clara',
@@ -182,7 +182,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
             'mail' => 'clara@coalhill.co.uk'
         ));
 
-        $this->assertNotEmpty($result['token_auth']);
+        $this->assertNotEmpty($result['password']);
     }
 
     public function test_createPiwikUserFromLdapUser_SetsCorrectEmail_WhenUserHasNone()
