@@ -124,6 +124,9 @@ class SynchronizedAuthTest extends LdapIntegrationTest
 
         $user = $this->getUser(self::TEST_LOGIN);
         $this->assertEquals(md5(self::TEST_PASS), $user['password']);
+
+        $newTokenAuth = UsersManagerAPI::getInstance()->getTokenAuth(self::TEST_LOGIN, md5(self::TEST_PASS));
+        $this->assertEquals($newTokenAuth, $user['token_auth']);
     }
 
     private function addPreSynchronizedUser($pass = self::TEST_PASS)

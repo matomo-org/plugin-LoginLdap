@@ -58,7 +58,7 @@ class SynchronizedAuth extends Base
     public function authenticate()
     {
         try {
-            $result = $this->tryNormalAuth($onlySuperUsers = false, $forceTokenAuth = true);
+            $result = $this->tryNormalAuth($onlySuperUsers = false);
             if ($result->wasAuthenticationSuccessful()) {
                 return $result;
             }
@@ -119,7 +119,8 @@ class SynchronizedAuth extends Base
         $user = $this->getUserForLogin();
 
         $passwordHash = UsersManager::getPasswordHash($this->password);
-        $this->usersModel->updateUser($this->login, $passwordHash, $user['email'], $user['alias'], $user['token_auth']);
+        $newTokenAuth = $this->usersManagerAPI->getTokenAuth($this->login, $passwordHash);
+        $this->usersModel->updateUser($this->login, $passwordHash, $user['email'], $user['alias'], $newTokenAuth);
     }
 
     /**

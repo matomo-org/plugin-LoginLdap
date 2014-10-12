@@ -10,6 +10,7 @@ namespace Piwik\Plugins\LoginLdap\Auth;
 use Exception;
 use Piwik\Auth;
 use Piwik\AuthResult;
+use Piwik\Log;
 use Piwik\Piwik;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
@@ -266,13 +267,21 @@ abstract class Base implements Auth
         $auth = new \Piwik\Plugins\Login\Auth();
         $auth->setLogin($this->login);
         if (!empty($this->password)) {
+            Log::debug("Auth\\Base::%s: trying normal auth with user password", __FUNCTION__);
+
             $auth->setPassword($this->password);
         } else if (!empty($this->passwordHash)) {
+            Log::debug("Auth\\Base::%s: trying normal auth with hashed password", __FUNCTION__);
+
             $auth->setPasswordHash($this->passwordHash);
         } else {
+            Log::debug("Auth\\Base::%s: trying normal auth with token auth", __FUNCTION__);
+
             $auth->setTokenAuth($this->token_auth);
         }
         $result = $auth->authenticate();
+
+        Log::debug("Auth\\Base::%s: normal auth returned result code %s for user '%s'", __FUNCTION__, $result->getCode(), $this->login);
 
         if (!$onlySuperUsers
             || $result->getCode() == AuthResult::SUCCESS_SUPERUSER_AUTH_CODE
