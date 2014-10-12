@@ -64,19 +64,19 @@ class Client
     {
         $this->closeIfCurrentlyOpen();
 
-        $this->connectionResource = $this->throwPhpErrors(function () use ($serverHostName, $port) {
-            Log::debug("Calling ldap_connect('%s', %s)", $serverHostName, $port);
+        Log::debug("Calling ldap_connect('%s', %s)", $serverHostName, $port);
 
+        $this->connectionResource = $this->throwPhpErrors(function () use ($serverHostName, $port) {
             $result = ldap_connect($serverHostName, $port);
 
             ldap_set_option($result, LDAP_OPT_PROTOCOL_VERSION, 3);
             ldap_set_option($result, LDAP_OPT_REFERRALS, 0);
             ldap_set_option($result, LDAP_OPT_NETWORK_TIMEOUT, 15);
 
-            Log::debug("ldap_connect result is %s", $result);
-
             return $result;
         });
+
+        Log::debug("ldap_connect result is %s", $this->connectionResource);
 
         // ldap_connect will not always try to connect to the server, so execute a bind
         // to test the connection
@@ -84,12 +84,16 @@ class Client
         try {
             $this->throwPhpErrors(function () use ($connectionResource) {
                 ldap_bind($connectionResource);
-
-                Log::debug("anonymous ldap_bind call finished; connection ok");
             });
+
+            Log::debug("anonymous ldap_bind call finished; connection ok");
         } catch (Exception $ex) {
             // if the error was due to a connection error, rethrow, otherwise ignore it
-            if (!in_array(ldap_errno($connectionResource), self::$initialBindErrorCodesToIgnore)) {
+            $errno = ldap_errno($connectionResource);
+
+            Log::debug("anonymous ldap_bind returned error '%s'", $errno);
+
+            if (!in_array($errno, self::$initialBindErrorCodesToIgnore)) {
                 throw $ex;
             }
         }
@@ -127,15 +131,16 @@ class Client
     public function bind($resourceDn, $password)
     {
         $connectionResource = $this->connectionResource;
-        return $this->throwPhpErrors(function () use ($connectionResource, $resourceDn, $password) {
-            Log::debug("Calling ldap_bind(%s, '%s', <password[length=%s]>)", $connectionResource, $resourceDn, strlen($password));
 
-            $result = ldap_bind($connectionResource, $resourceDn, $password);
+        Log::debug("Calling ldap_bind(%s, '%s', <password[length=%s]>)", $connectionResource, $resourceDn, strlen($password));
 
-            Log::debug("ldap_bind result is '%s'", (int)$result);
-
-            return $result;
+        $result = $this->throwPhpErrors(function () use ($connectionResource, $resourceDn, $password) {
+            return ldap_bind($connectionResource, $resourceDn, $password);
         });
+
+        Log::debug("ldap_bind result is '%s'", (int)$result);
+
+        return $result;
     }
 
     /**
@@ -160,15 +165,14 @@ class Client
 
         if (!empty($searchResultResource)) {
             $connectionResource = $this->connectionResource;
+
+            Log::debug("Calling ldap_get_entries(%s, %s)", $connectionResource, $searchResultResource);
+
             $ldapInfo = $this->throwPhpErrors(function () use ($connectionResource, $searchResultResource) {
-                Log::debug("Calling ldap_get_entries(%s, %s)", $connectionResource, $searchResultResource);
-
-                $result = ldap_get_entries($connectionResource, $searchResultResource);
-
-                Log::debug("ldap_get_entries result is %s", $result === null ? 'null' : 'not null');
-
-                return $result;
+                return ldap_get_entries($connectionResource, $searchResultResource);
             });
+
+            Log::debug("ldap_get_entries result is %s", $ldapInfo === null ? 'null' : 'not null');
 
             return $this->transformLdapInfo($ldapInfo);
         } else {
@@ -197,15 +201,14 @@ class Client
 
         if (!empty($searchResultResource)) {
             $connectionResource = $this->connectionResource;
-            return $this->throwPhpErrors(function () use ($connectionResource, $searchResultResource) {
-                Log::debug("Calling ldap_count_entries(%s, %s)", $connectionResource, $searchResultResource);
 
-                $result = ldap_count_entries($connectionResource, $searchResultResource);
+            Log::debug("Calling ldap_count_entries(%s, %s)", $connectionResource, $searchResultResource);
 
-                Log::debug("ldap_count_entries returned %s", $result);
-
-                return $result;
+            $result = $this->throwPhpErrors(function () use ($connectionResource, $searchResultResource) {
+                return ldap_count_entries($connectionResource, $searchResultResource);
             });
+
+            Log::debug("ldap_count_entries returned %s", $result);
         } else {
             throw new Exception("Unexpected error: ldap_search returned null.");
         }
@@ -225,15 +228,16 @@ class Client
     private function doClose()
     {
         $connectionResource = $this->connectionResource;
-        return $this->throwPhpErrors(function () use ($connectionResource) {
-            Log::debug("Calling ldap_close(%s)", $connectionResource);
 
-            $result = ldap_close($connectionResource);
+        Log::debug("Calling ldap_close(%s)", $connectionResource);
 
-            Log::debug("ldap_close returned %s", $result ? 'true' : 'false');
-
-            return $result;
+        $result = $this->throwPhpErrors(function () use ($connectionResource) {
+            return ldap_close($connectionResource);
         });
+
+        Log::debug("ldap_close returned %s", $result ? 'true' : 'false');
+
+        return$result;
     }
 
     private function closeIfCurrentlyOpen()
@@ -382,15 +386,16 @@ class Client
     private function initiateSearch($baseDn, $ldapFilter, $attributes = array())
     {
         $connectionResource = $this->connectionResource;
-        return $this->throwPhpErrors(function () use ($connectionResource, $baseDn, $ldapFilter, $attributes) {
-            Log::debug("Calling ldap_search(%s, '%s', '%s')", $connectionResource, $baseDn, $ldapFilter);
 
-            $result = ldap_search($connectionResource, $baseDn, $ldapFilter, $attributes);
+        Log::debug("Calling ldap_search(%s, '%s', '%s')", $connectionResource, $baseDn, $ldapFilter);
 
-            Log::debug("ldap_search result is %s", $result);
-
-            return $result;
+        $result = $this->throwPhpErrors(function () use ($connectionResource, $baseDn, $ldapFilter, $attributes) {
+            return ldap_search($connectionResource, $baseDn, $ldapFilter, $attributes);
         });
+
+        Log::debug("ldap_search result is %s", $result);
+
+        return $result;
     }
 
     /**
