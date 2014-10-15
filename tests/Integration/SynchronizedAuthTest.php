@@ -11,6 +11,7 @@ use Piwik\Common;
 use Piwik\Config;
 use Piwik\Db;
 use Piwik\Plugins\LoginLdap\Auth\SynchronizedAuth;
+use Piwik\Plugins\LoginLdap\Ldap\Exceptions\ConnectionException;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 
 /**
@@ -90,6 +91,16 @@ class SynchronizedAuthTest extends LdapIntegrationTest
         $this->doAuthTestByPasswordHash($code = 1, self::NON_LDAP_NORMAL_USER, self::NON_LDAP_NORMAL_PASS);
     }
 
+    /**
+     * @expectedException ConnectionException
+     */
+    public function test_LdapUsersCannotLogin_IfUnsynchronized_AndLdapServerBroken()
+    {
+        Config::getInstance()->LoginLdap['servers'] = array('brokenserver');
+
+        $this->doAuthTest($code = 0);
+    }
+
     public function test_LdapUserCannotLogin_IfUserNotInDb_SynchronizingAfterLoginDisabled()
     {
         Config::getInstance()->LoginLdap['synchronize_users_after_login'] = 0;
@@ -116,6 +127,11 @@ class SynchronizedAuthTest extends LdapIntegrationTest
         $this->doAuthTest($code = 0, self::NON_LDAP_USER, self::NON_LDAP_PASS);
     }
 
+    public function test_AuthenticationFails_WhenUserNotInDb_AndUserInLdap_AndOnlyTokenAuthTested()
+    {
+        $this->doAuthTest($code = 0, self::TEST_LOGIN, null, $this->getLdapUserTokenAuth());
+    }
+
     public function test_LdapUserPasswordUpdated_AfterSuccessfulLoginViaLdap()
     {
         $this->addLdapUserWithWrongPassword();
@@ -125,7 +141,7 @@ class SynchronizedAuthTest extends LdapIntegrationTest
         $user = $this->getUser(self::TEST_LOGIN);
         $this->assertEquals(md5(self::TEST_PASS), $user['password']);
 
-        $newTokenAuth = UsersManagerAPI::getInstance()->getTokenAuth(self::TEST_LOGIN, md5(self::TEST_PASS));
+        $newTokenAuth = $this->getLdapUserTokenAuth();
         $this->assertEquals($newTokenAuth, $user['token_auth']);
     }
 
@@ -143,11 +159,18 @@ class SynchronizedAuthTest extends LdapIntegrationTest
         $this->addPreSynchronizedUser('averywrongpassword');
     }
 
-    private function doAuthTest($expectCode, $login = self::TEST_LOGIN, $pass = self::TEST_PASS)
+    private function doAuthTest($expectCode, $login = self::TEST_LOGIN, $pass = self::TEST_PASS, $token_auth = null)
     {
         $auth = SynchronizedAuth::makeConfigured();
-        $auth->setLogin($login);
-        $auth->setPassword($pass);;
+        if (!empty($login)) {
+            $auth->setLogin($login);
+        }
+        if (!empty($pass)) {
+            $auth->setPassword($pass);;
+        }
+        if (!empty($token_auth)) {
+            $auth->setTokenAuth($token_auth);
+        }
         $result = $auth->authenticate();
 
         $this->assertEquals($expectCode, $result->getCode());
@@ -173,5 +196,10 @@ class SynchronizedAuthTest extends LdapIntegrationTest
         $result = $auth->authenticate();
 
         $this->assertEquals($expectCode, $result->getCode());
+    }
+
+    private function getLdapUserTokenAuth()
+    {
+        return UsersManagerAPI::getInstance()->getTokenAuth(self::TEST_LOGIN, md5(self::TEST_PASS));
     }
 }

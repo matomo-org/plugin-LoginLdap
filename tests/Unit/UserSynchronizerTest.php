@@ -122,7 +122,7 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
         $this->userSynchronizer->synchronizeLdapUser('piwikuser', array());
     }
 
-    public function test_synchronizeLdapUser_DoesNotSynchronizeUserAccessOnUpdate_WhenUserAccessMapperNotUsed()
+    public function test_synchronizePiwikAccessFromLdap_DoesNotSynchronizeUserAccessOnUpdate_WhenUserAccessMapperNotUsed()
     {
         $this->setUserManagerApiMock($throwsOnAdd = false, $throwsOnUpdate = false, $throwsOnSetAccess = true);
 
@@ -148,6 +148,16 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(array(
             array('piwikuser', true)
         ), $this->superUserAccess);
+    }
+
+    public function test_synchronizePiwikAccessFromLdap_Succeeds_IfLdapUserHasNoAccess()
+    {
+        $this->setUserManagerApiMock($throwsOnAdd = false);
+        $this->setUserAccessMapperMock(array());
+
+        $this->userSynchronizer->synchronizePiwikAccessFromLdap('piwikuser', array());
+        $this->assertEquals(array(), $this->userAccess);
+        $this->assertEquals(array(), $this->superUserAccess);
     }
 
     private function setUserManagerApiMock($throwsOnAddUser, $throwsOnUpdateUser = false, $throwsOnSetAccess = false)

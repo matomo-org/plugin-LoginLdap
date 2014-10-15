@@ -9,6 +9,7 @@
 namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
 use Exception;
+use Piwik\Config;
 use Piwik\Plugins\LoginLdap\API;
 
 /**
@@ -61,6 +62,75 @@ class ApiTest extends LdapIntegrationTest
     {
         $count = $this->api->getCountOfUsersMatchingFilter("(objectClass=person)");
         $this->assertEquals(5, $count);
+    }
+
+    public function test_saveLdapConfig_SavesConfigToINIFile_AndIgnoresInvalidConfigNames()
+    {
+        Config::unsetInstance();
+        Config::getInstance()->setTestEnvironment();
+        $_SERVER['HTTP_METHOD'] = 'POST';
+
+        $configToSave = array(
+            'use_ldap_for_authentication' => 0,
+            'synchronize_users_after_login' => 0,
+            'enable_synchronize_access_from_ldap' => 1,
+            'enable_random_token_auth_generation' => 1,
+            'new_user_default_sites_view_access' => '10,11,13',
+            'servers' => 'abc',
+            'nonconfigoption' => 'def'
+        );
+
+        $this->api->saveLdapConfig(json_encode($configToSave));
+
+        $ldapConfig = Config::getInstance()->LoginLdap;
+        $this->assertEquals(0, $ldapConfig['use_ldap_for_authentication']);
+        $this->assertEquals(0, $ldapConfig['synchronize_users_after_login']);
+        $this->assertEquals(1, $ldapConfig['enable_synchronize_access_from_ldap']);
+        $this->assertEquals(1, $ldapConfig['enable_random_token_auth_generation']);
+        $this->assertEquals('10,11,13', $ldapConfig['new_user_default_sites_view_access']);
+        $this->assertTrue(empty($ldapConfig['servers']));
+        $this->assertTrue(empty($ldapConfig['nonconfigoption']));
+    }
+
+    public function test_saveServersInfo_SavesConfigToINIFile_AndIgnoresInvalidServerInfo()
+    {
+        Config::unsetInstance();
+        Config::getInstance()->setTestEnvironment();
+        $_SERVER['HTTP_METHOD'] = 'POST';
+
+        $serverInfos = array(
+            array(
+                'name' => 'server1',
+                'hostname' => 'ahost.com',
+                'port' => 389,
+                'base_dn' => 'somedn'
+            ),
+            array(
+                'invaliddata' => 'sdfjklsdj',
+                'name' => 'server2',
+                'hostname' => 'thehost.com',
+                'port' => 456,
+                'base_dn' => 'thedn',
+                'admin_user' => 'admin',
+                'admin_pass' => 'pass'
+            ),
+        );
+
+        $this->api->saveServersInfo(json_encode($serverInfos));
+
+        $this->assertEquals(array(
+            'hostname' => 'ahost.com',
+            'port' => 389,
+            'base_dn' => 'somdn'
+        ), Config::getInstance()->LoginLdap_server1);
+
+        $this->assertEquals(array(
+            'hostname' => 'thehost.com',
+            'port' => 456,
+            'base_dn' => 'thedn',
+            'admin_user' => 'admin',
+            'admin_pass' => 'pass'
+        ), Config::getInstance()->LoginLdap_server2);
     }
 
     /**

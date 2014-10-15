@@ -186,6 +186,26 @@ class AuthenticationTest extends LdapIntegrationTest
         $this->assertEquals(0, $authResult->getCode());
     }
 
+    public function testAuthenticationFailsWhenEmptyLoginProvided()
+    {
+        $ldapAuth = LdapAuth::makeConfigured();
+        $ldapAuth->setLogin('');
+        $ldapAuth->setPassword('lsakjdfdslj');
+        $authResult = $ldapAuth->authenticate();
+
+        $this->assertEquals(0, $authResult->getCode());
+    }
+
+    public function testAuthenticationFailsWhenAnonymousLoginProvided()
+    {
+        $ldapAuth = LdapAuth::makeConfigured();
+        $ldapAuth->setLogin('anonymous');
+        $ldapAuth->setPassword('lsakjdfdslj');
+        $authResult = $ldapAuth->authenticate();
+
+        $this->assertEquals(0, $authResult->getCode());
+    }
+
     private function getNonLdapUserTokenAuth()
     {
         return UsersManagerAPI::getInstance()->getTokenAuth(self::NON_LDAP_USER, md5(self::NON_LDAP_PASS));
