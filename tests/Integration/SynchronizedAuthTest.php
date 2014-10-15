@@ -11,7 +11,6 @@ use Piwik\Common;
 use Piwik\Config;
 use Piwik\Db;
 use Piwik\Plugins\LoginLdap\Auth\SynchronizedAuth;
-use Piwik\Plugins\LoginLdap\Ldap\Exceptions\ConnectionException;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 
 /**
@@ -92,7 +91,7 @@ class SynchronizedAuthTest extends LdapIntegrationTest
     }
 
     /**
-     * @expectedException ConnectionException
+     * @expectedException \Piwik\Plugins\LoginLdap\Ldap\Exceptions\ConnectionException
      */
     public function test_LdapUsersCannotLogin_IfUnsynchronized_AndLdapServerBroken()
     {
