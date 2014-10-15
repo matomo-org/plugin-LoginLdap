@@ -121,7 +121,7 @@ class ApiTest extends LdapIntegrationTest
         $this->assertEquals(array(
             'hostname' => 'ahost.com',
             'port' => 389,
-            'base_dn' => 'somdn',
+            'base_dn' => 'somedn',
             'admin_user' => null,
             'admin_pass' => null
         ), Config::getInstance()->LoginLdap_server1);
