@@ -103,7 +103,9 @@ class ApiTest extends LdapIntegrationTest
                 'name' => 'server1',
                 'hostname' => 'ahost.com',
                 'port' => 389,
-                'base_dn' => 'somedn'
+                'base_dn' => 'somedn',
+                'admin_user' => null,
+                'admin_pass' => null
             ),
             array(
                 'invaliddata' => 'sdfjklsdj',
