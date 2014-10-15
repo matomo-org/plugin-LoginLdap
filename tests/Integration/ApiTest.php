@@ -68,7 +68,7 @@ class ApiTest extends LdapIntegrationTest
     {
         Config::unsetInstance();
         Config::getInstance()->setTestEnvironment();
-        $_SERVER['HTTP_METHOD'] = 'POST';
+        $_SERVER['REQUEST_METHOD'] = 'POST';
 
         $configToSave = array(
             'use_ldap_for_authentication' => 0,
@@ -96,7 +96,7 @@ class ApiTest extends LdapIntegrationTest
     {
         Config::unsetInstance();
         Config::getInstance()->setTestEnvironment();
-        $_SERVER['HTTP_METHOD'] = 'POST';
+        $_SERVER['REQUEST_METHOD'] = 'POST';
 
         $serverInfos = array(
             array(
