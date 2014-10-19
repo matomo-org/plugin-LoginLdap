@@ -4,7 +4,7 @@
     "MenuLdap": "Utilisateurs LDAP",
     "LoadUser": "Charger l'utilisateur depuis le LDAP",
     "LoadUserDescription": "Chercher l'utilisateur dans l'annuaire LDAP et l'ajouter à Piwik si trouvé.",
-    "Settings": "¨Paramètres LDAP",
+    "Settings": "Paramètres LDAP",
     "AliasField": "Champ alias utilisateur",
     "BaseDn": "DN de base",
     "LdapPort": "Port du serveur LDAP",
