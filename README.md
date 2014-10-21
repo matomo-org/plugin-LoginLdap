@@ -29,6 +29,8 @@ If you use the default LoginLdap configuration, you can synchronize all of your 
 
 Version 3.0.0 is a major rewrite of the plugin, so if you are upgrading for 2.2.7 you will have to do some extra work when upgrading:
 
+- Navigate tothe _Settings > LDAP_ admin page. If the configuration options look broken, make sure to reload your browser cache. You can do this by reloading the page, or through your browser's settings.
+
 - The admin user for servers must now be a full DN. In the LDAP settings page, change the admin name to be the full DN (ie, cn=...,dc=...).
 
 - Uncheck the `Use LDAP for authentication` checkbox
