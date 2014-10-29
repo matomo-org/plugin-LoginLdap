@@ -1,5 +1,8 @@
 # Piwik LoginLdap Plugin
 
+[![Build Status](https://travis-ci.org/piwik/plugin-LoginLdap.svg?branch=master)](https://travis-ci.org/piwik/plugin-LoginLdap)
+[![Coverage Status](https://img.shields.io/coveralls/piwik/plugin-LoginLdap.svg)](https://coveralls.io/r/piwik/plugin-LoginLdap?branch=master)
+
 ## Description
 
 **Piwik authentication module that allows users in LDAP to log in to Piwik. Supports web server authentication (eg, for Kerberos SSO).**
