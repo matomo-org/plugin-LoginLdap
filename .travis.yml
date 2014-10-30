@@ -31,6 +31,8 @@ matrix:
       env: TEST_SUITE=UITests MYSQL_ADAPTER=PDO_MYSQL
     - php: 5.4
       env: TEST_SUITE=UITests MYSQL_ADAPTER=PDO_MYSQL
+  allow_failures:
+    - env: TEST_SUITE=PluginTests MYSQL_ADAPTER=PDO_MYSQL TEST_AGAINST_CORE=latest_stable
 
 script: $PIWIK_ROOT_DIR/tests/travis/travis.sh
 
