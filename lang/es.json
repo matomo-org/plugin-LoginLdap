@@ -1,0 +1,5 @@
+{
+    "LoginLdap": {
+        "LdapFunctionsMissing": "falta PHP ldap_connect() ¡por favor activa LDAP en tu configuración de PHP!"
+    }
+}

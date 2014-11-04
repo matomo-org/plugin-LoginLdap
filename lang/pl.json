@@ -1,0 +1,8 @@
+{
+    "LoginLdap": {
+        "MailFieldDescription": "(np. \"e-mail\")",
+        "ServerUrl": "URL serwera",
+        "Settings": "Ustawienia LDAP",
+        "UserIdField": "Pole ID użytkownika"
+    }
+}
