@@ -1,0 +1,22 @@
+{
+    "LoginLdap": {
+        "AdminPass": "LDAP Password",
+        "AdminUser": "Nakaugnay na Username ng LDAP",
+        "BaseDn": "Base DN",
+        "CannotConnectToServer": "Hindi makakonekta sa LDAP server.",
+        "CannotConnectToServers": "Hindi makakonekta sa anumang %s LDAP na server.",
+        "LdapPort": "Port ng server",
+        "LDAPServers": "LDAP Servers",
+        "LdapUserAdded": "Matagumpay na naidagdag ang user sa LDAP!",
+        "LoadUser": "Mag-load ng user mula sa LDAP",
+        "LoadUserDescription": "Hanapin ang user sa LDAP na direktoryo at ilagay sa piwik kung makita.",
+        "MenuLdap": "Mga User ng LDAP",
+        "NoUserName": "Walang mga username na ibinigay!",
+        "PluginDescription": "Ang plugi na pang-login na may kasamang LDAP authentication. Ay nagbibigay ng alternatibo sa pangkaraniwang Piwi Login plugin.",
+        "ServerUrl": "URL ng Server",
+        "Settings": "Mga setting ng LDAP",
+        "Test": "Pagsusulit",
+        "UserIdField": "User ID Field",
+        "UserNotFound": "Hindi natagpuan ang user \"%s\"!"
+    }
+}

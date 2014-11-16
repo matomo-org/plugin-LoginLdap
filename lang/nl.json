@@ -1,0 +1,15 @@
+{
+    "LoginLdap": {
+        "AdminPass": "LDAP Wachtwoord",
+        "AdminUser": "LDAP Bind Gebruikersnaam",
+        "BaseDn": "Basis DN",
+        "CannotConnectToServer": "Kan niet verbinden met de LDAP server.",
+        "Filter": "LDAP Zoek Filter",
+        "LdapPort": "Server Poort",
+        "LDAPServers": "LDAP Servers",
+        "LdapSuperUserAccessField": "LDAP Super Gebruiker Toegang Veld",
+        "MenuLdap": "LDAP Gebruikers",
+        "Test": "Test",
+        "UserNotFound": "Gebruiker \"%s\" niet gevonden!"
+    }
+}

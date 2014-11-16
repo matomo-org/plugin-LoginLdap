@@ -1,0 +1,11 @@
+{
+    "LoginLdap": {
+        "AdminPass": "LDAP 密码",
+        "ExpectedLdapAttributes": "需要 LDAP 属性",
+        "Filter": "LDAP 搜索条件",
+        "FilterCount": "%s 符合这个条件。",
+        "FirstNameField": "名字字段",
+        "FirstNameFieldDescription": "LDAP 属性包含用户的名字",
+        "LdapPort": "服务器端口"
+    }
+}
