@@ -85,6 +85,16 @@ class UserMapper
     private $isRandomTokenAuthGenerationEnabled = false;
 
     /**
+     * If true, the user email suffix is appended to the Piwik user's login. This means
+     * the DB will store the user's login w/ the suffix, but user's will login without
+     * the suffix. This emulates pre-3.0 behavior and is necessary for backwards
+     * compatibility.
+     *
+     * @var bool
+     */
+    private $appendUserEmailSuffixToUsername = true;
+
+    /**
      * Creates an array with normal Piwik user information using LDAP data for the user. The
      * information in the result should be used with the **UsersManager.addUser** API method.
      *
@@ -104,6 +114,24 @@ class UserMapper
             'email' => $this->getEmailAddressForLdapUser($ldapUser, $login),
             'alias' => $this->getAliasForLdapUser($ldapUser)
         );
+    }
+
+    /**
+     * Returns the expected LDAP username using a Piwik login. If a user email suffix is
+     * configured, it is appended to the login. This is to provide compatible behavior
+     * with old versions of the plugin.
+     *
+     * @param string $login The Piwik login.
+     * @return string The expected LDAP login.
+     */
+    public function getExpectedLdapUsername($login)
+    {
+        if (!empty($this->userEmailSuffix)
+            && $this->appendUserEmailSuffixToUsername
+        ) {
+            $login .= $this->userEmailSuffix;
+        }
+        return $login;
     }
 
     /**
@@ -349,6 +377,26 @@ class UserMapper
     }
 
     /**
+     * Returns the {@link $appendUserEmailSuffixToUsername} property.
+     *
+     * @return bool
+     */
+    public function getAppendUserEmailSuffixToUsername()
+    {
+        return $this->appendUserEmailSuffixToUsername;
+    }
+
+    /**
+     * Sets the {@link $appendUserEmailSuffixToUsername} property.
+     *
+     * @param bool $appendUserEmailSuffixToUsername
+     */
+    public function setAppendUserEmailSuffixToUsername($appendUserEmailSuffixToUsername)
+    {
+        $this->appendUserEmailSuffixToUsername = $appendUserEmailSuffixToUsername;
+    }
+
+    /**
      * Hashes the LDAP password so no part the real LDAP password (or the hash stored in
      * LDAP) will be stored in Piwik's DB.
      */
@@ -421,6 +469,11 @@ class UserMapper
         $isRandomTokenAuthGenerationEnabled = Config::isRandomTokenAuthGenerationEnabled();
         if (!empty($isRandomTokenAuthGenerationEnabled)) {
             $result->setIsRandomTokenAuthGenerationEnabled($isRandomTokenAuthGenerationEnabled);
+        }
+
+        $appendUserEmailSuffixToUsername = Config::shouldAppendUserEmailSuffixToUsername();
+        if (!empty($appendUserEmailSuffixToUsername)) {
+            $result->setAppendUserEmailSuffixToUsername($appendUserEmailSuffixToUsername);
         }
 
         Log::debug("UserMapper::%s: configuring with uidField = %s, aliasField = %s firstNameField = %s, lastNameField = %s"
