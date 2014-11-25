@@ -12,7 +12,7 @@ env:
     - PLUGIN_NAME=LoginLdap
     - PIWIK_ROOT_DIR=$TRAVIS_BUILD_DIR/piwik
     - secure: "iCYpiyZh3YdXdvfbrvDXRG6lsb9iNIFccGPZv2etaVdmaGE3s6NfQLpXxdCk3pV73hXlXAbeP7Z3VsZzxQdvtvjCYDaRsrabydurFFiGrzA3Bn0JKdh8ALu+qWhe93YICC5NMjO4XtfL+5i02fwCmirPFhAus6ybWmWOuOZPaYA="
-    - secure: "lUvT7EynuhPCavPAyfbaImwJ9ush1liE2Xob7n8SbW4heSMC3CkpBSni3rPOqxyxiMQ7iCCvtcX5YiH/yk+n8fDcyXESdDEBIUgBWE36UZk+zRsL+tWh96gGJEXFskR9+dhsaATFwLBSVocGZi8AKU48fVbEmOZ3wTXj+6EoXNs="
+    - secure: "NyPBUrPhDIlZRwqiTLzb/RD+Vmrk6sVCcgXoYh+plce8SKFYq6hm3O5mVv/m7nxZYDSo9DtBWgBUZvbKS/d5EpxauvwCim3femWMG5Y66yCBw8vEoXchrq26/EgaN+H7BQtiY3JxBUpUoGFKM4iwpvDNL22ZPTPdWtZ5JZS/DHo="
   matrix:
     - TEST_SUITE=PluginTests MYSQL_ADAPTER=PDO_MYSQL
     - TEST_SUITE=PluginTests MYSQL_ADAPTER=PDO_MYSQL TEST_AGAINST_CORE=latest_stable
