@@ -223,6 +223,21 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
         $this->assertEquals($user['password'], $userAgain['password']);
     }
 
+    public function test_CorrectExistingUserUpdated_WhenUserEmailSuffixUsed()
+    {
+        Config::getInstance()->LoginLdap['user_email_suffix'] = '@wfandh.com';
+
+        // authenticate via ldap to add the user w/ the email suffix
+        $this->authenticateViaLdap($login = 'msmarvel', $pass = 'enrogue');
+
+        $user = $this->getUser('msmarvel');
+
+        $this->assertNotEmpty($user);
+
+        // authenticate again to make sure the correct user is updated
+        $this->authenticateViaLdap($login = 'msmarvel', $pass = 'enrogue');
+    }
+
     private function assertNoAccessInDb()
     {
         $access = $this->getAccessFor(self::TEST_LOGIN);

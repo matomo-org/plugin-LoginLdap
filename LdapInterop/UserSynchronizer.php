@@ -71,7 +71,7 @@ class UserSynchronizer
 
     /**
      * UserModel instance used to access user data. We don't go through the API in
-   * order to avoid thrown exceptions.
+     * order to avoid thrown exceptions.
      *
      * @var UserModel
      */
