@@ -271,7 +271,12 @@ class LdapUsers
                     continue;
                 }
 
-                $userIds[] = $entry[$userIdField];
+                $userId = $entry[$userIdField];
+                if (is_array($userId)) {
+                    $userId = reset($userId);
+                }
+
+                $userIds[] = $userId;
             }
             return $userIds;
         });
