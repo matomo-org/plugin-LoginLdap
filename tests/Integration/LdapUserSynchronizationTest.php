@@ -230,11 +230,11 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
         // authenticate via ldap to add the user w/ the email suffix
         $this->authenticateViaLdap($login = 'msmarvel', $pass = 'enrogue');
 
-        $user = $this->getUser('msmarvel');
+        $user = $this->getUser('msmarvel@wrandh.com');
 
         $this->assertNotEmpty($user);
 
-        // authenticate again to make sure the correct user is updated
+        // authenticate again to make sure the correct user is updated and we didn't try to add again
         $this->authenticateViaLdap($login = 'msmarvel', $pass = 'enrogue');
     }
 

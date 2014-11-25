@@ -8,16 +8,16 @@
  */
 namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
-use DatabaseTestCase;
 use Piwik\Common;
 use Piwik\Db;
 use Piwik\Log;
 use Piwik\Config;
 use Piwik\Plugins\LoginLdap\Ldap\LdapFunctions;
-use Piwik\Tests\Fixture;
+use Piwik\Tests\Framework\Fixture;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
+use Piwik\Tests\Framework\TestCase\IntegrationTestCase;
 
-abstract class LdapIntegrationTest extends DatabaseTestCase
+abstract class LdapIntegrationTest extends IntegrationTestCase
 {
     const SERVER_HOST_NAME = 'localhost';
     const SERVER_PORT = 389;
