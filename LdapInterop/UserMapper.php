@@ -185,7 +185,7 @@ class UserMapper
         $email = $this->getLdapUserField($ldapUser, $this->ldapMailField);
         if (empty($email)) { // a valid email is needed to create a new user
             $email = $login;
-            if (strpos($email, '@') !== false) {
+            if (strpos($email, '@') === false) {
                 $email .= $this->userEmailSuffix;
             }
         }
