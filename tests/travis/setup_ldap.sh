@@ -264,6 +264,7 @@ objectClass: piwikPerson
 cn: Rogue
 uid: rogue@xmansion.org
 userPassword: `slappasswd -h {md5} -s cher`
+sn: Doesnthaveone
 
 EOF
 
