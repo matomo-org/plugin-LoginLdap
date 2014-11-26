@@ -26,6 +26,8 @@ class UserMapper
      */
     const MAPPED_USER_PASSWORD_PREFIX = "{LDAP}";
 
+    const DEFAULT_USER_EMAIL_SUFFIX = '@mydomain.com';
+
     /**
      * The LDAP resource field that holds a user's username.
      *
@@ -74,7 +76,7 @@ class UserMapper
      *
      * @var string
      */
-    private $userEmailSuffix = '@mydomain.com';
+    private $userEmailSuffix = self::DEFAULT_USER_EMAIL_SUFFIX;
 
     /**
      * If true, the password in Piwik DB's is set to a randomly generated string.
@@ -128,6 +130,7 @@ class UserMapper
     {
         if (!empty($this->userEmailSuffix)
             && $this->appendUserEmailSuffixToUsername
+            && $this->userEmailSuffix != self::DEFAULT_USER_EMAIL_SUFFIX
         ) {
             $login .= $this->userEmailSuffix;
         }
