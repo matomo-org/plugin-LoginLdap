@@ -56,7 +56,7 @@ class SynchronizeUsersTest extends LdapIntegrationTest
         $this->assertEquals(0, $result, $this->getCommandDisplayOutputErrorMessage());
 
         $users = $this->getLdapUserLogins();
-        $this->assertEquals(array('blackwidow', 'captainamerica', 'ironman', 'msmarvel', 'thor'), $users);
+        $this->assertEquals(array('blackwidow', 'captainamerica', 'ironman', 'msmarvel', 'rogue@xmansion.org', 'thor'), $users);
     }
 
     public function test_CommandSynchronizesOneUser_WhenLoginSpecified()
