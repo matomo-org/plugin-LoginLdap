@@ -28,7 +28,7 @@ class WebServerAuthTest extends LdapIntegrationTest
         $this->addPreexistingSuperUser();
     }
 
-    public function testWebServerAuthWorksIfUserExistsRegardlessOfPassword()
+    public function test_WebServerAuth_Works_IfUserExists_RegardlessOfPassword()
     {
         Config::getInstance()->LoginLdap['use_webserver_auth'] = 1;
 
@@ -47,7 +47,7 @@ class WebServerAuthTest extends LdapIntegrationTest
         $this->assertEquals(1, $authResult->getCode());
     }
 
-    public function testWebServerAuthFailsIfUserDoesNotExist()
+    public function test_WebServerAuth_Fails_IfUserDoesNotExist()
     {
         Config::getInstance()->LoginLdap['use_webserver_auth'] = 1;
 
@@ -59,7 +59,7 @@ class WebServerAuthTest extends LdapIntegrationTest
         $this->assertEquals(0, $authResult->getCode());
     }
 
-    public function testWebServerAuthFailsIfUserIsNotPartOfRequiredGroup()
+    public function test_WebServerAuth_Fails_IfUserIsNotPartOfRequiredGroup()
     {
         Config::getInstance()->LoginLdap['use_webserver_auth'] = 1;
         Config::getInstance()->LoginLdap['memberOf'] = "cn=S.H.I.E.L.D.," . self::SERVER_BASE_DN;
@@ -72,7 +72,7 @@ class WebServerAuthTest extends LdapIntegrationTest
         $this->assertEquals(0, $authResult->getCode());
     }
 
-    public function testWebServerAuthFailsIfUserIsNotMatchedByCustomFilter()
+    public function test_WebServerAuth_Fails_IfUserIsNotMatchedByCustomFilter()
     {
         Config::getInstance()->LoginLdap['use_webserver_auth'] = 1;
         Config::getInstance()->LoginLdap['filter'] = "(mobile=none)";
@@ -85,7 +85,7 @@ class WebServerAuthTest extends LdapIntegrationTest
         $this->assertEquals(0, $authResult->getCode());
     }
 
-    public function testWebServerAuthFailsIfUserIsNoRemoteUserExists()
+    public function test_WebServerAuth_Fails_IfUserNoRemoteUserExists_AndNoUserSpecifiedThroughAuth()
     {
         Config::getInstance()->LoginLdap['use_webserver_auth'] = 1;
 
@@ -97,7 +97,22 @@ class WebServerAuthTest extends LdapIntegrationTest
         $this->assertEquals(0, $authResult->getCode());
     }
 
-    public function testWebServerAuthReturnsCorrectCodeForSuperUsers()
+    public function test_WebServerAuth_UsesCorrectFallbackAuth_IfNoRemoteUserExists_AndAuthDetailsSpecified()
+    {
+        Config::getInstance()->LoginLdap['use_webserver_auth'] = 1;
+
+        unset($_SERVER['REMOTE_USER']);
+
+        $ldapAuth = WebServerAuth::makeConfigured();
+        $ldapAuth->setLogin(self::TEST_LOGIN);
+        $ldapAuth->setPassword(self::TEST_PASS);
+        $authResult = $ldapAuth->authenticate();
+
+        $this->assertEquals(1, $authResult->getCode());
+
+    }
+
+    public function test_WebServerAuth_ReturnsCorrectCodeForSuperUsers()
     {
         Config::getInstance()->LoginLdap['use_webserver_auth'] = 1;
 
