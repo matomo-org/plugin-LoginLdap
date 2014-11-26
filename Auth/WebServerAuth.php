@@ -64,7 +64,7 @@ class WebServerAuth extends Base
             if (empty($webServerAuthUser)) {
                 Log::debug("using web server authentication, but REMOTE_USER server variable not found.");
 
-                return $this->useFallbackAuth();
+                return $this->tryFallbackAuth($onlySuperUsers = false, $this->fallbackAuth);
             } else {
                 $this->login = preg_replace('/@.*/', '', $webServerAuthUser);
                 $this->password = '';
@@ -173,14 +173,5 @@ class WebServerAuth extends Base
             __FUNCTION__, $synchronizeUsersAfterSuccessfulLogin, get_class($fallbackAuth));
 
         return $result;
-    }
-
-    private function useFallbackAuth()
-    {
-        Log::debug("WebServerAuth::useFallbackAuth(): attempting fallback auth with '%s'", get_class($this->fallbackAuth));
-
-        $this->fallbackAuth->setLogin($this->login);
-        $this->fallbackAuth->setPassword($this->password);
-        return $this->fallbackAuth->authenticate();
     }
 }

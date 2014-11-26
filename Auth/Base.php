@@ -262,9 +262,14 @@ abstract class Base implements Auth
         return $this->userForLogin;
     }
 
-    protected function tryNormalAuth($onlySuperUsers = true)
+    protected function tryFallbackAuth($onlySuperUsers = true, Auth $auth = null)
     {
-        $auth = new \Piwik\Plugins\Login\Auth();
+        if (empty($auth)) {
+            $auth = new \Piwik\Plugins\Login\Auth();
+        } else {
+            Log::debug("Auth\\Base::%s: trying fallback auth with auth implementation '%s'", __FUNCTION__, get_class($auth));
+        }
+
         $auth->setLogin($this->login);
         if (!empty($this->password)) {
             Log::debug("Auth\\Base::%s: trying normal auth with user password", __FUNCTION__);
