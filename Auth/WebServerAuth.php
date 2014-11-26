@@ -8,6 +8,7 @@
 namespace Piwik\Plugins\LoginLdap\Auth;
 
 use Exception;
+use Piwik\Auth;
 use Piwik\AuthResult;
 use Piwik\Log;
 use Piwik\Plugins\LoginLdap\Config;
@@ -44,6 +45,13 @@ class WebServerAuth extends Base
     private $synchronizeUsersAfterSuccessfulLogin = true;
 
     /**
+     * Fallback LDAP Auth implementation to use if REMOTE_USER is not found.
+     *
+     * @var Auth
+     */
+    private $fallbackAuth;
+
+    /**
      * Attempts to authenticate with the information set on this instance.
      *
      * @return AuthResult
@@ -56,7 +64,7 @@ class WebServerAuth extends Base
             if (empty($webServerAuthUser)) {
                 Log::debug("using web server authentication, but REMOTE_USER server variable not found.");
 
-                return $this->tryNormalAuth($onlySuperUser = true);
+                return $this->useFallbackAuth();
             } else {
                 $this->login = preg_replace('/@.*/', '', $webServerAuthUser);
                 $this->password = '';
@@ -100,6 +108,26 @@ class WebServerAuth extends Base
         $this->synchronizeUsersAfterSuccessfulLogin = $synchronizeUsersAfterSuccessfulLogin;
     }
 
+    /**
+     * Gets the {@link $fallbackAuth} property.
+     *
+     * @return Auth
+     */
+    public function getFallbackAuth()
+    {
+        return $this->fallbackAuth;
+    }
+
+    /**
+     * Sets the {@link $fallbackAuth} property.
+     *
+     * @param Auth $fallbackAuth
+     */
+    public function setFallbackAuth($fallbackAuth)
+    {
+        $this->fallbackAuth = $fallbackAuth;
+    }
+
     private function getAlreadyAuthenticatedLogin()
     {
         return @$_SERVER['REMOTE_USER'];
@@ -133,9 +161,26 @@ class WebServerAuth extends Base
         $synchronizeUsersAfterSuccessfulLogin = Config::getShouldSynchronizeUsersAfterLogin();
         $result->setSynchronizeUsersAfterSuccessfulLogin($synchronizeUsersAfterSuccessfulLogin);
 
-        Log::debug("WebServerAuth::%s: configuring with synchronizeUsersAfterSuccessfulLogin = %s",
-            __FUNCTION__, $synchronizeUsersAfterSuccessfulLogin);
+        if (Config::getUseLdapForAuthentication()) {
+            $fallbackAuth = LdapAuth::makeConfigured();
+        } else {
+            $fallbackAuth = SynchronizedAuth::makeConfigured();
+        }
+
+        $result->setFallbackAuth($fallbackAuth);
+
+        Log::debug("WebServerAuth::%s: configuring with synchronizeUsersAfterSuccessfulLogin = %s, fallbackAuth = %s",
+            __FUNCTION__, $synchronizeUsersAfterSuccessfulLogin, get_class($fallbackAuth));
 
         return $result;
+    }
+
+    private function useFallbackAuth()
+    {
+        Log::debug("WebServerAuth::useFallbackAuth(): attempting fallback auth with '%s'", get_class($this->fallbackAuth));
+
+        $this->fallbackAuth->setLogin($this->login);
+        $this->fallbackAuth->setPassword($this->password);
+        return $this->fallbackAuth->authenticate();
     }
 }
