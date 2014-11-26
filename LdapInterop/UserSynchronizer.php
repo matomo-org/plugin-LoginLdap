@@ -103,6 +103,8 @@ class UserSynchronizer
         return Access::doAsSuperUser(function () use ($piwikLogin, $ldapUser, $userMapper, $usersManagerApi, $userModel, $newUserDefaultSitesWithViewAccess) {
             $piwikLogin = $userMapper->getExpectedLdapUsername($piwikLogin);
 
+            Log::debug("UserSynchronizer::synchronizeLdapUser: synchronizing user [ piwik login = %s, ldap login = %s ]", $piwikLogin, $ldapUser['login']);
+
             $existingUser = $userModel->getUser($piwikLogin);
 
             $user = $userMapper->createPiwikUserFromLdapUser($ldapUser, $existingUser);
