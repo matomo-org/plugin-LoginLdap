@@ -61,7 +61,7 @@ class ApiTest extends LdapIntegrationTest
     public function test_getCountOfUsersMatchingFilter_ReturnsCorrectResult_WhenUsersMatchFilter()
     {
         $count = $this->api->getCountOfUsersMatchingFilter("(objectClass=person)");
-        $this->assertEquals(5, $count);
+        $this->assertEquals(6, $count);
     }
 
     public function test_saveLdapConfig_SavesConfigToINIFile_AndIgnoresInvalidConfigNames()
