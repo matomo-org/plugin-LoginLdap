@@ -55,7 +55,7 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
 
         parent::setUp();
 
-        Log::debug("Setting up " . get_class($this));
+        Log::info("Setting up " . get_class($this));
 
         // make sure logging logic is executed so we can test whether there are bugs in the logging code
         Log::getInstance()->setLogLevel(Log::DEBUG);
@@ -85,7 +85,7 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
 
     public function tearDown()
     {
-        Log::debug("Tearing down " . get_class($this));
+        Log::info("Tearing down " . get_class($this));
 
         Log::unsetInstance();
 

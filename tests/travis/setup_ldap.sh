@@ -236,8 +236,8 @@ dn: cn=Ms Marvel,$BASE_DN
 objectClass: top
 objectClass: piwikPerson
 cn: Ms Marvel
-uid: msmarvel
 uid: msmarvel@wrandh.com
+uid: msmarvel
 userPassword: `slappasswd -h {md5} -s enrogue`
 sn: Danvers
 
