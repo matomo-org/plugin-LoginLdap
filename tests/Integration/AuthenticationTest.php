@@ -149,7 +149,7 @@ class AuthenticationTest extends LdapIntegrationTest
 
     public function test_LdapAuth_AuthenticatesSuccessfully_WhenTokenAuthOnlyAuthenticationUsed()
     {
-        $this->testLdapAuthSucceedsWithCorrectCredentials();
+        $this->test_LdapAuth_AuthenticatesUser_WithCorrectCredentials();
 
         $tokenAuth = Db::fetchOne("SELECT token_auth FROM " . Common::prefixTable("user") . " WHERE login = ?", array(self::TEST_LOGIN));
 
