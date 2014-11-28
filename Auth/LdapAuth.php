@@ -92,6 +92,11 @@ class LdapAuth extends Base
     private function authenticateByPassword()
     {
         try {
+            $result = $this->tryFallbackAuth($onlySuperUsers = false);
+            if ($result->wasAuthenticationSuccessful()) {
+                return $result;
+            }
+
             if (empty($this->login)) { // sanity check
                 Log::warning("authenticateByPassword: empty login encountered.");
 
@@ -104,29 +109,13 @@ class LdapAuth extends Base
                 return $this->makeAuthFailure();
             }
 
-            $ldapException = null;
-            $authenticationSucceeded = false;
-            try {
-                $authenticationSucceeded = $this->authenticateByLdap();
-            } catch (Exception $ex) {
-                $ldapException = $ex; // don't rethrow until after we try normal auth for superusers
-            }
+            $authenticationSucceeded = $this->authenticateByLdap();
 
             if ($authenticationSucceeded) {
                 $user = $this->getUserForLogin();
                 return $this->makeSuccessLogin($user);
             } else {
-                // if LDAP auth failed, try normal auth. if we have a login for a superuser, let it through.
-                // this way, LoginLdap can be managed even if no users exist in LDAP.
-                $result = $this->tryFallbackAuth($onlySuperUsers = true);
-
-                if (!$result->wasAuthenticationSuccessful()
-                    && !empty($ldapException)
-                ) {
-                    throw $ldapException;
-                }
-
-                return $result;
+                return $this->makeAuthFailure();
             }
         } catch (ConnectionException $ex) {
             throw $ex;

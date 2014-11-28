@@ -33,7 +33,7 @@ class AuthenticationTest extends LdapIntegrationTest
         $this->addNonLdapUsers();
     }
 
-    public function testLdapAuthSucceedsWithCorrectCredentials()
+    public function test_LdapAuth_AuthenticatesUser_WithCorrectCredentials()
     {
         $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin(self::TEST_LOGIN);
@@ -43,7 +43,7 @@ class AuthenticationTest extends LdapIntegrationTest
         $this->assertEquals(1, $authResult->getCode());
     }
 
-    public function testLdapAuthFailsWithIncorrectPassword()
+    public function test_LdapAuth_DoesNotAuthenticateUser_WithIncorrectPassword()
     {
         $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin(self::TEST_LOGIN);
@@ -53,7 +53,7 @@ class AuthenticationTest extends LdapIntegrationTest
         $this->assertEquals(0, $authResult->getCode());
     }
 
-    public function testLdapAuthFailsWithNonexistantUser()
+    public function test_LdapAuth_DoesNotAuthenticateUser_WithNonexistantUser()
     {
         $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin('skldfjsd');
@@ -63,7 +63,7 @@ class AuthenticationTest extends LdapIntegrationTest
         $this->assertEquals(0, $authResult->getCode());
     }
 
-    public function testLdapAuthChecksMemberOf()
+    public function test_LdapAuth_ChecksMemberOf_WhenAuthenticating()
     {
         Config::getInstance()->LoginLdap['memberOf'] = "cn=S.H.I.E.L.D.," . self::SERVER_BASE_DN;
 
@@ -84,7 +84,7 @@ class AuthenticationTest extends LdapIntegrationTest
         $this->assertEquals(1, $authResult->getCode());
     }
 
-    public function testLdapAuthUsesConfiguredFilter()
+    public function test_LdapAuth_UsesConfiguredFilter_WhenAuthenticating()
     {
         Config::getInstance()->LoginLdap['filter'] = "(!(mobile=none))";
 
@@ -103,7 +103,7 @@ class AuthenticationTest extends LdapIntegrationTest
         $this->assertEquals(0, $authResult->getCode());
     }
 
-    public function testLdapAuthReturnsCorrectCodeForSuperUsers()
+    public function test_LdapAuth_ReturnsCorrectCode_WhenAuthenticatingSuperUsers()
     {
         $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin(self::TEST_SUPERUSER_LOGIN);
@@ -113,7 +113,7 @@ class AuthenticationTest extends LdapIntegrationTest
         $this->assertEquals(AuthResult::SUCCESS_SUPERUSER_AUTH_CODE, $authResult->getCode());
     }
 
-    public function testLdapAuthReturnsCorrectCodeForNonLdapSuperUsers()
+    public function test_LdapAuth_ReturnsCorrectCode_WhenAuthenticatingNonLdapSuperUsers()
     {
         $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin(self::NON_LDAP_USER);
@@ -130,7 +130,7 @@ class AuthenticationTest extends LdapIntegrationTest
         $this->assertEquals(AuthResult::SUCCESS_SUPERUSER_AUTH_CODE, $authResult->getCode());
     }
 
-    public function testLdapAuthReturnsCorrectCodeForNonLdapNormalUsers()
+    public function test_LdapAuth_ReturnsCorrectCode_WhenAuthenticatingNonLdapNormalUsers()
     {
         $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin(self::NON_LDAP_NORMAL_USER);
@@ -147,7 +147,7 @@ class AuthenticationTest extends LdapIntegrationTest
         $this->assertEquals(0, $authResult->getCode());
     }
 
-    public function testTokenAuthOnlyAuthenticationWorks()
+    public function test_LdapAuth_AuthenticatesSuccessfully_WhenTokenAuthOnlyAuthenticationUsed()
     {
         $this->testLdapAuthSucceedsWithCorrectCredentials();
 
@@ -161,7 +161,7 @@ class AuthenticationTest extends LdapIntegrationTest
         $this->assertEquals(1, $authResult->getCode());
     }
 
-    public function testAuthenticationWorksWhenAuthenticatingNormalPiwikSuperUser()
+    public function test_LdapAuth_AuthenticatesSuccessfully_WhenAuthenticatingNormalPiwikSuperUser()
     {
         UsersManagerAPI::getInstance()->addUser('zola', 'hydra___', 'zola@shield.org', $alias = false);
         UsersManagerAPI::getInstance()->setSuperUserAccess('zola', true);
@@ -174,7 +174,7 @@ class AuthenticationTest extends LdapIntegrationTest
         $this->assertEquals(AuthResult::SUCCESS_SUPERUSER_AUTH_CODE, $authResult->getCode());
     }
 
-    public function testAuthenticationFailsWhenAuthenticatingNormalPiwikNonSuperUser()
+    public function test_LdapAuth_AuthenticatesSuccessfully_WhenAuthenticatingNormalPiwikNonSuperUser()
     {
         UsersManagerAPI::getInstance()->addUser('pcoulson', 'vintage', 'pcoulson@shield.org', $alias = false);
 
@@ -183,10 +183,10 @@ class AuthenticationTest extends LdapIntegrationTest
         $ldapAuth->setPassword('vintage');
         $authResult = $ldapAuth->authenticate();
 
-        $this->assertEquals(0, $authResult->getCode());
+        $this->assertEquals(AuthResult::SUCCESS, $authResult->getCode());
     }
 
-    public function testAuthenticationFailsWhenEmptyLoginProvided()
+    public function test_LdapAuth_DoesNotAuthenticate_WhenEmptyLoginProvided()
     {
         $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin('');
@@ -196,7 +196,7 @@ class AuthenticationTest extends LdapIntegrationTest
         $this->assertEquals(0, $authResult->getCode());
     }
 
-    public function testAuthenticationFailsWhenAnonymousLoginProvided()
+    public function test_LdapAuth_DoesNotAuthenticate_WhenAnonymousLoginProvided()
     {
         $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin('anonymous');
