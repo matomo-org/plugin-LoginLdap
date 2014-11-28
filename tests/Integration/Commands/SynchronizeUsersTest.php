@@ -117,7 +117,7 @@ class SynchronizeUsersTest extends LdapIntegrationTest
             '-v' => true
         ));
 
-        $this->assertEquals(0, $result);
+        $this->assertEquals(0, $result, $this->getCommandDisplayOutputErrorMessage());
         $this->assertContains("Skipping 'captainamerica', already exists in Piwik...", $this->applicationTester->getDisplay());
 
         $this->assertStarkSynchronized();
