@@ -11,6 +11,7 @@ use Exception;
 use Piwik\Plugin\ConsoleCommand;
 use Piwik\Plugins\LoginLdap\API as LoginLdapAPI;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
+use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -31,12 +32,18 @@ class SynchronizeUsers extends ConsoleCommand
      */
     private $ldapUsers;
 
+    /**
+     * @var UsersManagerAPI
+     */
+    private $usersManagerAPI;
+
     public function __construct($name = null)
     {
         parent::__construct($name);
 
         $this->loginLdapAPI = LoginLdapAPI::getInstance();
         $this->ldapUsers = LdapUsers::makeConfigured();
+        $this->usersManagerAPI = UsersManagerAPI::getInstance();
     }
 
     protected function configure()
@@ -45,11 +52,15 @@ class SynchronizeUsers extends ConsoleCommand
         $this->setDescription('Synchronizes one, multiple or all LDAP users that the current config has access to.');
         $this->addOption('login', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED,
             'List of users to synchronize. If not specified, all users in LDAP are synchronized.');
+        $this->addOption('skip-existing', null, InputOption::VALUE_NONE,
+            "Skip users that have been synchronized at least once. Using this option will be much faster, but will not "
+            . "update user info if it has changed in LDAP.");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $logins = $input->getOption('login');
+        $skipExisting = $input->getOption('skip-existing');
 
         if (empty($logins)) {
             $logins = $this->ldapUsers->getAllUserLogins();
@@ -59,6 +70,13 @@ class SynchronizeUsers extends ConsoleCommand
         $failed = array();
 
         foreach ($logins as $login) {
+            if ($skipExisting
+                && $this->userExistsInPiwik($login)
+            ) {
+                $output->write("Skipping '$login', already exists in Piwik...");
+                continue;
+            }
+
             $output->write("Synchronizing '$login'...  ");
 
             try {
@@ -84,5 +102,11 @@ class SynchronizeUsers extends ConsoleCommand
         }
 
         return count($failed);
+    }
+
+    private function userExistsInPiwik($login)
+    {
+        $user = $this->usersManagerAPI->getUser($login);
+        return !empty($user);
     }
 }

@@ -106,6 +106,23 @@ class SynchronizeUsersTest extends LdapIntegrationTest
         $this->assertRegExp("/^.*msmarvel.*LDAP entity missing required.*$/", $this->applicationTester->getDisplay());
     }
 
+    public function test_CommandSkipsExisitingUsers_IfSkipExistingOptionUsed()
+    {
+        $this->addPreexistingSuperUser();
+
+        $result = $this->applicationTester->run(array(
+            'command' => 'loginldap:synchronize-users',
+            '--login' => array('ironman', 'captainamerica'),
+            '--skip-existing' => true,
+            '-v' => true
+        ));
+
+        $this->assertEquals(0, $result);
+        $this->assertContains("Skipping 'captainamerica', already exists in Piwik...", $this->applicationTester->getDisplay());
+
+        $this->assertStarkSynchronized();
+    }
+
     private function getLdapUserLogins()
     {
         $rows = Db::fetchAll("SELECT login from " . Common::prefixTable('user') . " WHERE password LIKE '{LDAP}%'");
