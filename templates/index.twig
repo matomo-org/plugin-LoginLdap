@@ -117,6 +117,21 @@
             </td>
             <td>
                 <input size="25" type="checkbox" id="generateRandomTokenAuth" {% if ldapConfig.enable_random_token_auth_generation %}checked="checked"{% endif %} name="enable_random_token_auth_generation"/>
+
+                <div piwik-notification context="info" id="synchronizeIndividualUserForm" noclear="true">
+                    <strong>Synchronize LDAP User</strong>
+                    <p>You can use this form to synchronize a single user in LDAP from the UI.</p>
+                    <input ng-model="userToSynchronize" type="text" value="" piwik-onenter="$parent.$parent.synchronizeUser(userToSynchronize)" placeholder="Enter a username..."/>
+                    <a href="" ng-click="$parent.$parent.synchronizeUser(userToSynchronize)">Go</a>
+                    <img src="plugins/Morpheus/images/loading-blue.gif" ng-show="$parent.$parent.currentSynchronizeUserRequest" /><br/>
+                    <br/>
+                    <div ng-show="$parent.$parent.synchronizeUserError || $parent.$parent.synchronizeUserDone">
+                        <div ng-if="$parent.$parent.synchronizeUserError">{% verbatim %}{{ $parent.$parent.$parent.synchronizeUserError }}{% endverbatim %}</div>
+                        <div ng-if="$parent.$parent.synchronizeUserDone">{% verbatim %}<strong>Done!</strong>{% endverbatim %}</div>
+                        <br/>
+                    </div>
+                    <span>To synchronize more users, use the <a href="https://github.com/piwik/plugin-LoginLdap#commands">loginldap:synchronize-users</a> command.</span>
+                </div>
             </td>
         </tr>
         <tr>

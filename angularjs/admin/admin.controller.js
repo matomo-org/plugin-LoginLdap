@@ -5,7 +5,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
 
-angular.module('piwikApp').controller('LoginLdapAdminController', function ($scope, $attrs) {
+angular.module('piwikApp').controller('LoginLdapAdminController', function ($scope, $attrs, piwikApi) {
     // LDAP server info management
     $scope.servers = JSON.parse($attrs['servers']) || [];
 
@@ -21,7 +21,6 @@ angular.module('piwikApp').controller('LoginLdapAdminController', function ($sco
     };
 
     $scope.getSampleViewAttribute = function (config) {
-        console.log(config);
         return getSampleAccessAttribute(config, config.ldap_view_access_field, '1,2', '3,4');
     };
 
@@ -31,6 +30,28 @@ angular.module('piwikApp').controller('LoginLdapAdminController', function ($sco
 
     $scope.getSampleSuperuserAttribute = function (config) {
         return getSampleAccessAttribute(config, config.ldap_superuser_access_field);
+    };
+
+    $scope.synchronizeUser = function (userLogin) {
+        $scope.synchronizeUserError = $scope.synchronizeUserDone = null;
+
+        $scope.currentSynchronizeUserRequest = piwikApi.post(
+            {
+                method: "LoginLdap.synchronizeUser"
+            },
+            {
+                login: userLogin
+            },
+            {
+                createErrorNotification: false
+            }
+        ).then(function (response) {
+            $scope.synchronizeUserDone = true;
+        }).catch(function (message) {
+            $scope.synchronizeUserError = message;
+        })['finally'](function () {
+            $scope.currentSynchronizeUserRequest = null;
+        });
     };
 
     function getSampleAccessAttribute(config, accessField, firstValue, secondValue) {
