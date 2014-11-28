@@ -3,7 +3,8 @@
         "PluginDescription": "Login plugin with LDAP authentication. Provides an alternative to the standard Piwik Login plugin.",
         "MenuLdap": "LDAP Users",
         "LoadUser": "Load User from LDAP",
-        "LoadUserDescription": "Search user in LDAP directory and add to piwik if found.",
+        "LoadUserDescription": "You can use this form to synchronize a single user in LDAP from the UI.",
+        "LoadUserCommandDesc": "To synchronize more users, use the %s command.",
         "Settings": "LDAP Settings",
         "AliasField": "User Alias Field",
         "BaseDn": "Base DN",
@@ -79,6 +80,7 @@
         "ExpectedLdapAttributesPrelude": "With this configuration, LoginLdap will expect attributes in LDAP that look like",
         "NetworkTimeout": "LDAP Network Request Timeout (in secs)",
         "NetworkTimeoutDescription": "The time limit in seconds for an LDAP network request.",
-        "NetworkTimeoutDescription2": "The larger the timeout, the more time your users may have to wait before Piwik can log them in through LDAP, if one or more of your servers becomes unresponsive."
+        "NetworkTimeoutDescription2": "The larger the timeout, the more time your users may have to wait before Piwik can log them in through LDAP, if one or more of your servers becomes unresponsive.",
+        "Go": "Go"
     }
 }
