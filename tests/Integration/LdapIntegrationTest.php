@@ -17,6 +17,8 @@ use Piwik\Tests\Framework\Fixture;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Tests\Framework\TestCase\IntegrationTestCase;
 
+require_once PIWIK_INCLUDE_PATH . '/plugins/LoginLdap/tests/Mocks/LdapFunctions.php';
+
 abstract class LdapIntegrationTest extends IntegrationTestCase
 {
     const SERVER_HOST_NAME = 'localhost';

@@ -11,7 +11,6 @@ use Exception;
 use Piwik\AuthResult;
 use Piwik\Log;
 use Piwik\Plugins\LoginLdap\Ldap\Exceptions\ConnectionException;
-use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
@@ -82,15 +81,6 @@ class LdapAuth extends Base
      */
     public function authenticate()
     {
-        if (!empty($this->password)) {
-            return $this->authenticateByPassword();
-        } else {
-            return $this->authenticateByTokenAuth();
-        }
-    }
-
-    private function authenticateByPassword()
-    {
         try {
             $result = $this->tryFallbackAuth($onlySuperUsers = false);
             if ($result->wasAuthenticationSuccessful()) {
@@ -124,35 +114,6 @@ class LdapAuth extends Base
         }
 
         return $this->makeAuthFailure();
-    }
-
-    private function isUserAllowedToAuthenticateByTokenAuth()
-    {
-        if ($this->token_auth == 'anonymous') {
-            return true;
-        }
-
-        $user = $this->getUserForLogin();
-        return UserMapper::isUserLdapUser($user);
-    }
-
-    private function authenticateByTokenAuth()
-    {
-        $auth = new \Piwik\Plugins\Login\Auth();
-        $auth->setLogin($this->login);
-        $auth->setTokenAuth($this->token_auth);
-        $result = $auth->authenticate();
-
-        // allow all super users to authenticate, even if they are not LDAP users, but stop
-        // normal non-LDAP users from authenticating.
-        if ($result->getCode() == AuthResult::SUCCESS_SUPERUSER_AUTH_CODE
-            || ($result->getCode() == AuthResult::SUCCESS
-                && $this->isUserAllowedToAuthenticateByTokenAuth())
-        ) {
-            return $result;
-        } else {
-            return $this->makeAuthFailure();
-        }
     }
 
     /**

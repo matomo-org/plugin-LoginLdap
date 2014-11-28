@@ -137,14 +137,14 @@ class AuthenticationTest extends LdapIntegrationTest
         $ldapAuth->setPassword(self::NON_LDAP_NORMAL_PASS);
         $authResult = $ldapAuth->authenticate();
 
-        $this->assertEquals(1, $authResult->getCode());
+        $this->assertEquals(AuthResult::SUCCESS, $authResult->getCode());
 
         $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setTokenAuth($this->getNonLdapNormalUserTokenAuth());
         $authResult = $ldapAuth->authenticate();
 
-        $this->assertEquals(null, $authResult->getIdentity());
-        $this->assertEquals(1, $authResult->getCode());
+        $this->assertEquals(self::NON_LDAP_NORMAL_USER, $authResult->getIdentity());
+        $this->assertEquals(AuthResult::SUCCESS, $authResult->getCode());
     }
 
     public function test_LdapAuth_AuthenticatesSuccessfully_WhenTokenAuthOnlyAuthenticationUsed()
