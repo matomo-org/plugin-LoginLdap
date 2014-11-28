@@ -81,6 +81,7 @@
         "NetworkTimeout": "LDAP Network Request Timeout (in secs)",
         "NetworkTimeoutDescription": "The time limit in seconds for an LDAP network request.",
         "NetworkTimeoutDescription2": "The larger the timeout, the more time your users may have to wait before Piwik can log them in through LDAP, if one or more of your servers becomes unresponsive.",
-        "Go": "Go"
+        "Go": "Go",
+        "LoginPluginEnabledWarning": "Both the %1$s and %2$s plugins are enabled! This will cause logins for LDAP users to fail, please disable the %1$s plugin."
     }
 }

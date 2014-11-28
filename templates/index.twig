@@ -1,6 +1,11 @@
 {% extends 'admin.twig' %}
 
 {% block content %}
+{% if isLoginControllerActivated|default(false) %}
+<div piwik-notification context="warning" noclear="true">
+    <strong>{{ 'General_Warning'|translate }}</strong>: {{ 'LoginLdap_LoginPluginEnabledWarning'|translate("Login", "LoginLdap") }}
+</div>
+{% endif %}
 
 <div ng-controller="LoginLdapAdminController as adminController"
      data-servers="{{ servers|json_encode }}">
