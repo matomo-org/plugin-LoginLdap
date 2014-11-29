@@ -27,7 +27,8 @@ describe("LoginLdap_Admin", function () {
                 admin_pass: 'secrets'
             },
             Plugins: {
-                Plugins: ['LoginLdap']
+                Plugins: ['LoginLdap', "CorePluginsAdmin", "CoreAdminHome", "CoreHome", "CoreVisualizations", "Proxy",
+                          "API", "Widgetize", "LanguagesManager", "UserSettings", "Morpheus", "TestRunner"]
             }
         };
         testEnvironment.save();

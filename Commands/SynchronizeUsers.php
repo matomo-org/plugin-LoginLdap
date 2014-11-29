@@ -106,7 +106,6 @@ class SynchronizeUsers extends ConsoleCommand
 
     private function userExistsInPiwik($login)
     {
-        $user = $this->usersManagerAPI->getUser($login);
-        return !empty($user);
+        return $this->usersManagerAPI->userExists($login);
     }
 }
