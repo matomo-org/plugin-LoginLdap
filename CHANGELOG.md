@@ -1,5 +1,14 @@
 # LoginLdap Changelog
 
+#### LoginLdap 3.1.0
+
+* add --skip-existing option to loginldap:synchronize-users command
+* warning displayed if Login + LoginLdap plugins are enabled at the same time
+* re-added the load ldap user form in the settings page
+* normal users can be managed when LdapAuth implementation is used (when Always Use LDAP for Authentication is checked)
+* fixed bug in web server auth strategy where LDAP auth was not used if REMOTE_USER var not found. made connecting via mobile app impossible.
+* fix bug in synchronizing users w/ user_email_suffix configured (first login worked, subsequent logins failed since username used in UserSynchronizer was incorrect)
+
 #### LoginLdap 3.0.0:
 
 * Automatic creation of Piwik users using LDAP (old 'auto create users' feature) is now standard.
