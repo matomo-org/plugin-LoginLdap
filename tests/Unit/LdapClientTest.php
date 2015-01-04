@@ -9,7 +9,6 @@
 namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
 use Piwik\ErrorHandler;
-use Piwik\Exception\ErrorException;
 use Piwik\Log;
 use Piwik\Plugins\LoginLdap\Ldap\Client as LdapClient;
 use Piwik\Plugins\LoginLdap\Ldap\LdapFunctions;
@@ -39,6 +38,8 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
 
     public function tearDown()
     {
+        restore_error_handler();
+
         LdapFunctions::$phpUnitMock = null;
 
         Log::unsetInstance();
@@ -78,19 +79,17 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \ErrorException
+     * @expectedException \Piwik\Exception\ErrorException
      * @expectedExceptionMessage triggered error
      */
     public function test_connect_ThrowsPhpErrors()
     {
-        ErrorHandler::registerErrorHandler();
+        $this->setPiwikErrorHandling();
 
         $this->addLdapMethodThatTriggersPhpError('ldap_connect');
 
         $ldapClient = new LdapClient();
         $ldapClient->connect("hostname", 1234);
-
-        restore_error_handler();
     }
 
     public function test_close_Succeeds_IfConnectionAlreadyClosed()
@@ -100,20 +99,18 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \ErrorException
+     * @expectedException \Piwik\Exception\ErrorException
      * @expectedExceptionMessage triggered error
      */
     public function test_close_ThrowsPhpErrors()
     {
-        ErrorHandler::registerErrorHandler();
+        $this->setPiwikErrorHandling();
 
         $this->addLdapConnectMethodMock();
         $this->addLdapMethodThatTriggersPhpError('ldap_close');
 
         $ldapClient = new LdapClient("hostname", 1234);
         $ldapClient->close();
-
-        restore_error_handler();
     }
 
     public function test_bind_ForwardsLdapBindResult()
@@ -126,36 +123,32 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \ErrorException
+     * @expectedException \Piwik\Exception\ErrorException
      * @expectedExceptionMessage triggered error
      */
     public function test_bind_ThrowsPhpErrors()
     {
-        ErrorHandler::registerErrorHandler();
+        $this->setPiwikErrorHandling();
 
         $this->addLdapMethodThatTriggersPhpError('ldap_bind');
 
         $ldapClient = new LdapClient();
         $ldapClient->bind("resource", "password");
-
-        restore_error_handler();
     }
 
     /**
-     * @expectedException \ErrorException
+     * @expectedException \Piwik\Exception\ErrorException
      * @expectedExceptionMessage triggered error
      */
     public function test_fetchAll_ThrowsPhpErrors()
     {
-        ErrorHandler::registerErrorHandler();
+        $this->setPiwikErrorHandling();
 
         $this->addLdapMethodThatTriggersPhpError('ldap_search');
         $this->addLdapMethodThatTriggersPhpError('ldap_get_entries');
 
         $ldapClient = new LdapClient();
         $ldapClient->fetchAll("base dn", "filter");
-
-        restore_error_handler();
     }
 
     public function test_fetchAll_ReturnsNull_IfLdapSearchFailsSilently()
@@ -277,11 +270,13 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException ErrorException
+     * @expectedException \Piwik\Exception\ErrorException
      * @expectedExceptionMessage triggered error
      */
     public function test_count_ThrowsPhpErrors()
     {
+        $this->setPiwikErrorHandling();
+
         LdapFunctions::$phpUnitMock->expects($this->any())->method('ldap_search')->will($this->returnValue("resource"));
         $this->addLdapMethodThatTriggersPhpError('ldap_count_entries');
 
@@ -290,10 +285,12 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException ErrorException
+     * @expectedException \Exception
      */
     public function test_count_Throws_IfLdapSearchReturnsNull()
     {
+        $this->setPiwikErrorHandling();
+
         LdapFunctions::$phpUnitMock->expects($this->any())->method('ldap_search')->will($this->returnValue(null));
 
         $ldapClient = new LdapClient();
@@ -328,8 +325,14 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
     private function addLdapMethodThatTriggersPhpError($methodName, $returnValue = null)
     {
         LdapFunctions::$phpUnitMock->expects($this->any())->method($methodName)->will($this->returnCallback(function () use ($returnValue) {
-            trigger_error(LdapClientTest::ERROR_MESSAGE);
+            trigger_error(LdapClientTest::ERROR_MESSAGE, E_USER_ERROR);
             return $returnValue;
         }));
+    }
+
+    private function setPiwikErrorHandling()
+    {
+        ErrorHandler::registerErrorHandler();
+        error_reporting(E_ALL);
     }
 }
