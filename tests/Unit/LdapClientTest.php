@@ -35,14 +35,10 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
             'ldap_connect', 'ldap_close', 'ldap_bind', 'ldap_search', 'ldap_set_option', 'ldap_get_entries',
             'ldap_count_entries'
         ));
-
-        ErrorHandler::registerErrorHandler();
     }
 
     public function tearDown()
     {
-        restore_error_handler();
-
         LdapFunctions::$phpUnitMock = null;
 
         Log::unsetInstance();
@@ -82,15 +78,19 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Exception
+     * @expectedException \ErrorException
      * @expectedExceptionMessage triggered error
      */
     public function test_connect_ThrowsPhpErrors()
     {
+        ErrorHandler::registerErrorHandler();
+
         $this->addLdapMethodThatTriggersPhpError('ldap_connect');
 
         $ldapClient = new LdapClient();
         $ldapClient->connect("hostname", 1234);
+
+        restore_error_handler();
     }
 
     public function test_close_Succeeds_IfConnectionAlreadyClosed()
@@ -100,16 +100,20 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Exception
+     * @expectedException \ErrorException
      * @expectedExceptionMessage triggered error
      */
     public function test_close_ThrowsPhpErrors()
     {
+        ErrorHandler::registerErrorHandler();
+
         $this->addLdapConnectMethodMock();
         $this->addLdapMethodThatTriggersPhpError('ldap_close');
 
         $ldapClient = new LdapClient("hostname", 1234);
         $ldapClient->close();
+
+        restore_error_handler();
     }
 
     public function test_bind_ForwardsLdapBindResult()
@@ -122,28 +126,36 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Exception
+     * @expectedException \ErrorException
      * @expectedExceptionMessage triggered error
      */
     public function test_bind_ThrowsPhpErrors()
     {
+        ErrorHandler::registerErrorHandler();
+
         $this->addLdapMethodThatTriggersPhpError('ldap_bind');
 
         $ldapClient = new LdapClient();
-        $result = $ldapClient->bind("resource", "password");
+        $ldapClient->bind("resource", "password");
+
+        restore_error_handler();
     }
 
     /**
-     * @expectedException \Exception
+     * @expectedException \ErrorException
      * @expectedExceptionMessage triggered error
      */
     public function test_fetchAll_ThrowsPhpErrors()
     {
+        ErrorHandler::registerErrorHandler();
+
         $this->addLdapMethodThatTriggersPhpError('ldap_search');
         $this->addLdapMethodThatTriggersPhpError('ldap_get_entries');
 
         $ldapClient = new LdapClient();
         $ldapClient->fetchAll("base dn", "filter");
+
+        restore_error_handler();
     }
 
     public function test_fetchAll_ReturnsNull_IfLdapSearchFailsSilently()
