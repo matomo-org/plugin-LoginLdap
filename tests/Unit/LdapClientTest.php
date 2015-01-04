@@ -8,7 +8,8 @@
  */
 namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
-use Exception;
+use Piwik\ErrorHandler;
+use Piwik\Exception\ErrorException;
 use Piwik\Log;
 use Piwik\Plugins\LoginLdap\Ldap\Client as LdapClient;
 use Piwik\Plugins\LoginLdap\Ldap\LdapFunctions;
@@ -34,10 +35,14 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
             'ldap_connect', 'ldap_close', 'ldap_bind', 'ldap_search', 'ldap_set_option', 'ldap_get_entries',
             'ldap_count_entries'
         ));
+
+        ErrorHandler::registerErrorHandler();
     }
 
     public function tearDown()
     {
+        restore_error_handler();
+
         LdapFunctions::$phpUnitMock = null;
 
         Log::unsetInstance();
@@ -260,7 +265,7 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException ErrorException
      * @expectedExceptionMessage triggered error
      */
     public function test_count_ThrowsPhpErrors()
@@ -273,7 +278,7 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException ErrorException
      */
     public function test_count_Throws_IfLdapSearchReturnsNull()
     {
