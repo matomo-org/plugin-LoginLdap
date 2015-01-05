@@ -308,7 +308,7 @@ class Client
                 && ( isset($ldapInfo[$value]) || isset($ldapInfo[strtolower($value)]) )
             ) { // index is for name of attribute, ie 0 => 'cn', 'cn' => array(...)
                 $key = strtolower($value);
-                $value = $key;
+                if (isset($ldapInfo[$key])) $value = $key;
                 if (is_array($ldapInfo[$value])) {
                     $result[$key] = $this->transformLdapInfo($ldapInfo[$value]);
 
