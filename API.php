@@ -11,6 +11,7 @@ use Piwik\Common;
 use Piwik\Piwik;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
+use Piwik\Plugins\LoginLdap\Config as ldapConfig;
 use Exception;
 
 /**
@@ -93,9 +94,11 @@ class API extends \Piwik\Plugin\API
 
         $memberOf = Common::unsanitizeInputValue($memberOf);
 
-        return $this->ldapUsers->getCountOfUsersMatchingFilter("(memberof=?)", array($memberOf));
-    }
+        $memberOfField = Config::getRequiredMemberOfField();
 
+        return $this->ldapUsers->getCountOfUsersMatchingFilter("(".$memberOfField."=?)", array($memberOf));
+    }
+    
     /**
      * Returns count of users in LDAP that match an LDAP filter. If the filter is incorrect,
      * `null` is returned.

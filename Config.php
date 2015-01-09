@@ -27,6 +27,7 @@ class Config
         'user_email_suffix' => '',
         'append_user_email_suffix_to_username' => 1,
         'required_member_of' => '',
+        'required_member_of_field' => 'memberOf',
         'ldap_user_filter' => '',
         'ldap_user_id_field' => 'uid',
         'ldap_last_name_field' => 'sn',
@@ -53,6 +54,8 @@ class Config
         'ldap_alias_field' => array('aliasField'),
         'ldap_mail_field' => array('mailField'),
         'use_webserver_auth' => array('useKerberos'),
+        'required_member_of_field' => array('memberOfField'),
+
     );
 
     /**
@@ -107,6 +110,11 @@ class Config
     public static function getRequiredMemberOf()
     {
         return self::getConfigOption('required_member_of');
+    }
+
+      public static function getRequiredMemberOfField()
+    {
+        return self::getConfigOption('required_member_of_field');
     }
 
     public static function getLdapUserFilter()

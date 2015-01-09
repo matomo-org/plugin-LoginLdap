@@ -383,16 +383,17 @@ class LdapUsers
     {
         $bind = array();
         $conditions = array();
-
+        $memberOfField = Config::getRequiredMemberOfField();
+        
         if (!empty($this->authenticationLdapFilter)) {
             $conditions[] = $this->authenticationLdapFilter;
         }
 
         if (!empty($this->authenticationRequiredMemberOf)) {
-            $conditions[] = "(memberof=?)";
+            $conditions[] = "(".$memberOfField."=?)";
             $bind[] = $this->authenticationRequiredMemberOf;
         }
-
+        
         if (!empty($username)) {
             $conditions[] = "(" . $this->ldapUserMapper->getLdapUserIdField() . "=?)";
             $bind[] = $this->addUsernameSuffix($username);
