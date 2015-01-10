@@ -13,6 +13,7 @@ use Piwik\Config;
 use Piwik\Console;
 use Piwik\Db;
 use Piwik\Plugins\LoginLdap\tests\Integration\LdapIntegrationTest;
+use Piwik\Translate;
 use Symfony\Component\Console\Tester\ApplicationTester;
 
 /**
@@ -46,6 +47,8 @@ class RegenerateTokenAuthTest extends LdapIntegrationTest
         $application->setAutoExit(false);
 
         $this->applicationTester = new ApplicationTester($application);
+
+        Translate::loadEnglishTranslation(); // needed due to travis build that tests against minimum required piwik
     }
 
     protected function getCommandDisplayOutputErrorMessage()
