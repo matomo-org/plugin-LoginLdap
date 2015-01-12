@@ -14,7 +14,9 @@ use Piwik\Log;
 use Piwik\Plugins\LoginLdap\Ldap\ServerInfo;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
+use Piwik\Plugins\LoginLdap\Config;
 use PHPUnit_Framework_TestCase;
+
 
 /**
  * @group LoginLdap
@@ -260,6 +262,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
         $usedBaseDn = null;
         $usedFilter = null;
         $filterBind = null;
+        $memberOfField = Config::getRequiredMemberOfField();
 
         $mockLdapClient = $this->makeMockLdapClient();
         $mockLdapClient->method('bind')->will($this->returnValue(true));
@@ -279,7 +282,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(self::TEST_BASE_DN, $usedBaseDn);
         $this->assertContains(self::TEST_EXTRA_FILTER, $usedFilter);
-        $this->assertContains('memberof=?', $usedFilter);
+        $this->assertContains("(".$memberOfField."=?)", $usedFilter);
         $this->assertContains(self::TEST_MEMBER_OF, $filterBind);
     }
 
