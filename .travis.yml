@@ -14,6 +14,7 @@ env:
   global:
     - PLUGIN_NAME=LoginLdap
     - PIWIK_ROOT_DIR=$TRAVIS_BUILD_DIR/piwik
+    - UNPROTECTED_ARTIFACTS=1
     - secure: "iCYpiyZh3YdXdvfbrvDXRG6lsb9iNIFccGPZv2etaVdmaGE3s6NfQLpXxdCk3pV73hXlXAbeP7Z3VsZzxQdvtvjCYDaRsrabydurFFiGrzA3Bn0JKdh8ALu+qWhe93YICC5NMjO4XtfL+5i02fwCmirPFhAus6ybWmWOuOZPaYA="
     - secure: "NyPBUrPhDIlZRwqiTLzb/RD+Vmrk6sVCcgXoYh+plce8SKFYq6hm3O5mVv/m7nxZYDSo9DtBWgBUZvbKS/d5EpxauvwCim3femWMG5Y66yCBw8vEoXchrq26/EgaN+H7BQtiY3JxBUpUoGFKM4iwpvDNL22ZPTPdWtZ5JZS/DHo="
   matrix:
