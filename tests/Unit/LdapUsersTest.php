@@ -262,7 +262,6 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
         $usedBaseDn = null;
         $usedFilter = null;
         $filterBind = null;
-        $memberOfField = Config::getRequiredMemberOfField();
 
         $mockLdapClient = $this->makeMockLdapClient();
         $mockLdapClient->method('bind')->will($this->returnValue(true));

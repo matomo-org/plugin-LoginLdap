@@ -11,7 +11,6 @@ use Piwik\Common;
 use Piwik\Piwik;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
-use Piwik\Plugins\LoginLdap\Config as ldapConfig;
 use Exception;
 
 /**

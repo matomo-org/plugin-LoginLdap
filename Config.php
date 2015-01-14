@@ -54,8 +54,6 @@ class Config
         'ldap_alias_field' => array('aliasField'),
         'ldap_mail_field' => array('mailField'),
         'use_webserver_auth' => array('useKerberos'),
-        'required_member_of_field' => array('memberOfField'),
-
     );
 
     /**
@@ -112,7 +110,7 @@ class Config
         return self::getConfigOption('required_member_of');
     }
 
-      public static function getRequiredMemberOfField()
+    public static function getRequiredMemberOfField()
     {
         return self::getConfigOption('required_member_of_field');
     }
