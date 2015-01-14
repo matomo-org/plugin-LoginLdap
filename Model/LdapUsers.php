@@ -578,8 +578,8 @@ class LdapUsers
 
         $result->setLdapUserMapper(UserMapper::makeConfigured());
 
-        Log::debug("LdapUsers::%s: configuring with userEmailSuffix = %s, requiredMemberOf = %s,memberOfField = %s, filter = %s, timeoutSecs = %s",
-            __FUNCTION__, $usernameSuffix, $requiredMemberOf,$memberOfField, $filter, $timeoutSecs);
+        Log::debug("LdapUsers::%s: configuring with userEmailSuffix = %s, requiredMemberOf = %s, filter = %s, timeoutSecs = %s",
+            __FUNCTION__, $usernameSuffix, $requiredMemberOf, $filter, $timeoutSecs);
 
         return $result;
     }
