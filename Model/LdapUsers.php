@@ -36,8 +36,7 @@ class LdapUsers
     private $authenticationRequiredMemberOf;
 
      /**
-     *
-     *
+     *Field used by your LDAP to indicate membership, by default \"memberOf\"
      * @var string
      */
     private $authenticationMemberOfField;
@@ -406,7 +405,7 @@ class LdapUsers
         }
 
         if (!empty($this->authenticationRequiredMemberOf)) {
-            $conditions[] = "(".$this->$memberOfField."=?)";
+            $conditions[] = "(".$this->memberOfField."=?)";
             $bind[] = $this->authenticationRequiredMemberOf;
         }
         
