@@ -405,7 +405,7 @@ class LdapUsers
         }
 
         if (!empty($this->authenticationRequiredMemberOf)) {
-            $conditions[] = "(".$this->memberOfField."=?)";
+            $conditions[] = "(".$this->authenticationMemberOfField."=?)";
             $bind[] = $this->authenticationRequiredMemberOf;
         }
         
