@@ -281,7 +281,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(self::TEST_BASE_DN, $usedBaseDn);
         $this->assertContains(self::TEST_EXTRA_FILTER, $usedFilter);
-        $this->assertContains("(".$memberOfField."=?)", $usedFilter);
+        $this->assertContains("(".$this->LdapUsers->authenticationMemberOfField."=?)", $usedFilter);
         $this->assertContains(self::TEST_MEMBER_OF, $filterBind);
     }
 
