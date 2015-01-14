@@ -406,7 +406,7 @@ class LdapUsers
         }
 
         if (!empty($this->authenticationRequiredMemberOf)) {
-            $conditions[] = "(".$this->$memberOfField."=?)";
+            $conditions[] = "(".$this->memberOfField."=?)";
             $bind[] = $this->authenticationRequiredMemberOf;
         }
         
@@ -579,8 +579,8 @@ class LdapUsers
 
         $result->setLdapUserMapper(UserMapper::makeConfigured());
 
-        Log::debug("LdapUsers::%s: configuring with userEmailSuffix = %s, requiredMemberOf = %s, filter = %s, timeoutSecs = %s",
-            __FUNCTION__, $usernameSuffix, $requiredMemberOf, $filter, $timeoutSecs);
+        Log::debug("LdapUsers::%s: configuring with userEmailSuffix = %s, requiredMemberOf = %s,memberOfField = %s, filter = %s, timeoutSecs = %s",
+            __FUNCTION__, $usernameSuffix, $requiredMemberOf,$memberOfField, $filter, $timeoutSecs);
 
         return $result;
     }
