@@ -35,6 +35,12 @@ class LdapUsers
      */
     private $authenticationRequiredMemberOf;
 
+     /**
+     *Field used by your LDAP to indicate membership, by default \"memberOf\"
+     * @var string
+     */
+    private $authenticationMemberOfField;
+
     /**
      * If set, this value is added to the end of usernames before authentication
      * is attempted.
@@ -297,6 +303,16 @@ class LdapUsers
     }
 
     /**
+     * Sets the {@link $authenticationMemberOfField} member.
+     *
+     * @param string $authenticationMemberOfField
+     */
+    public function setAuthenticationMemberOfField($authenticationMemberOfField)
+    {
+        $this->authenticationMemberOfField = $authenticationMemberOfField;
+    }
+
+    /**
      * Sets the {@link $authenticationUsernameSuffix} member.
      *
      * @param string $authenticationUsernameSuffix
@@ -383,14 +399,13 @@ class LdapUsers
     {
         $bind = array();
         $conditions = array();
-        $memberOfField = Config::getRequiredMemberOfField();
         
         if (!empty($this->authenticationLdapFilter)) {
             $conditions[] = $this->authenticationLdapFilter;
         }
 
         if (!empty($this->authenticationRequiredMemberOf)) {
-            $conditions[] = "(".$memberOfField."=?)";
+            $conditions[] = "(".$this->authenticationMemberOfField."=?)";
             $bind[] = $this->authenticationRequiredMemberOf;
         }
         
@@ -544,6 +559,12 @@ class LdapUsers
         if (!empty($requiredMemberOf)) {
             $result->setAuthenticationRequiredMemberOf($requiredMemberOf);
         }
+
+        $memberOfField = Config::getRequiredMemberOfField();
+        if (!empty($memberOfField)) {
+            $result->setAuthenticationMemberOfField($memberOfField);
+        }
+
 
         $filter = Config::getLdapUserFilter();
         if (!empty($filter)) {
