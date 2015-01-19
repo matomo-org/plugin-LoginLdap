@@ -40,12 +40,10 @@ describe("LoginLdap_Admin", function () {
         expect.screenshot('admin_page').to.be.captureSelector('#content', function (page) {
             page.load(ldapAdminUrl);
 
-            page.sendKeys('input#memberOfField', 'a');
             page.sendKeys('input#memberOf', 'a');
             page.sendKeys('input#filter', 'a');
 
             page.evaluate(function () {
-                $('input#MemberOfFIeld').trigger('input');
                 $('input#memberOf').val('cn=avengers,dc=avengers,dc=shield,dc=org').trigger('input');
                 $('input#filter').val('(objectClass=person)').trigger('input');
             });
