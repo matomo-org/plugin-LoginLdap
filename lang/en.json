@@ -83,7 +83,7 @@
         "NetworkTimeoutDescription2": "The larger the timeout, the more time your users may have to wait before Piwik can log them in through LDAP, if one or more of your servers becomes unresponsive.",
         "Go": "Go",
         "LoginPluginEnabledWarning": "Both the %1$s and %2$s plugins are enabled! This will cause logins for LDAP users to fail, please disable the %1$s plugin.",
-        "MemberOfField": "memberOf Field",
+        "MemberOfField": "LDAP memberOf Field",
         "MemberOfFieldDescription": "Field used by your LDAP to indicate membership, by default \"memberOf\""
     }
 }
