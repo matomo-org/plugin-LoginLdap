@@ -63,6 +63,18 @@
 
         <tr>
             <td>
+                <label for="memberOfField">{{ 'LoginLdap_MemberOfField'|translate }} </label>
+                <br/>
+                <span class='form-description'>{{ 'LoginLdap_MemberOfFieldDescription'|translate }}</span><br/>
+                <br/>
+            </td>
+            <td>
+                <input size="25" id="memberOfField" name="required_member_of_field" value="{{ ldapConfig.required_member_of_field }}"/>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
                 <label for="memberOf">{{ 'LoginLdap_MemberOf'|translate }} </label>
                 <br/>
                 <span class='form-description'>{{ 'LoginLdap_MemberOfDescription'|translate }}</span><br/>

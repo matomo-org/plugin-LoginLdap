@@ -14,7 +14,9 @@ use Piwik\Log;
 use Piwik\Plugins\LoginLdap\Ldap\ServerInfo;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
+use Piwik\Plugins\LoginLdap\Config;
 use PHPUnit_Framework_TestCase;
+
 
 /**
  * @group LoginLdap
@@ -29,6 +31,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
     const TEST_BASE_DN = 'testbasedn';
     const TEST_EXTRA_FILTER = '(testfilter)';
     const TEST_MEMBER_OF = "member";
+    const TEST_MEMBER_OF_Field = "memberOf";
 
     /**
      * @var LdapUsers
@@ -275,11 +278,12 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
         $this->setSingleLdapServer();
         $this->ldapUsers->setAuthenticationLdapFilter(self::TEST_EXTRA_FILTER);
         $this->ldapUsers->setAuthenticationRequiredMemberOf(self::TEST_MEMBER_OF);
+        $this->ldapUsers->setAuthenticationMemberOfField(self::TEST_MEMBER_OF_Field);
         $this->ldapUsers->getUser(self::TEST_USER);
 
         $this->assertEquals(self::TEST_BASE_DN, $usedBaseDn);
         $this->assertContains(self::TEST_EXTRA_FILTER, $usedFilter);
-        $this->assertContains('memberof=?', $usedFilter);
+        $this->assertContains("(".self::TEST_MEMBER_OF_Field."=?)", $usedFilter);
         $this->assertContains(self::TEST_MEMBER_OF, $filterBind);
     }
 
