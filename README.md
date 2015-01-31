@@ -9,8 +9,6 @@
 
 LoginLdap authenticates with an LDAP server and uses LDAP information to personalize Piwik.
 
-When using LoginLdap, non-LDAP users stored in Piwik's DB will not be able to login, unless they are superusers.
-
 ## Installation
 
 To start using LoginLdap, follow these steps:
@@ -45,23 +43,23 @@ Version 3.0.0 is a major rewrite of the plugin, so if you are upgrading for 2.2.
 
 LoginLdap supports three different LDAP authentication strategies:
 
-- logging in via LDAP only
+- using LDAP for authentication only
 - using LDAP for synchronization only
 - logging in with Kerberos SSO (or something similar)
 
 Each strategy has advantages and disadvantages. What you should use depends on your needs.
 
-### Logging in via LDAP only
+### Using LDAP for authentication only
 
-This strategy is more secure than the one below, but it requires connecting to the LDAP server on login.
+This strategy is more secure than the one below, but it requires connecting to the LDAP server on each login attempt.
 
 With this strategy, every time a user logs in, LoginLdap will connect to LDAP to authenticate. On successful login, the user can
-be synchronised, but the user's password is never stored in Piwik's DB, just LDAP. Additionally, the token auth is generated using
+be synchronised, but the user's password is never stored in Piwik's DB, just in the LDAP server. Additionally, the token auth is generated using
 a hash of a hash of the password, or is generated randomly.
 
 This means that if the Piwik DB is ever compromised, your LDAP users' passwords will still be safe.
 
-_Note: With this auth strategy, non-LDAP users cannot login unless they are superusers._
+_Note: With this auth strategy, non-LDAP users are still allowed to login to Piwik. These users must be created through Piwik, not in LDAP._
 
 **Steps to enable**
 
@@ -71,11 +69,10 @@ _Note: this is the default configuration._
 
 ### Using LDAP for synchronization only
 
-This strategy involves storing the user's passwords in the Piwik DB using Piwik's hashing, so it is not as secure as the above
+This strategy involves storing the user's passwords in the Piwik DB using Piwik's hashing. As a result, it is not as secure as the above
 method. If your Piwik DB is compromised, your LDAP users' passwords will be in greater danger of being cracked.
 
-But, this strategy does allow you to use LDAP authentication with normal Piwik authentication. And it opens up the possibility
-of not communicating with LDAP servers at all during authentication, which may provide a better user experience.
+But, this strategy opens up the possibility of not communicating with LDAP servers at all during authentication, which may provide a better user experience.
 
 _Note: With this auth strategy, non-LDAP users can login to Piwik._
 
@@ -173,7 +170,7 @@ Then you must set these attributes correctly within LDAP, for example:
 
 Finally, in the LDAP settings page, check the **Enable User Access Synchronization from LDAP** checkbox and fill out the settings that appear below it.
 
-User access synchronization occurs with normal user synchronization. So the `loginldap:synchronize-users` command can be used for this as well.
+User access synchronization occurs at the same time as normal user synchronization. So the `loginldap:synchronize-users` command will synchronize access levels too.
 
 #### Managing Access for Multiple Piwik Instances
 
