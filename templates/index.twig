@@ -24,6 +24,11 @@
             </td>
             <td>
                 <input type="checkbox" {% if ldapConfig.use_ldap_for_authentication %}checked="checked"{% endif %} id="use_ldap_for_authentication" name="use_ldap_for_authentication"/>
+                {% if updatedFromPre30|default %}
+                    <div piwik-notification context="warning" noclear="true" id="pre300AlwaysUseLdapWarning">
+                        <strong>{{ 'General_Note'|translate }}</strong>: {{ 'LoginLdap_UpdateFromPre300Warning'|translate }}
+                    </div>
+                {% endif %}
             </td>
         </tr>
 
