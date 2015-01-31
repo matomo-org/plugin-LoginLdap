@@ -384,7 +384,7 @@
                 <tr>
                     <td width="150"><label for="serverUrl-\{\{ $index \}\}">{{ 'LoginLdap_ServerUrl'|translate }} </label></td>
                     <td>
-                        <input size="25" id="serverUrl-\{\{ $index \}\}" ng-model="serverInfo.hostname" placeholder="ldap://localhost/" type="text"/>
+                        <input size="25" id="serverUrl-\{\{ $index \}\}" ng-model="serverInfo.hostname" placeholder="localhost" type="text"/>
                     </td>
                     <td>
                         &nbsp;
@@ -397,7 +397,11 @@
                         <input size="25" id="ldapPort-\{\{ $index \}\}" ng-model="serverInfo.port" type="text" placeholder="389"/>
                     </td>
                     <td>
-                        &nbsp;
+                        <div ng-show="serverInfo.port && serverInfo.port != 389 && serverInfo.hostname && serverInfo.hostname.indexOf('ldap://') != -1">
+                            <div piwik-notification context="info" id="ldapUrlPortWarning" noclear="true">
+                                <strong>{{ 'General_Warning'|translate }}</strong>: {{ 'LoginLdap_LdapUrlPortWarning'|translate }}
+                            </div>
+                        </div>
                     </td>
                 </tr>
 

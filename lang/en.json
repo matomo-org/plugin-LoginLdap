@@ -84,6 +84,7 @@
         "Go": "Go",
         "LoginPluginEnabledWarning": "Both the %1$s and %2$s plugins are enabled! This will cause logins for LDAP users to fail, please disable the %1$s plugin.",
         "MemberOfField": "LDAP memberOf Field",
-        "MemberOfFieldDescription": "Field used by your LDAP to indicate membership, by default \"memberOf\""
+        "MemberOfFieldDescription": "Field used by your LDAP to indicate membership, by default \"memberOf\"",
+        "LdapUrlPortWarning": "The port option is ignored when the server hostname is set to an LDAP URL (ie, ldap://localhost/ instead of localhost)."
     }
 }
