@@ -277,9 +277,9 @@ class UserSynchronizer
         if (Config::isAccessSynchronizationEnabled()) {
             $result->setUserAccessMapper(UserAccessMapper::makeConfigured());
 
-            Log::info("UserSynchronizer::%s(): Using UserAccessMapper when synchronizing users.", __FUNCTION__);
+            Log::debug("UserSynchronizer::%s(): Using UserAccessMapper when synchronizing users.", __FUNCTION__);
         } else {
-            Log::info("UserSynchronizer::%s(): LDAP access synchronization not enabled.", __FUNCTION__);
+            Log::debug("UserSynchronizer::%s(): LDAP access synchronization not enabled.", __FUNCTION__);
         }
 
         $defaultSitesWithViewAccess = Config::getDefaultSitesToGiveViewAccessTo();
