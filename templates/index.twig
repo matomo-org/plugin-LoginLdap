@@ -21,6 +21,8 @@
             <td>
                 <label for="use_ldap_for_authentication">{{ 'LoginLdap_UseLdapForAuthentication'|translate }}</label><br/>
                 <span class='form-description'>{{ 'LoginLdap_UseLdapForAuthenticationDescription'|translate }}</span>
+                <br/><br/>
+                <span class='form-description'>{{ 'LoginLdap_MobileAppIntegrationNote'|translate }}</span>
             </td>
             <td>
                 <input type="checkbox" {% if ldapConfig.use_ldap_for_authentication %}checked="checked"{% endif %} id="use_ldap_for_authentication" name="use_ldap_for_authentication"/>
