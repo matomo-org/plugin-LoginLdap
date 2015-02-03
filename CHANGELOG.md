@@ -1,5 +1,15 @@
 # LoginLdap Changelog
 
+#### LoginLdap 3.1.2
+
+* Change placeholder value of server hostname config option and add a note so users can avoid the problem where ports are ignored when ldap:// URLs are used in the hostname option.
+* Make sure users upgrading from pre-3.0 versions set the correct LDAP settings.
+* Add documentation regarding using LoginLdap with Piwik's official mobile app.
+
+#### LoginLdap 3.1.1
+
+* Make plugin compatible with latest Piwik version.
+
 #### LoginLdap 3.1.0
 
 * add --skip-existing option to loginldap:synchronize-users command
