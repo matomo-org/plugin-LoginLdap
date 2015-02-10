@@ -15,7 +15,7 @@ use Piwik\Common;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Plugins\LoginLdap\Auth\LdapAuth;
 use Piwik\SettingsPiwik;
-use Piwik\Tests\Fixture;
+use Piwik\Tests\Framework\Fixture;
 
 /**
  * @group LoginLdap
