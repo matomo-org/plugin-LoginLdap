@@ -201,6 +201,8 @@ class Client
 
             return $result;
         } else {
+            Log::warning("Unexpected error: ldap_search returned null, extra info: %s", ldap_error($this->connectionResource));
+
             throw new Exception("Unexpected error: ldap_search returned null.");
         }
     }
