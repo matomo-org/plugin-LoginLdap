@@ -9,7 +9,9 @@ namespace Piwik\Plugins\LoginLdap;
 
 use Exception;
 use Piwik\Access;
+use Piwik\Auth;
 use Piwik\Common;
+use Piwik\Container\StaticContainer;
 use Piwik\FrontController;
 use Piwik\Menu\MenuAdmin;
 use Piwik\Piwik;
@@ -43,7 +45,6 @@ class LoginLdap extends \Piwik\Plugin
             'Controller.Login.resetPassword'         => 'disablePasswordResetForLdapUsers',
             'Controller.LoginLdap.resetPassword'     => 'disablePasswordResetForLdapUsers',
             'Controller.Login.confirmResetPassword'  => 'disableConfirmResetPasswordForLdapUsers',
-            'Controller.Login.confirmResetPassword'  => 'disableConfirmResetPasswordForLdapUsers'
         );
         return $hooks;
     }
@@ -158,8 +159,10 @@ class LoginLdap extends \Piwik\Plugin
      */
     public function ApiRequestAuthenticate($tokenAuth)
     {
-        \Piwik\Registry::get('auth')->setLogin($login = null);
-        \Piwik\Registry::get('auth')->setTokenAuth($tokenAuth);
+        /** @var Auth $auth */
+        $auth = StaticContainer::get('Piwik\Auth');
+        $auth->setLogin($login = null);
+        $auth->setTokenAuth($tokenAuth);
     }
 
     /**
@@ -169,7 +172,7 @@ class LoginLdap extends \Piwik\Plugin
     function initAuthenticationObject($activateCookieAuth = false)
     {
         $auth = AuthBase::factory();
-        \Piwik\Registry::set('auth', $auth);
+        StaticContainer::getContainer()->set('Piwik\Auth', $auth);
 
         Login::initAuthenticationFromCookie($auth, $activateCookieAuth);
     }
