@@ -87,14 +87,14 @@ class LdapAuth extends Base
                 return $result;
             }
 
-            if (empty($this->login)) { // sanity check
-                Log::warning("authenticateByPassword: empty login encountered.");
+            if (empty($this->login)) { // occurs on API requests since FrontController will still reloadAccess
+                Log::debug("authenticateByPassword: empty login encountered");
 
                 return $this->makeAuthFailure();
             }
 
             if ($this->login == 'anonymous') { // sanity check
-                Log::warning("authenticateByPassword: login is 'anonymous', this is not expected.");
+                Log::debug("authenticateByPassword: login is 'anonymous'");
 
                 return $this->makeAuthFailure();
             }
