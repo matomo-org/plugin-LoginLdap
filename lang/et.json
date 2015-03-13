@@ -14,7 +14,6 @@
         "LdapPort": "Serveri port",
         "LdapUserAdded": "LDAP kasutaja lisatud edukalt!",
         "LoadUser": "Lae kasutaja LDAP-ga",
-        "LoadUserDescription": "Otsi kasutajat konto nime järgi LDAP serverist ja lisa see leidmise korral Piwiku kasutajaks.",
         "MailField": "E-posti väli",
         "MailFieldDescription": "( n. \"mail\" )",
         "MemberOf": "LDAP grupp",

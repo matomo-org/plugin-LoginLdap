@@ -1,0 +1,10 @@
+{
+    "LoginLdap": {
+        "AdminPass": "LDAP-passord",
+        "Go": "Gå",
+        "InvalidFilter": "Ugyldig filter.",
+        "MenuLdap": "LDAP-brukere",
+        "OneUser": "1 bruker",
+        "Test": "Test"
+    }
+}

@@ -9,7 +9,11 @@
         "LDAPServers": "LDAP Servers",
         "LdapSuperUserAccessField": "LDAP Super Gebruiker Toegang Veld",
         "MenuLdap": "LDAP Gebruikers",
+        "OneUser": "1 gebruiker",
+        "PasswordField": "Gebruiker Wachtwoord Veld",
         "Test": "Test",
-        "UserNotFound": "Gebruiker \"%s\" niet gevonden!"
+        "UserIdField": "Gebruiker ID Veld",
+        "UserNotFound": "Gebruiker \"%s\" niet gevonden!",
+        "UserSyncSettings": "Gebruiker Synchronisatie Instellingen"
     }
 }

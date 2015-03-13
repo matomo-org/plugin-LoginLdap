@@ -17,7 +17,6 @@
         "LDAPServers": "LDAP サーバー",
         "LdapUserAdded": "LDAP ユーザーの追加に成功しました!",
         "LoadUser": "LDAP からのロード ユーザー",
-        "LoadUserDescription": "LDAP ディレクトリでユーザーを検索し、見つかったら Piwik に追加してください。",
         "MailField": "メールフィールド",
         "MailFieldDescription": "( 例　\"メール\" )",
         "MemberOf": "アクティブディレクトリーグループ",
