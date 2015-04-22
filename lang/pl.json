@@ -1,15 +1,15 @@
 {
     "LoginLdap": {
-        "AdminPass": "Hasło LDAP",
-        "LdapPort": "Port Serwera",
-        "LDAPServers": "Serwer LDAP",
-        "MailFieldDescription": "(np. \"e-mail\")",
         "MenuLdap": "Użytkownik LDAP",
-        "OneUser": "1 użytkownik",
-        "ServerUrl": "URL serwera",
         "Settings": "Ustawienia LDAP",
-        "Test": "Test",
+        "LdapPort": "Port Serwera",
+        "ServerUrl": "URL serwera",
         "UserIdField": "Pole ID użytkownika",
-        "UserNotFound": "Nie znaleziono użytkownika \"%s\"!"
+        "MailFieldDescription": "(np. \"e-mail\")",
+        "UserNotFound": "Nie znaleziono użytkownika \"%s\"!",
+        "AdminPass": "Hasło LDAP",
+        "LDAPServers": "Serwer LDAP",
+        "OneUser": "1 użytkownik",
+        "Test": "Test"
     }
 }

@@ -1,21 +1,21 @@
 {
     "LoginLdap": {
-        "AdminPass": "LDAP Password",
-        "AdminUser": "Nakaugnay na Username ng LDAP",
+        "PluginDescription": "Ang plugi na pang-login na may kasamang LDAP authentication. Ay nagbibigay ng alternatibo sa pangkaraniwang Piwi Login plugin.",
+        "MenuLdap": "Mga User ng LDAP",
+        "LoadUser": "Mag-load ng user mula sa LDAP",
+        "Settings": "Mga setting ng LDAP",
         "BaseDn": "Base DN",
+        "LdapPort": "Port ng server",
+        "ServerUrl": "URL ng Server",
+        "UserIdField": "User ID Field",
+        "UserNotFound": "Hindi natagpuan ang user \"%s\"!",
+        "NoUserName": "Walang mga username na ibinigay!",
+        "AdminUser": "Nakaugnay na Username ng LDAP",
+        "AdminPass": "LDAP Password",
+        "LdapUserAdded": "Matagumpay na naidagdag ang user sa LDAP!",
         "CannotConnectToServer": "Hindi makakonekta sa LDAP server.",
         "CannotConnectToServers": "Hindi makakonekta sa anumang %s LDAP na server.",
-        "LdapPort": "Port ng server",
         "LDAPServers": "LDAP Servers",
-        "LdapUserAdded": "Matagumpay na naidagdag ang user sa LDAP!",
-        "LoadUser": "Mag-load ng user mula sa LDAP",
-        "MenuLdap": "Mga User ng LDAP",
-        "NoUserName": "Walang mga username na ibinigay!",
-        "PluginDescription": "Ang plugi na pang-login na may kasamang LDAP authentication. Ay nagbibigay ng alternatibo sa pangkaraniwang Piwi Login plugin.",
-        "ServerUrl": "URL ng Server",
-        "Settings": "Mga setting ng LDAP",
-        "Test": "Pagsusulit",
-        "UserIdField": "User ID Field",
-        "UserNotFound": "Hindi natagpuan ang user \"%s\"!"
+        "Test": "Pagsusulit"
     }
 }

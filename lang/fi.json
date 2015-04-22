@@ -1,18 +1,19 @@
 {
     "LoginLdap": {
-        "AdminPass": "LDAP-salasana",
+        "LoadUser": "Lataa käyttäjä LDAP:sta",
+        "LdapPort": "Palvelimen portti",
+        "AliasFieldDescription": "(esim. \"cn\")",
         "AdminUser": "LDAP-käyttäjätunnus",
         "AdminUserDescription": "(esim. \"john\" - täytyy olla lukuoikeus muiden käyttäjien tietoihin)",
-        "AliasFieldDescription": "(esim. \"cn\")",
-        "CannotConnectToServer": "LDAP-palvelimeen yhdistäminen epäonnistui.",
-        "CannotConnectToServers": "%s LDAP-palvelimeen yhdistäminen epäonnistui.",
+        "AdminPass": "LDAP-salasana",
         "Filter": "LDAP:n hakufiltteri",
         "FilterDescription": "( esim. \"(objectClass=person)\" )",
         "Kerberos": "Kerberos käytössä",
         "KerberosDescription": "( \"true\" tai \"false\" )",
-        "LdapPort": "Palvelimen portti",
-        "LDAPServers": "LDAP-palvelimet",
         "LdapUserAdded": "LDAP-käyttäjä lisättiin onnistuneesti!",
-        "LoadUser": "Lataa käyttäjä LDAP:sta"
+        "CannotConnectToServer": "LDAP-palvelimeen yhdistäminen epäonnistui.",
+        "CannotConnectToServers": "%s LDAP-palvelimeen yhdistäminen epäonnistui.",
+        "LDAPServers": "LDAP-palvelimet",
+        "Test": "Testi"
     }
 }
