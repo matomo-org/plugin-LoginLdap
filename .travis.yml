@@ -3,8 +3,9 @@
 language: php
 
 php:
-  - 5.3
   - 5.6
+  - 5.3.3
+#  - hhvm
 
 services:
   - redis-server
@@ -114,7 +115,7 @@ before_script:
   - ./tests/travis/prepare.sh
   - ./tests/travis/setup_webserver.sh
 
-  - export GENERATE_TRAVIS_YML_COMMAND="php ./console generate:travis-yml --plugin=\"LoginLdap\" --php-versions=\"5.3,5.6\" --verbose"
+  - export GENERATE_TRAVIS_YML_COMMAND="php ./console generate:travis-yml --plugin=\"LoginLdap\""
   - ./tests/travis/autoupdate_travis_yml.sh
 
   - cd tests/PHPUnit
@@ -136,3 +137,5 @@ after_script:
 
 after_success:
   - cd $PIWIK_ROOT_DIR
+
+sudo: required
