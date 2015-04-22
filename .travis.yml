@@ -35,6 +35,8 @@ matrix:
     - php: 5.4
       env: TEST_SUITE=UITests MYSQL_ADAPTER=PDO_MYSQL
 
+sudo: required
+
 script: $PIWIK_ROOT_DIR/tests/travis/travis.sh
 
 before_install:
