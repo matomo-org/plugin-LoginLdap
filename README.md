@@ -26,6 +26,10 @@ To start using LoginLdap, follow these steps:
 _**Note:** LDAP users are not synchronized with Piwik until they are first logged in. This means you cannot access a token auth for an LDAP user until the user is synchronized.
 If you use the default LoginLdap configuration, you can synchronize all of your LDAP users at once using the `./console loginldap:synchronize-users` command._
 
+## Troubleshooting
+
+To troubleshoot any connectivity issues, read our [troubleshooting guide](https://github.com/piwik/plugin-LoginLdap/wiki/Troubleshooting).
+
 ## Upgrading from 2.2.7
 
 Version 3.0.0 is a major rewrite of the plugin, so if you are upgrading for 2.2.7 you will have to do some extra work when upgrading:
