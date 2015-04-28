@@ -7,8 +7,8 @@
  */
 namespace Piwik\Plugins\LoginLdap\Model;
 
+use Piwik\Container\StaticContainer;
 use Piwik\Db;
-use Piwik\Log;
 use Piwik\Piwik;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
@@ -17,14 +17,15 @@ use Piwik\Plugins\LoginLdap\Ldap\ServerInfo;
 use Piwik\Plugins\LoginLdap\Ldap\Exceptions\ConnectionException;
 use InvalidArgumentException;
 use Exception;
+use Psr\Log\LoggerInterface;
 
 /**
  * DAO class for user related operations that use LDAP as a backend.
  */
 class LdapUsers
 {
-    const FUNCTION_START_LOG_MESSAGE = "Model\\LdapUsers: start %s() with %s";
-    const FUNCTION_END_LOG_MESSAGE = "Model\\LdapUsers: end %s() with %s";
+    const FUNCTION_START_LOG_MESSAGE = "Model\\LdapUsers: start {function}() with {params}";
+    const FUNCTION_END_LOG_MESSAGE = "Model\\LdapUsers: end {function}() with {result}";
 
     /**
      * If set, the user must be a member of a specific LDAP groupOfNames in order
@@ -108,11 +109,16 @@ class LdapUsers
     private $ldapNetworkTimeout = LdapClient::DEFAULT_TIMEOUT_SECS;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor.
      */
-    public function __construct()
+    public function __construct(LoggerInterface $logger = null)
     {
-        // empty
+        $this->logger = $logger ?: StaticContainer::get('Psr\Log\LoggerInterface');
     }
 
     /**
@@ -130,8 +136,10 @@ class LdapUsers
      */
     public function authenticate($username, $password, $alreadyAuthenticated = false)
     {
-        Log::debug(self::FUNCTION_START_LOG_MESSAGE, __FUNCTION__,
-            array($username, "<password[length=" . strlen($password) . "]>", $alreadyAuthenticated));
+        $this->logger->debug(self::FUNCTION_START_LOG_MESSAGE, array(
+            'function' => __FUNCTION__,
+            'params' => array($username, "<password[length=" . strlen($password) . "]>", $alreadyAuthenticated)
+        ));
 
         if (empty($username)) {
             throw new InvalidArgumentException('No username supplied in Model\\LdapUsers::authenticate().');
@@ -141,35 +149,46 @@ class LdapUsers
         if (empty($password)
             && !$alreadyAuthenticated
         ) {
-            Log::debug("LdapUsers::%s: empty password, skipping authentication", __FUNCTION__);
+            $this->logger->debug("LdapUsers::{function}: empty password, skipping authentication", array(
+                'function' => __FUNCTION__
+            ));
 
             return null;
         }
 
         try {
             $authenticationRequiredMemberOf = $this->authenticationRequiredMemberOf;
+            $logger = $this->logger;
             $result = $this->doWithClient(function (LdapUsers $self, LdapClient $ldapClient)
-                use ($username, $password, $alreadyAuthenticated, $authenticationRequiredMemberOf) {
+                use ($username, $password, $alreadyAuthenticated, $authenticationRequiredMemberOf, $logger) {
 
                 $user = $self->getUser($username, $ldapClient);
 
                 if (empty($user)) {
-                    Log::debug("LdapUsers::%s: No such user '%s' or user is not a member of '%s'.",
-                        __FUNCTION__, $username, $authenticationRequiredMemberOf);
+                    $logger->debug("LdapUsers::{function}: No such user '{user}' or user is not a member of '{group}'.", array(
+                        'function' => __FUNCTION__,
+                        'user' => $username,
+                        'group' => $authenticationRequiredMemberOf
+                    ));
 
                     return null;
                 }
 
                 if ($alreadyAuthenticated) {
-                    Log::debug("LdapUsers::%s: assuming user %s already authenticated, skipping LDAP authentication",
-                        __FUNCTION__, $username);
+                    $logger->debug("LdapUsers::{function}: assuming user {user} already authenticated, skipping LDAP authentication", array(
+                        'function' => __FUNCTION__,
+                        'user' => $username
+                    ));
 
                     return $user;
                 }
 
                 if (empty($user['dn'])) {
-                    Log::debug("LdapUsers::%s: LDAP user info for '%s' has no dn attribute! (info = %s)",
-                        __FUNCTION__, $username, array_keys($user));
+                    $logger->debug("LdapUsers::{function}: LDAP user info for '{user}' has no dn attribute! (info = {info})", array(
+                        'function' => __FUNCTION__,
+                        'user' => $username,
+                        'info' => array_keys($user)
+                    ));
 
                     return null;
                 }
@@ -183,12 +202,15 @@ class LdapUsers
         } catch (ConnectionException $ex) {
             throw $ex;
         } catch (Exception $ex) {
-            Log::debug($ex);
+            $this->logger->debug("LDAP authentication failure: {message}", array('message' => $ex->getMessage(), 'exception' => $ex));
 
             $result = null;
         }
 
-        Log::debug(self::FUNCTION_END_LOG_MESSAGE, __FUNCTION__, $result === null ? 'null' : array_keys($result));
+        $this->logger->debug(self::FUNCTION_END_LOG_MESSAGE, array(
+            'function' => __FUNCTION__,
+            'result' => $result === null ? 'null' : array_keys($result)
+        ));
 
         return $result;
     }
@@ -201,7 +223,10 @@ class LdapUsers
      */
     public function getUser($username)
     {
-        Log::debug(self::FUNCTION_START_LOG_MESSAGE, __FUNCTION__, array($username));
+        $this->logger->debug(self::FUNCTION_START_LOG_MESSAGE, array(
+            'function' => __FUNCTION__,
+            'params' => array($username)
+        ));
 
         $result = $this->doWithClient(function (LdapUsers $self, LdapClient $ldapClient, ServerInfo $server)
             use ($username) {
@@ -222,7 +247,10 @@ class LdapUsers
             }
         });
 
-        Log::debug(self::FUNCTION_END_LOG_MESSAGE, __FUNCTION__, $result === null ? 'null' : array_keys($result));
+        $this->logger->debug(self::FUNCTION_END_LOG_MESSAGE, array(
+            'function' => __FUNCTION__,
+            'result' => $result === null ? 'null' : array_keys($result)
+        ));
 
         return $result;
     }
@@ -238,7 +266,10 @@ class LdapUsers
      */
     public function getCountOfUsersMatchingFilter($filter, $filterBind = array())
     {
-        Log::debug(self::FUNCTION_START_LOG_MESSAGE, __FUNCTION__, $filter);
+        $this->logger->debug(self::FUNCTION_START_LOG_MESSAGE, array(
+            'function' => __FUNCTION__,
+            'params' => $filter
+        ));
 
         $result = $this->doWithClient(function (LdapUsers $self, LdapClient $ldapClient, ServerInfo $server)
             use ($filter, $filterBind) {
@@ -247,7 +278,10 @@ class LdapUsers
             return $ldapClient->count($server->getBaseDn(), $filter, $filterBind);
         });
 
-        Log::debug(self::FUNCTION_END_LOG_MESSAGE, __FUNCTION__, $result);
+        $this->logger->debug(self::FUNCTION_END_LOG_MESSAGE, array(
+            'function' => __FUNCTION__,
+            'params' => $result
+        ));
 
         return $result;
     }
@@ -262,7 +296,10 @@ class LdapUsers
      */
     public function getAllUserLogins()
     {
-        Log::debug(self::FUNCTION_START_LOG_MESSAGE, __FUNCTION__, '');
+        $this->logger->debug(self::FUNCTION_START_LOG_MESSAGE, array(
+            'function' => __FUNCTION__,
+            'params' => ''
+        ));
 
         $userIdField = $this->ldapUserMapper->getLdapUserIdField();
         list($filter, $bind) = $this->getUserEntryQuery($username = null);
@@ -287,7 +324,10 @@ class LdapUsers
             return $userIds;
         });
 
-        Log::debug(self::FUNCTION_END_LOG_MESSAGE, __FUNCTION__, $result);
+        $this->logger->debug(self::FUNCTION_END_LOG_MESSAGE, array(
+            'function' => __FUNCTION__,
+            'result' => $result
+        ));
 
         return $result;
     }
@@ -425,7 +465,11 @@ class LdapUsers
     public function addUsernameSuffix($username)
     {
         if (!empty($this->authenticationUsernameSuffix)) {
-            Log::debug("Model\\LdapUsers::%s: Adding suffix '%s' to username '%s'.", __FUNCTION__, $this->authenticationUsernameSuffix, $username);
+            $this->logger->debug("Model\\LdapUsers::{function}: Adding suffix '{suffix}' to username '{username}'.", array(
+                'function' => __FUNCTION__,
+                'suffix' => $this->authenticationUsernameSuffix,
+                'username' => $username
+            ));
         }
 
         return $username . $this->authenticationUsernameSuffix;
@@ -467,7 +511,10 @@ class LdapUsers
                 try {
                     $this->closeLdapClient();
                 } catch (Exception $ex) {
-                    Log::debug($ex);
+                    $this->logger->debug("Failed to close LDAP client: {message}", array(
+                        'message' => $ex->getMessage(),
+                        'exception' => $ex
+                    ));
                 }
             }
 
@@ -495,14 +542,21 @@ class LdapUsers
                 $this->ldapClient->connect($server->getServerHostname(), $server->getServerPort(), $this->getLdapNetworkTimeout());
                 $this->currentServerInfo = $server;
 
-                Log::info("LdapUsers::%s: Using LDAP server %s:%s", __FUNCTION__, $server->getServerHostname(), $server->getServerPort());
+                $this->logger->info("LdapUsers::{function}: Using LDAP server {host}:{port}", array(
+                    'function' => __FUNCTION__,
+                    'host' => $server->getServerHostname(),
+                    'port' => $server->getServerPort()
+                ));
 
                 return;
             } catch (Exception $ex) {
-                Log::debug($ex);
-
-                Log::info("Model\\LdapUsers::%s: Could not connect to LDAP server %s:%s: %s",
-                    __FUNCTION__, $server->getServerHostname(), $server->getServerPort(), $ex->getMessage());
+                $this->logger->info("Model\\LdapUsers::{function}: Could not connect to LDAP server {host}:{port}: {message}", array(
+                    'function' => __FUNCTION__,
+                    'host' => $server->getServerHostname(),
+                    'post' => $server->getServerPort(),
+                    'message' => $ex->getMessage(),
+                    'exception' => $ex
+                ));
             }
         }
 
@@ -578,8 +632,16 @@ class LdapUsers
 
         $result->setLdapUserMapper(UserMapper::makeConfigured());
 
-        Log::debug("LdapUsers::%s: configuring with userEmailSuffix = %s, requiredMemberOf = %s, filter = %s, timeoutSecs = %s",
-            __FUNCTION__, $usernameSuffix, $requiredMemberOf, $filter, $timeoutSecs);
+        $logger = StaticContainer::get('Psr\Log\LoggerInterface');
+
+        $message = "LdapUsers::{function}: configuring with userEmailSuffix = {suffix}, requiredMemberOf = {memberof}, filter = {filter}, timeoutSecs = {timeout}";
+        $logger->debug($message, array(
+            'function' => __FUNCTION__,
+            'suffix' => $usernameSuffix,
+            'memberof' => $requiredMemberOf,
+            'filter' => $filter,
+            'timeout' => $timeoutSecs
+        ));
 
         return $result;
     }
