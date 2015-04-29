@@ -51,11 +51,11 @@ class Client
     public function __construct($serverHostName = null, $port = ServerInfo::DEFAULT_LDAP_PORT, $timeout = self::DEFAULT_TIMEOUT_SECS,
                                 LoggerInterface $logger = null)
     {
+        $this->logger = $logger ?: StaticContainer::get('Psr\Log\LoggerInterface');
+
         if (!empty($serverHostName)) {
             $this->connect($serverHostName, $port, $timeout);
         }
-
-        $this->logger = $logger ?: StaticContainer::get('Psr\Log\LoggerInterface');
     }
 
     /**

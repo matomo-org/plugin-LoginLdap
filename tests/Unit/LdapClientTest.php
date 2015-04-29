@@ -9,7 +9,6 @@
 namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
 use Piwik\ErrorHandler;
-use Piwik\Log;
 use Piwik\Plugins\LoginLdap\Ldap\Client as LdapClient;
 use Piwik\Plugins\LoginLdap\Ldap\LdapFunctions;
 use PHPUnit_Framework_TestCase;
@@ -40,8 +39,6 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
         restore_error_handler();
 
         LdapFunctions::$phpUnitMock = null;
-
-        Log::unsetInstance();
 
         parent::tearDown();
     }
