@@ -9,9 +9,10 @@ namespace Piwik\Plugins\LoginLdap;
 
 use Exception;
 use Piwik\Config as PiwikConfig;
-use Piwik\Log;
+use Piwik\Container\StaticContainer;
 use Piwik\Plugins\LoginLdap\Ldap\Client;
 use Piwik\Plugins\LoginLdap\Ldap\ServerInfo;
+use Psr\Log\LoggerInterface;
 
 /**
  * Utility class with methods to manage LoginLdap INI configuration.
@@ -250,8 +251,15 @@ class Config
                 try {
                     $servers[] = ServerInfo::makeConfigured($name);
                 } catch (Exception $ex) {
-                    Log::debug("LoginLdap\\Config::%s: LDAP server info '%s' is configured incorrectly: %s",
-                        __FUNCTION__, $name, $ex->getMessage());
+                    /** @var LoggerInterface */
+                    $logger = StaticContainer::get('Psr\Logger\LoggerInterface');
+
+                    $logger->debug("LoginLdap\\Config::{func}: LDAP server info '{name}' is configured incorrectly: {message}", array(
+                        'func' => __FUNCTION__,
+                        'name' => $name,
+                        'message' => $ex->getMessage(),
+                        'exception' => $ex
+                    ));
                 }
             }
             return $servers;

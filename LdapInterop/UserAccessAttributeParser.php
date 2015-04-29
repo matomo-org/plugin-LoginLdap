@@ -8,11 +8,12 @@
 namespace Piwik\Plugins\LoginLdap\LdapInterop;
 
 use Piwik\Access;
-use Piwik\Log;
+use Piwik\Container\StaticContainer;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Site;
 use Piwik\Url;
 use Piwik\SettingsPiwik;
+use Psr\Log\LoggerInterface;
 
 /**
  * Parses the values of LDAP attributes that describe an LDAP user's Piwik access.
@@ -101,6 +102,16 @@ class UserAccessAttributeParser
      * @var string
      */
     private $thisPiwikInstanceName = null;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(LoggerInterface $logger = null)
+    {
+        $this->logger = $logger ?: StaticContainer::get('Psr\Logger\LoggerInterface');
+    }
 
     /**
      * Parses an LDAP access attribute value and returns the list of site IDs that apply to
@@ -223,8 +234,8 @@ class UserAccessAttributeParser
         if (count($parts) == 1) { // there is no instanceId
             $parts = array(null, $parts[0]);
         } else if (count($parts) >= 2) { // malformed server access specification
-            Log::debug("UserAccessAttributeParser::%s: Improper server specification in LDAP access attribute: '%s'",
-                __FUNCTION__, $spec);
+            $this->logger->debug("UserAccessAttributeParser::{func}: Improper server specification in LDAP access attribute: '{value}'",
+                array('func' => __FUNCTION__, 'value' => $spec));
 
             $parts = array($parts[0], $parts[1]);
         }
@@ -255,8 +266,8 @@ class UserAccessAttributeParser
                 $result = false;
             } else {
                 if (strlen($matches[0]) != strlen($instanceId)) {
-                    Log::debug("UserAccessAttributeParser::%s: Found extra characters in Piwik instance ID. Whole ID entry = %s.",
-                        __FUNCTION__, $instanceId);
+                    $this->logger->debug("UserAccessAttributeParser::{func}: Found extra characters in Piwik instance ID. Whole ID entry = {id}.",
+                        array('func' => __FUNCTION__, 'id' => $instanceId));
                 }
 
                 $result = true;
@@ -264,7 +275,10 @@ class UserAccessAttributeParser
         }
 
         if ($result) {
-            Log::debug("UserAccessAttributeParser::%s: Matched this instance with '%s'.", __FUNCTION__, $instanceId);
+            $this->logger->debug("UserAccessAttributeParser::{func}: Matched this instance with '{id}'.", array(
+                'func' => __FUNCTION__,
+                'id' => $instanceId
+            ));
         }
 
         return $result;
@@ -317,11 +331,11 @@ class UserAccessAttributeParser
         $parsed = @parse_url($url);
         if (empty($parsed)) {
             if ($isThisPiwikUrl) {
-                Log::warning("UserAccessAttributeParser::%s: Invalid Piwik URL found for this instance '%s'.",
-                    __FUNCTION__, $url);
+                $this->logger->warning("UserAccessAttributeParser::{func}: Invalid Piwik URL found for this instance '{url}'.",
+                    array('func' => __FUNCTION__, 'url' => $url));
             } else {
-                Log::debug("UserAccessAttributeParser::%s: Invalid instance ID URL found '%s'.",
-                    __FUNCTION__, $url);
+                $this->logger->debug("UserAccessAttributeParser::{func}: Invalid instance ID URL found '{url}'.",
+                    array('func' => __FUNCTION__, 'url' => $url));
             }
 
             return false;
@@ -335,7 +349,10 @@ class UserAccessAttributeParser
         }
 
         if (empty($parsed['host'])) {
-            Log::debug("UserAccessAttributeParser::%s: Found strange URL - '%s'.", __FUNCTION__, $url);
+            $this->logger->debug("UserAccessAttributeParser::{func}: Found strange URL - '{url}'.", array(
+                'func' => __FUNCTION__,
+                'url' => $url
+            ));
         }
 
         if (!isset($parsed['port'])) {
@@ -373,15 +390,15 @@ class UserAccessAttributeParser
             $result->setThisPiwikInstanceName($thisPiwikInstanceName);
         } else {
             if ($result->getServerIdsSeparator() == ':') {
-                Log::info("UserAttributesParser::%s: Configured with no instance name so matching by URL, but server/site IDs"
+                // TODO: remove this warning and move it to the settings page.
+                /** @var LoggerInterface $logger */
+                $logger = StaticContainer::get('Psr\Log\LoggerInterface');
+                $logger->info("UserAttributesParser::{func}: Configured with no instance name so matching by URL, but server/site IDs"
                         . " separator set to special ':' character. This character may show up in URLs in LDAP, which will "
                         . "cause problems. We recommend you use a character not often found in URLs, such as '|'.",
-                    __FUNCTION__);
+                    array('func' => __FUNCTION__));
             }
         }
-
-        Log::debug("UserAccessAttributeParser::%s: configuring with serverSpecificationDelimiter = %s, serverSiteIdListSeparator = %s, "
-                 . "thisPiwikInstanceName = %s", __FUNCTION__, $serverSpecificationDelimiter, $serverListSeparator, $thisPiwikInstanceName);
 
         return $result;
     }

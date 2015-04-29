@@ -8,11 +8,12 @@
 namespace Piwik\Plugins\LoginLdap\LdapInterop;
 
 use Piwik\Access;
-use Piwik\Log;
+use Piwik\Container\StaticContainer;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Plugins\UsersManager\Model as UserModel;
 use Piwik\Site;
+use Psr\Log\LoggerInterface;
 
 /**
  * Synchronizes LDAP user information with the Piwik database.
@@ -86,6 +87,16 @@ class UserSynchronizer
     private $newUserDefaultSitesWithViewAccess = array();
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(LoggerInterface $logger = null)
+    {
+        $this->logger = $logger ?: StaticContainer::get('Psr\Logger\LoggerInterface');
+    }
+
+    /**
      * Converts a supplied LDAP entity into a Piwik user that is persisted in
      * the MySQL DB.
      *
@@ -100,14 +111,19 @@ class UserSynchronizer
         $usersManagerApi = $this->usersManagerApi;
         $userModel = $this->userModel;
         $newUserDefaultSitesWithViewAccess = $this->newUserDefaultSitesWithViewAccess;
-        return Access::doAsSuperUser(function () use ($piwikLogin, $ldapUser, $userMapper, $usersManagerApi, $userModel, $newUserDefaultSitesWithViewAccess) {
+        $logger = $this->logger;
+        return Access::doAsSuperUser(function () use ($piwikLogin, $ldapUser, $userMapper, $usersManagerApi, $userModel, $newUserDefaultSitesWithViewAccess, $logger) {
             $piwikLogin = $userMapper->getExpectedLdapUsername($piwikLogin);
 
             $existingUser = $userModel->getUser($piwikLogin);
 
             $user = $userMapper->createPiwikUserFromLdapUser($ldapUser, $existingUser);
 
-            Log::debug("UserSynchronizer::synchronizeLdapUser: synchronizing user [ piwik login = %s, ldap login = %s ]", $piwikLogin, $user['login']);
+            $logger->debug("UserSynchronizer::{func}: synchronizing user [ piwik login = {piwikLogin}, ldap login = {ldapLogin} ]", array(
+                'func' => 'synchronizeLdapUser',
+                'piwikLogin' => $piwikLogin,
+                'ldapLogin' => $user['login']
+            ));
 
             if (empty($existingUser)) {
                 $usersManagerApi->addUser($user['login'], $user['password'], $user['email'], $user['alias'], $isPasswordHashed = true);
@@ -118,7 +134,7 @@ class UserSynchronizer
                 }
             } else {
                 if (!UserMapper::isUserLdapUser($existingUser)) {
-                    Log::warning("Unable to synchronize LDAP user '%s', non-LDAP user with same name exists.", $existingUser['login']);
+                    $logger->warning("Unable to synchronize LDAP user '{user}', non-LDAP user with same name exists.", array('user' => $existingUser['login']));
                 } else {
                     $usersManagerApi->updateUser($user['login'], $user['password'], $user['email'], $user['alias'], $isPasswordHashed = true);
                 }
@@ -142,8 +158,10 @@ class UserSynchronizer
 
         $userAccess = $this->userAccessMapper->getPiwikUserAccessForLdapUser($ldapUser);
         if (empty($userAccess)) {
-            Log::warning("UserSynchronizer::%s: User '%s' has no access in LDAP, but access synchronization is enabled.",
-                __FUNCTION__, $piwikLogin);
+            $this->logger->warning("UserSynchronizer::{func}: User '{user}' has no access in LDAP, but access synchronization is enabled.", array(
+                'func' => __FUNCTION__,
+                'user' => $piwikLogin
+            ));
 
             return;
         }
@@ -274,12 +292,15 @@ class UserSynchronizer
         $result->setUsersManagerApi(UsersManagerAPI::getInstance());
         $result->setUserModel(new UserModel());
 
+        /** @var LoggerInterface $logger */
+        $logger = StaticContainer::get('Psr\Logger\LoggerInterface');
+
         if (Config::isAccessSynchronizationEnabled()) {
             $result->setUserAccessMapper(UserAccessMapper::makeConfigured());
 
-            Log::debug("UserSynchronizer::%s(): Using UserAccessMapper when synchronizing users.", __FUNCTION__);
+            $logger->debug("UserSynchronizer::{func}(): Using UserAccessMapper when synchronizing users.", array('func' => __FUNCTION__));
         } else {
-            Log::debug("UserSynchronizer::%s(): LDAP access synchronization not enabled.", __FUNCTION__);
+            $logger->debug("UserSynchronizer::{func}(): LDAP access synchronization not enabled.", array('func' => __FUNCTION__));
         }
 
         $defaultSitesWithViewAccess = Config::getDefaultSitesToGiveViewAccessTo();
@@ -289,14 +310,17 @@ class UserSynchronizer
             });
 
             if (empty($siteIds)) {
-                Log::warning("UserSynchronizer::%s(): new_user_default_sites_view_access INI config option has no "
-                           . "entries. Newly synchronized users will not have any access.", __FUNCTION__);
+                $logger->warning("UserSynchronizer::{func}(): new_user_default_sites_view_access INI config option has no "
+                    . "entries. Newly synchronized users will not have any access.", array('func' => __FUNCTION__));
             }
 
             $result->setNewUserDefaultSitesWithViewAccess($siteIds);
         }
 
-        Log::debug("UserSynchronizer::%s: configuring with defaultSitesWithViewAccess = %s", __FUNCTION__, $defaultSitesWithViewAccess);
+        $logger->debug("UserSynchronizer::{func}: configuring with defaultSitesWithViewAccess = {sites}", array(
+            'func' => __FUNCTION__,
+            'sites' => $defaultSitesWithViewAccess
+        ));
 
         return $result;
     }

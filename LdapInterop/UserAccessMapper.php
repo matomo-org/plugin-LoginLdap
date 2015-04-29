@@ -8,9 +8,10 @@
 namespace Piwik\Plugins\LoginLdap\LdapInterop;
 
 use Piwik\Access;
-use Piwik\Log;
+use Piwik\Container\StaticContainer;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\SitesManager\API as SitesManagerAPI;
+use Psr\Log\LoggerInterface;
 
 /**
  * Uses custom LDAP attributes to determine an LDAP user's Piwik permissions
@@ -75,6 +76,19 @@ class UserAccessMapper
     private $allSites = null;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * Constructor.
+     */
+    public function __construct(LoggerInterface $logger = null)
+    {
+        $this->logger = $logger ?: StaticContainer::get('Psr\Logger\LoggerInterface');
+    }
+
+    /**
      * Returns an array describing an LDAP user's access to Piwik sites.
      *
      * The array will either mark the user as a superuser, in which case it will look like
@@ -96,7 +110,10 @@ class UserAccessMapper
     {
         // if the user is a superuser, we don't need to check the other attributes
         if ($this->isSuperUserAccessGrantedForLdapUser($ldapUser)) {
-            Log::debug("UserAccessMapper::%s: user '%s' found to be superuser", __FUNCTION__, array_keys($ldapUser));
+            $this->logger->debug("UserAccessMapper::{func}: user '{user}' found to be superuser", array(
+                'func' => __FUNCTION__,
+                'user' => array_keys($ldapUser)
+            ));
 
             return array('superuser' => true);
         }
@@ -204,7 +221,11 @@ class UserAccessMapper
             $viewAttributeValues = array($viewAttributeValues);
         }
 
-        Log::debug("UserAccessMapper::%s(): attribute value for %s access is %s", __FUNCTION__, $accessLevel, $viewAttributeValues);
+        $this->logger->debug("UserAccessMapper::{func}(): attribute value for {accessLevel} access is {values}", array(
+            'func' => __FUNCTION__,
+            'accessLevel' => $accessLevel,
+            'values' => $viewAttributeValues
+        ));
 
         $siteIds = array();
 
@@ -215,12 +236,19 @@ class UserAccessMapper
             }
         });
 
-        Log::debug("UserAccessMapper::%s(): adding %s access for sites %s", __FUNCTION__, $accessLevel, $siteIds);
+        $this->logger->debug("UserAccessMapper::{func}(): adding {accessLevel} access for sites {sites}", array(
+            'func' => __FUNCTION__,
+            'accessLevel' => $accessLevel,
+            'sites' => $siteIds
+        ));
 
         $allSitesSet = $this->getSetOfAllSites();
         foreach ($siteIds as $idSite) {
             if (!isset($allSitesSet[$idSite])) {
-                Log::debug("UserAccessMapper::%s(): site [ id = %s ] does not exist, ignoring", __FUNCTION__, $idSite);
+                $this->logger->debug("UserAccessMapper::{func}(): site [ id = {id} ] does not exist, ignoring", array(
+                    'func' => __FUNCTION__,
+                    'id' => $idSite
+                ));
 
                 continue;
             }
@@ -284,9 +312,6 @@ class UserAccessMapper
         if (!empty($superuserAttributeName)) {
             $result->setSuperuserAttributeName($superuserAttributeName);
         }
-
-        Log::debug("UserAccessMapper::%s: configuring with viewAttributeName = '%s', adminAttributeName = '%s', superuserAttributeName = '%s'",
-            __FUNCTION__, $viewAttributeName, $adminAttributeName, $superuserAttributeName);
 
         return $result;
     }

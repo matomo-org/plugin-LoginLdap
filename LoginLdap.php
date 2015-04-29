@@ -146,18 +146,6 @@ class LoginLdap extends \Piwik\Plugin
     }
 
     /**
-     * Set login name and authentication token for authentication request.
-     * Listens to API.Request.authenticate hook.
-     */
-    public function ApiRequestAuthenticate($tokenAuth)
-    {
-        /** @var Auth $auth */
-        $auth = StaticContainer::get('Piwik\Auth');
-        $auth->setLogin($login = null);
-        $auth->setTokenAuth($tokenAuth);
-    }
-
-    /**
      * Initializes the authentication object.
      * Listens to Request.initAuthenticationObject hook.
      */
@@ -167,6 +155,18 @@ class LoginLdap extends \Piwik\Plugin
         StaticContainer::getContainer()->set('Piwik\Auth', $auth);
 
         Login::initAuthenticationFromCookie($auth, $activateCookieAuth);
+    }
+
+    /**
+     * Set login name and authentication token for authentication request.
+     * Listens to API.Request.authenticate hook.
+     */
+    public function ApiRequestAuthenticate($tokenAuth)
+    {
+        /** @var Auth $auth */
+        $auth = StaticContainer::get('Piwik\Auth');
+        $auth->setLogin($login = null);
+        $auth->setTokenAuth($tokenAuth);
     }
 
     private function isUserLdapUser($login)

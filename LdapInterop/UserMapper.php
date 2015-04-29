@@ -8,8 +8,9 @@
 namespace Piwik\Plugins\LoginLdap\LdapInterop;
 
 use Exception;
-use Piwik\Log;
+use Piwik\Container\StaticContainer;
 use Piwik\Plugins\LoginLdap\Config;
+use Psr\Log\LoggerInterface;
 
 /**
  * Maps LDAP users to arrays that can be used to create new Piwik
@@ -97,6 +98,19 @@ class UserMapper
     private $appendUserEmailSuffixToUsername = true;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * Constructor.
+     */
+    public function __construct(LoggerInterface $logger = null)
+    {
+        $this->logger = $logger ?: StaticContainer::get('Psr\Logger\LoggerInterface');
+    }
+
+    /**
      * Creates an array with normal Piwik user information using LDAP data for the user. The
      * information in the result should be used with the **UsersManager.addUser** API method.
      *
@@ -151,7 +165,10 @@ class UserMapper
                 return $user['password'];
             } else {
                 if (!$this->isRandomTokenAuthGenerationEnabled) {
-                    Log::warning("UserMapper::%s: Could not find LDAP password for user '%s', generating random one.", __FUNCTION__, @$ldapUser[$this->ldapUserIdField]);
+                    $this->logger->warning("UserMapper::{func}: Could not find LDAP password for user '{user}', generating random one.", array(
+                        'func' => __FUNCTION__,
+                        'user' => @$ldapUser[$this->ldapUserIdField]
+                    ));
                 }
 
                 return $this->generateRandomPassword();
@@ -481,11 +498,6 @@ class UserMapper
         if (!empty($appendUserEmailSuffixToUsername)) {
             $result->setAppendUserEmailSuffixToUsername($appendUserEmailSuffixToUsername);
         }
-
-        Log::debug("UserMapper::%s: configuring with uidField = %s, aliasField = %s firstNameField = %s, lastNameField = %s"
-                 . " mailField = %s, ldapUserPasswordField = %s, userEmailSuffix = %s, isRandomTokenAuthGenerationEnabled = %s",
-                   __FUNCTION__, $uidField, $aliasField, $firstNameField, $lastNameField, $mailField, $userPasswordField,
-                   $userEmailSuffix, $isRandomTokenAuthGenerationEnabled);
 
         return $result;
     }

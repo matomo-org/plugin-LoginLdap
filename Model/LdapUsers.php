@@ -632,17 +632,6 @@ class LdapUsers
 
         $result->setLdapUserMapper(UserMapper::makeConfigured());
 
-        $logger = StaticContainer::get('Psr\Log\LoggerInterface');
-
-        $message = "LdapUsers::{function}: configuring with userEmailSuffix = {suffix}, requiredMemberOf = {memberof}, filter = {filter}, timeoutSecs = {timeout}";
-        $logger->debug($message, array(
-            'function' => __FUNCTION__,
-            'suffix' => $usernameSuffix,
-            'memberof' => $requiredMemberOf,
-            'filter' => $filter,
-            'timeout' => $timeoutSecs
-        ));
-
         return $result;
     }
 }

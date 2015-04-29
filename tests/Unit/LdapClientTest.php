@@ -8,6 +8,9 @@
  */
 namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+use Piwik\Container\StaticContainer;
 use Piwik\ErrorHandler;
 use Piwik\Log;
 use Piwik\Plugins\LoginLdap\Ldap\Client as LdapClient;
@@ -28,7 +31,12 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         // make sure logging logic is executed so we can test whether there are bugs in the logging code
-        Log::getInstance()->setLogLevel(Log::VERBOSE);
+
+        /** @var \Monolog\Logger $logger */
+        $logger = StaticContainer::get('Psr\Log\LoggerInterface');
+        $handler = new StreamHandler('/dev/null', Logger::DEBUG);
+        $handler->setFormatter(StaticContainer::get('Piwik\Plugins\Monolog\Formatter\LineMessageFormatter'));
+        $logger->pushHandler($handler);
 
         LdapFunctions::$phpUnitMock = $this->getMock('stdClass', array(
             'ldap_connect', 'ldap_close', 'ldap_bind', 'ldap_search', 'ldap_set_option', 'ldap_get_entries',
