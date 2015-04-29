@@ -35,7 +35,6 @@ class LoginLdap extends \Piwik\Plugin
     public function getListHooksRegistered()
     {
         $hooks = array(
-            'Menu.Admin.addItems'                    => 'addMenu',
             'Request.initAuthenticationObject'       => 'initAuthenticationObject',
             'User.isNotAuthorized'                   => 'noAccess',
             'API.Request.authenticate'               => 'ApiRequestAuthenticate',
@@ -147,12 +146,15 @@ class LoginLdap extends \Piwik\Plugin
     }
 
     /**
-     * Add admin menu items
+     * Initializes the authentication object.
+     * Listens to Request.initAuthenticationObject hook.
      */
-    function addMenu()
+    function initAuthenticationObject($activateCookieAuth = false)
     {
-        MenuAdmin::getInstance()->add('General_Settings', 'LDAP', array('module' => 'LoginLdap', 'action' => 'admin'),
-            Piwik::hasUserSuperUserAccess(), $order = 30);
+        $auth = AuthBase::factory();
+        StaticContainer::getContainer()->set('Piwik\Auth', $auth);
+
+        Login::initAuthenticationFromCookie($auth, $activateCookieAuth);
     }
 
     /**
@@ -165,18 +167,6 @@ class LoginLdap extends \Piwik\Plugin
         $auth = StaticContainer::get('Piwik\Auth');
         $auth->setLogin($login = null);
         $auth->setTokenAuth($tokenAuth);
-    }
-
-    /**
-     * Initializes the authentication object.
-     * Listens to Request.initAuthenticationObject hook.
-     */
-    function initAuthenticationObject($activateCookieAuth = false)
-    {
-        $auth = AuthBase::factory();
-        StaticContainer::getContainer()->set('Piwik\Auth', $auth);
-
-        Login::initAuthenticationFromCookie($auth, $activateCookieAuth);
     }
 
     private function isUserLdapUser($login)

@@ -9,7 +9,6 @@ namespace Piwik\Plugins\LoginLdap\Auth;
 
 use Exception;
 use Piwik\AuthResult;
-use Piwik\Log;
 use Piwik\Plugins\LoginLdap\Ldap\Exceptions\ConnectionException;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
@@ -88,13 +87,13 @@ class LdapAuth extends Base
             }
 
             if (empty($this->login)) { // occurs on API requests since FrontController will still reloadAccess
-                Log::debug("authenticateByPassword: empty login encountered");
+                $this->logger->debug("authenticateByPassword: empty login encountered");
 
                 return $this->makeAuthFailure();
             }
 
             if ($this->login == 'anonymous') { // sanity check
-                Log::debug("authenticateByPassword: login is 'anonymous'");
+                $this->logger->debug("authenticateByPassword: login is 'anonymous'");
 
                 return $this->makeAuthFailure();
             }
@@ -110,7 +109,11 @@ class LdapAuth extends Base
         } catch (ConnectionException $ex) {
             throw $ex;
         } catch (Exception $ex) {
-            Log::debug($ex);
+            $this->logger->debug("LdapAuth::{func} failed: {message}", array(
+                'func' => __FUNCTION__,
+                'message' => $ex->getMessage(),
+                'exception' => $ex
+            ));
         }
 
         return $this->makeAuthFailure();
@@ -128,9 +131,6 @@ class LdapAuth extends Base
         $result->setUsersManagerAPI(UsersManagerAPI::getInstance());
         $result->setUsersModel(new UserModel());
         $result->setUserSynchronizer(UserSynchronizer::makeConfigured());
-
-        Log::debug("LdapAuth::%s: creating with configured components", __FUNCTION__);
-
         return $result;
     }
 }

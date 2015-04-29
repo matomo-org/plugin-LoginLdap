@@ -10,11 +10,9 @@ namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
 use Exception;
 use InvalidArgumentException;
-use Piwik\Log;
 use Piwik\Plugins\LoginLdap\Ldap\ServerInfo;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
-use Piwik\Plugins\LoginLdap\Config;
 use PHPUnit_Framework_TestCase;
 
 
@@ -40,17 +38,11 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        // make sure logging logic is executed so we can test whether there are bugs in the logging code
-        Log::getInstance()->setLogLevel(Log::VERBOSE);
+        parent::setUp();
 
         $this->ldapUsers = new LdapUsers();
         $this->ldapUsers->setLdapServers(array(new ServerInfo("localhost", "basedn")));
         $this->ldapUsers->setLdapUserMapper(new UserMapper());
-    }
-
-    public function tearDown()
-    {
-        Log::unsetInstance();
     }
 
     /**
@@ -83,8 +75,8 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
     public function test_authenticate_Fails_WhenUserDoesNotExist()
     {
         $mockLdapClient = $this->makeMockLdapClient();
-        $mockLdapClient->method('bind')->will($this->returnValue(true));
-        $mockLdapClient->method('fetchAll')->will($this->returnValue(array()));
+        $mockLdapClient->expects($this->any())->method('bind')->will($this->returnValue(true));
+        $mockLdapClient->expects($this->any())->method('fetchAll')->will($this->returnValue(array()));
 
         $this->ldapUsers->setLdapClientClass($mockLdapClient);
         $result = $this->ldapUsers->authenticate(self::TEST_USER, self::PASSWORD);
@@ -95,8 +87,8 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
     public function test_authenticate_Fails_WhenUserDoesNotExist_AndWebServerAuthUsed()
     {
         $mockLdapClient = $this->makeMockLdapClient();
-        $mockLdapClient->method('bind')->will($this->returnValue(true));
-        $mockLdapClient->method('fetchAll')->will($this->returnValue(array()));
+        $mockLdapClient->expects($this->any())->method('bind')->will($this->returnValue(true));
+        $mockLdapClient->expects($this->any())->method('fetchAll')->will($this->returnValue(array()));
 
         $this->ldapUsers->setLdapClientClass($mockLdapClient);
         $result = $this->ldapUsers->authenticate(self::TEST_USER, self::PASSWORD, $alreadyAuthenticated = true);
@@ -107,7 +99,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
     public function test_authenticate_SucceedsWithoutLdapBind_WhenWebServerAuthUsed_AndUserExists()
     {
         $mockLdapClient = $this->makeMockLdapClient();
-        $mockLdapClient->method('bind')->will($this->returnCallback(function () {
+        $mockLdapClient->expects($this->any())->method('bind')->will($this->returnCallback(function () {
             static $i = 0;
 
             ++$i;
@@ -118,7 +110,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
                 return false; // fail binding after first calls
             }
         }));
-        $mockLdapClient->method('fetchAll')->will($this->returnValue(array(array('uid' => self::TEST_USER))));
+        $mockLdapClient->expects($this->any())->method('fetchAll')->will($this->returnValue(array(array('uid' => self::TEST_USER))));
 
         $this->ldapUsers->setLdapClientClass($mockLdapClient);
         $result = $this->ldapUsers->authenticate(self::TEST_USER, self::PASSWORD, $alreadyAuthenticated = true);
@@ -139,7 +131,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
     public function test_authenticate_Fails_WhenLdapBindFails()
     {
         $mockLdapClient = $this->makeMockLdapClient();
-        $mockLdapClient->method('bind')->will($this->returnCallback(function () {
+        $mockLdapClient->expects($this->any())->method('bind')->will($this->returnCallback(function () {
             static $i = 0;
 
             ++$i;
@@ -150,7 +142,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
                 return false; // fail binding after first calls
             }
         }));
-        $mockLdapClient->method('fetchAll')->will($this->returnValue(array(array('uid' => self::TEST_USER, 'dn' => 'thedn'))));
+        $mockLdapClient->expects($this->any())->method('fetchAll')->will($this->returnValue(array(array('uid' => self::TEST_USER, 'dn' => 'thedn'))));
 
         $this->ldapUsers->setLdapClientClass($mockLdapClient);
         $result = $this->ldapUsers->authenticate(self::TEST_USER, self::PASSWORD, $alreadyAuthenticated = false);
@@ -161,8 +153,8 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
     public function test_authenticate_Fails_WhenLdapUserInfoDoesNotHaveDn()
     {
         $mockLdapClient = $this->makeMockLdapClient();
-        $mockLdapClient->method('bind')->will($this->returnValue(true));
-        $mockLdapClient->method('fetchAll')->will($this->returnValue(array(array('uid' => self::TEST_USER))));
+        $mockLdapClient->expects($this->any())->method('bind')->will($this->returnValue(true));
+        $mockLdapClient->expects($this->any())->method('fetchAll')->will($this->returnValue(array(array('uid' => self::TEST_USER))));
 
         $this->ldapUsers->setLdapClientClass($mockLdapClient);
         $result = $this->ldapUsers->authenticate(self::TEST_USER, self::PASSWORD, $alreadyAuthenticated = false);
@@ -173,7 +165,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
     public function test_authenticate_DoesNotPropagateErrors_WhenErrorsThrownByLdapClient()
     {
         $mockLdapClient = $this->makeMockLdapClient();
-        $mockLdapClient->method('bind')->will($this->returnCallback(function () {
+        $mockLdapClient->expects($this->any())->method('bind')->will($this->returnCallback(function () {
             throw new \Exception("dummy error");
         }));
 
@@ -191,7 +183,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
         $filterBind = null;
 
         $mockLdapClient = $this->makeMockLdapClient();
-        $mockLdapClient->method('bind')->will($this->returnCallback(function ($bindResource) use (&$adminUserName, &$userName) {
+        $mockLdapClient->expects($this->any())->method('bind')->will($this->returnCallback(function ($bindResource) use (&$adminUserName, &$userName) {
             static $i = 0;
 
             if ($i == 0) {
@@ -204,7 +196,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
 
             return true;
         }));
-        $mockLdapClient->method('fetchAll')->will($this->returnCallback(function ($baseDn, $filter, $bind) use (&$filterUsed, &$filterBind) {
+        $mockLdapClient->expects($this->any())->method('fetchAll')->will($this->returnCallback(function ($baseDn, $filter, $bind) use (&$filterUsed, &$filterBind) {
             $filterUsed = $filter;
             $filterBind = $bind;
 
@@ -239,8 +231,8 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
     public function test_getUser_ReturnsNull_WhenThereIsNoUser()
     {
         $mockLdapClient = $this->makeMockLdapClient();
-        $mockLdapClient->method('bind')->will($this->returnValue(true));
-        $mockLdapClient->method('fetchAll')->will($this->returnValue(array()));
+        $mockLdapClient->expects($this->any())->method('bind')->will($this->returnValue(true));
+        $mockLdapClient->expects($this->any())->method('fetchAll')->will($this->returnValue(array()));
 
         $this->ldapUsers->setLdapClientClass($mockLdapClient);
         $result = $this->ldapUsers->getUser(self::TEST_USER);
@@ -265,8 +257,8 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
         $filterBind = null;
 
         $mockLdapClient = $this->makeMockLdapClient();
-        $mockLdapClient->method('bind')->will($this->returnValue(true));
-        $mockLdapClient->method('fetchAll')->will($this->returnCallback(function ($baseDn, $filter, $bind) use (&$usedBaseDn, &$usedFilter, &$filterBind) {
+        $mockLdapClient->expects($this->any())->method('bind')->will($this->returnValue(true));
+        $mockLdapClient->expects($this->any())->method('fetchAll')->will($this->returnCallback(function ($baseDn, $filter, $bind) use (&$usedBaseDn, &$usedFilter, &$filterBind) {
             $usedBaseDn = $baseDn;
             $usedFilter = $filter;
             $filterBind = $bind;
@@ -341,7 +333,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
     public function test_doWithClient_CreatesAClientUsingFirstSuccessfulConnection()
     {
         $mockLdapClient = $this->makeMockLdapClient($forSuccess = true);
-        $mockLdapClient->method('connect')->will($this->returnCallback(function () {
+        $mockLdapClient->expects($this->any())->method('connect')->will($this->returnCallback(function () {
             static $i = 0;
 
             ++$i;
@@ -427,7 +419,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
         $mockLdapClient = $this->makeMockLdapClient($forSuccess = true);
 
         $passedFilter = null;
-        $mockLdapClient->method('count')->will($this->returnCallback(function ($baseDn, $filter) use (&$passedFilter) {
+        $mockLdapClient->expects($this->any())->method('count')->will($this->returnCallback(function ($baseDn, $filter) use (&$passedFilter) {
             $passedFilter = $filter;
             return 10;
         }));
@@ -474,8 +466,8 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
 
         $usedFilter = null;
 
-        $mockLdapClient->method('bind')->will($this->returnValue(true));
-        $mockLdapClient->method('fetchAll')->will($this->returnCallback(function ($baseDn, $filter, $bind) use (&$usedFilter) {
+        $mockLdapClient->expects($this->any())->method('bind')->will($this->returnValue(true));
+        $mockLdapClient->expects($this->any())->method('fetchAll')->will($this->returnCallback(function ($baseDn, $filter, $bind) use (&$usedFilter) {
             $usedFilter = $filter;
 
             return array(array('uid' => LdapUsersTest::TEST_USER), array('uid' => LdapUsersTest::TEST_ADMIN_USER));
@@ -498,16 +490,16 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
                      ->getMock();
 
         if ($forSuccess) {
-            $mock->method('bind')->will($this->returnValue(true));
-            $mock->method('fetchAll')->will($this->returnValue(array(array('uid' => self::TEST_USER, 'otherval' => 34, 'dn' => 'thedn'))));
+            $mock->expects($this->any())->method('bind')->will($this->returnValue(true));
+            $mock->expects($this->any())->method('fetchAll')->will($this->returnValue(array(array('uid' => self::TEST_USER, 'otherval' => 34, 'dn' => 'thedn'))));
         }
 
         return $mock;
     }
 
-    private function makeMockLdapClientFailOnBind($mockLdapClient)
+    private function makeMockLdapClientFailOnBind(\PHPUnit_Framework_MockObject_MockObject $mockLdapClient)
     {
-        $mockLdapClient->method('bind')->will($this->returnCallback(function ($bindResource) {
+        $mockLdapClient->expects($this->any())->method('bind')->will($this->returnCallback(function ($bindResource) {
             if ($bindResource == LdapUsersTest::TEST_ADMIN_USER) {
                 return false;
             } else {
@@ -516,9 +508,9 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
         }));
     }
 
-    private function makeMockLdapClientThrowOnBind($mockLdapClient)
+    private function makeMockLdapClientThrowOnBind(\PHPUnit_Framework_MockObject_MockObject $mockLdapClient)
     {
-        $mockLdapClient->method('bind')->will($this->returnCallback(function () {
+        $mockLdapClient->expects($this->any())->method('bind')->will($this->returnCallback(function () {
             throw new Exception("dummy error");
         }));
     }

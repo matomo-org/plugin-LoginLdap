@@ -9,7 +9,6 @@
 namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
 use Piwik\ErrorHandler;
-use Piwik\Log;
 use Piwik\Plugins\LoginLdap\Ldap\Client as LdapClient;
 use Piwik\Plugins\LoginLdap\Ldap\LdapFunctions;
 use PHPUnit_Framework_TestCase;
@@ -27,8 +26,7 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        // make sure logging logic is executed so we can test whether there are bugs in the logging code
-        Log::getInstance()->setLogLevel(Log::VERBOSE);
+        parent::setUp();
 
         LdapFunctions::$phpUnitMock = $this->getMock('stdClass', array(
             'ldap_connect', 'ldap_close', 'ldap_bind', 'ldap_search', 'ldap_set_option', 'ldap_get_entries',
@@ -42,7 +40,7 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
 
         LdapFunctions::$phpUnitMock = null;
 
-        Log::unsetInstance();
+        parent::tearDown();
     }
 
     public function test_construction_WithNoArguments_DoesNotConnect()

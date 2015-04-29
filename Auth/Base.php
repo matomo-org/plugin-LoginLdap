@@ -10,13 +10,14 @@ namespace Piwik\Plugins\LoginLdap\Auth;
 use Exception;
 use Piwik\Auth;
 use Piwik\AuthResult;
-use Piwik\Log;
+use Piwik\Container\StaticContainer;
 use Piwik\Piwik;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Plugins\UsersManager\Model as UserModel;
+use Psr\Log\LoggerInterface;
 
 /**
  * Base class for LoginLdap authentication implementations.
@@ -89,6 +90,16 @@ abstract class Base implements Auth
      * @var string[]
      */
     protected  $userForLogin = null;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    public function __construct(LoggerInterface $logger = null)
+    {
+        $this->logger = $logger ?: StaticContainer::get('Psr\Log\LoggerInterface');
+    }
 
     /**
      * Authentication module's name, e.g., "LoginLdap"
@@ -267,26 +278,33 @@ abstract class Base implements Auth
         if (empty($auth)) {
             $auth = new \Piwik\Plugins\Login\Auth();
         } else {
-            Log::debug("Auth\\Base::%s: trying fallback auth with auth implementation '%s'", __FUNCTION__, get_class($auth));
+            $this->logger->debug("Auth\\Base::{func}: trying fallback auth with auth implementation '{impl}'", array(
+                'func' => __FUNCTION__,
+                'impl' => get_class($auth)
+            ));
         }
 
         $auth->setLogin($this->login);
         if (!empty($this->password)) {
-            Log::debug("Auth\\Base::%s: trying normal auth with user password", __FUNCTION__);
+            $this->logger->debug("Auth\\Base::{func}: trying normal auth with user password", array('func' => __FUNCTION__));
 
             $auth->setPassword($this->password);
         } else if (!empty($this->passwordHash)) {
-            Log::debug("Auth\\Base::%s: trying normal auth with hashed password", __FUNCTION__);
+            $this->logger->debug("Auth\\Base::{func}: trying normal auth with hashed password", array('func' => __FUNCTION__));
 
             $auth->setPasswordHash($this->passwordHash);
         } else {
-            Log::debug("Auth\\Base::%s: trying normal auth with token auth", __FUNCTION__);
+            $this->logger->debug("Auth\\Base::{func}: trying normal auth with token auth", array('func' => __FUNCTION__));
 
             $auth->setTokenAuth($this->token_auth);
         }
         $result = $auth->authenticate();
 
-        Log::debug("Auth\\Base::%s: normal auth returned result code %s for user '%s'", __FUNCTION__, $result->getCode(), $this->login);
+        $this->logger->debug("Auth\\Base::{func}: normal auth returned result code {code} for user '{login}'", array(
+            'func' => __FUNCTION__,
+            'code' => $result->getCode(),
+            'login' => $this->login
+        ));
 
         if (!$onlySuperUsers
             || $result->getCode() == AuthResult::SUCCESS_SUPERUSER_AUTH_CODE

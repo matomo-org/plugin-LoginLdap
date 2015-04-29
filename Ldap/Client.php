@@ -9,7 +9,8 @@
 namespace Piwik\Plugins\LoginLdap\Ldap;
 
 use Exception;
-use Piwik\Log;
+use Piwik\Container\StaticContainer;
+use Psr\Log\LoggerInterface;
 
 /**
  * LDAP Client. Supports connecting to LDAP servers, binding to resource DNs and executing
@@ -35,6 +36,11 @@ class Client
     private $connectionResource;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor.
      *
      * @param string|null $serverHostName The hostname of the LDAP server. If not null, an attempt
@@ -42,8 +48,11 @@ class Client
      * @param int $port The server port to use.
      * @throws Exception if a connection is attempted and it fails.
      */
-    public function __construct($serverHostName = null, $port = ServerInfo::DEFAULT_LDAP_PORT, $timeout = self::DEFAULT_TIMEOUT_SECS)
+    public function __construct($serverHostName = null, $port = ServerInfo::DEFAULT_LDAP_PORT, $timeout = self::DEFAULT_TIMEOUT_SECS,
+                                LoggerInterface $logger = null)
     {
+        $this->logger = $logger ?: StaticContainer::get('Psr\Log\LoggerInterface');
+
         if (!empty($serverHostName)) {
             $this->connect($serverHostName, $port, $timeout);
         }
@@ -66,7 +75,7 @@ class Client
     {
         $this->closeIfCurrentlyOpen();
 
-        Log::debug("Calling ldap_connect('%s', %s)", $serverHostName, $port);
+        $this->logger->debug("Calling ldap_connect('{host}', {port})", array('host' => $serverHostName, 'port' => $port));
 
         $this->connectionResource = ldap_connect($serverHostName, $port);
 
@@ -74,19 +83,19 @@ class Client
         ldap_set_option($this->connectionResource, LDAP_OPT_REFERRALS, 0);
         ldap_set_option($this->connectionResource, LDAP_OPT_NETWORK_TIMEOUT, $timeout);
 
-        Log::debug("ldap_connect result is %s", $this->connectionResource);
+        $this->logger->debug("ldap_connect result is {result}", array('result' => $this->connectionResource));
 
         // ldap_connect will not always try to connect to the server, so execute a bind
         // to test the connection
         try {
             ldap_bind($this->connectionResource);
 
-            Log::debug("anonymous ldap_bind call finished; connection ok");
+            $this->logger->debug("anonymous ldap_bind call finished; connection ok");
         } catch (Exception $ex) {
             // if the error was due to a connection error, rethrow, otherwise ignore it
             $errno = ldap_errno($this->connectionResource);
 
-            Log::debug("anonymous ldap_bind returned error '%s'", $errno);
+            $this->logger->debug("anonymous ldap_bind returned error '{err}'", array('err' => $errno));
 
             if (!in_array($errno, self::$initialBindErrorCodesToIgnore)) {
                 throw $ex;
@@ -122,16 +131,21 @@ class Client
      * @param string $resourceDn The LDAP resource DN to use when binding.
      * @param string $password The resource's associated password.
      * @throws Exception If an error occurs during the `ldap_bind` call.
+     * @return bool
      */
     public function bind($resourceDn, $password)
     {
         $connectionResource = $this->connectionResource;
 
-        Log::debug("Calling ldap_bind(%s, '%s', <password[length=%s]>)", $connectionResource, $resourceDn, strlen($password));
+        $this->logger->debug("Calling ldap_bind({conn}, '{dn}', <password[length={passlen}]>)", array(
+            'conn' => $connectionResource,
+            'dn' => $resourceDn,
+            'passlen' => strlen($password)
+        ));
 
         $result = ldap_bind($connectionResource, $resourceDn, $password);
 
-        Log::debug("ldap_bind result is '%s'", (int)$result);
+        $this->logger->debug("ldap_bind result is '{result}'", array('result' => (int)$result));
 
         return $result;
     }
@@ -159,11 +173,14 @@ class Client
         if (!empty($searchResultResource)) {
             $connectionResource = $this->connectionResource;
 
-            Log::debug("Calling ldap_get_entries(%s, %s)", $connectionResource, $searchResultResource);
+            $this->logger->debug("Calling ldap_get_entries({conn}, {result})", array(
+                'conn' => $connectionResource,
+                'result' => $searchResultResource
+            ));
 
             $ldapInfo = ldap_get_entries($connectionResource, $searchResultResource);
 
-            Log::debug("ldap_get_entries result is %s", $ldapInfo === null ? 'null' : 'not null');
+            $this->logger->debug("ldap_get_entries result is {result}", array('result' => $ldapInfo === null ? 'null' : 'not null'));
 
             return $this->transformLdapInfo($ldapInfo);
         } else {
@@ -193,15 +210,18 @@ class Client
         if (!empty($searchResultResource)) {
             $connectionResource = $this->connectionResource;
 
-            Log::debug("Calling ldap_count_entries(%s, %s)", $connectionResource, $searchResultResource);
+            $this->logger->debug("Calling ldap_count_entries({conn}, {result})", array(
+                'conn' => $connectionResource,
+                'result' => $searchResultResource
+            ));
 
             $result = ldap_count_entries($connectionResource, $searchResultResource);
 
-            Log::debug("ldap_count_entries returned %s", $result);
+            $this->logger->debug("ldap_count_entries returned {result}", array('result' => $result));
 
             return $result;
         } else {
-            Log::warning("Unexpected error: ldap_search returned null, extra info: %s", ldap_error($this->connectionResource));
+            $this->logger->warning("Unexpected error: ldap_search returned null, extra info: {err}", array('err' => ldap_error($this->connectionResource)));
 
             throw new Exception("Unexpected error: ldap_search returned null.");
         }
@@ -222,11 +242,11 @@ class Client
     {
         $connectionResource = $this->connectionResource;
 
-        Log::debug("Calling ldap_close(%s)", $connectionResource);
+        $this->logger->debug("Calling ldap_close({conn})", array('conn' => $connectionResource));
 
         $result = ldap_close($connectionResource);
 
-        Log::debug("ldap_close returned %s", $result ? 'true' : 'false');
+        $this->logger->debug("ldap_close returned {result}", array('result' => $result ? 'true' : 'false'));
 
         return$result;
     }
@@ -346,11 +366,15 @@ class Client
     {
         $connectionResource = $this->connectionResource;
 
-        Log::debug("Calling ldap_search(%s, '%s', '%s')", $connectionResource, $baseDn, $ldapFilter);
+        $this->logger->debug("Calling ldap_search({conn}, '{dn}', '{filter}')", array(
+            'conn' => $connectionResource,
+            'dn' => $baseDn,
+            'filter' => $ldapFilter
+        ));
 
         $result = ldap_search($connectionResource, $baseDn, $ldapFilter, $attributes);
 
-        Log::debug("ldap_search result is %s", $result);
+        $this->logger->debug("ldap_search result is {result}", array('result' => $result));
 
         return $result;
     }

@@ -10,7 +10,6 @@ namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
 use Piwik\Common;
 use Piwik\Db;
-use Piwik\Log;
 use Piwik\Config;
 use Piwik\Plugins\LoginLdap\Ldap\LdapFunctions;
 use Piwik\Tests\Framework\Fixture;
@@ -57,11 +56,6 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
 
         parent::setUp();
 
-        Log::info("Setting up " . get_class($this));
-
-        // make sure logging logic is executed so we can test whether there are bugs in the logging code
-        Log::getInstance()->setLogLevel(Log::DEBUG);
-
         Config::getInstance()->LoginLdap = Config::getInstance()->LoginLdapTest + array(
             'servers' => 'testserver',
             'use_webserver_auth' => 'false',
@@ -83,15 +77,6 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
         Fixture::createWebsite('2013-01-01 00:00:00');
         Fixture::createWebsite('2013-01-01 00:00:00');
         Fixture::createWebsite('2013-01-01 00:00:00');
-    }
-
-    public function tearDown()
-    {
-        Log::info("Tearing down " . get_class($this));
-
-        Log::unsetInstance();
-
-        parent::tearDown();
     }
 
     protected function addPreexistingSuperUser()
