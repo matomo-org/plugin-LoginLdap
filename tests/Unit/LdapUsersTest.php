@@ -10,7 +10,6 @@ namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
 use Exception;
 use InvalidArgumentException;
-use Piwik\Log;
 use Piwik\Plugins\LoginLdap\Ldap\ServerInfo;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
@@ -44,13 +43,6 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
         $this->ldapUsers = new LdapUsers();
         $this->ldapUsers->setLdapServers(array(new ServerInfo("localhost", "basedn")));
         $this->ldapUsers->setLdapUserMapper(new UserMapper());
-    }
-
-    public function tearDown()
-    {
-        Log::unsetInstance();
-
-        parent::tearDown();
     }
 
     /**

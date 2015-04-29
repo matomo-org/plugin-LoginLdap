@@ -10,7 +10,6 @@ namespace Piwik\Plugins\LoginLdap\Auth;
 use Exception;
 use Piwik\Auth;
 use Piwik\AuthResult;
-use Piwik\Log;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\LoginLdap\Ldap\Exceptions\ConnectionException;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
@@ -62,19 +61,22 @@ class WebServerAuth extends Base
             $webServerAuthUser = $this->getAlreadyAuthenticatedLogin();
 
             if (empty($webServerAuthUser)) {
-                Log::debug("using web server authentication, but REMOTE_USER server variable not found.");
+                $this->logger->debug("using web server authentication, but REMOTE_USER server variable not found.");
 
                 return $this->tryFallbackAuth($onlySuperUsers = false, $this->fallbackAuth);
             } else {
                 $this->login = preg_replace('/@.*/', '', $webServerAuthUser);
                 $this->password = '';
 
-                Log::info("User '%s' authenticated by webserver.", $this->login);
+                $this->logger->info("User '{login}' authenticated by webserver.", array('login' => $this->login));
 
                 if ($this->synchronizeUsersAfterSuccessfulLogin) {
                     $this->synchronizeLoggedInUser();
                 } else {
-                    Log::debug("WebServerAuth::%s: not synchronizing user '%s'.", __FUNCTION__, $this->login);
+                    $this->logger->debug("WebServerAuth::{func}: not synchronizing user '{login}'.", array(
+                        'func' => __FUNCTION__,
+                        'login' => $this->login
+                    ));
                 }
 
                 return $this->makeSuccessLogin($this->getUserForLogin());
@@ -82,7 +84,11 @@ class WebServerAuth extends Base
         } catch (ConnectionException $ex) {
             throw $ex;
         } catch (Exception $ex) {
-            Log::debug($ex);
+            $this->logger->debug("WebServerAuth::{func} failed: {message}", array(
+                'func' => __FUNCTION__,
+                'message' => $ex->getMessage(),
+                'exception' => $ex
+            ));
         }
 
         return $this->makeAuthFailure();
@@ -138,7 +144,7 @@ class WebServerAuth extends Base
         $ldapUser = $this->ldapUsers->getUser($this->login);
 
         if (empty($ldapUser)) {
-            Log::warning("Cannot find web server authenticated user %s in LDAP!", $this->login);
+            $this->logger->warning("Cannot find web server authenticated user {login} in LDAP!", array('login' => $this->login));
             return;
         }
 
@@ -168,9 +174,6 @@ class WebServerAuth extends Base
         }
 
         $result->setFallbackAuth($fallbackAuth);
-
-        Log::debug("WebServerAuth::%s: configuring with synchronizeUsersAfterSuccessfulLogin = %s, fallbackAuth = %s",
-            __FUNCTION__, $synchronizeUsersAfterSuccessfulLogin, get_class($fallbackAuth));
 
         return $result;
     }

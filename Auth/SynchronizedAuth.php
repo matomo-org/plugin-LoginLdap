@@ -9,7 +9,6 @@ namespace Piwik\Plugins\LoginLdap\Auth;
 
 use Exception;
 use Piwik\AuthResult;
-use Piwik\Log;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\LoginLdap\Ldap\Exceptions\ConnectionException;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
@@ -64,15 +63,15 @@ class SynchronizedAuth extends Base
             }
 
             if (!$this->synchronizeUsersAfterSuccessfulLogin) {
-                Log::debug("SynchronizedAuth::%s: synchronizing users after login disabled, not attempting LDAP authenticate for '%s'.",
-                    __FUNCTION__, $this->login);
+                $this->logger->debug("SynchronizedAuth::{func}: synchronizing users after login disabled, not attempting LDAP authenticate for '{login}'.",
+                    array('func' => __FUNCTION__, 'login' => $this->login));
 
                 return $this->makeAuthFailure();
             }
 
             if (empty($this->password)) {
-                Log::debug("SynchronizedAuth::%s: cannot attempt fallback LDAP login for '%s', password not set.",
-                    __FUNCTION__, $this->login);
+                $this->logger->debug("SynchronizedAuth::{func}: cannot attempt fallback LDAP login for '{login}', password not set.",
+                    array('func' => __FUNCTION__, 'login' => $this->login));
 
                 return $this->makeAuthFailure();
             }
@@ -88,7 +87,11 @@ class SynchronizedAuth extends Base
         } catch (ConnectionException $ex) {
             throw $ex;
         } catch (Exception $ex) {
-            Log::debug($ex);
+            $this->logger->debug("SynchronizedAuth::{func} failed: {message}", array(
+                'func' => __FUNCTION__,
+                'message' => $ex->getMessage(),
+                'exception' => $ex
+            ));
         }
 
         return $this->makeAuthFailure();
@@ -142,9 +145,6 @@ class SynchronizedAuth extends Base
 
         $synchronizeUsersAfterSuccessfulLogin = Config::getShouldSynchronizeUsersAfterLogin();
         $result->setSynchronizeUsersAfterSuccessfulLogin($synchronizeUsersAfterSuccessfulLogin);
-
-        Log::debug("SynchronizedAuth::%s: configuring with synchronizeUsersAfterSuccessfulLogin = %s",
-            __FUNCTION__, $synchronizeUsersAfterSuccessfulLogin);
 
         return $result;
     }
