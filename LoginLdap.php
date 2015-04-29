@@ -35,7 +35,6 @@ class LoginLdap extends \Piwik\Plugin
     public function getListHooksRegistered()
     {
         $hooks = array(
-            'Menu.Admin.addItems'                    => 'addMenu',
             'Request.initAuthenticationObject'       => 'initAuthenticationObject',
             'User.isNotAuthorized'                   => 'noAccess',
             'API.Request.authenticate'               => 'ApiRequestAuthenticate',
@@ -144,15 +143,6 @@ class LoginLdap extends \Piwik\Plugin
         $exceptionMessage = $exception->getMessage();
 
         echo FrontController::getInstance()->dispatch('LoginLdap', 'login', array($exceptionMessage));
-    }
-
-    /**
-     * Add admin menu items
-     */
-    function addMenu()
-    {
-        MenuAdmin::getInstance()->add('General_Settings', 'LDAP', array('module' => 'LoginLdap', 'action' => 'admin'),
-            Piwik::hasUserSuperUserAccess(), $order = 30);
     }
 
     /**
