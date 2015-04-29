@@ -10,9 +10,6 @@ namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
 use Exception;
 use InvalidArgumentException;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
-use Piwik\Container\StaticContainer;
 use Piwik\Log;
 use Piwik\Plugins\LoginLdap\Ldap\ServerInfo;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
@@ -42,13 +39,7 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        // make sure logging logic is executed so we can test whether there are bugs in the logging code
-
-        /** @var \Monolog\Logger $logger */
-        $logger = StaticContainer::get('Psr\Log\LoggerInterface');
-        $handler = new StreamHandler('/dev/null', Logger::DEBUG);
-        $handler->setFormatter(StaticContainer::get('Piwik\Plugins\Monolog\Formatter\LineMessageFormatter'));
-        $logger->pushHandler($handler);
+        parent::setUp();
 
         $this->ldapUsers = new LdapUsers();
         $this->ldapUsers->setLdapServers(array(new ServerInfo("localhost", "basedn")));
@@ -58,6 +49,8 @@ class LdapUsersTest extends PHPUnit_Framework_TestCase
     public function tearDown()
     {
         Log::unsetInstance();
+
+        parent::tearDown();
     }
 
     /**

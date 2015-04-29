@@ -8,10 +8,7 @@
  */
 namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
 use Piwik\Common;
-use Piwik\Container\StaticContainer;
 use Piwik\Db;
 use Piwik\Config;
 use Piwik\Plugins\LoginLdap\Ldap\LdapFunctions;
@@ -59,16 +56,6 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
 
         parent::setUp();
 
-        /** @var \Monolog\Logger $logger */
-        $logger = StaticContainer::get('Psr\Log\LoggerInterface');
-
-        $logger->info("Setting up " . get_class($this));
-
-        // make sure logging logic is executed so we can test whether there are bugs in the logging code
-        $handler = new StreamHandler('/dev/null', Logger::DEBUG);
-        $handler->setFormatter(StaticContainer::get('Piwik\Plugins\Monolog\Formatter\LineMessageFormatter'));
-        $logger->pushHandler($handler);
-
         Config::getInstance()->LoginLdap = Config::getInstance()->LoginLdapTest + array(
             'servers' => 'testserver',
             'use_webserver_auth' => 'false',
@@ -90,15 +77,6 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
         Fixture::createWebsite('2013-01-01 00:00:00');
         Fixture::createWebsite('2013-01-01 00:00:00');
         Fixture::createWebsite('2013-01-01 00:00:00');
-    }
-
-    public function tearDown()
-    {
-        /** @var \Monolog\Logger $logger */
-        $logger = StaticContainer::get('Psr\Log\LoggerInterface');
-        $logger->info("Tearing down " . get_class($this));
-
-        parent::tearDown();
     }
 
     protected function addPreexistingSuperUser()
