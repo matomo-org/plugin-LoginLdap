@@ -252,7 +252,7 @@ class Config
                     $servers[] = ServerInfo::makeConfigured($name);
                 } catch (Exception $ex) {
                     /** @var LoggerInterface */
-                    $logger = StaticContainer::get('Psr\Logger\LoggerInterface');
+                    $logger = StaticContainer::get('Psr\Log\LoggerInterface');
 
                     $logger->debug("LoginLdap\\Config::{func}: LDAP server info '{name}' is configured incorrectly: {message}", array(
                         'func' => __FUNCTION__,

@@ -93,7 +93,7 @@ class UserSynchronizer
 
     public function __construct(LoggerInterface $logger = null)
     {
-        $this->logger = $logger ?: StaticContainer::get('Psr\Logger\LoggerInterface');
+        $this->logger = $logger ?: StaticContainer::get('Psr\Log\LoggerInterface');
     }
 
     /**
@@ -293,7 +293,7 @@ class UserSynchronizer
         $result->setUserModel(new UserModel());
 
         /** @var LoggerInterface $logger */
-        $logger = StaticContainer::get('Psr\Logger\LoggerInterface');
+        $logger = StaticContainer::get('Psr\Log\LoggerInterface');
 
         if (Config::isAccessSynchronizationEnabled()) {
             $result->setUserAccessMapper(UserAccessMapper::makeConfigured());
