@@ -1,8 +1,10 @@
 {
     "LoginLdap": {
         "MenuLdap": "LDAP-brukere",
+        "Settings": "LDAP-innstillinger",
         "AdminPass": "LDAP-passord",
         "OneUser": "1 bruker",
+        "MemberOfCount": "%s er medlem av denne gruppen.",
         "Test": "Test",
         "InvalidFilter": "Ugyldig filter.",
         "Go": "Gå"

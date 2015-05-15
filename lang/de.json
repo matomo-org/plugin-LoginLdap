@@ -28,7 +28,7 @@
         "Filter": "LDAP Suchfilter",
         "FilterDescription": "( e.g. \"(objectClass=person)\" )",
         "Kerberos": "Kerberos aktiviert",
-        "KerberosDescription": "( \"true\" or \"false\" )",
+        "KerberosDescription": "Falls aktiviert, überprüft das Plugin die $_SERVER['REMOTE_USER'] Variable und geht davon aus, dass der Benutzer bereits bestätigt ist. Normale Superuser sind weiterhin berechtigt sich auf normale Weise zu authentifizieren.",
         "LdapUserAdded": "LDAP Benutzer erfolgreich hinzugefügt!",
         "LdapFunctionsMissing": "PHP ldap_connect() Funktion fehlt, aktivieren Sie bitte LDAP-Modul auf Ihrer PHP-Konfiguration!",
         "CannotConnectToServer": "Es konnte keine Verbindung zum LDAP Server aufgebaut werden.",

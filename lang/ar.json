@@ -1,5 +1,21 @@
 {
     "LoginLdap": {
-        "Test": "اختبار"
+        "MenuLdap": "مستخدمو LDAP",
+        "LoadUser": "تحميل المستخدم من LDAP",
+        "LoadUserDescription": "يمكنك استخدام هذا النموذج لمزامنة مستخدم واحد في LDAP من واجهة الاستخدام.",
+        "LoadUserCommandDesc": "استخدم الأمر %s لمزامنة مستخدمين أكثر.",
+        "Settings": "إعدادات LDAP",
+        "ServerUrl": "عنوان URL للخادم",
+        "UserIdField": "حقل معرِّف المستخدم",
+        "UserNotFound": "لم أجد المستخدم \"%s\" !",
+        "NoUserName": "لم تدخل اسم المستخدم!",
+        "AdminPass": "كلمة مرور LDAP",
+        "MemberOf": "مجموعة المستخدمين المطلوبة",
+        "Filter": "مرشح بحث LDAP",
+        "LdapUserAdded": "تمت إضافة مستخدم LDAP !",
+        "Test": "اختبار",
+        "NetworkTimeout": "مهلة طلب شبكة LDAP (بالثواني)",
+        "Go": "إنطلق",
+        "MemberOfField": "حقل memberOf في LDAP"
     }
 }
