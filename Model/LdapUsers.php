@@ -645,8 +645,27 @@ class LdapUsers
     public function bindAsUser(LdapClient $ldapClient, ServerInfo $server, $username, $password)
     {
         // bind using the user
-        if (!$ldapClient->bind($username, $password)) {
-            throw new Exception("Could not bind as user '" . $username . "'with password.");
+        $bind = $ldapClient->bind($username, $password);
+        if ($bind) {
+            $this->logger->debug("Successfully bound as user '" . $username . "' with password.");
+        }
+
+        if(!$bind) {
+            // try to bind the user with the suffix
+            $username_with_suffix = addUsernameSuffix($username);
+            $bind = $ldapClient->bind($username_with_suffix, $password);
+            if($bind) {
+               $this->logger->debug("Successfully bound as user '" . $username_with_suffix . "' with password.");
+            }
+        }
+
+        $this->logger->debug(self::FUNCTION_END_LOG_MESSAGE, array(
+                'function' => __FUNCTION__,
+                'result' => $bind
+        ));
+
+        if( !$bind) {
+            throw new Exception("Could not bind as user '" . $username . "' or '" . $username_with_suffix . "' with password.");
         }
     }
 
