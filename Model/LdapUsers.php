@@ -652,7 +652,7 @@ class LdapUsers
 
         if(!$bind) {
             // try to bind the user with the suffix
-            $username_with_suffix = addUsernameSuffix($username);
+            $username_with_suffix = $this->addUsernameSuffix($username);
             $bind = $ldapClient->bind($username_with_suffix, $password);
             if($bind) {
                $this->logger->debug("Successfully bound as user '" . $username_with_suffix . "' with password.");
