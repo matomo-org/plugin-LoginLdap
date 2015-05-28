@@ -162,7 +162,12 @@ class LdapUsers
             $result = $this->doWithClient(function (LdapUsers $self, LdapClient $ldapClient)
                 use ($username, $password, $alreadyAuthenticated, $authenticationRequiredMemberOf, $logger) {
 
-                $user = $self->getUser($username, $ldapClient);
+                $user = null;
+                try {
+                    $user = $self->getUser($username, $ldapClient);
+                } catch (Exception $ex) {
+                    $user = $self->getUserWithBind($username, $password, $ldapClient);
+                }
 
                 if (empty($user)) {
                     $logger->debug("LdapUsers::{function}: No such user '{user}' or user is not a member of '{group}'.", array(
@@ -250,6 +255,47 @@ class LdapUsers
         $this->logger->debug(self::FUNCTION_END_LOG_MESSAGE, array(
             'function' => __FUNCTION__,
             'result' => $result === null ? 'null' : array_keys($result)
+        ));
+
+        return $result;
+    }
+
+    /**
+     * Retrieves LDAP user information for a given username and password, using this user to bind to LDAP.
+     *
+     * @param string $username The username of the user to get LDAP information for.
+     * @param string $password The password of the user.
+     * @return string[] Associative array containing LDAP field data, eg, `array('dn' => '...')`
+     */
+    public function getUserWithBind($username,$password)
+    {
+        $this->logger->debug(self::FUNCTION_START_LOG_MESSAGE, array(
+                'function' => __FUNCTION__,
+                'params' => array($username, "<password[length=" . strlen($password) . "]>")
+        ));
+
+        $result = $this->doWithClient(function (LdapUsers $self, LdapClient $ldapClient, ServerInfo $server)
+                use ($username,$password) {
+            $self->bindAsUser($ldapClient, $server, $username, $password);
+
+            // look for the user, applying extra filters
+            list($filter, $bind) = $self->getUserEntryQuery($username);
+            $userEntries = $ldapClient->fetchAll($server->getBaseDn(), $filter, $bind);
+
+            if ($userEntries === null) { // sanity check
+                throw new Exception("LDAP search for entries failed. (Unexpected Error, ldap_search returned null)");
+            }
+
+            if (empty($userEntries)) {
+                return null;
+            } else {
+                return $userEntries[0];
+            }
+        });
+
+        $this->logger->debug(self::FUNCTION_END_LOG_MESSAGE, array(
+                'function' => __FUNCTION__,
+                'result' => $result === null ? 'null' : array_keys($result)
         ));
 
         return $result;
@@ -439,7 +485,7 @@ class LdapUsers
     {
         $bind = array();
         $conditions = array();
-        
+
         if (!empty($this->authenticationLdapFilter)) {
             $conditions[] = $this->authenticationLdapFilter;
         }
@@ -448,7 +494,7 @@ class LdapUsers
             $conditions[] = "(".$this->authenticationMemberOfField."=?)";
             $bind[] = $this->authenticationRequiredMemberOf;
         }
-        
+
         if (!empty($username)) {
             $conditions[] = "(" . $this->ldapUserMapper->getLdapUserIdField() . "=?)";
             $bind[] = $this->addUsernameSuffix($username);
@@ -590,6 +636,17 @@ class LdapUsers
         // bind using the admin user which has at least read access to LDAP users
         if (!$ldapClient->bind($adminUserName, $server->getAdminPassword())) {
             throw new Exception("Could not bind as LDAP admin.");
+        }
+    }
+
+    /**
+     * Public only for use in closure.
+     */
+    public function bindAsUser(LdapClient $ldapClient, ServerInfo $server, $username, $password)
+    {
+        // bind using the user
+        if (!$ldapClient->bind($username, $password)) {
+            throw new Exception("Could not bind as user '" . $username . "'with password.");
         }
     }
 
