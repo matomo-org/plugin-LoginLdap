@@ -1,6 +1,26 @@
 {
     "LoginLdap": {
+        "AliasField": "Campo de alias",
+        "LdapPort": "Puerto del servidor",
+        "MailField": "Campo de dirección de correo electrónico",
+        "ServerUrl": "URL del servidor",
+        "UserIdField": "Campo de ID de usuario",
+        "UserNotFound": "¡Usuario \"%s\" no encontrado!",
+        "NoUserName": "¡No se proporcionó nombre de usuario!",
+        "UsernameSuffix": "Sufijo de dirección de correo electrónico",
+        "MemberOf": "Grupo de usuario requerido",
         "LdapFunctionsMissing": "falta PHP ldap_connect() ¡por favor activa LDAP en tu configuración de PHP!",
-        "Test": "Prueba"
+        "OneUser": "1 usuario",
+        "MemberOfCount": "%s son miembros de este grupo.",
+        "FilterCount": "%s coinciden con este filtro.",
+        "Test": "Prueba",
+        "InvalidFilter": "Filtro inválido.",
+        "ServerNameEditInstructions": "Para editar un nombre de servidor, cliquéalo.",
+        "FirstNameField": "Campo de nombre",
+        "LastNameField": "Campo de apellido",
+        "ThisPiwikInstanceName": "Nombre especial para esta instancia de Piwik",
+        "UserSyncSettings": "Opciones de sincronización de usuario",
+        "PasswordField": "Campo de contraseña",
+        "Go": "Ir"
     }
 }
