@@ -247,9 +247,13 @@ class LdapUsers
 
             if (empty($userEntries)) {
                 return null;
-            } else {
-                return $userEntries[0];
             }
+
+            $user = $userEntries[0];
+            // assemble memberships recursively
+            $user["groups"] = $this->userGroups($user,$ldapClient,$server,true);
+
+            return $user;
         });
 
         $this->logger->debug(self::FUNCTION_END_LOG_MESSAGE, array(
@@ -288,9 +292,13 @@ class LdapUsers
 
             if (empty($userEntries)) {
                 return null;
-            } else {
-                return $userEntries[0];
             }
+
+            $user = $userEntries[0];
+            // assemble memberships recursively
+            $user["groups"] = $this->userGroups($user,$ldapClient,$server,true);
+
+            return $user;
         });
 
         $this->logger->debug(self::FUNCTION_END_LOG_MESSAGE, array(
@@ -376,6 +384,89 @@ class LdapUsers
         ));
 
         return $result;
+    }
+
+    /**
+     * Return all memberships of a user
+     *
+     * @param array $user the user as returned by getUser or getUserWithBind
+     * @param LdapClient $ldapClient the ldap client to use
+     * @param ServerInfo $server the server
+     * @param boolean $recursive also get the indirect memberships for the users direct memberships (groups can also be within groups, which makes the user also a member of that group)
+     *
+     * @return array nice names for the groups the user is a member of
+     */
+    protected function userGroups( $user, LdapClient $ldapClient, ServerInfo $server, $recursive = true)
+    {
+        $groups = $this->niceGroupNames($user[strtolower($this->authenticationMemberOfField)]);
+        // determine also the parent groups of the user's memberships
+        if( $recursive === true) {
+            // these are the groups that have not been checked yet
+            $groups_to_check = $groups;
+            do {
+                $parent_groups = array();
+                foreach( $groups_to_check as $group) {
+                    $extra_groups = $this->groups($group, $ldapClient, $server);
+                    $parent_groups = array_merge($parent_groups,$extra_groups);
+                }
+                // different groups can have the same parent
+                $parent_groups = array_unique($parent_groups);
+                // get all the elements, that are not in groups yet
+                $groups_to_check = array_diff($parent_groups,$groups);
+
+                // add the unchecked groups
+                $groups = array_merge($groups,$groups_to_check);
+            } while( count($groups_to_check) != 0);
+        }
+
+        return $groups;
+    }
+
+    /**
+     * Return the memberof groups for the $group
+     *
+     * @param \String $group the group as nice name
+     * @param LdapClient $ldapClient the ldap client to use
+     * @param ServerInfo $server the server
+     * @return array array of nice group names:
+     */
+    protected function groups( $group, LdapClient $ldapClient, ServerInfo $server)
+    {
+        $filter = self::getGroupEntryFilter($group);
+        $entries = $ldapClient->fetchAll($server->getBaseDn(), $filter);
+
+        if( count($entries) > 0 && isset($entries[0][strtolower($this->authenticationMemberOfField)])) {
+            // multiple memberships as array
+            if( is_array($entries[0][strtolower($this->authenticationMemberOfField)])) {
+                return $this->niceGroupNames($entries[0][strtolower($this->authenticationMemberOfField)]);
+            } else { // single membership as string
+                return $this->niceGroupNames(array($entries[0][strtolower($this->authenticationMemberOfField)]));
+            }
+        }
+
+        return array();
+    }
+
+    /**
+     * remove prefix (e.g. "cn=", "dn=") from a query result and additional information from the end (OU and DC)
+     *
+     * @param array $groups
+     * @return array of strings with
+     */
+    protected function niceGroupNames($groups)
+    {
+        $group_array=array();
+        foreach ($groups as $group){
+            if (strlen($group)>0){
+                // first match between '=' and ','
+                $bits = array();
+                // match the first group between the first "=" and the first ","
+                preg_match('/^.+?(?==)=(?P<group>.+?)(?=,).*/', $group, $bits);
+                $group_array[]=$bits["group"];
+            }
+        }
+
+        return array_unique($group_array);
     }
 
     /**
@@ -503,6 +594,15 @@ class LdapUsers
         $filter = "(&" . implode('', $conditions) . ")";
 
         return array($filter, $bind);
+    }
+
+    /**
+     * Public only for use in closure
+     */
+    static public function getGroupEntryFilter($group)
+    {
+        $filter = "(&(objectCategory=group)(name=".$group."))";
+        return $filter;
     }
 
     /**
