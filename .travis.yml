@@ -65,8 +65,6 @@ install:
   - rm -rf plugins/$PLUGIN_NAME
   - mv ../$PLUGIN_NAME plugins
 
-  # make sure travis test scripts are always latest (so in older releases/branches, the latest scripts will still be used)
-  - git checkout master -q -- ./tests/travis ./plugins/TestRunner || true
   # clone dependent repos
   - ./tests/travis/checkout_dependent_plugins.sh
 
@@ -79,6 +77,9 @@ before_script:
 
   # add always_populate_raw_post_data=-1 to php.ini
   - echo "always_populate_raw_post_data=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+
+  # disable opcache to avoid random failures on travis
+  - echo "opcache.enable=0" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
   - ./tests/travis/configure_git.sh
 
@@ -100,7 +101,7 @@ before_script:
   # travis now complains about this failing 9 times out of 10, so removing it. hopefully the random failures it prevented won't come back
   - travis_retry composer self-update
 
-  - '[ "$SKIP_COMPOSER_INSTALL" != "1" ] && travis_retry composer install'
+  - '[ "$SKIP_COMPOSER_INSTALL" == "1" ] || travis_retry composer install'
 
   # print out more debugging info
   - uname -a
