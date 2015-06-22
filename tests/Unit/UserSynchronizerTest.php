@@ -12,11 +12,7 @@ use Exception;
 use PHPUnit_Framework_TestCase;
 use Piwik\Config;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
-use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
-
-class MockAPI extends UsersManagerAPI
-{
-}
+use Piwik\Plugins\UsersManager\Model;
 
 /**
  * @group LoginLdap
@@ -153,8 +149,8 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
     {
         $self = $this;
 
-        $mock = $this->getMock('Piwik\Plugins\LoginLdap\tests\Unit\MockAPI', array(
-            'addUser', 'updateUser', 'getUser', 'setUserAccess', 'setSuperUserAccess'));
+        $mock = $this->getMock('Piwik\Plugins\UsersManager\API', array(
+            'addUser', 'updateUser', 'getUser', 'setUserAccess', 'setSuperUserAccess'), array(new Model()));
         if ($throwsOnAddUser) {
             $mock->expects($this->any())->method('addUser')->willThrowException(new Exception("dummy message"));
         } else {

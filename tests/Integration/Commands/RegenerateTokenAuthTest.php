@@ -11,6 +11,7 @@ namespace Piwik\Plugins\LoginLdap\tests\Integration\Commands;
 use Piwik\Common;
 use Piwik\Config;
 use Piwik\Console;
+use Piwik\Container\StaticContainer;
 use Piwik\Db;
 use Piwik\Plugins\LoginLdap\tests\Integration\LdapIntegrationTest;
 use Piwik\Translate;
@@ -43,7 +44,7 @@ class RegenerateTokenAuthTest extends LdapIntegrationTest
         $plugins['Plugins'][] = 'LoginLdap';
         Config::getInstance()->Plugins = $plugins;
 
-        $application = new Console();
+        $application = new Console(self::$fixture->piwikEnvironment);
         $application->setAutoExit(false);
 
         $this->applicationTester = new ApplicationTester($application);
