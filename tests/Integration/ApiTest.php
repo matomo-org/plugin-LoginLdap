@@ -68,6 +68,8 @@ class ApiTest extends LdapIntegrationTest
     {
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
+        Config::getInstance()->LoginLdap['servers'] = array();
+
         $configToSave = array(
             'use_ldap_for_authentication' => 0,
             'synchronize_users_after_login' => 0,
