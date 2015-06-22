@@ -35,7 +35,7 @@ class SynchronizeUsersTest extends LdapIntegrationTest
         $plugins['Plugins'][] = 'LoginLdap';
         Config::getInstance()->Plugins = $plugins;
 
-        $application = new Console();
+        $application = new Console(self::$fixture->piwikEnvironment);
         $application->setAutoExit(false);
 
         $this->applicationTester = new ApplicationTester($application);
