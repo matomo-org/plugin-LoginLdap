@@ -66,8 +66,6 @@ class ApiTest extends LdapIntegrationTest
 
     public function test_saveLdapConfig_SavesConfigToINIFile_AndIgnoresInvalidConfigNames()
     {
-        Config::unsetInstance();
-        Config::getInstance()->setTestEnvironment();
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
         $configToSave = array(
@@ -94,8 +92,6 @@ class ApiTest extends LdapIntegrationTest
 
     public function test_saveServersInfo_SavesConfigToINIFile_AndIgnoresInvalidServerInfo()
     {
-        Config::unsetInstance();
-        Config::getInstance()->setTestEnvironment();
         $_SERVER['REQUEST_METHOD'] = 'POST';
 
         $serverInfos = array(

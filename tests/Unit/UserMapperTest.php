@@ -29,17 +29,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        Config::unsetInstance();
-        Config::getInstance()->setTestEnvironment();
-
         $this->userMapper = new UserMapper();
-    }
-
-    public function tearDown()
-    {
-        parent::tearDown();
-
-        Config::unsetInstance();
     }
 
     public function test_makeConfigured_CreatesCorrectUserMapper_WhenAllConfigOptionsSupplied()

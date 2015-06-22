@@ -16,7 +16,6 @@ use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 
 class MockAPI extends UsersManagerAPI
 {
-    public function __construct() {}
 }
 
 /**
@@ -45,9 +44,6 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        Config::unsetInstance();
-        Config::getInstance()->setTestEnvironment();
-
         $this->userSynchronizer = new UserSynchronizer();
         $this->userSynchronizer->setNewUserDefaultSitesWithViewAccess(array(1,2));
         $this->setUserModelMock($this->getPiwikUserData());
@@ -55,13 +51,6 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
 
         $this->userAccess = array();
         $this->superUserAccess = array();
-    }
-
-    public function tearDown()
-    {
-        Config::unsetInstance();
-
-        parent::tearDown();
     }
 
     public function test_makeConfigured_DoesNotThrow_WhenUserMapperCorrectlyConfigured()
