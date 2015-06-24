@@ -25,10 +25,6 @@ describe("LoginLdap_Admin", function () {
                 base_dn: 'dc=avengers,dc=shield,dc=org',
                 admin_user: 'cn=fury,dc=avengers,dc=shield,dc=org',
                 admin_pass: 'secrets'
-            },
-            Plugins: {
-                Plugins: ['LoginLdap', "CorePluginsAdmin", "CoreAdminHome", "CoreHome", "CoreVisualizations", "Proxy",
-                          "API", "Widgetize", "LanguagesManager", "UserSettings", "Morpheus", "TestRunner"]
             }
         };
         testEnvironment.save();

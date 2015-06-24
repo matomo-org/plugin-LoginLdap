@@ -12,12 +12,7 @@ use Exception;
 use PHPUnit_Framework_TestCase;
 use Piwik\Config;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
-use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
-
-class MockAPI extends UsersManagerAPI
-{
-    public function __construct() {}
-}
+use Piwik\Plugins\UsersManager\Model;
 
 /**
  * @group LoginLdap
@@ -45,9 +40,6 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        Config::unsetInstance();
-        Config::getInstance()->setTestEnvironment();
-
         $this->userSynchronizer = new UserSynchronizer();
         $this->userSynchronizer->setNewUserDefaultSitesWithViewAccess(array(1,2));
         $this->setUserModelMock($this->getPiwikUserData());
@@ -55,13 +47,6 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
 
         $this->userAccess = array();
         $this->superUserAccess = array();
-    }
-
-    public function tearDown()
-    {
-        Config::unsetInstance();
-
-        parent::tearDown();
     }
 
     public function test_makeConfigured_DoesNotThrow_WhenUserMapperCorrectlyConfigured()
@@ -164,8 +149,8 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
     {
         $self = $this;
 
-        $mock = $this->getMock('Piwik\Plugins\LoginLdap\tests\Unit\MockAPI', array(
-            'addUser', 'updateUser', 'getUser', 'setUserAccess', 'setSuperUserAccess'));
+        $mock = $this->getMock('Piwik\Plugins\UsersManager\API', array(
+            'addUser', 'updateUser', 'getUser', 'setUserAccess', 'setSuperUserAccess'), array(new Model()));
         if ($throwsOnAddUser) {
             $mock->expects($this->any())->method('addUser')->willThrowException(new Exception("dummy message"));
         } else {
