@@ -70,7 +70,9 @@ class LdapAuth extends Base
      */
     public function setPasswordHash($passwordHash)
     {
-        throw new Exception("Authentication by password hash is not supported when authenticating by LDAP.");
+        if ($passwordHash !== null) {
+            throw new Exception("Authentication by password hash is not supported when authenticating by LDAP.");
+        }
     }
 
     /**
