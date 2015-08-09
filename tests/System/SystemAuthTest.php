@@ -64,7 +64,7 @@ class SystemAuthTest extends LdapIntegrationTest
 
         // authentication is required to track dates in the past, so to verify we
         // authenticated, we check the tracked visit times
-        $expectedDateTimes = array('2015-01-01 00:01:00');
+        $expectedDateTimes = array('2015-01-01 01:00:00');
         $actualDateTimes = $this->getVisitDateTimes();
 
         $this->assertEquals($expectedDateTimes, $actualDateTimes);
@@ -97,7 +97,7 @@ class SystemAuthTest extends LdapIntegrationTest
 
         // authentication is required to track dates in the past, so to verify we
         // authenticated, we check the tracked visit times
-        $expectedDateTimes = array('2015-01-01 00:00:00', '2015-01-01 00:01:00');
+        $expectedDateTimes = array('2015-01-01 00:00:00', '2015-01-01 01:00:00');
         $actualDateTimes = $this->getVisitDateTimes();
 
         $this->assertEquals($expectedDateTimes, $actualDateTimes);
