@@ -120,4 +120,11 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
             return true;
         }
     }
+
+    public function provideContainerConfig()
+    {
+        return array(
+            'Psr\Log\LoggerInterface' => \DI\get('Monolog\Logger'),
+        );
+    }
 }
