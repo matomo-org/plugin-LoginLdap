@@ -38,7 +38,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
         if (!function_exists('ldap_connect')) {
             $notification = new Notification(Piwik::translate('LoginLdap_LdapFunctionsMissing'));
             $notification->context = Notification::CONTEXT_ERROR;
-            $notification->type = Notification::TYPE_PERSISTENT;
+            $notification->type = Notification::TYPE_TRANSIENT;
             $notification->flags = 0;
             Notification\Manager::notify('LoginLdap_LdapFunctionsMissing', $notification);
         }
