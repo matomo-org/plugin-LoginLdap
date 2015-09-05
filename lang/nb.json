@@ -1,8 +1,13 @@
 {
     "LoginLdap": {
         "MenuLdap": "LDAP-brukere",
+        "LoadUser": "Hent bruker fra LDAP",
+        "LoadUserCommandDesc": "For å synkronisere flere brukere, bruk %s kommandoen.",
         "Settings": "LDAP-innstillinger",
+        "UserNotFound": "Bruker \"%s\" ikke funnet!",
         "AdminPass": "LDAP-passord",
+        "Filter": "LDAP-søkefilter",
+        "LDAPServers": "LDAP-servere",
         "OneUser": "1 bruker",
         "MemberOfCount": "%s er medlem av denne gruppen.",
         "Test": "Test",

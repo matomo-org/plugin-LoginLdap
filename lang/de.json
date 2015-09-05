@@ -12,7 +12,7 @@
         "MailField": "Mail Feld",
         "ServerUrl": "Server-URL",
         "UserIdField": "Benutzer ID Feld",
-        "AliasFieldDescription": "( e.g. \"cn\" )",
+        "AliasFieldDescription": "Das LDAP-Attribut, das verwendet wird um den Alias des Benutzers in Piwik festzulegen (z.B..\"cn\")",
         "MailFieldDescription": "( e.g. \"mail\" )",
         "UserIdFieldDescription": "( e.g. \"uid\", AD: \"userPrincipalName\" )",
         "UserNotFound": "Der Benutzer \"%s\" konnte nicht gefunden werden!",

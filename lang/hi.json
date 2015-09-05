@@ -16,7 +16,17 @@
         "UserNotFound": "उपयोगकर्ता \"%s\" को नहीं मिला!",
         "NoUserName": "कोई उपयोगकर्ता नाम दिया!",
         "UsernameSuffix": "ई-मेल पता प्रत्यय",
+        "AdminPass": "LDAP पासवर्ड",
+        "MemberOf": "आवश्यक उपयोगकर्ता समूह",
+        "Filter": "LDAP खोज फ़िल्टर",
+        "LdapUserAdded": "LDAP उपयोगकर्ता को सफलता पूर्वक जोड़ !",
+        "CannotConnectToServer": "LDAP सर्वर से कनेक्ट नहीं किया जा सका।",
+        "LDAPServers": "LDAP सर्वर",
+        "OneUser": "1 उपयोगकर्ता",
         "Test": "परीक्षण",
+        "ServerNameEditInstructions": "एक सर्वर नाम संपादित करने के लिए, इसे क्लिक करें।",
+        "FirstNameField": "पहला नाम फील्ड",
+        "UserSyncSettings": "प्रयोक्ता तुल्यकालन सेटिंग",
         "Go": "जाना"
     }
 }
