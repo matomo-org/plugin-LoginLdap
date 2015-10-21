@@ -63,6 +63,7 @@ class LoginLdap extends \Piwik\Plugin
         $stylesheetFiles[] = "plugins/Login/stylesheets/login.less";
         $stylesheetFiles[] = "plugins/Login/stylesheets/variables.less";
         $stylesheetFiles[] = "plugins/LoginLdap/angularjs/admin/admin.controller.less";
+        $stylesheetFiles[] = "plugins/LoginLdap/angularjs/login-ldap-testable-field/login-ldap-testable-field.directive.less";
     }
 
     public function getClientSideTranslationKeys(&$keys)

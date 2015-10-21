@@ -1,5 +1,9 @@
 # LoginLdap Changelog
 
+#### LoginLdap 3.2.0
+
+* Compatibility w/ Piwik 2.15.
+
 #### LoginLdap 3.1.5
 
 * Fixing regression caused by Piwik 2.14 change: authenticating in tracker w/ token_auth no longer worked if LoginLdap was used.
