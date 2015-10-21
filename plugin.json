@@ -1,13 +1,13 @@
 {
     "name": "LoginLdap",
-    "version": "3.1.5",
+    "version": "3.2.0",
     "description": "LDAP authentication and synchronization for Piwik.",
     "theme": false,
     "keywords": ["ldap", "login", "authentication", "active", "directory", "kerberos", "sso"],
     "license": "GPL v3+",
     "homepage": "https://github.com/piwik/plugin-LoginLdap",
     "require": {
-        "piwik": ">=2.14.0",
+        "piwik": ">=2.15.0-b15",
         "php": ">=5.3.3"
     },
     "authors": [
