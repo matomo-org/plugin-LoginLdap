@@ -134,7 +134,7 @@ after_script:
   - cd $PIWIK_ROOT_DIR
 
   # output contents of files w/ debugging info to screen
-  - cat /var/log/nginx/error.log
+  - cat $PIWIK_ROOT_DIR/tests/travis/error.log
   - cat $PIWIK_ROOT_DIR/tmp/php-fpm.log
   - cat $PIWIK_ROOT_DIR/tmp/logs/piwik.log
   - cat $PIWIK_ROOT_DIR/config/config.ini.php

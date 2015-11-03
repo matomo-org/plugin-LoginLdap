@@ -1,5 +1,9 @@
 # LoginLdap Changelog
 
+#### LoginLdap 3.2.1
+
+* Configureed LDAP passwords are no longer stored in the HTML in the LDAP settings page. This is a minor security update.
+
 #### LoginLdap 3.2.0
 
 * Compatibility w/ Piwik 2.15.

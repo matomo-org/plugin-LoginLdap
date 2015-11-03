@@ -1,6 +1,6 @@
 {
     "name": "LoginLdap",
-    "version": "3.2.0",
+    "version": "3.2.1",
     "description": "LDAP authentication and synchronization for Piwik.",
     "theme": false,
     "keywords": ["ldap", "login", "authentication", "active", "directory", "kerberos", "sso"],

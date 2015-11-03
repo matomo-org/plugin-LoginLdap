@@ -133,6 +133,74 @@ class ApiTest extends LdapIntegrationTest
         ), Config::getInstance()->LoginLdap_server2);
     }
 
+    public function test_saveServersInfo_DoesNotOverwritePassword_IfPasswordFieldBlank()
+    {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+
+        Config::getInstance()->LoginLdap_server2 = array(
+            'hostname' => 'thehost.com',
+            'port' => 456,
+            'base_dn' => 'thedn',
+            'admin_user' => 'admin',
+            'admin_pass' => 'firstpass'
+        );
+
+        $serverInfos = array(
+            array(
+                'name' => 'server2',
+                'hostname' => 'thehost.com',
+                'port' => 456,
+                'base_dn' => 'thedn',
+                'admin_user' => 'admin',
+                'admin_pass' => ''
+            ),
+        );
+
+        $this->api->saveServersInfo(json_encode($serverInfos));
+
+        $this->assertEquals(array(
+            'hostname' => 'thehost.com',
+            'port' => 456,
+            'base_dn' => 'thedn',
+            'admin_user' => 'admin',
+            'admin_pass' => 'firstpass'
+        ), Config::getInstance()->LoginLdap_server2);
+    }
+
+    public function test_saveServersInfo_OverwritesPassword_IfPasswordFieldNotBlank()
+    {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+
+        Config::getInstance()->LoginLdap_server2 = array(
+            'hostname' => 'thehost.com',
+            'port' => 456,
+            'base_dn' => 'thedn',
+            'admin_user' => 'admin',
+            'admin_pass' => 'firstpass'
+        );
+
+        $serverInfos = array(
+            array(
+                'name' => 'server2',
+                'hostname' => 'thehost.com',
+                'port' => 456,
+                'base_dn' => 'thedn',
+                'admin_user' => 'admin',
+                'admin_pass' => 'pass'
+            ),
+        );
+
+        $this->api->saveServersInfo(json_encode($serverInfos));
+
+        $this->assertEquals(array(
+            'hostname' => 'thehost.com',
+            'port' => 456,
+            'base_dn' => 'thedn',
+            'admin_user' => 'admin',
+            'admin_pass' => 'pass'
+        ), Config::getInstance()->LoginLdap_server2);
+    }
+
     /**
      * @expectedException Exception
      * @expectedExceptionMessage LoginLdap_UserNotFound

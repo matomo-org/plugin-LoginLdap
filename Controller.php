@@ -66,6 +66,11 @@ class Controller extends \Piwik\Plugins\Login\Controller
             }
         }
 
+        // remove password field
+        foreach ($view->servers as &$serverInfo) {
+            unset($serverInfo['admin_pass']);
+        }
+
         $view->ldapConfig = Config::getPluginOptionValuesWithDefaults();
 
         $view->isLoginControllerActivated = PluginManager::getInstance()->isPluginActivated('Login');
