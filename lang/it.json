@@ -87,6 +87,7 @@
         "MemberOfFieldDescription": "Campo usato dal tuo LDAP per indicare il tipo di utenza, di default \"memberOf\"",
         "LdapUrlPortWarning": "L'opzione porta viene ignorata quando l'hostname del server è impostato come URL LDAP (cioè, ldap:\/\/localhost\/ invece di localhost).",
         "UpdateFromPre300Warning": "Dato che hai aggiornato da una versione precedente alla 3.0.0, probabilmente dovrai mantenere non spuntata questa opzione. Prima della versione 3.0.0, password e nome utente erano entrambi immagazzinati sia in LDAP che nel DB di Piwik. Questa opzione non deve essere spuntata, in modo che anche gli utenti registrati prima dell'aggiornamento possano accedere.",
-        "MobileAppIntegrationNote": "Nota: se prevedi di utilizzare LDAP con l'app mobile ufficiale, devi mantenere non spuntata questa opzione. Al momento, l'app mobile non può autenticare gli utenti se nome utente e password non sono immagazzinati nel DB di Piwik."
+        "MobileAppIntegrationNote": "Nota: se prevedi di utilizzare LDAP con l'app mobile ufficiale, devi mantenere non spuntata questa opzione. Al momento, l'app mobile non può autenticare gli utenti se nome utente e password non sono immagazzinati nel DB di Piwik.",
+        "PasswordFieldHelp": "Inserisci una password per sovrascrivere quella esistente o lascia vuoto per non fare cambiamenti."
     }
 }

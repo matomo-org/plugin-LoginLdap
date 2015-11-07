@@ -83,10 +83,11 @@
         "NetworkTimeoutDescription2": "Čím větší je tento limit, tím déle budou muset uživatelé před přihlášením čekat, pokud nebude jeden z LDAP serverů dostupný.",
         "Go": "Jdi",
         "LoginPluginEnabledWarning": "Je povolen zásuvný modul %1$s i %2$s. To způsobí, že přihlášení pro LDAP uživatele selže. Prosím, zakažte zásuvný modul %1$s.",
-        "MemberOfField": "LDAp pole memberOf",
+        "MemberOfField": "LDAP pole memberOf",
         "MemberOfFieldDescription": "Pole používané vaším LDAP k určení členství, ve výchozím stavu \"memberOf\"",
         "LdapUrlPortWarning": "Možnost port je ignorována, pokud je jméno hostitele zadáno jako URL (t. j. ldap:\/\/localhost\/ místo localhost).",
         "UpdateFromPre300Warning": "Protože jste aktualizovali z verze starší než 3.0, nejspíš byste měli nechat tuto možnost odškrtnutou. Před verzí 3.0 byla hesla uchovávána jak na LDAP serveru, tak v databázi Piwiku. Tato možnost musí být odškrtnuta, nebo se uživatelé přidaní před aktualizací nebudou schopni přihlásit.",
-        "MobileAppIntegrationNote": "Poznámka: Pokud plánujete používat LDAP s oficiální mobilní aplikací, musí být tato možnost odškrtnuta. Mobilní aplikace zatím nedokáže ověřit uživatele, pokud nejsou hesla uložena v databázi Piwiku."
+        "MobileAppIntegrationNote": "Poznámka: Pokud plánujete používat LDAP s oficiální mobilní aplikací, musí být tato možnost odškrtnuta. Mobilní aplikace zatím nedokáže ověřit uživatele, pokud nejsou hesla uložena v databázi Piwiku.",
+        "PasswordFieldHelp": "Vložte heslo pro přepsání aktuálního hesla nebo ponechte prázdné pro ponechání beze změn."
     }
 }
