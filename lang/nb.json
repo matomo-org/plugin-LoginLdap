@@ -4,7 +4,7 @@
         "LoadUser": "Hent bruker fra LDAP",
         "LoadUserCommandDesc": "For å synkronisere flere brukere, bruk %s kommandoen.",
         "Settings": "LDAP-innstillinger",
-        "UserNotFound": "Bruker \"%s\" ikke funnet!",
+        "UserNotFound": "Brukeren «%s» ble ikke funnet!",
         "AdminPass": "LDAP-passord",
         "Filter": "LDAP-søkefilter",
         "LDAPServers": "LDAP-servere",
