@@ -1,0 +1,28 @@
+{
+    "name": "piwik/LoginLdap",
+    "description": "LDAP authentication and synchronization for Piwik.",
+    "keywords": ["ldap", "login", "authentication", "active", "directory", "kerberos", "sso"],
+    "license": "GPL v3+",
+    "homepage": "https://github.com/piwik/plugin-LoginLdap",
+    "require": {
+        "piwik": ">=2.15.0-b15",
+        "php": ">=5.3.3"
+    },
+    "authors": [
+        {
+            "name": "Piwik",
+            "email": "hello@piwik.org",
+            "homepage": "https://github.com/piwik"
+        },
+        {
+            "name": "Aivo Koger",
+            "email": "aivo.koger@gmail.com",
+            "homepage": "https://github.com/tehnotronic"
+        },
+        {
+            "name": "Stefan Kreuter",
+            "email": "info@gigatec.de",
+            "homepage": "http://www.gigatec.de"
+        }
+    ]
+}
