@@ -12,6 +12,7 @@ use Piwik\Common;
 use Piwik\Config;
 use Piwik\Date;
 use Piwik\Db;
+use Piwik\Plugins\LoginLdap\LoginLdap;
 use Piwik\Plugins\LoginLdap\Auth\LdapAuth;
 use Piwik\Plugins\LoginLdap\Auth\SynchronizedAuth;
 use Piwik\Plugins\LoginLdap\Auth\WebServerAuth;
@@ -175,5 +176,22 @@ class SystemAuthTest extends LdapIntegrationTest
         $this->assertNotEquals(AuthResult::FAILURE, $result->getCode());
 
         \Piwik\Plugins\UsersManager\API::getInstance()->setSuperUserAccess(self::TEST_SUPERUSER_LOGIN, true);
+    }
+
+    /**
+     * @expectedException Exception
+     * @expectedExceptionMessage LoginLdap_LdapUserCantChangePassword
+     */
+    public function testLdapUserPassChange()
+    {
+        $auth = LdapAuth::makeConfigured();
+        $auth->setLogin(self::TEST_LOGIN);
+        $auth->setPassword(self::TEST_PASS);
+        $result = $auth->authenticate();
+
+        $this->assertNotEquals(AuthResult::FAILURE, $result->getCode());
+
+        $loginLdap = new LoginLdap();
+        $loginLdap->disablePasswordChangeForLdapUsers($auth);
     }
 }

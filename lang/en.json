@@ -88,6 +88,7 @@
         "LdapUrlPortWarning": "The port option is ignored when the server hostname is set to an LDAP URL (ie, ldap://localhost/ instead of localhost).",
         "UpdateFromPre300Warning": "Since you updated from a pre-3.0.0 version, you should probably keep this option unchecked. Prior to version 3.0.0, user passwords were stored both in LDAP and in the Piwik DB. This option must be unchecked so that users added before the upgrade will be able to login.",
         "MobileAppIntegrationNote": "Note: If you plan on using LDAP with the official mobile app, you must keep this option unchecked. Currently, the mobile app cannot authenticate users if user passwords are not stored in Piwik's DB.",
-        "PasswordFieldHelp": "Enter a password to overwrite the existing password or leave blank to make no change."
+        "PasswordFieldHelp": "Enter a password to overwrite the existing password or leave blank to make no change.",
+        "LdapUserCantChangePassword": "Changing your password is not supported for LDAP users. As you use LDAP, your user settings are managed in LDAP directly. For more information, please contact your LDAP server administrator or your Piwik administrator."
     }
 }
