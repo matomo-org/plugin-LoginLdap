@@ -1,5 +1,9 @@
 # LoginLdap Changelog
 
+#### LoginLdap 3.2.2
+
+* LDAP user can't change their passwords in Piwik's UI (passwords should be managed directly on LDAP host)
+
 #### LoginLdap 3.2.1
 
 * Configureed LDAP passwords are no longer stored in the HTML in the LDAP settings page. This is a minor security update.
