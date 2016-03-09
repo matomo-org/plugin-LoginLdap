@@ -31,7 +31,7 @@ env:
     - PIWIK_ROOT_DIR=$TRAVIS_BUILD_DIR/piwik
     - UNPROTECTED_ARTIFACTS=1
     - SKIP_INSTALL_MYSQL_56=1
-    - PIWIK_LATEST_STABLE_TEST_TARGET=2.15.0-rc4
+    - PIWIK_LATEST_STABLE_TEST_TARGET=2.16.0
     - secure: "iCYpiyZh3YdXdvfbrvDXRG6lsb9iNIFccGPZv2etaVdmaGE3s6NfQLpXxdCk3pV73hXlXAbeP7Z3VsZzxQdvtvjCYDaRsrabydurFFiGrzA3Bn0JKdh8ALu+qWhe93YICC5NMjO4XtfL+5i02fwCmirPFhAus6ybWmWOuOZPaYA="
     - secure: "NyPBUrPhDIlZRwqiTLzb/RD+Vmrk6sVCcgXoYh+plce8SKFYq6hm3O5mVv/m7nxZYDSo9DtBWgBUZvbKS/d5EpxauvwCim3femWMG5Y66yCBw8vEoXchrq26/EgaN+H7BQtiY3JxBUpUoGFKM4iwpvDNL22ZPTPdWtZ5JZS/DHo="
   matrix:
@@ -43,10 +43,6 @@ matrix:
   exclude:
     # execute latest stable tests only w/ PHP 5.6
     - php: 5.3
-      env: TEST_SUITE=PluginTests MYSQL_ADAPTER=PDO_MYSQL TEST_AGAINST_CORE=minimum_required_piwik
-    # execute UI tests only w/ PHP 5.6
-    - php: 5.3
-      env: TEST_SUITE=UITests MYSQL_ADAPTER=PDO_MYSQL TEST_AGAINST_PIWIK_BRANCH=$PIWIK_LATEST_STABLE_TEST_TARGET
 
 sudo: required
 
