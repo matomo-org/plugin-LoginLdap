@@ -10,9 +10,12 @@ namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
 use Exception;
 use PHPUnit_Framework_TestCase;
+use Piwik\Access;
 use Piwik\Config;
+use Piwik\Container\StaticContainer;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 use Piwik\Plugins\UsersManager\Model;
+use Piwik\Plugins\UsersManager\UserAccessFilter;
 
 /**
  * @group LoginLdap
@@ -148,9 +151,10 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
     private function setUserManagerApiMock($throwsOnAddUser, $throwsOnUpdateUser = false, $throwsOnSetAccess = false)
     {
         $self = $this;
+        $model = new Model();
 
         $mock = $this->getMock('Piwik\Plugins\UsersManager\API', array(
-            'addUser', 'updateUser', 'getUser', 'setUserAccess', 'setSuperUserAccess'), array(new Model()));
+            'addUser', 'updateUser', 'getUser', 'setUserAccess', 'setSuperUserAccess'), array($model, new UserAccessFilter($model, new Access())));
         if ($throwsOnAddUser) {
             $mock->expects($this->any())->method('addUser')->willThrowException(new Exception("dummy message"));
         } else {

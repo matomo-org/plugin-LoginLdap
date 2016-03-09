@@ -1,5 +1,9 @@
 # LoginLdap Changelog
 
+#### LoginLdap 3.3.0
+
+* PPCDEV-2609 Compatibility with Piwik 2.16
+
 #### LoginLdap 3.2.2
 
 * LDAP user can't change their passwords in Piwik's UI (passwords should be managed directly on LDAP host)
