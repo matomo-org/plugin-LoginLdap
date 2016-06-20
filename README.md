@@ -114,7 +114,9 @@ If you want to use Kerberos, check the **Use Web Server Auth (e.g. Kerberos SSO)
 
 Then, make sure your web server performs the necessary authentication and sets the `$_SERVER['REMOTE_USER']` server variable when a user is authenticated.
 
-When the `$_SERVER['REMOTE_USER']` variable is set, LoginLdap will assume the user has already been authenticated.
+When the `$_SERVER['REMOTE_USER']` variable is set, LoginLdap will assume the user has already been authenticated. When `$_SERVER['REMOTE_USER']` variable
+is not set and "Always Use LDAP for Authentication" option is checked, LDAP authentication is performed. When "Always Use LDAP for Authentication" is unchecked,
+normal authentication will take place.
 
 _Note: The plugin will still communicate with the LDAP server in order to synchronize user details, so if LDAP settings are incorrect, authentication will fail._
 
