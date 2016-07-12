@@ -2,7 +2,7 @@
 
 #### LoginLdap 3.3.0
 
-* PPCDEV-2609 Compatibility with Piwik 2.16
+* Compatibility with Piwik 2.16
 
 #### LoginLdap 3.2.2
 
