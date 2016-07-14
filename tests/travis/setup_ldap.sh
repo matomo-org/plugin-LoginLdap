@@ -2,6 +2,7 @@
 
 # install LDAP
 echo "Installing LDAP..."
+sudo apt-get update > /dev/null
 if ! sudo apt-get install slapd ldap-utils -y -qq > /dev/null; then
     echo "Failed to install OpenLDAP!"
 fi

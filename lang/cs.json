@@ -9,7 +9,7 @@
         "AliasField": "Pole aliasu",
         "BaseDn": "Základní DN",
         "LdapPort": "Port serveru",
-        "MailField": "Pole emailu",
+        "MailField": "Pole e-mailové adresy",
         "ServerUrl": "URL serveru",
         "UserIdField": "Pole id uživatele",
         "AliasFieldDescription": "např. \"cn\"",
@@ -53,8 +53,8 @@
         "LdapViewAccessFieldDescription": "Vlastní LDAP atribut, který určuje, k jakým stránkám má uživatel přístup k prohlížení.",
         "LdapAdminAccessField": "LDAP pole administrátorského přístupu",
         "LdapAdminAccessFieldDescription": "Vlastní LDAP atribut, který udává, ke kterým stránkám má uživatel administrátorský přístup.",
-        "LdapSuperUserAccessField": "LDAP pole super uživatelského přístupu",
-        "LdapSuperUserAccessFieldDescription": "Vlastní LDAP atribut, který udává, jestli je uživatel super uživatel.",
+        "LdapSuperUserAccessField": "LDAP pole superuživatelského přístupu",
+        "LdapSuperUserAccessFieldDescription": "Vlastní LDAP atribut, který udává, jestli je uživatel super-uživatel.",
         "LdapUserAccessAttributeServerSpecDelimiter": "Oddělovač specifikací serverů v atributu uživatelského přístupu",
         "LdapUserAccessAttributeServerSpecDelimiterDescription": "Řetězec, který odděluje specifikace serverů v atributu uživatelského přístupu. Pokud je nastaven na ';', pak bude atribut vypadat jako '<server-spec>;<server-spec>;...'.",
         "LdapUserAccessAttributeServerSeparator": "Oddělovač stránek & serverů v atributu uživatelského přístupu",
@@ -83,10 +83,11 @@
         "NetworkTimeoutDescription2": "Čím větší je tento limit, tím déle budou muset uživatelé před přihlášením čekat, pokud nebude jeden z LDAP serverů dostupný.",
         "Go": "Jdi",
         "LoginPluginEnabledWarning": "Je povolen zásuvný modul %1$s i %2$s. To způsobí, že přihlášení pro LDAP uživatele selže. Prosím, zakažte zásuvný modul %1$s.",
-        "MemberOfField": "LDAp pole memberOf",
+        "MemberOfField": "LDAP pole memberOf",
         "MemberOfFieldDescription": "Pole používané vaším LDAP k určení členství, ve výchozím stavu \"memberOf\"",
         "LdapUrlPortWarning": "Možnost port je ignorována, pokud je jméno hostitele zadáno jako URL (t. j. ldap:\/\/localhost\/ místo localhost).",
         "UpdateFromPre300Warning": "Protože jste aktualizovali z verze starší než 3.0, nejspíš byste měli nechat tuto možnost odškrtnutou. Před verzí 3.0 byla hesla uchovávána jak na LDAP serveru, tak v databázi Piwiku. Tato možnost musí být odškrtnuta, nebo se uživatelé přidaní před aktualizací nebudou schopni přihlásit.",
-        "MobileAppIntegrationNote": "Poznámka: Pokud plánujete používat LDAP s oficiální mobilní aplikací, musí být tato možnost odškrtnuta. Mobilní aplikace zatím nedokáže ověřit uživatele, pokud nejsou hesla uložena v databázi Piwiku."
+        "MobileAppIntegrationNote": "Poznámka: Pokud plánujete používat LDAP s oficiální mobilní aplikací, musí být tato možnost odškrtnuta. Mobilní aplikace zatím nedokáže ověřit uživatele, pokud nejsou hesla uložena v databázi Piwiku.",
+        "PasswordFieldHelp": "Vložte heslo pro přepsání aktuálního hesla nebo ponechte prázdné pro ponechání beze změn."
     }
 }

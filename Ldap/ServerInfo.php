@@ -284,20 +284,25 @@ class ServerInfo
             throw new Exception("'base_dn' property is required for server '{$serverInfo['name']}'.");
         }
 
+        $config = \Piwik\Config::getInstance();
+
+        $configSectionName = 'LoginLdap_' . $serverInfo['name'];
+        $existingServerInfo = $config->__get($configSectionName);
+
+        $existingPassword = !empty($existingServerInfo['admin_pass']) ? $existingServerInfo['admin_pass'] : "";
+        $passwordToSet = !empty($serverInfo['admin_pass']) ? $serverInfo['admin_pass'] : $existingPassword;
         $configSection = array(
             'hostname' => $serverInfo['hostname'],
             'port' => @$serverInfo['port'],
             'base_dn' => $serverInfo['base_dn'],
             'admin_user' => @$serverInfo['admin_user'],
-            'admin_pass' => @$serverInfo['admin_pass']
+            'admin_pass' => $passwordToSet,
         );
 
-        $configSectionName = 'LoginLdap_' . $serverInfo['name'];
-
-        \Piwik\Config::getInstance()->__set($configSectionName, $configSection);
+        $config->__set($configSectionName, $configSection);
 
         if ($forceSave) {
-            \Piwik\Config::getInstance()->forceSave();
+            $config->forceSave();
         }
     }
 }

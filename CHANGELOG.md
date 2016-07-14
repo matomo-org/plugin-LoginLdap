@@ -1,5 +1,26 @@
 # LoginLdap Changelog
 
+#### LoginLdap 3.3.0
+
+* Compatibility with Piwik 2.16
+
+#### LoginLdap 3.2.2
+
+* LDAP user can't change their passwords in Piwik's UI (passwords should be managed directly on LDAP host)
+
+#### LoginLdap 3.2.1
+
+* Configureed LDAP passwords are no longer stored in the HTML in the LDAP settings page. This is a minor security update.
+
+#### LoginLdap 3.2.0
+
+* Compatibility w/ Piwik 2.15.
+
+#### LoginLdap 3.1.5
+
+* Fixing regression caused by Piwik 2.14 change: authenticating in tracker w/ token_auth no longer worked if LoginLdap was used.
+* Workaround issue where 'LDAP Functions are Missing' notification was never removed from the screen by making it transient & closeable.
+
 #### LoginLdap 3.1.2
 
 * Change placeholder value of server hostname config option and add a note so users can avoid the problem where ports are ignored when ldap:// URLs are used in the hostname option.

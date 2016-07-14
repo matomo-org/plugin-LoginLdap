@@ -1,5 +1,12 @@
 {
     "LoginLdap": {
+        "PluginDescription": "Shtojcës hyrjesh me mirëfilltësim LDAP. Ofron një alternativë ndaj shtojcës së Hyrjeve standarde Piwik.",
+        "MenuLdap": "Përdorues LDAP",
+        "Settings": "Rregullime LDAP",
+        "LdapPort": "Portë Shërbyesi",
+        "MailField": "Fushë Adrese Email",
+        "ServerUrl": "URL Shërbyesi",
+        "UserIdField": "Fushë ID-je Përdoruesi",
         "Test": "Provë"
     }
 }

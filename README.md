@@ -14,14 +14,15 @@ LoginLdap authenticates with an LDAP server and uses LDAP information to persona
 To start using LoginLdap, follow these steps:
 
 1. Login as a superuser
-2. On the _Manager > Plugins_ admin page, enable the LoginLdap plugin
-3. Navigate to the _Settings > LDAP_ page
-4. Enter and save settings for your LDAP servers
+2. On the _Manage > Marketplace_ admin page, install the LoginLdap plugin
+3. On the _Manage > Plugins_ admin page, enable the LoginLdap plugin
+4. Navigate to the _Settings > LDAP_ page
+5. Enter and save settings for your LDAP servers
 
    _Note: You can test your servers by entering something into the 'Required User Group' and clicking the test link that appears.
    An error message will display if LoginLdap cannot connect to the LDAP server._
 
-5. You can now login with LDAP cedentials.
+6. You can now login with LDAP cedentials.
 
 _**Note:** LDAP users are not synchronized with Piwik until they are first logged in. This means you cannot access a token auth for an LDAP user until the user is synchronized.
 If you use the default LoginLdap configuration, you can synchronize all of your LDAP users at once using the `./console loginldap:synchronize-users` command._
@@ -113,7 +114,9 @@ If you want to use Kerberos, check the **Use Web Server Auth (e.g. Kerberos SSO)
 
 Then, make sure your web server performs the necessary authentication and sets the `$_SERVER['REMOTE_USER']` server variable when a user is authenticated.
 
-When the `$_SERVER['REMOTE_USER']` variable is set, LoginLdap will assume the user has already been authenticated.
+When the `$_SERVER['REMOTE_USER']` variable is set, LoginLdap will assume the user has already been authenticated. When `$_SERVER['REMOTE_USER']` variable
+is not set and "Always Use LDAP for Authentication" option is checked, LDAP authentication is performed. When "Always Use LDAP for Authentication" is unchecked,
+normal authentication will take place.
 
 _Note: The plugin will still communicate with the LDAP server in order to synchronize user details, so if LDAP settings are incorrect, authentication will fail._
 

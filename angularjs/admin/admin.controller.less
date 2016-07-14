@@ -62,6 +62,11 @@
   table {
     border-spacing: 1.5em 0;
   }
+
+  .form-description {
+    margin-left: 1em;
+    display:inline-block;
+  }
 }
 
 #expectedAccessAttributeFormat,#synchronizeIndividualUserForm,#pre300AlwaysUseLdapWarning {
@@ -75,5 +80,11 @@
   }
   input {
     font-size:12px;
+  }
+}
+
+#synchronizeIndividualUserForm,#expectedAccessAttributeFormat {
+  .notification::before {
+    content:"";
   }
 }

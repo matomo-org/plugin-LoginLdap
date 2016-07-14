@@ -1,5 +1,11 @@
 {
     "LoginLdap": {
-        "Test": "Testas"
+        "Settings": "LDAP nustatymai",
+        "LdapPort": "Serverio prievadas",
+        "UserNotFound": "Naudotojas \"%s\" nerastas!",
+        "AdminPass": "LDAP slaptažodis",
+        "LDAPServers": "LDAP serveriai",
+        "Test": "Testas",
+        "InvalidFilter": "Neteisingas filtras."
     }
 }

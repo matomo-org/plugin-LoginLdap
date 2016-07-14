@@ -10,9 +10,9 @@
         "BaseDn": "Basis DN",
         "LdapPort": "Server Port",
         "MailField": "Mail Feld",
-        "ServerUrl": "Server URL",
+        "ServerUrl": "Server-URL",
         "UserIdField": "Benutzer ID Feld",
-        "AliasFieldDescription": "( e.g. \"cn\" )",
+        "AliasFieldDescription": "Das LDAP-Attribut, das verwendet wird um den Alias des Benutzers in Piwik festzulegen (z.B..\"cn\")",
         "MailFieldDescription": "( e.g. \"mail\" )",
         "UserIdFieldDescription": "( e.g. \"uid\", AD: \"userPrincipalName\" )",
         "UserNotFound": "Der Benutzer \"%s\" konnte nicht gefunden werden!",
@@ -21,13 +21,13 @@
         "UsernameSuffixDescription": "( e.g. \"@localhost.com\" )",
         "AdminUser": "Administrator Benutzer",
         "AdminUserDescription": "( e.g. \"Administrator\" )",
-        "AdminPass": "Administrator Passwort",
-        "MemberOf": "ActiveDirectory Gruppe",
+        "AdminPass": "LDAP Passwort",
+        "MemberOf": "Benötigte Benutzergruppe",
         "MemberOfDescription": "( e.g. \"CN=Piwik User,CN=Users,DC=organization,DC=com\" )",
         "MemberOfDescription2": "Bemerkung: Diese Einstellung setzt den memberOf=? LDAP Filter ein. Einige LDAP Server benötigen eine zusätzliche Konfiguration um diese Abfrage ausführen zu können.",
         "Filter": "LDAP Suchfilter",
         "FilterDescription": "( e.g. \"(objectClass=person)\" )",
-        "Kerberos": "Kerberos aktiviert",
+        "Kerberos": "Verwende Web-Server-Authentifizierung (z.B. Kerberos SSO)",
         "KerberosDescription": "Falls aktiviert, überprüft das Plugin die $_SERVER['REMOTE_USER'] Variable und geht davon aus, dass der Benutzer bereits bestätigt ist. Normale Superuser sind weiterhin berechtigt sich auf normale Weise zu authentifizieren.",
         "LdapUserAdded": "LDAP Benutzer erfolgreich hinzugefügt!",
         "LdapFunctionsMissing": "PHP ldap_connect() Funktion fehlt, aktivieren Sie bitte LDAP-Modul auf Ihrer PHP-Konfiguration!",
@@ -87,6 +87,7 @@
         "MemberOfFieldDescription": "Von Ihrem LDAP benütztes Feld um die Mitgliedschaft anzuzeigen, per Standard \"memberOf\"",
         "LdapUrlPortWarning": "Die Port Einstellung wird ignoriert wenn der Server Hostname auf eine LDAP URL (zum Beispiel ldap:\/\/localhost\/ anstelle von localhost) gesetzt ist.",
         "UpdateFromPre300Warning": "Da Sie von einer Version älter als 3.0.0 aktualisieren, sollten Sie diese Option höchstwahrscheinlich ungewählt belassen. Vor der Version 3.0.0 wurden Passwörter sowohl in LDAP als auch in der Piwik Datenbank gespeichert. Diese Option muss abgewählt sein damit vor dem Update hinzugefügte Benutzer weiterhin in der Lage sind, sich anzumelden.",
-        "MobileAppIntegrationNote": "Hinweis: Wenn Sie vorhaben, LDAP mit der offiziellen Mobile App einzusetzen, darf diese Option nicht angewählt sein. Aktuell kann die Mobile App Benutzer nicht authentifizieren wenn deren Passwort nicht in der Piwik Datenbank gespeichert ist."
+        "MobileAppIntegrationNote": "Hinweis: Wenn Sie vorhaben, LDAP mit der offiziellen Mobile App einzusetzen, darf diese Option nicht angewählt sein. Aktuell kann die Mobile App Benutzer nicht authentifizieren wenn deren Passwort nicht in der Piwik Datenbank gespeichert ist.",
+        "PasswordFieldHelp": "Geben Sie ein Passwort ein, um das existierende Passwort zu überschreiben oder lassen Sie das Feld leer um keine Änderung vorzunehmen."
     }
 }

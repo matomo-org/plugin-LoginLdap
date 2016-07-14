@@ -124,7 +124,7 @@ class WebServerAuthTest extends LdapIntegrationTest
         $this->assertEquals(AuthResult::SUCCESS_SUPERUSER_AUTH_CODE, $authResult->getCode());
     }
 
-    public function test_SuperUsersCanLogin_IfWebServerAuthUsed_AndWebServerAuthSetupIncorreclty()
+    public function test_SuperUsersCanLogin_IfWebServerAuthUsed_AndWebServerAuthSetupIncorrectly()
     {
         unset($_SERVER['REMOTE_USER']);
 

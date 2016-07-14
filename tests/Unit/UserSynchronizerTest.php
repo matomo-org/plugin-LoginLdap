@@ -10,14 +10,12 @@ namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
 use Exception;
 use PHPUnit_Framework_TestCase;
+use Piwik\Access;
 use Piwik\Config;
+use Piwik\Container\StaticContainer;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
-use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
-
-class MockAPI extends UsersManagerAPI
-{
-    public function __construct() {}
-}
+use Piwik\Plugins\UsersManager\Model;
+use Piwik\Plugins\UsersManager\UserAccessFilter;
 
 /**
  * @group LoginLdap
@@ -45,9 +43,6 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        Config::unsetInstance();
-        Config::getInstance()->setTestEnvironment();
-
         $this->userSynchronizer = new UserSynchronizer();
         $this->userSynchronizer->setNewUserDefaultSitesWithViewAccess(array(1,2));
         $this->setUserModelMock($this->getPiwikUserData());
@@ -55,13 +50,6 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
 
         $this->userAccess = array();
         $this->superUserAccess = array();
-    }
-
-    public function tearDown()
-    {
-        Config::unsetInstance();
-
-        parent::tearDown();
     }
 
     public function test_makeConfigured_DoesNotThrow_WhenUserMapperCorrectlyConfigured()
@@ -163,9 +151,10 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
     private function setUserManagerApiMock($throwsOnAddUser, $throwsOnUpdateUser = false, $throwsOnSetAccess = false)
     {
         $self = $this;
+        $model = new Model();
 
-        $mock = $this->getMock('Piwik\Plugins\LoginLdap\tests\Unit\MockAPI', array(
-            'addUser', 'updateUser', 'getUser', 'setUserAccess', 'setSuperUserAccess'));
+        $mock = $this->getMock('Piwik\Plugins\UsersManager\API', array(
+            'addUser', 'updateUser', 'getUser', 'setUserAccess', 'setSuperUserAccess'), array($model, new UserAccessFilter($model, new Access())));
         if ($throwsOnAddUser) {
             $mock->expects($this->any())->method('addUser')->willThrowException(new Exception("dummy message"));
         } else {

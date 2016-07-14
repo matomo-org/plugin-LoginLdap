@@ -31,6 +31,7 @@ class LoginLdap extends \Piwik\Plugin
 {
     /**
      * @see Piwik_Plugin::getListHooksRegistered
+     * @return array
      */
     public function getListHooksRegistered()
     {
@@ -44,6 +45,7 @@ class LoginLdap extends \Piwik\Plugin
             'Controller.Login.resetPassword'         => 'disablePasswordResetForLdapUsers',
             'Controller.LoginLdap.resetPassword'     => 'disablePasswordResetForLdapUsers',
             'Controller.Login.confirmResetPassword'  => 'disableConfirmResetPasswordForLdapUsers',
+            'UsersManager.checkPassword'             => 'checkPassword',
         );
         return $hooks;
     }
@@ -63,6 +65,7 @@ class LoginLdap extends \Piwik\Plugin
         $stylesheetFiles[] = "plugins/Login/stylesheets/login.less";
         $stylesheetFiles[] = "plugins/Login/stylesheets/variables.less";
         $stylesheetFiles[] = "plugins/LoginLdap/angularjs/admin/admin.controller.less";
+        $stylesheetFiles[] = "plugins/LoginLdap/angularjs/login-ldap-testable-field/login-ldap-testable-field.directive.less";
     }
 
     public function getClientSideTranslationKeys(&$keys)
@@ -176,5 +179,40 @@ class LoginLdap extends \Piwik\Plugin
         });
 
         return UserMapper::isUserLdapUser($user);
+    }
+
+    private function isCurrentUserLdapUser(Auth $auth)
+    {
+        $currentUserLogin = $auth->getLogin();
+
+        if (empty($currentUserLogin)) {
+            return false;
+        }
+
+        return $this->isUserLdapUser($auth->getLogin());
+    }
+
+    /**
+     * Throws Exception when LDAP user tries to change password
+     * because such user's pass should be managed directly on LDAP host
+     *
+     * @throws Exception
+     */
+    public function disablePasswordChangeForLdapUsers(Auth $auth)
+    {
+        if ($this->isCurrentUserLdapUser($auth)) {
+            throw new Exception(
+                Piwik::translate('LoginLdap_LdapUserCantChangePassword')
+            );
+        }
+    }
+
+    /**
+     * Listens to UsersManager.checkPassword hook.
+     */
+    public function checkPassword()
+    {
+        $auth = StaticContainer::get('Piwik\Auth');
+        $this->disablePasswordChangeForLdapUsers($auth);
     }
 }

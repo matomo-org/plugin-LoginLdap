@@ -1,5 +1,32 @@
 {
     "LoginLdap": {
-        "Test": "परीक्षण"
+        "PluginDescription": "बैंडविड्थ",
+        "MenuLdap": "LDAP उपयोगकर्ताओं",
+        "LoadUser": "एलडीएपी से लोड उपयोगकर्ता",
+        "LoadUserDescription": "आप UIसे LDAP में एक भी उपयोगकर्ता सिंक्रनाइज़ करने के लिए इस प्रपत्र का उपयोग कर सकते हैं।",
+        "LoadUserCommandDesc": "अधिक उपयोगकर्ताओं को सिंक्रनाइज़ %s आदेश का उपयोग करें ।",
+        "Settings": "LDAP सेटिंग्स",
+        "AliasField": "प्रयोक्ता उर्फ ​​फील्ड",
+        "BaseDn": "बेस डी.एन.",
+        "LdapPort": "सर्वर पोर्ट",
+        "MailField": "ई-मेल पता क्षेत्र",
+        "ServerUrl": "सर्वर URL",
+        "UserIdField": "यूजर आईडी फील्ड",
+        "MailFieldDescription": "उदाहरण के लिए एक उपयोगकर्ता ई-मेल पते, जिसमें एलडीएपी विशेषता \"मेल\"।",
+        "UserNotFound": "उपयोगकर्ता \"%s\" को नहीं मिला!",
+        "NoUserName": "कोई उपयोगकर्ता नाम दिया!",
+        "UsernameSuffix": "ई-मेल पता प्रत्यय",
+        "AdminPass": "LDAP पासवर्ड",
+        "MemberOf": "आवश्यक उपयोगकर्ता समूह",
+        "Filter": "LDAP खोज फ़िल्टर",
+        "LdapUserAdded": "LDAP उपयोगकर्ता को सफलता पूर्वक जोड़ !",
+        "CannotConnectToServer": "LDAP सर्वर से कनेक्ट नहीं किया जा सका।",
+        "LDAPServers": "LDAP सर्वर",
+        "OneUser": "1 उपयोगकर्ता",
+        "Test": "परीक्षण",
+        "ServerNameEditInstructions": "एक सर्वर नाम संपादित करने के लिए, इसे क्लिक करें।",
+        "FirstNameField": "पहला नाम फील्ड",
+        "UserSyncSettings": "प्रयोक्ता तुल्यकालन सेटिंग",
+        "Go": "जाना"
     }
 }
