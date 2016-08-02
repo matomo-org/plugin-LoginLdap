@@ -1,8 +1,12 @@
 # LoginLdap Changelog
 
+#### LoginLdap 3.3.1
+
+* Plugin settings: clarify an inline help for `Use Web Server Auth (e.g. Kerberos SSO)`
+ 
 #### LoginLdap 3.3.0
 
-* Compatibility with Piwik 2.16
+* Compatibility with Piwik 2.16.0
 
 #### LoginLdap 3.2.2
 
@@ -14,7 +18,7 @@
 
 #### LoginLdap 3.2.0
 
-* Compatibility w/ Piwik 2.15.
+* Compatibility w/ Piwik 2.15.0
 
 #### LoginLdap 3.1.5
 
