@@ -25,6 +25,9 @@ class Config
         'enable_synchronize_access_from_ldap' => 0,
         'enable_random_token_auth_generation' => 0,
         'new_user_default_sites_view_access' => '',
+        'membership_super_access' => '',
+        'membership_site_view_access' => '',
+        'membership_site_admin_access' => '',
         'user_email_suffix' => '',
         'append_user_email_suffix_to_username' => 1,
         'required_member_of' => '',
@@ -104,6 +107,21 @@ class Config
     public static function getDefaultSitesToGiveViewAccessTo()
     {
         return self::getConfigOption('new_user_default_sites_view_access');
+    }
+
+    public static function getMembershipSuperAccess()
+    {
+        return self::getConfigOption('membership_super_access');
+    }
+
+    public static function getMembershipSiteViewAccess()
+    {
+        return self::getConfigOption('membership_site_view_access');
+    }
+
+    public static function getMembershipSiteAdminAccess()
+    {
+        return self::getConfigOption('membership_site_admin_access');
     }
 
     public static function getRequiredMemberOf()

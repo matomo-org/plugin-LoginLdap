@@ -79,7 +79,7 @@
                 <input size="25" id="memberOfField" name="required_member_of_field" value="{{ ldapConfig.required_member_of_field }}"/>
             </td>
         </tr>
-        
+
         <tr>
             <td>
                 <label for="memberOf">{{ 'LoginLdap_MemberOf'|translate }} </label>
@@ -357,6 +357,47 @@
                 </td>
                 <td>
                     <input size="25" type="text" id="instanceName" value="{{ ldapConfig.instance_name }}" name="instance_name" />
+                </td>
+            </tr>
+
+            <tr ng-show="ajaxForm.data.enable_synchronize_access_from_ldap">
+                <td>
+                    <h3>{{ 'LoginLdap_MembershipAccessDescription'|translate }}</h3>
+                </td>
+                <td>
+                </td>
+            </tr>
+
+            <tr ng-show="ajaxForm.data.enable_synchronize_access_from_ldap">
+                <td>
+                    <label for="membershipSuperAccess">{{ 'LoginLdap_MembershipSuperAccess'|translate }}</label>
+                    <br/>
+                    <span class="form-description">{{ 'LoginLdap_MembershipSuperAccessDescription'|translate }}</span>
+                </td>
+                <td>
+                    <input size="25" type="text" value="{{ ldapConfig.membership_super_access }}" name="membership_super_access" id="membershipSuperAccess" />
+                </td>
+            </tr>
+
+            <tr ng-show="ajaxForm.data.enable_synchronize_access_from_ldap">
+                <td>
+                    <label for="membershipSiteViewAccess">{{ 'LoginLdap_MembershipSiteViewAccess'|translate }}</label>
+                    <br/>
+                    <span class="form-description">{{ 'LoginLdap_MembershipSiteViewAccessDescription'|translate }}</span>
+                </td>
+                <td>
+                    <input size="25" type="text" value="{{ ldapConfig.membership_site_view_access }}" name="membership_site_view_access" id="membershipSiteViewAccess" />
+                </td>
+            </tr>
+
+            <tr ng-show="ajaxForm.data.enable_synchronize_access_from_ldap">
+                <td>
+                    <label for="membershipSiteAdminAccess">{{ 'LoginLdap_MembershipSiteAdminAccess'|translate }}</label>
+                    <br/>
+                    <span class="form-description">{{ 'LoginLdap_MembershipSiteAdminAccessDescription'|translate }}</span>
+                </td>
+                <td>
+                    <input size="25" type="text" value="{{ ldapConfig.membership_site_admin_access }}" name="membership_site_admin_access" id="membershipSiteAdminAccess" />
                 </td>
             </tr>
 

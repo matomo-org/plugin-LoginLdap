@@ -152,6 +152,7 @@ class UserSynchronizer
      */
     public function synchronizePiwikAccessFromLdap($piwikLogin, $ldapUser)
     {
+        $piwikLogin = $this->userMapper->getExpectedLdapUsername($piwikLogin);
         if (empty($this->userAccessMapper)) {
             return;
         }
@@ -162,11 +163,11 @@ class UserSynchronizer
                 'func' => __FUNCTION__,
                 'user' => $piwikLogin
             ));
-
-            return;
         }
 
+        // for the synchronization, need to reset all user accesses
         $this->userModel->deleteUserAccess($piwikLogin);
+        $this->userModel->setSuperUserAccess($piwikLogin,false);
 
         $usersManagerApi = $this->usersManagerApi;
         foreach ($userAccess as $userAccessLevel => $sites) {

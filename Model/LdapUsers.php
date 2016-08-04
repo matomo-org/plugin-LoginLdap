@@ -162,7 +162,12 @@ class LdapUsers
             $result = $this->doWithClient(function (LdapUsers $self, LdapClient $ldapClient)
                 use ($username, $password, $alreadyAuthenticated, $authenticationRequiredMemberOf, $logger) {
 
-                $user = $self->getUser($username, $ldapClient);
+                $user = null;
+                try {
+                    $user = $self->getUser($username, $ldapClient);
+                } catch (Exception $ex) {
+                    $user = $self->getUserWithBind($username, $password, $ldapClient);
+                }
 
                 if (empty($user)) {
                     $logger->debug("LdapUsers::{function}: No such user '{user}' or user is not a member of '{group}'.", array(
@@ -242,14 +247,63 @@ class LdapUsers
 
             if (empty($userEntries)) {
                 return null;
-            } else {
-                return $userEntries[0];
             }
+
+            $user = $userEntries[0];
+            // assemble memberships recursively
+            $user["groups"] = $this->userGroups($user,$ldapClient,$server,true);
+
+            return $user;
         });
 
         $this->logger->debug(self::FUNCTION_END_LOG_MESSAGE, array(
             'function' => __FUNCTION__,
             'result' => $result === null ? 'null' : array_keys($result)
+        ));
+
+        return $result;
+    }
+
+    /**
+     * Retrieves LDAP user information for a given username and password, using this user to bind to LDAP.
+     *
+     * @param string $username The username of the user to get LDAP information for.
+     * @param string $password The password of the user.
+     * @return string[] Associative array containing LDAP field data, eg, `array('dn' => '...')`
+     */
+    public function getUserWithBind($username,$password)
+    {
+        $this->logger->debug(self::FUNCTION_START_LOG_MESSAGE, array(
+                'function' => __FUNCTION__,
+                'params' => array($username, "<password[length=" . strlen($password) . "]>")
+        ));
+
+        $result = $this->doWithClient(function (LdapUsers $self, LdapClient $ldapClient, ServerInfo $server)
+                use ($username,$password) {
+            $self->bindAsUser($ldapClient, $server, $username, $password);
+
+            // look for the user, applying extra filters
+            list($filter, $bind) = $self->getUserEntryQuery($username);
+            $userEntries = $ldapClient->fetchAll($server->getBaseDn(), $filter, $bind);
+
+            if ($userEntries === null) { // sanity check
+                throw new Exception("LDAP search for entries failed. (Unexpected Error, ldap_search returned null)");
+            }
+
+            if (empty($userEntries)) {
+                return null;
+            }
+
+            $user = $userEntries[0];
+            // assemble memberships recursively
+            $user["groups"] = $this->userGroups($user,$ldapClient,$server,true);
+
+            return $user;
+        });
+
+        $this->logger->debug(self::FUNCTION_END_LOG_MESSAGE, array(
+                'function' => __FUNCTION__,
+                'result' => $result === null ? 'null' : array_keys($result)
         ));
 
         return $result;
@@ -330,6 +384,89 @@ class LdapUsers
         ));
 
         return $result;
+    }
+
+    /**
+     * Return all memberships of a user
+     *
+     * @param array $user the user as returned by getUser or getUserWithBind
+     * @param LdapClient $ldapClient the ldap client to use
+     * @param ServerInfo $server the server
+     * @param boolean $recursive also get the indirect memberships for the users direct memberships (groups can also be within groups, which makes the user also a member of that group)
+     *
+     * @return array nice names for the groups the user is a member of
+     */
+    protected function userGroups( $user, LdapClient $ldapClient, ServerInfo $server, $recursive = true)
+    {
+        $groups = $this->niceGroupNames($user[strtolower($this->authenticationMemberOfField)]);
+        // determine also the parent groups of the user's memberships
+        if( $recursive === true) {
+            // these are the groups that have not been checked yet
+            $groups_to_check = $groups;
+            do {
+                $parent_groups = array();
+                foreach( $groups_to_check as $group) {
+                    $extra_groups = $this->groups($group, $ldapClient, $server);
+                    $parent_groups = array_merge($parent_groups,$extra_groups);
+                }
+                // different groups can have the same parent
+                $parent_groups = array_unique($parent_groups);
+                // get all the elements, that are not in groups yet
+                $groups_to_check = array_diff($parent_groups,$groups);
+
+                // add the unchecked groups
+                $groups = array_merge($groups,$groups_to_check);
+            } while( count($groups_to_check) != 0);
+        }
+
+        return $groups;
+    }
+
+    /**
+     * Return the memberof groups for the $group
+     *
+     * @param \String $group the group as nice name
+     * @param LdapClient $ldapClient the ldap client to use
+     * @param ServerInfo $server the server
+     * @return array array of nice group names:
+     */
+    protected function groups( $group, LdapClient $ldapClient, ServerInfo $server)
+    {
+        $filter = self::getGroupEntryFilter($group);
+        $entries = $ldapClient->fetchAll($server->getBaseDn(), $filter);
+
+        if( count($entries) > 0 && isset($entries[0][strtolower($this->authenticationMemberOfField)])) {
+            // multiple memberships as array
+            if( is_array($entries[0][strtolower($this->authenticationMemberOfField)])) {
+                return $this->niceGroupNames($entries[0][strtolower($this->authenticationMemberOfField)]);
+            } else { // single membership as string
+                return $this->niceGroupNames(array($entries[0][strtolower($this->authenticationMemberOfField)]));
+            }
+        }
+
+        return array();
+    }
+
+    /**
+     * remove prefix (e.g. "cn=", "dn=") from a query result and additional information from the end (OU and DC)
+     *
+     * @param array $groups
+     * @return array of strings with
+     */
+    protected function niceGroupNames($groups)
+    {
+        $group_array=array();
+        foreach ($groups as $group){
+            if (strlen($group)>0){
+                // first match between '=' and ','
+                $bits = array();
+                // match the first group between the first "=" and the first ","
+                preg_match('/^.+?(?==)=(?P<group>.+?)(?=,).*/', $group, $bits);
+                $group_array[]=$bits["group"];
+            }
+        }
+
+        return array_unique($group_array);
     }
 
     /**
@@ -439,7 +576,7 @@ class LdapUsers
     {
         $bind = array();
         $conditions = array();
-        
+
         if (!empty($this->authenticationLdapFilter)) {
             $conditions[] = $this->authenticationLdapFilter;
         }
@@ -448,7 +585,7 @@ class LdapUsers
             $conditions[] = "(".$this->authenticationMemberOfField."=?)";
             $bind[] = $this->authenticationRequiredMemberOf;
         }
-        
+
         if (!empty($username)) {
             $conditions[] = "(" . $this->ldapUserMapper->getLdapUserIdField() . "=?)";
             $bind[] = $this->addUsernameSuffix($username);
@@ -457,6 +594,15 @@ class LdapUsers
         $filter = "(&" . implode('', $conditions) . ")";
 
         return array($filter, $bind);
+    }
+
+    /**
+     * Public only for use in closure
+     */
+    static public function getGroupEntryFilter($group)
+    {
+        $filter = "(&(objectCategory=group)(name=".$group."))";
+        return $filter;
     }
 
     /**
@@ -590,6 +736,36 @@ class LdapUsers
         // bind using the admin user which has at least read access to LDAP users
         if (!$ldapClient->bind($adminUserName, $server->getAdminPassword())) {
             throw new Exception("Could not bind as LDAP admin.");
+        }
+    }
+
+    /**
+     * Public only for use in closure.
+     */
+    public function bindAsUser(LdapClient $ldapClient, ServerInfo $server, $username, $password)
+    {
+        // bind using the user
+        $bind = $ldapClient->bind($username, $password);
+        if ($bind) {
+            $this->logger->debug("Successfully bound as user '" . $username . "' with password.");
+        }
+
+        if(!$bind) {
+            // try to bind the user with the suffix
+            $username_with_suffix = $this->addUsernameSuffix($username);
+            $bind = $ldapClient->bind($username_with_suffix, $password);
+            if($bind) {
+               $this->logger->debug("Successfully bound as user '" . $username_with_suffix . "' with password.");
+            }
+        }
+
+        $this->logger->debug(self::FUNCTION_END_LOG_MESSAGE, array(
+                'function' => __FUNCTION__,
+                'result' => $bind
+        ));
+
+        if( !$bind) {
+            throw new Exception("Could not bind as user '" . $username . "' or '" . $username_with_suffix . "' with password.");
         }
     }
 
