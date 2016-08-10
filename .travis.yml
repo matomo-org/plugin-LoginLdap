@@ -2,8 +2,6 @@
 
 language: php
 
-group: legacy
-
 php:
   - 5.6
   - 5.3
@@ -69,7 +67,7 @@ install:
   - '[ -d ./tests/travis/.git ] || sh -c "rm -rf ./tests/travis && git clone https://github.com/piwik/travis-scripts.git ./tests/travis"'
   - cd ./tests/travis ; git checkout master ; cd ../..
 
-  - export GENERATE_TRAVIS_YML_COMMAND="php ./tests/travis/generator/main.php generate:travis-yml --plugin=\"LoginLdap\" --php-versions=\"5.6,5.3\" --verbose"
+  - export GENERATE_TRAVIS_YML_COMMAND="php ./tests/travis/generator/main.php generate:travis-yml --plugin=\"LoginLdap\" --verbose"
   - '[[ "$TRAVIS_JOB_NUMBER" != *.1 || "$TRAVIS_PULL_REQUEST" != "false" ]] || ./tests/travis/autoupdate_travis_yml.sh'
 
   - ./tests/travis/checkout_test_against_branch.sh
@@ -77,6 +75,9 @@ install:
   - '[ "$PLUGIN_NAME" == "" ] || [ ! -f ./tests/travis/check_plugin_compatible_with_piwik.php ] || php ./tests/travis/check_plugin_compatible_with_piwik.php "$PLUGIN_NAME"'
 
   - ./tests/travis/configure_git.sh
+
+  # disable tls for php 5.3 as openssl isn't available
+  - '[[ "$TRAVIS_PHP_VERSION" == 5.3* ]] && composer config -g -- disable-tls true || true'
 
   # travis now complains about this failing 9 times out of 10, so removing it
   #- travis_retry composer self-update
@@ -100,13 +101,21 @@ before_script:
   # disable opcache to avoid random failures on travis
   - echo "opcache.enable=0" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
+  # make tmpfs and run MySQL on it for reasonnable performance
+  - sudo mkdir /mnt/ramdisk
+  - sudo mount -t tmpfs -o size=1024m tmpfs /mnt/ramdisk
+  - sudo stop mysql
+  - sudo mv /var/lib/mysql /mnt/ramdisk
+  - sudo ln -s /mnt/ramdisk/mysql /var/lib/mysql
+  - sudo start mysql
+
   # print out mysql information
   - mysql --version
   - mysql -e "SELECT VERSION();"
 
   # configure mysql
   - mysql -e "SET GLOBAL sql_mode = 'NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES'" # Travis default
-  # try to avoid mysql has gone away errors
+  # try to avoid 'mysql has gone away' errors
   - mysql -e "SET GLOBAL wait_timeout = 36000;"
   - mysql -e "SET GLOBAL max_allowed_packet = 134209536;"
   - mysql -e "SHOW VARIABLES LIKE 'max_allowed_packet';"
