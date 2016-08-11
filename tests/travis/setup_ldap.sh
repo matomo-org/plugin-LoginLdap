@@ -36,6 +36,15 @@ olcDisallows: bind_anon
 
 EOF
 
+if [ "$?" -ne "0" ]; then
+    echo "Failed to change config olcLogLevel or olcDisallows!"
+    echo ""
+    echo "slapd log:"
+    sudo grep slapd /var/log/syslog
+
+    exit 1
+fi
+
 sudo ldapadd -Y EXTERNAL -H ldapi:/// <<EOF
 
 # database
@@ -90,6 +99,15 @@ olcOverlay: {1}refint
 olcRefintAttribute: memberof member manager owner
 
 EOF
+
+if [ "$?" -ne "0" ]; then
+    echo "Failed to change config database or modules!"
+    echo ""
+    echo "slapd log:"
+    sudo grep slapd /var/log/syslog
+
+    exit 1
+fi
 
 sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
 
