@@ -169,7 +169,7 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
                 $escapedFilter = $filter;
             })
         );
-        LdapFunctions::$phpUnitMock->expects($this->any())->method('ldap_get_entities')->will($this->returnValue("result"));
+        LdapFunctions::$phpUnitMock->expects($this->any())->method('ldap_get_entries')->will($this->returnValue("result"));
 
         $ldapClient = new LdapClient();
 

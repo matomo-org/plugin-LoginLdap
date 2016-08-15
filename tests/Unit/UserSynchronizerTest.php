@@ -195,7 +195,9 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
 
     private function setUserMapperMock($value, $throws = false)
     {
-        $mock = $this->getMock('Piwik\Plugins\LoginLdap\LdapInterop\UserMapper', array('createPiwikUserFromLdapUser'));
+        $mock = $this->getMockBuilder('Piwik\Plugins\LoginLdap\LdapInterop\UserMapper')
+                     ->setMethods(array('createPiwikUserFromLdapUser'))
+                     ->getMock();
         if ($throws) {
             $mock->expects($this->any())->method('createPiwikUserFromLdapUser')->will($this->throwException(new Exception("dummy")));
         } else {
