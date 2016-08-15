@@ -208,14 +208,18 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
 
     private function setUserAccessMapperMock($value)
     {
-        $mock = $this->getMock('Piwik\Plugins\LoginLdap\LdapInterop\UserAccessMapper', array('getPiwikUserAccessForLdapUser'));
+        $mock = $this->getMockBuilder('Piwik\Plugins\LoginLdap\LdapInterop\UserAccessMapper')
+                     ->setMethods( array('getPiwikUserAccessForLdapUser'))
+                     ->getMock();
         $mock->expects($this->any())->method('getPiwikUserAccessForLdapUser')->will($this->returnValue($value));
         $this->userSynchronizer->setUserAccessMapper($mock);
     }
 
     private function setUserModelMock($returnValue)
     {
-        $mock = $this->getMock('Piwik\Plugins\UsersManager\Model', array('getUser', 'deleteUserAccess'));
+        $mock = $this->getMockBuilder('Piwik\Plugins\UsersManager\Model')
+                     ->setMethods(array('getUser', 'deleteUserAccess'))
+                     ->getMock();
         $mock->expects($this->any())->method('getUser')->will($this->returnValue($returnValue));
 
         $this->userSynchronizer->setUserModel($mock);
