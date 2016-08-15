@@ -28,10 +28,11 @@ class LdapClientTest extends PHPUnit_Framework_TestCase
     {
         parent::setUp();
 
-        LdapFunctions::$phpUnitMock = $this->getMock('stdClass', array(
-            'ldap_connect', 'ldap_close', 'ldap_bind', 'ldap_search', 'ldap_set_option', 'ldap_get_entries',
-            'ldap_count_entries'
-        ));
+        LdapFunctions::$phpUnitMock = $this->getMockBuilder('stdClass')
+                                           ->setMethods( array('ldap_connect', 'ldap_close',
+                                             'ldap_bind', 'ldap_search', 'ldap_set_option',
+                                             'ldap_get_entries', 'ldap_count_entries'))
+                                           ->getMock();
     }
 
     public function tearDown()

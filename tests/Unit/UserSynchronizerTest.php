@@ -153,8 +153,10 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
         $self = $this;
         $model = new Model();
 
-        $mock = $this->getMock('Piwik\Plugins\UsersManager\API', array(
-            'addUser', 'updateUser', 'getUser', 'setUserAccess', 'setSuperUserAccess'), array($model, new UserAccessFilter($model, new Access())));
+        $mock = $this->getMockBuilder('Piwik\Plugins\UsersManager\API')
+                     ->setMethods(array('addUser', 'updateUser', 'getUser', 'setUserAccess', 'setSuperUserAccess'))
+                     ->setConstructorArgs(array($model, new UserAccessFilter($model, new Access())))
+                     ->getMock();
         if ($throwsOnAddUser) {
             $mock->expects($this->any())->method('addUser')->willThrowException(new Exception("dummy message"));
         } else {
