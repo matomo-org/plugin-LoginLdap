@@ -166,7 +166,9 @@ class UserSynchronizer
             return;
         }
 
+        // for the synchronization, need to reset all user accesses
         $this->userModel->deleteUserAccess($piwikLogin);
+        $this->userModel->setSuperUserAccess($piwikLogin,false);
 
         $usersManagerApi = $this->usersManagerApi;
         foreach ($userAccess as $userAccessLevel => $sites) {
