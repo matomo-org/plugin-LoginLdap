@@ -170,7 +170,9 @@ class UserAccessMapperTest extends PHPUnit_Framework_TestCase
 
     private function setSitesManagerApiMock()
     {
-        $mock = $this->getMock('stdClass', array('getSitesIdWithAtLeastViewAccess', 'getAllSitesId'));
+        $mock = $this->getMockBuilder('stdClass')
+                     ->setMethods(array('getSitesIdWithAtLeastViewAccess', 'getAllSitesId'))
+                     ->getMock();
         $mock->expects($this->any())->method('getSitesIdWithAtLeastViewAccess')->willReturn(array(1,2,3,4,5,6));
         $mock->expects($this->any())->method('getAllSitesId')->willReturn(array(1,2,3,4,5,6));
         SitesManagerAPI::setSingletonInstance($mock);

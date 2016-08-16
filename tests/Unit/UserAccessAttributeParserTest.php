@@ -282,7 +282,9 @@ class UserAccessAttributeParserTest extends PHPUnit_Framework_TestCase
 
     private function setSitesManagerApiMock()
     {
-        $mock = $this->getMock('stdClass', array('getSitesIdWithAtLeastViewAccess', 'getAllSitesId'));
+        $mock = $this->getMockBuilder('stdClass')
+                     ->setMethods( array('getSitesIdWithAtLeastViewAccess', 'getAllSitesId'))
+                     ->getMock();
         $mock->expects($this->any())->method('getSitesIdWithAtLeastViewAccess')->willReturn(array(1,2,3,4,5,6));
         $mock->expects($this->any())->method('getAllSitesId')->willReturn(array(1,2,3,4,5,6));
         SitesManagerAPI::setSingletonInstance($mock);
@@ -290,7 +292,9 @@ class UserAccessAttributeParserTest extends PHPUnit_Framework_TestCase
 
     private function setThisPiwikUrl($thisUrl)
     {
-        $mock = $this->getMock('stdClass', array('getValue'));
+        $mock = $this->getMockBuilder('stdClass')
+                     ->setMethods(array('getValue'))
+                     ->getMock();
         $mock->expects($this->any())->method('getValue')->willReturnCallback(function ($key) use ($thisUrl) {
             if ($key == SettingsPiwik::OPTION_PIWIK_URL) {
                 return $thisUrl;
