@@ -15,7 +15,7 @@ class Menu extends \Piwik\Plugin\Menu
     public function configureAdminMenu(MenuAdmin $menu)
     {
         if (Piwik::hasUserSuperUserAccess()) {
-            $menu->addSettingsItem('LDAP', $this->urlForAction('admin'), $order = 30);
+            $menu->addSystemItem('LDAP', $this->urlForAction('admin'), $order = 30);
         }
     }
 }
