@@ -30,10 +30,9 @@ use Piwik\View;
 class LoginLdap extends \Piwik\Plugin
 {
     /**
-     * @see Piwik_Plugin::getListHooksRegistered
      * @return array
      */
-    public function getListHooksRegistered()
+    public function registerEvents()
     {
         $hooks = array(
             'Request.initAuthenticationObject'       => 'initAuthenticationObject',
