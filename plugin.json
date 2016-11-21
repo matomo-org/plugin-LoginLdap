@@ -7,7 +7,7 @@
     "license": "GPL v3+",
     "homepage": "https://github.com/piwik/plugin-LoginLdap",
     "require": {
-        "piwik": ">=2.16.0",
+        "piwik": ">=2.16.0,<3.0.0-b1",
         "php": ">=5.4"
     },
     "authors": [
