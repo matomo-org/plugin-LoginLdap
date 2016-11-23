@@ -14,33 +14,72 @@
 (function () {
     angular.module('piwikApp').directive('piwikLoginLdapTestableField', piwikLoginLdapTestableField);
 
-    piwikLoginLdapTestableField.$inject = ['piwik'];
+    piwikLoginLdapTestableField.$inject = ['piwik', 'piwikApi'];
 
-    function piwikLoginLdapTestableField(piwik) {
+    function piwikLoginLdapTestableField(piwik, piwikApi) {
         return {
             restrict: 'A',
             scope: {
-                inputValue: '@value',
+                value: '@',
+                name: '@',
                 successTranslation: '@',
                 testApiMethod: '=',
-                testApiMethodArg: '='
+                testApiMethodArg: '=',
+                inlineHelp: '@',
+                title: '@'
             },
             templateUrl: 'plugins/LoginLdap/angularjs/login-ldap-testable-field/login-ldap-testable-field.directive.html?cb=' + piwik.cacheBuster,
-            controller: 'LoginLdapTestableFieldController',
-            controllerAs: 'testableField',
-            compile: function (element, attrs) {
-                element.find('[piwik-translate]').attr('piwik-translate', attrs.successTranslation);
+            controller: function($scope)
+            {
+                //$element.find('[piwik-translate]').attr('piwik-translate', $scope.successTranslation);
 
-                return function (scope, element, attrs) {
-                    scope.testableField.inputValue = scope.inputValue;
-                    scope.testableField.successTranslation = scope.successTranslation;
-                    scope.testableField.testApiMethod = scope.testApiMethod;
-                    scope.testableField.testApiMethodArg = scope.testApiMethodArg;
+                var $scope = $scope;
+                var testableField = {};
+                testableField.inputValue = $scope.value;
+                testableField.successTranslation = $scope.successTranslation;
+                testableField.testApiMethod = $scope.testApiMethod;
+                testableField.testApiMethodArg = $scope.testApiMethodArg;
+                testableField.inputName = $scope.name;
+                testableField.inlineHelp = $scope.inlineHelp;
+                testableField.title = $scope.title;
 
-                    scope.testableField.inputId = attrs.inputId;
-                    scope.testableField.inputName = attrs.name;
-                    scope.testableField.inputType = attrs.type || 'text';
-                };
+                testableField.testResult = null;
+                testableField.testError = null;
+                testableField.testValue = null;
+                testableField.currentRequest = null;
+
+                function testValue() {
+                    if (testableField.currentRequest) {
+                        testableField.currentRequest.abort();
+                    }
+
+                    testableField.testError = null;
+                    testableField.testResult = null;
+
+                    if (!testableField.inputValue) {
+                        return;
+                    }
+
+                    var requestOptions = {createErrorNotification: false},
+                        getParams = {method: $scope.testApiMethod};
+                    getParams[$scope.testApiMethodArg] = testableField.inputValue;
+
+                    testableField.currentRequest = piwikApi.fetch(
+                        getParams,
+                        requestOptions
+                    ).then(function (response) {
+                        testableField.testResult = response.value === null ? null : parseInt(response.value);
+                    }).catch(function (message) {
+                        testableField.testError = message;
+                        testableField.testResult = null;
+                    })['finally'](function () {
+                        testableField.currentRequest = null;
+
+                    });
+                }
+
+                testableField.testValue = testValue;
+                $scope.testableField = testableField;
             }
         };
     }

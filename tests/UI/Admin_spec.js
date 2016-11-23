@@ -36,12 +36,12 @@ describe("LoginLdap_Admin", function () {
         expect.screenshot('admin_page').to.be.captureSelector('#content', function (page) {
             page.load(ldapAdminUrl);
 
-            page.sendKeys('input#memberOf', 'a');
-            page.sendKeys('input#filter', 'a');
+            page.sendKeys('input#required_member_of', 'a');
+            page.sendKeys('input#ldap_user_filter', 'a');
 
             page.evaluate(function () {
-                $('input#memberOf').val('cn=avengers,dc=avengers,dc=shield,dc=org').trigger('input');
-                $('input#filter').val('(objectClass=person)').trigger('input');
+                $('input#required_member_of').val('cn=avengers,dc=avengers,dc=shield,dc=org').trigger('input');
+                $('input#ldap_user_filter').val('(objectClass=person)').trigger('input');
             });
 
             page.evaluate(function () {

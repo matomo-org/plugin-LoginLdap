@@ -74,7 +74,6 @@ class LoginLdap extends \Piwik\Plugin
         $keys[] = "LoginLdap_MemberOfCount";
         $keys[] = "LoginLdap_FilterCount";
         $keys[] = "LoginLdap_Test";
-        $keys[] = "LoginLdap_OneUser";
         $keys[] = "General_NUsers";
     }
 
