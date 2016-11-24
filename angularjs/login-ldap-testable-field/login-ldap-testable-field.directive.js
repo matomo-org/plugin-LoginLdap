@@ -14,9 +14,9 @@
 (function () {
     angular.module('piwikApp').directive('piwikLoginLdapTestableField', piwikLoginLdapTestableField);
 
-    piwikLoginLdapTestableField.$inject = ['piwik', 'piwikApi'];
+    piwikLoginLdapTestableField.$inject = ['piwik', 'piwikApi', $compile];
 
-    function piwikLoginLdapTestableField(piwik, piwikApi) {
+    function piwikLoginLdapTestableField(piwik, piwikApi, $compile) {
         return {
             restrict: 'A',
             scope: {
@@ -29,14 +29,10 @@
                 title: '@'
             },
             templateUrl: 'plugins/LoginLdap/angularjs/login-ldap-testable-field/login-ldap-testable-field.directive.html?cb=' + piwik.cacheBuster,
-            controller: function($scope)
+            controller: function($scope, $element)
             {
-                //$element.find('[piwik-translate]').attr('piwik-translate', $scope.successTranslation);
-
-                var $scope = $scope;
                 var testableField = {};
                 testableField.inputValue = $scope.value;
-                testableField.successTranslation = $scope.successTranslation;
                 testableField.testApiMethod = $scope.testApiMethod;
                 testableField.testApiMethodArg = $scope.testApiMethodArg;
                 testableField.inputName = $scope.name;
@@ -47,6 +43,9 @@
                 testableField.testError = null;
                 testableField.testValue = null;
                 testableField.currentRequest = null;
+
+                $element.find('.test-config-option-success').attr('piwik-translate', $scope.successTranslation);
+                $compile($element.find('.test-config-option-success'));
 
                 function testValue() {
                     if (testableField.currentRequest) {
@@ -74,7 +73,6 @@
                         testableField.testResult = null;
                     })['finally'](function () {
                         testableField.currentRequest = null;
-
                     });
                 }
 

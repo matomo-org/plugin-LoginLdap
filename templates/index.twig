@@ -70,6 +70,8 @@
              success-translation="LoginLdap_FilterCount">
         </div>
 
+        <hr />
+
         <div piwik-save-button saving="ajaxform.isSubmitting" onconfirm="ajaxForm.submitForm()"></div>
     </div>
 
@@ -138,6 +140,8 @@
              ng-model="ajaxForm.data.new_user_default_sites_view_access"
              inline-help="{{ 'LoginLdap_NewUserDefaultSitesViewAccessDescription'|translate|e('html_attr') }}">
         </div>
+
+        <hr />
 
         <div piwik-save-button saving="ajaxform.isSubmitting" onconfirm="ajaxForm.submitForm()"></div>
 
@@ -212,6 +216,8 @@
                  ng-model="ajaxForm.data.instance_name"
                  inline-help="{{ 'LoginLdap_ThisPiwikInstanceNameDescription'|translate|e('html_attr') }}">
             </div>
+
+            <hr />
 
             <div piwik-save-button saving="ajaxform.isSubmitting" onconfirm="ajaxForm.submitForm()"></div>
         </div>
