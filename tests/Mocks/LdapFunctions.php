@@ -34,6 +34,11 @@ function ldap_set_option($connection = null, $optionName = null, $optionValue = 
     return LdapFunctions::ldap_set_option($connection, $optionName, $optionValue);
 }
 
+function ldap_error($link_identifier) {
+    /** @noinspection PhpUndefinedMethodInspection */
+    return LdapFunctions::ldap_error($link_identifier);
+}
+
 function ldap_bind($connection = null, $resourceDn = null, $password = null) {
     /** @noinspection PhpUndefinedMethodInspection */
     return LdapFunctions::ldap_bind($connection, $resourceDn, $password);
@@ -58,3 +63,14 @@ function ldap_count_entries($connection = null, $searchResultResource = null) {
     /** @noinspection PhpUndefinedMethodInspection */
     return LdapFunctions::ldap_count_entries($connection, $searchResultResource);
 }
+
+if(!defined('LDAP_OPT_PROTOCOL_VERSION')) {
+    define('LDAP_OPT_PROTOCOL_VERSION', 1);
+}
+if(!defined('LDAP_OPT_REFERRALS')) {
+    define('LDAP_OPT_REFERRALS', 1);
+}
+if(!defined('LDAP_OPT_NETWORK_TIMEOUT')) {
+    define('LDAP_OPT_NETWORK_TIMEOUT', 1);
+}
+
