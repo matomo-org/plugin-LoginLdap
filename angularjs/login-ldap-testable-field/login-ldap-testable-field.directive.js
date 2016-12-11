@@ -14,7 +14,7 @@
 (function () {
     angular.module('piwikApp').directive('piwikLoginLdapTestableField', piwikLoginLdapTestableField);
 
-    piwikLoginLdapTestableField.$inject = ['piwik', 'piwikApi', $compile];
+    piwikLoginLdapTestableField.$inject = ['piwik', 'piwikApi', "$compile"];
 
     function piwikLoginLdapTestableField(piwik, piwikApi, $compile) {
         return {
@@ -26,6 +26,7 @@
                 testApiMethod: '=',
                 testApiMethodArg: '=',
                 inlineHelp: '@',
+                ngModel: '@',
                 title: '@'
             },
             templateUrl: 'plugins/LoginLdap/angularjs/login-ldap-testable-field/login-ldap-testable-field.directive.html?cb=' + piwik.cacheBuster,
@@ -76,8 +77,26 @@
                     });
                 }
 
+                function setDescendantProp (obj, desc, value) {
+                    var arr = desc.split('.');
+                    if (arr.length > 0 && arr[0] != '') {
+                        var prop = arr.shift();
+                        obj[prop] = setDescendantProp(obj[prop], arr.length ? arr.join('.') : '', value);
+                    } else {
+                        obj = value;
+                    }
+                    return obj;
+                }
+
                 testableField.testValue = testValue;
                 $scope.testableField = testableField;
+
+                // set changed values to ngModel
+                $scope.$watch("testableField.inputValue",
+                    function(value){
+                        setDescendantProp($scope.$parent, $scope.ngModel, value);
+                    }
+                );
             }
         };
     }
