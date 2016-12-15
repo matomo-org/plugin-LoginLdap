@@ -45,7 +45,13 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
     public function setUp()
     {
         if (!function_exists('ldap_bind')) {
-            throw new \Exception("PHP not compiled w/ --with-ldap!");
+
+            $runningLdapTests = !empty(getenv('PLUGIN_NAME'));
+            if($runningLdapTests) {
+                throw new \Exception("PHP not compiled w/ --with-ldap!");
+            } else {
+                $this->markTestSkipped('LDAP not setup in travis. ');
+            }
         }
 
         if (!$this->isLdapServerRunning()) {

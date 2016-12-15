@@ -30,10 +30,9 @@ use Piwik\View;
 class LoginLdap extends \Piwik\Plugin
 {
     /**
-     * @see Piwik_Plugin::getListHooksRegistered
      * @return array
      */
-    public function getListHooksRegistered()
+    public function registerEvents()
     {
         $hooks = array(
             'Request.initAuthenticationObject'       => 'initAuthenticationObject',
@@ -53,10 +52,7 @@ class LoginLdap extends \Piwik\Plugin
     public function getJsFiles(&$jsFiles)
     {
         $jsFiles[] = "plugins/Login/javascripts/login.js";
-
         $jsFiles[] = "plugins/LoginLdap/angularjs/admin/admin.controller.js";
-
-        $jsFiles[] = "plugins/LoginLdap/angularjs/login-ldap-testable-field/login-ldap-testable-field.controller.js";
         $jsFiles[] = "plugins/LoginLdap/angularjs/login-ldap-testable-field/login-ldap-testable-field.directive.js";
     }
 
@@ -75,7 +71,6 @@ class LoginLdap extends \Piwik\Plugin
         $keys[] = "LoginLdap_MemberOfCount";
         $keys[] = "LoginLdap_FilterCount";
         $keys[] = "LoginLdap_Test";
-        $keys[] = "LoginLdap_OneUser";
         $keys[] = "General_NUsers";
     }
 

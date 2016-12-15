@@ -8,13 +8,14 @@
 namespace Piwik\Plugins\LoginLdap;
 
 use Piwik\Option;
+use Piwik\Updater;
 use Piwik\Updates;
 
 /**
  */
 class Updates_3_0_0 extends Updates
 {
-    static function update()
+    public function doUpdate(Updater $updater)
     {
         // when updating from pre-3.0 versions, set use_ldap_for_authentication to 0 and make sure
         // a warning displays in the UI to not set it to 1

@@ -14,33 +14,89 @@
 (function () {
     angular.module('piwikApp').directive('piwikLoginLdapTestableField', piwikLoginLdapTestableField);
 
-    piwikLoginLdapTestableField.$inject = ['piwik'];
+    piwikLoginLdapTestableField.$inject = ['piwik', 'piwikApi', "$compile"];
 
-    function piwikLoginLdapTestableField(piwik) {
+    function piwikLoginLdapTestableField(piwik, piwikApi, $compile) {
         return {
             restrict: 'A',
             scope: {
-                inputValue: '@value',
+                value: '@',
+                name: '@',
                 successTranslation: '@',
                 testApiMethod: '=',
-                testApiMethodArg: '='
+                testApiMethodArg: '=',
+                inlineHelp: '@',
+                ngModel: '@',
+                title: '@'
             },
             templateUrl: 'plugins/LoginLdap/angularjs/login-ldap-testable-field/login-ldap-testable-field.directive.html?cb=' + piwik.cacheBuster,
-            controller: 'LoginLdapTestableFieldController',
-            controllerAs: 'testableField',
-            compile: function (element, attrs) {
-                element.find('[piwik-translate]').attr('piwik-translate', attrs.successTranslation);
+            controller: function($scope, $element)
+            {
+                var testableField = {};
+                testableField.inputValue = $scope.value;
+                testableField.testApiMethod = $scope.testApiMethod;
+                testableField.testApiMethodArg = $scope.testApiMethodArg;
+                testableField.inputName = $scope.name;
+                testableField.inlineHelp = $scope.inlineHelp;
+                testableField.title = $scope.title;
 
-                return function (scope, element, attrs) {
-                    scope.testableField.inputValue = scope.inputValue;
-                    scope.testableField.successTranslation = scope.successTranslation;
-                    scope.testableField.testApiMethod = scope.testApiMethod;
-                    scope.testableField.testApiMethodArg = scope.testApiMethodArg;
+                testableField.testResult = null;
+                testableField.testError = null;
+                testableField.testValue = null;
+                testableField.currentRequest = null;
 
-                    scope.testableField.inputId = attrs.inputId;
-                    scope.testableField.inputName = attrs.name;
-                    scope.testableField.inputType = attrs.type || 'text';
-                };
+                $element.find('.test-config-option-success').attr('piwik-translate', $scope.successTranslation);
+                $compile($element.find('.test-config-option-success'));
+
+                function testValue() {
+                    if (testableField.currentRequest) {
+                        testableField.currentRequest.abort();
+                    }
+
+                    testableField.testError = null;
+                    testableField.testResult = null;
+
+                    if (!testableField.inputValue) {
+                        return;
+                    }
+
+                    var requestOptions = {createErrorNotification: false},
+                        getParams = {method: $scope.testApiMethod};
+                    getParams[$scope.testApiMethodArg] = testableField.inputValue;
+
+                    testableField.currentRequest = piwikApi.fetch(
+                        getParams,
+                        requestOptions
+                    ).then(function (response) {
+                        testableField.testResult = response.value === null ? null : parseInt(response.value);
+                    }).catch(function (message) {
+                        testableField.testError = message;
+                        testableField.testResult = null;
+                    })['finally'](function () {
+                        testableField.currentRequest = null;
+                    });
+                }
+
+                function setDescendantProp (obj, desc, value) {
+                    var arr = desc.split('.');
+                    if (arr.length > 0 && arr[0] != '') {
+                        var prop = arr.shift();
+                        obj[prop] = setDescendantProp(obj[prop], arr.length ? arr.join('.') : '', value);
+                    } else {
+                        obj = value;
+                    }
+                    return obj;
+                }
+
+                testableField.testValue = testValue;
+                $scope.testableField = testableField;
+
+                // set changed values to ngModel
+                $scope.$watch("testableField.inputValue",
+                    function(value){
+                        setDescendantProp($scope.$parent, $scope.ngModel, value);
+                    }
+                );
             }
         };
     }

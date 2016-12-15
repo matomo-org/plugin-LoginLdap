@@ -39,7 +39,7 @@
         "FilterCount": "%s are matched by this filter.",
         "Test": "Test",
         "InvalidFilter": "Invalid filter.",
-        "ServerNameEditInstructions": "To edit a server name, click it.",
+        "ServerName": "Server name",
         "FirstNameField": "First Name Field",
         "FirstNameFieldDescription": "The LDAP attribute containing a user's first name.",
         "LastNameField": "Last Name Field",

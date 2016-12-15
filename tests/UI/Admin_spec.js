@@ -13,6 +13,7 @@ describe("LoginLdap_Admin", function () {
     this.fixture = "Piwik\\Tests\\Fixtures\\OneVisitorTwoVisits";
 
     before(function () {
+        testEnvironment.pluginsToLoad = ['LoginLdap'];
         testEnvironment.configOverride = {
             LoginLdap: {
                 servers: ['testserver'],
@@ -34,19 +35,19 @@ describe("LoginLdap_Admin", function () {
 
     it("should load correctly and allow testing the filter and group fields", function (done) {
         expect.screenshot('admin_page').to.be.captureSelector('#content', function (page) {
-            page.load(ldapAdminUrl);
+            page.load(ldapAdminUrl, 2000);
 
-            page.sendKeys('input#memberOf', 'a');
-            page.sendKeys('input#filter', 'a');
+            page.sendKeys('input#required_member_of', 'a');
+            page.sendKeys('input#ldap_user_filter', 'a');
 
             page.evaluate(function () {
-                $('input#memberOf').val('cn=avengers,dc=avengers,dc=shield,dc=org').trigger('input');
-                $('input#filter').val('(objectClass=person)').trigger('input');
+                $('input#required_member_of').val('cn=avengers,dc=avengers,dc=shield,dc=org').trigger('input');
+                $('input#ldap_user_filter').val('(objectClass=person)').trigger('input');
             });
 
             page.evaluate(function () {
-                $('.test-config-option-link').click();
-            });
+                $('[piwik-login-ldap-testable-field] [piwik-save-button] input').click();
+            }, 1000);
         }, done);
     });
 });
