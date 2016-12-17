@@ -1,5 +1,12 @@
 # LoginLdap Changelog
 
+#### LoginLdap 4.0.0
+
+* Compatibility with Piwik 3
+* Configuration value 'enable_random_token_auth_generation' has been removed as its obsolete with Piwik 3 having random auth tokens.
+* Command `loginldap:generate-token-auth` has been removed as auth tokens are independent from password now and new auth token can now be generated directly in user admin
+* Updated UI: Now completely works using AngularJS and material design
+
 #### LoginLdap 3.3.1
 
 * Plugin settings: clarify an inline help for `Use Web Server Auth (e.g. Kerberos SSO)`

@@ -103,8 +103,7 @@ class LdapAuth extends Base
             $authenticationSucceeded = $this->authenticateByLdap();
 
             if ($authenticationSucceeded) {
-                $user = $this->getUserForLogin();
-                return $this->makeSuccessLogin($user);
+                return $this->makeSuccessLogin($this->getUserForLogin());
             } else {
                 return $this->makeAuthFailure();
             }

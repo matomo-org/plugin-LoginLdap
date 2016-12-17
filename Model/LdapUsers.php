@@ -162,7 +162,7 @@ class LdapUsers
             $result = $this->doWithClient(function (LdapUsers $self, LdapClient $ldapClient)
                 use ($username, $password, $alreadyAuthenticated, $authenticationRequiredMemberOf, $logger) {
 
-                $user = $self->getUser($username, $ldapClient);
+                $user = $self->getUser($username);
 
                 if (empty($user)) {
                     $logger->debug("LdapUsers::{function}: No such user '{user}' or user is not a member of '{group}'.", array(

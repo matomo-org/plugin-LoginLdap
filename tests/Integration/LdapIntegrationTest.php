@@ -8,10 +8,12 @@
  */
 namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
+use Piwik\Auth\Password;
 use Piwik\Common;
 use Piwik\Db;
 use Piwik\Config;
 use Piwik\Plugins\LoginLdap\Ldap\LdapFunctions;
+use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\Tests\Framework\Fixture;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Tests\Framework\TestCase\IntegrationTestCase;
@@ -27,6 +29,7 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
 
     const TEST_LOGIN = 'ironman';
     const TEST_PASS = 'piedpiper';
+    const TEST_PASS_LDAP = '{MD5}Dv6yiT/W4FvaM5gBdqHwlQ==';
 
     const OTHER_TEST_LOGIN = 'blackwidow';
     const OTHER_TEST_PASS = 'redledger';
@@ -39,8 +42,6 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
 
     const NON_LDAP_NORMAL_USER = 'amber';
     const NON_LDAP_NORMAL_PASS = 'crossingthefourthwall';
-
-    const LDAP_ADDED_PASS = '{LDAP}e40511e34ec2ee1cc75d42c926';
 
     public function setUp()
     {
@@ -107,13 +108,16 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
     {
         $user = $this->getUser(self::TEST_LOGIN);
         $this->assertNotEmpty($user);
+        $passwordHelper = new Password();
+        $this->assertTrue($passwordHelper->verify(md5(self::TEST_PASS_LDAP), $user['password']));
+        unset($user['password']);
         $this->assertEquals(array(
             'login' => self::TEST_LOGIN,
-            'password' => self::LDAP_ADDED_PASS,
             'alias' => 'Tony Stark',
             'email' => 'billionairephilanthropistplayboy@starkindustries.com',
-            'token_auth' => UsersManagerAPI::getInstance()->getTokenAuth(self::TEST_LOGIN, self::LDAP_ADDED_PASS)
+            'token_auth' => UsersManagerAPI::getInstance()->getTokenAuth(self::TEST_LOGIN, md5(self::TEST_PASS_LDAP))
         ), $user);
+        $this->assertTrue(UserMapper::isUserLdapUser(self::TEST_LOGIN));
     }
 
     private function isLdapServerRunning()

@@ -10,6 +10,7 @@ namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
 use Exception;
 use PHPUnit_Framework_TestCase;
+use Piwik\Auth\Password;
 use Piwik\Config;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 
@@ -89,7 +90,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(array(
             'login' => 'martha',
-            'password' => '{LDAP}1a1dc91c907325c69271ddf0c9',
+            'password' => md5('pass'),
             'email' => 'martha@unit.co.uk',
             'alias' => 'A real doctor'
         ), $result);
@@ -116,7 +117,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(array(
             'login' => 'donna',
-            'password' => '{LDAP}1a1dc91c907325c69271ddf0c9',
+            'password' => md5('pass'),
             'email' => 'donna@rstad.com',
             'alias' => 'am i bovvered?'
         ), $result);
@@ -132,7 +133,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(array(
             'login' => 'donna',
-            'password' => '{LDAP}1a1dc91c907325c69271ddf0c9',
+            'password' => md5('pass'),
             'email' => 'donna@rstad.com',
             'alias' => 'Donna Noble'
         ), $result);
@@ -185,7 +186,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(array(
             'login' => 'pond',
-            'password' => '{LDAP}1a1dc91c907325c69271ddf0c9',
+            'password' => md5('pass'),
             'email' => 'pond@mydomain.com',
             'alias' => 'kissogram'
         ), $result);
@@ -199,7 +200,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(array(
             'login' => 'mrpond',
-            'password' => '{LDAP}1a1dc91c907325c69271ddf0c9',
+            'password' => md5('pass'),
             'email' => 'mrpond@royalleadworthhospital.co.uk',
             'alias' => 'not quite Bond'
         ), $result);
@@ -217,7 +218,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(array(
             'login' => 'harkness',
-            'password' => '{LDAP}1a1dc91c907325c69271ddf0c9',
+            'password' => md5('pass'),
             'email' => 'harkness@mydomain.com',
             'alias' => 'Captain Harkness'
         ), $result);
@@ -237,33 +238,14 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(array(
             'login' => 'rose',
-            'password' => '{LDAP}1a1dc91c907325c69271ddf0c9',
+            'password' => md5('pass'),
             'email' => 'rose@linda.com',
             'alias' => 'bad wolf'
         ), $result);
     }
 
-    public function test_createPiwikUserEntryForLdapUser_CreatesCorrectLookingPassword_WhenGenerateRandomTokenAuthIsUsed()
+    public function test_createPiwikUserEntryForLdapUser_UsesExistingPassword()
     {
-        $this->userMapper->setIsRandomTokenAuthGenerationEnabled(true);
-
-        $result = $this->userMapper->createPiwikUserFromLdapUser(array(
-            'uid' => 'sarah',
-            'cn' => 'Sarah Jane',
-            'sn' => 'Jane',
-            'givenname' => 'Sarah',
-            'mail' => 'sarahjane@guardian.co.uk',
-            'userpassword' => 'pass'
-        ));
-
-        $this->assertEquals(32, strlen($result['password']));
-        $this->assertEquals("{LDAP}", substr($result['password'], 0, 6));
-    }
-
-    public function test_createPiwikUserEntryForLdapUser_UsesExistingPassword_WhenGenerateRandomTokenAuthIsUsed()
-    {
-        $this->userMapper->setIsRandomTokenAuthGenerationEnabled(true);
-
         $existingUser = array(
             'login' => 'broken',
             'alias' => 'alias',
@@ -284,18 +266,6 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
             'password' => 'existingpass',
             'email' => 'leela@gallifrey.???'
         ), $result);
-    }
-
-    public function test_isUserLdapUser_ReportsUserAsLdapUser_IfUserInfoHasSpecialPassword()
-    {
-        $isLdapUser = UserMapper::isUserLdapUser(array('password' => "{LDAP}..."));
-        $this->assertTrue($isLdapUser);
-    }
-
-    public function test_isUserLdapUser_ReportsUserAsLdapUser_IfUserInfoHasNormalPasswordHash()
-    {
-        $isLdapUser = UserMapper::isUserLdapUser(array('password' => "..."));
-        $this->assertFalse($isLdapUser);
     }
 
     private function assertUserMapperIsCorrectlyConfigured(UserMapper $userMapper)

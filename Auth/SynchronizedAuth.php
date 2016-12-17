@@ -8,6 +8,7 @@
 namespace Piwik\Plugins\LoginLdap\Auth;
 
 use Exception;
+use Piwik\Auth\Password;
 use Piwik\AuthResult;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\LoginLdap\Ldap\Exceptions\ConnectionException;
@@ -121,13 +122,11 @@ class SynchronizedAuth extends Base
     {
         $user = $this->getUserForLogin();
 
-        $passwordHash = UsersManager::getPasswordHash($this->password);
-        $newTokenAuth = $this->usersManagerAPI->getTokenAuth($this->login, $passwordHash);
-        $this->usersModel->updateUser($this->login, $passwordHash, $user['email'], $user['alias'], $newTokenAuth);
+        $passwordHelper = new Password();
+        $passwordHash = $passwordHelper->hash(UsersManager::getPasswordHash($this->password));
+        $this->usersModel->updateUser($this->login, $passwordHash, $user['email'], $user['alias'], $user['token_auth']);
 
-        // make sure cookie has correct token auth
         $this->userForLogin['password'] = $passwordHash;
-        $this->token_auth = $this->userForLogin['token_auth'] = $newTokenAuth;
     }
 
     /**

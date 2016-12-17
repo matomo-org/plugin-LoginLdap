@@ -74,7 +74,6 @@ class ApiTest extends LdapIntegrationTest
             'use_ldap_for_authentication' => 0,
             'synchronize_users_after_login' => 0,
             'enable_synchronize_access_from_ldap' => 1,
-            'enable_random_token_auth_generation' => 1,
             'new_user_default_sites_view_access' => '10,11,13',
             'servers' => 'abc',
             'nonconfigoption' => 'def'
@@ -86,7 +85,6 @@ class ApiTest extends LdapIntegrationTest
         $this->assertEquals(0, $ldapConfig['use_ldap_for_authentication']);
         $this->assertEquals(0, $ldapConfig['synchronize_users_after_login']);
         $this->assertEquals(1, $ldapConfig['enable_synchronize_access_from_ldap']);
-        $this->assertEquals(1, $ldapConfig['enable_random_token_auth_generation']);
         $this->assertEquals('10,11,13', $ldapConfig['new_user_default_sites_view_access']);
         $this->assertTrue(empty($ldapConfig['servers']));
         $this->assertTrue(empty($ldapConfig['nonconfigoption']));

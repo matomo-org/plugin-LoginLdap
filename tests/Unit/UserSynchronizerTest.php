@@ -11,6 +11,7 @@ namespace Piwik\Plugins\LoginLdap\tests\Unit;
 use Exception;
 use PHPUnit_Framework_TestCase;
 use Piwik\Access;
+use Piwik\Auth\Password;
 use Piwik\Config;
 use Piwik\Container\StaticContainer;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
@@ -64,7 +65,7 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
         );
 
         $result = UserSynchronizer::makeConfigured();
-        $this->assertNotNUll($result);
+        $this->assertNotNull($result);
     }
 
     /**
@@ -155,7 +156,7 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
 
         $mock = $this->getMockBuilder('Piwik\Plugins\UsersManager\API')
                      ->setMethods(array('addUser', 'updateUser', 'getUser', 'setUserAccess', 'setSuperUserAccess'))
-                     ->setConstructorArgs(array($model, new UserAccessFilter($model, new Access())))
+                     ->setConstructorArgs(array($model, new UserAccessFilter($model, new Access()), new Password()))
                      ->getMock();
         if ($throwsOnAddUser) {
             $mock->expects($this->any())->method('addUser')->willThrowException(new Exception("dummy message"));
@@ -187,7 +188,7 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
     {
         return array(
             'login' => 'piwikuser',
-            'password' => '{LDAP}password',
+            'password' => 'password',
             'email' => 'email',
             'alias' => 'alias'
         );
