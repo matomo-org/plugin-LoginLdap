@@ -169,11 +169,7 @@ class LoginLdap extends \Piwik\Plugin
 
     private function isUserLdapUser($login)
     {
-        $user = Access::doAsSuperUser(function () use ($login) {
-            return UsersManagerAPI::getInstance()->getUser($login);
-        });
-
-        return UserMapper::isUserLdapUser($user);
+        return UserMapper::isUserLdapUser($login);
     }
 
     private function isCurrentUserLdapUser(Auth $auth)

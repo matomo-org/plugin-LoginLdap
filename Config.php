@@ -23,7 +23,6 @@ class Config
         'use_ldap_for_authentication' => 1,
         'synchronize_users_after_login' => 1,
         'enable_synchronize_access_from_ldap' => 0,
-        'enable_random_token_auth_generation' => 0,
         'new_user_default_sites_view_access' => '',
         'user_email_suffix' => '',
         'append_user_email_suffix_to_username' => 1,
@@ -94,11 +93,6 @@ class Config
     public static function isAccessSynchronizationEnabled()
     {
         return self::getConfigOption('enable_synchronize_access_from_ldap');
-    }
-
-    public static function isRandomTokenAuthGenerationEnabled()
-    {
-        return self::getConfigOption('enable_random_token_auth_generation');
     }
 
     public static function getDefaultSitesToGiveViewAccessTo()

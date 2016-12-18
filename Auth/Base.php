@@ -153,20 +153,39 @@ abstract class Base implements Auth
     }
 
     /**
-     * Returns the secret used to calculate a user's token auth.
+     * Returns the user's token auth.
      *
      * @return string
-     * @throws Exception if the token auth cannot be calculated at the current time.
+     */
+    public function getTokenAuth()
+    {
+        if (!empty($this->token_auth)) {
+            return $this->token_auth;
+        }
+
+        if (!empty($this->login) && $tokenAuthSecret = $this->getTokenAuthSecret()) {
+            return $this->usersManagerAPI->getTokenAuth($this->login, $tokenAuthSecret);
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the secret used to calculate a user's token auth.
+     *
+     * @return string|null
      */
     public function getTokenAuthSecret()
     {
-        $user = $this->getUserForLogin();
-
-        if (empty($user)) {
-            throw new Exception("Cannot find user '{$this->login}', if the user is in LDAP, he/she has not been synchronized with Piwik.");
+        if (!empty($this->passwordHash)) {
+            return $this->passwordHash;
         }
 
-        return $user['password'];
+        if (!empty($this->password)) {
+            return md5($this->password);
+        }
+
+        return null;
     }
 
     /**
@@ -296,7 +315,7 @@ abstract class Base implements Auth
         } else {
             $this->logger->debug("Auth\\Base::{func}: trying normal auth with token auth", array('func' => __FUNCTION__));
 
-            $auth->setTokenAuth($this->token_auth);
+            $auth->setTokenAuth($this->getTokenAuth());
         }
         $result = $auth->authenticate();
 
@@ -324,14 +343,23 @@ abstract class Base implements Auth
     protected function makeSuccessLogin($userInfo)
     {
         $successCode = $userInfo['superuser_access'] ? AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
-        $tokenAuth = $this->usersManagerAPI->getTokenAuth($userInfo['login'], $this->getTokenAuthSecret());
+
+        if ($userInfo['token_auth']) {
+            $tokenAuth = $userInfo['token_auth'];
+        } else {
+            $tokenAuth = $this->getTokenAuth();
+
+            if (empty($userInfo['login']) || empty($tokenAuth)) {
+                throw new Exception('User couldn\'t be found');
+            }
+        }
 
         return new AuthResult($successCode, $userInfo['login'], $tokenAuth);
     }
 
     protected function makeAuthFailure()
     {
-        return new AuthResult(AuthResult::FAILURE, $this->login, $this->token_auth);
+        return new AuthResult(AuthResult::FAILURE, $this->login, $this->getTokenAuth());
     }
 
     protected function authenticateByLdap()

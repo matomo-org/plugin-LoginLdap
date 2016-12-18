@@ -30,12 +30,9 @@ class SystemAuthTest extends LdapIntegrationTest
     public function getAuthModesToTest()
     {
         return array(
-            array('ldap_only', true),
-            array('ldap_only', false),
-            array('synchronized', true),
-            array('synchronized', false),
-            array('web_server', true),
-            array('web_server', false),
+            array('ldap_only'),
+            array('synchronized'),
+            array('web_server'),
         );
     }
 
@@ -49,9 +46,9 @@ class SystemAuthTest extends LdapIntegrationTest
     /**
      * @dataProvider getAuthModesToTest
      */
-    public function test_LdapAuthentication_WorksForNormalTrackingRequest($authStrategy, $useRandomTokenAuth)
+    public function test_LdapAuthentication_WorksForNormalTrackingRequest($authStrategy)
     {
-        $this->setUpLdap($authStrategy, $useRandomTokenAuth);
+        $this->setUpLdap($authStrategy);
 
         $superUserTokenAuth = $this->getSuperUserTokenAuth();
 
@@ -74,9 +71,9 @@ class SystemAuthTest extends LdapIntegrationTest
     /**
      * @dataProvider getAuthModesToTest
      */
-    public function test_LdapAuthentication_WorksDuringBulkTracking($authStrategy, $useRandomTokenAuth)
+    public function test_LdapAuthentication_WorksDuringBulkTracking($authStrategy)
     {
-        $this->setUpLdap($authStrategy, $useRandomTokenAuth);
+        $this->setUpLdap($authStrategy);
 
         $superUserTokenAuth = $this->getSuperUserTokenAuth();
 
@@ -116,7 +113,7 @@ class SystemAuthTest extends LdapIntegrationTest
         return $dates;
     }
 
-    private function setUpLdap($authStrategy, $useRandomTokenAuth)
+    private function setUpLdap($authStrategy)
     {
         $testVars = new TestingEnvironmentVariables();
         $configOverride = $testVars->configOverride;
@@ -132,11 +129,6 @@ class SystemAuthTest extends LdapIntegrationTest
             $configOverride['LoginLdap']['use_webserver_auth'] = 1;
         } else {
             throw new \Exception("Unknown LDAP auth strategy $authStrategy.");
-        }
-
-        if ($useRandomTokenAuth) {
-            Config::getInstance()->LoginLdap['enable_random_token_auth_generation'] = 1;
-            $configOverride['LoginLdap']['enable_random_token_auth_generation'] = 1;
         }
 
         $configOverride['Tracker']['debug_on_demand'] = 1;

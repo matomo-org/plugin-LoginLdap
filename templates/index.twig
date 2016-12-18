@@ -80,13 +80,6 @@
         <div piwik-content-block id="ldapUserMappingSettings"
              content-title="{{ 'LoginLdap_UserSyncSettings'|translate }}">
 
-            <div piwik-field uicontrol="checkbox" name="enable_random_token_auth_generation"
-                 title="{{ 'LoginLdap_GenerateRandomTokenAuth'|translate|e('html_attr') }}"
-                 value="{{ ldapConfig.enable_random_token_auth_generation }}"
-                 ng-model="ajaxForm.data.enable_random_token_auth_generation"
-                 inline-help="{{ 'LoginLdap_GenerateRandomTokenAuthDescription'|translate|e('html_attr') }}<br /><br />{{ 'LoginLdap_GenerateRandomTokenAuthDescription2'|translate|e('html_attr') }}">
-            </div>
-
             <div piwik-field uicontrol="text" name="ldap_user_id_field"
                  title="{{ 'LoginLdap_UserIdField'|translate|e('html_attr') }}"
                  value="{{ ldapConfig.ldap_user_id_field }}"

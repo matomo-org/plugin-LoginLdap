@@ -12,6 +12,7 @@ use Piwik\Common;
 use Piwik\Config;
 use Piwik\Console;
 use Piwik\Db;
+use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\Plugins\LoginLdap\tests\Integration\LdapIntegrationTest;
 use Symfony\Component\Console\Tester\ApplicationTester;
 
@@ -126,11 +127,13 @@ class SynchronizeUsersTest extends LdapIntegrationTest
 
     private function getLdapUserLogins()
     {
-        $rows = Db::fetchAll("SELECT login from " . Common::prefixTable('user') . " WHERE password LIKE '{LDAP}%'");
+        $rows = Db::fetchAll("SELECT login from " . Common::prefixTable('user') . ' ORDER BY login');
 
         $result = array();
         foreach ($rows as $row) {
-            $result[] = $row['login'];
+            if (UserMapper::isUserLdapUser($row['login'])) {
+                $result[] = $row['login'];
+            }
         }
         return $result;
     }

@@ -219,10 +219,7 @@ for whatever reason, user passwords will not be compromised.
 **Token Auths**
 
 LDAP has no concept of authentication tokens, so user token_auths are stored exclusively in Piwik's MySQL DB. If a token auth is compromised,
-you can have Piwik generate a new one by changing a user's password in LDAP.
-
-If you've enabled the `Generate Random token_auth For New Users` option and a token auth is compromised, you'll have to run the
-`loginldap:generate-token-auth` command to generate a new one.
+you can have Piwik generate a new.
 
 **Logging**
 
@@ -235,9 +232,6 @@ If you use file logs, make sure to delete the logs after you are finished debugg
 ## Commands
 
 LoginLdap comes with the following console commands:
-
-* `loginldap:generate-token-auth`: Regenerates a token auth for a user if the `Generate Random token_auth For New Users` option is currently
-  enabled.
 
 * `loginldap:synchronize-users`: Can be used to synchronize one, multiple, or all users in LDAP at once. If you'd like to setup user access
   within Piwik before a user logs in, this command should be used.

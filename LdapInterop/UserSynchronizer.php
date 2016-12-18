@@ -8,6 +8,8 @@
 namespace Piwik\Plugins\LoginLdap\LdapInterop;
 
 use Piwik\Access;
+use Piwik\API\Proxy;
+use Piwik\API\Request;
 use Piwik\Container\StaticContainer;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
@@ -133,14 +135,16 @@ class UserSynchronizer
                     $usersManagerApi->setUserAccess($user['login'], 'view', $newUserDefaultSitesWithViewAccess);
                 }
             } else {
-                if (!UserMapper::isUserLdapUser($existingUser)) {
+                if (!UserMapper::isUserLdapUser($existingUser['login'])) {
                     $logger->warning("Unable to synchronize LDAP user '{user}', non-LDAP user with same name exists.", array('user' => $existingUser['login']));
                 } else {
                     $usersManagerApi->updateUser($user['login'], $user['password'], $user['email'], $user['alias'], $isPasswordHashed = true);
                 }
             }
 
-            return $usersManagerApi->getUser($user['login']);
+            UserMapper::markUserAsLdapUser($user['login']);
+
+            return $userModel->getUser($user['login']);
         });
     }
 
