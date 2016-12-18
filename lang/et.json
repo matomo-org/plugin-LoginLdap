@@ -25,7 +25,6 @@
         "Filter": "LDAP otsingu filter",
         "FilterDescription": "( n. \"(objectClass=person)\" )",
         "Kerberos": "Kerberos aktiveeritud",
-        "KerberosDescription": "( \"true\" or \"false\" )",
         "LdapUserAdded": "LDAP kasutaja lisatud edukalt!",
         "LdapFunctionsMissing": "PHP ldap_connect() funktsioon puudub, palun seadista LDAP moodul PHP konfiguratsioonis!",
         "Test": "Testi"

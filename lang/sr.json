@@ -28,7 +28,7 @@
         "Filter": "LDAP filtar pretraživanja",
         "FilterDescription": "LDAP filtar koji se koristi kako bi se odredilo kojim entitetima je dozvoljeno da se prijave, na primer \"(objectClass=person)\".",
         "Kerberos": "Koristi Web Server Auth (npr. Kerberos SSO)",
-        "KerberosDescription": "Ukoliko je omogućeno, dodatak će proveriti $_SERVER['REMOTE_USER'] promenljivu i pretpostaviti da je korisnik već prijavljen. Superkorisnici još uvek mogu da se prijave normalno.",
+        "KerberosDescription": "Ukoliko je omogućeno, dodatak će proveriti $_SERVER['REMOTE_USER'] promenljivu i pretpostaviti da je korisnik već verifikovan. Ako promenljiva $_SERVER['REMOTE_USER'] nije postavljena, korisnici će biti verifikovani prema ostalim podešavanjima.",
         "LdapUserAdded": "LDAP korisnik je uspešno ubačen!",
         "LdapFunctionsMissing": "Izgleda da PHP LDAP proširenje nije uključeno. Molimo vas da ga instalirate pošto je neophodno za funkcionisanje ovog dodatka.",
         "CannotConnectToServer": "Ne mogu da se povežem na LDAP server.",
@@ -39,7 +39,6 @@
         "FilterCount": "%s je prepoznat ovim filtrom.",
         "Test": "Test",
         "InvalidFilter": "Filter je nevažeći.",
-        "ServerNameEditInstructions": "Ako želite da izmenite naziv servera, kliknite na njega.",
         "FirstNameField": "Polje ime",
         "FirstNameFieldDescription": "LDAP atribut koji sadrži korisnikovo ime.",
         "LastNameField": "Polje prezime",
@@ -62,9 +61,6 @@
         "ThisPiwikInstanceName": "Specijalno ime ove Piwik instance",
         "ThisPiwikInstanceNameDescription": "Specijalno ime koje će služiti za identifikaciju ove Piwik instance. Ukoliko nije navedeno, očekuje se da to bude osnovni URL na kojem se nalazi Piwik.",
         "UnsupportedPasswordReset": "Nije moguće resetovati lozinku ovog korisnika, molimo vas da kontaktirate administratora.",
-        "GenerateRandomTokenAuth": "Generiši slučajan token_auth za nove korisnike",
-        "GenerateRandomTokenAuthDescription": "Korisnički token se generiše koristeći korisničku LDAP lozinku. Uključite ovu opciju ako želite da generišete slučajan token za svakog korisnika.",
-        "GenerateRandomTokenAuthDescription2": "Ukoliko vaš LDAP server ne dozvoljava pristup hešovanim ili kriptovanim lozinkama vaših korisnika, morate da uključite ovu opciju.",
         "UserSyncSettings": "Podešavanja sinhronizacije korisnika",
         "AccessSyncSettings": "Podešavanja sinhronizacije pristupa",
         "SynchronizeUsersAfterLogin": "Sinhronizuj korisnike nakon uspešne prijave",
@@ -87,6 +83,8 @@
         "MemberOfFieldDescription": "Polje koje LDAP koristi kako bi čuvao informacije o pripadnosti grupama. Podrazumevano to je \"memberOf\".",
         "LdapUrlPortWarning": "Broj porta se ignoriše kada je naziv hosta predstavljen LDAP URL-om (npr. ldap:\/\/localhost\/ umesto of localhost).",
         "UpdateFromPre300Warning": "Pošto ste nadogradili Piwik sa verzije pre 3.0.0, ovu opciju bi trebalo da držite isključenu. Pre verzije 3.0.0, lozinke su čuvane i na LDAP-u i u Piwik bazi podataka. Ova opcija mora biti isključena kako bi korisnici dodati pre nadogradnje mogli da se prijave.",
-        "MobileAppIntegrationNote": "Pažnja: ako planirate da koristite LDAP sa zvaničnom aplikacijom za mobilni, ovu opciju morate držati isključenu. Mobilna aplikacija trenutno ne može da prijavi korisnika ako njegova lozinka nije sačuvana u Piwik bazi podataka."
+        "MobileAppIntegrationNote": "Pažnja: ako planirate da koristite LDAP sa zvaničnom aplikacijom za mobilni, ovu opciju morate držati isključenu. Mobilna aplikacija trenutno ne može da prijavi korisnika ako njegova lozinka nije sačuvana u Piwik bazi podataka.",
+        "PasswordFieldHelp": "Upišite lozinku kako biste promenili prethodnu ili ostavite prazno ako ne želite da je menjate.",
+        "LdapUserCantChangePassword": "Promena lozinke LDAP korisnika nije podržana. Pošto vi koristite LDAP, vašim korisničkim podešavanjima se direktno upravlja u LDAP-u. Za više informacija molimo vas da kontaktirate adminstratora vašeg LDAP servera ili vašeg Piwik administratora."
     }
 }

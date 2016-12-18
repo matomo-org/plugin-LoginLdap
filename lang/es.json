@@ -28,7 +28,7 @@
         "Filter": "Filtro búsqueda LDAP",
         "FilterDescription": "Un filtro LDAP utilizado para determinar qué entidades están permitidas para ser utilizadas a modo de autenticación, p. ej. \"(objectClass=persona)\".",
         "Kerberos": "Usar autorización de servidor de internet (p. ej. Kerberos SSO)",
-        "KerberosDescription": "Si está habilitado, el complemento verificará la variable $_SERVER['REMOTE_USER'] y asumirá que el usuario ya está autenticado. Super usuarios normales aun están permitidos de autenticarse normalmente.",
+        "KerberosDescription": "Si está habilitado, el complemento verificará la variable $_SERVER['REMOTE_USER'] y asumirá que el usuario ya está autenticado. Si $_SERVER['REMOTE_USER'] no está presente, todos los usuarios son autenticados de acuerdo a sus propias configuraciones.",
         "LdapUserAdded": "¡Usuario LDAP agregado exitosamente!",
         "LdapFunctionsMissing": "La extensión PHP LDAP no parece estar habilitada. Es necesaria para este complemento, por favor instálela.",
         "CannotConnectToServer": "No se pudo conectar con el servidor LDAP.",
@@ -39,7 +39,7 @@
         "FilterCount": "%s coinciden con este filtro.",
         "Test": "Prueba",
         "InvalidFilter": "Filtro inválido.",
-        "ServerNameEditInstructions": "Para editar un nombre de servidor, clic sobre el mismo.",
+        "ServerName": "Nombre del servidor",
         "FirstNameField": "Campo de nombre",
         "FirstNameFieldDescription": "El atributo LDAP conteniendo el nombre del usuario.",
         "LastNameField": "Campo de apellido",
@@ -62,9 +62,6 @@
         "ThisPiwikInstanceName": "Nombre especial para esta instancia de Piwik",
         "ThisPiwikInstanceNameDescription": "Un nombre especial utilizado para identificar esta instancia Piwik con un atributo de acceso. Si no es especificado, esperamos la URL base de este Piwik.",
         "UnsupportedPasswordReset": "No se puede restablecer la contraseña de usuario, por favor contáctese con un administrador.",
-        "GenerateRandomTokenAuth": "Generar token_auth aleatorios para nuevos usuarios",
-        "GenerateRandomTokenAuthDescription": "De manera predeterminada, el token auth del usuario es generado utilizando la contraseña del usuario LDAP. Marque esta opción para generar un token auth aleatorio para cada usuario.",
-        "GenerateRandomTokenAuthDescription2": "Si su servidor LDAP no permite el acceso a las contraseñas encriptadas de sus usuarios, debe marcar esta opción.",
         "UserSyncSettings": "Opciones de sincronización de usuario",
         "AccessSyncSettings": "Configuraciones de sincronización de acceso",
         "SynchronizeUsersAfterLogin": "Sincronizar usuarios después de un inicio de sesión exitoso",
@@ -87,6 +84,8 @@
         "MemberOfFieldDescription": "Campo utilizado por su LDAP para indicar membresía, de manera predeterminada \"memberOf\"",
         "LdapUrlPortWarning": "La opción puerto es ignorada cuando el hostname del servidor se establece a una URL LDAP (ie, ldap:\/\/localhost\/ en lugar de localhost).",
         "UpdateFromPre300Warning": "Desde que actualizó desde una versión pre-3.0.0, probablemente debería mantener esta opción sin marcar. Antes de la versión 3.0.0, las contraseñas de usuario se almacenaban tanto en LDAP y en la base de datos Piwik. Esta opción debe estar desactivada para que los usuarios agregados antes de la actualización puedan iniciar sesión.",
-        "MobileAppIntegrationNote": "Nota: Si planea utilizar LDAP con la aplicación móvil oficial, debe mantener esta opción deshabilitada. Actualmente, la aplicación móvil no puede autenticar usuarios si las contraseñas de los usuarios no están guardadas en la base de datos de Piwik."
+        "MobileAppIntegrationNote": "Nota: Si planea utilizar LDAP con la aplicación móvil oficial, debe mantener esta opción deshabilitada. Actualmente, la aplicación móvil no puede autenticar usuarios si las contraseñas de los usuarios no están guardadas en la base de datos de Piwik.",
+        "PasswordFieldHelp": "Ingrese una contraseña para sobreescribir la actual o deje en blanco para no hacer cambios.",
+        "LdapUserCantChangePassword": "Cambiando su contraseña no tiene soporte en usuarios LDAP. Si utiliza LDAP, su configuración es gestionada directamente desde LDAP. Para mayor información, por favor contáctese sea con su administrador de servidor LDAP o Piwik."
     }
 }

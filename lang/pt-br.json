@@ -28,7 +28,6 @@
         "Filter": "Filtro de Busca LDAP",
         "FilterDescription": "Um filtro LDAP utilizado para determinar quais entidades estão autorizadas a serem utilizadas para autenticação, e.g. \"(objectClass=person)\".",
         "Kerberos": "Use Autenticador do Servidor Web (e.g. Kerberos SSO)",
-        "KerberosDescription": "Se ativado, o plugin irá verificar a variável $_SERVER['REMOTE_USER'] e assumir que o usuário já está autenticado. Super usuários normais ainda estão autorizados a autenticar normalmente.",
         "LdapUserAdded": "Usuário LDAP adicionado com sucesso!",
         "LdapFunctionsMissing": "A extensão PHP LDAP parece não estar habilitada. Ela é necessária para este plugin. Por favor, instale-a.",
         "CannotConnectToServer": "Não foi possível conectar com o servidor LDAP",
@@ -39,7 +38,6 @@
         "FilterCount": "%s conferem com este filtro",
         "Test": "Teste",
         "InvalidFilter": "Filtro inválido",
-        "ServerNameEditInstructions": "Para editar um nome de servidor, clique nele.",
         "FirstNameField": "Campo Primeiro Nome",
         "FirstNameFieldDescription": "O atributo LDAP contendo o primeiro nome do usuário",
         "LastNameField": "Campo ùltimo Nome",
@@ -62,9 +60,6 @@
         "ThisPiwikInstanceName": "Nome Especial para esta Instância do Piwik",
         "ThisPiwikInstanceNameDescription": "Um nome especial usado para identificar esta instância Piwik em um atributo de acesso. Se nenhum for especificado, supomos que seja a URL base para este Piwik.",
         "UnsupportedPasswordReset": "Não é possível redefinir a senha do usuário. Por favor, entre em contato com um administrador.",
-        "GenerateRandomTokenAuth": "Gerar token_auth Aleatório para Novos Usuários",
-        "GenerateRandomTokenAuthDescription": "Por padrão, o token de autenticação de um usuário é gerado utilizando a senha LDAP do usuário. Marque esta opção para gerar um token de autenticação aleatório para cada usuário.",
-        "GenerateRandomTokenAuthDescription2": "Se o servidor LDAP não permite acesso à mascaras ou senhas criptografadas dos seus usuários, você deve marcar esta opção.",
         "UserSyncSettings": "Configurações de Sincronização do Usuário",
         "AccessSyncSettings": "Configurações de Sincronização de Acesso",
         "SynchronizeUsersAfterLogin": "Sincronizar Usuários Após Login Efetuado com Sucesso",
@@ -88,6 +83,7 @@
         "LdapUrlPortWarning": "A opção de porta é ignorada quando o nome do servidor é definido como uma URL LDAP (isto é, ldap:\/\/localhost\/ ao invés de localhost).",
         "UpdateFromPre300Warning": "Já que você atualizou a partir de uma versão pré-3.0.0, você provavelmente deve manter esta opção desmarcada. Antes da versão 3.0.0 as senhas de usuários foram armazenadas tanto no LDAP quanto no Banco de Dados do Piwik. Esta opção deve ser desmarcada para que os usuários adicionados antes da atualização sejam capazes de acessar suas contas.",
         "MobileAppIntegrationNote": "Nota: Se você planeja usar LDAP com o aplicativo móvel oficial, você deve manter esta opção desmarcada. Atualmente, o aplicativo móvel não pode autenticar os usuários se as senhas de usuários não estiverem armazenadas no Banco de Dados do Piwik.",
-        "PasswordFieldHelp": "Digite uma senha para substituir a existente ou deixe em branco para não modificar."
+        "PasswordFieldHelp": "Digite uma senha para substituir a existente ou deixe em branco para não modificar.",
+        "LdapUserCantChangePassword": "Alteração de senha não é suportado para usuários LDAP. Ao usar LDAP, as configurações de usuário são gerenciados diretamente em LDAP. Para mais informações, entre em contato com o administrador do servidor LDAP ou o administrador do Piwik."
     }
 }

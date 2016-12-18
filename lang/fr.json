@@ -28,7 +28,7 @@
         "Filter": "Filtre de recherche LDAP avancé",
         "FilterDescription": "Filtre LDAP utilisé pour déterminer quelles entrées de l'annuaire sont autorisées à s'authentifier pour l'accès à Piwik. Par exemple : \"(objectClass=person)\".",
         "Kerberos": "Utiliser Auth. Server Web (ex. Kerberos SSO)",
-        "KerberosDescription": "Si cette option est activée, le plugin va vérifier la variable $_SERVER['REMOTE_USER'] et partir du principe que l'utilisateur est déjà connecté. Les super-administrateurs normaux peuvent continuer à se connecter.",
+        "KerberosDescription": "Si activé, ce composant va vérifier la variable $_SERVER['REMOTE_USER'] et supposer que l'utilisateur est déjà authentifié. Si $_SERVER['REMOTE_USER'] n'est pas présente, tous les utilisateurs seront authentifiés en fonction es autres paramètres.",
         "LdapUserAdded": "Utilisateur LDAP ajouté avec succès !",
         "LdapFunctionsMissing": "L'extension PHP LDAP, nécessaire au fonctionnement du composant n'est pas détectée. Merci de l'installer.",
         "CannotConnectToServer": "Connexion au serveur LDAP impossible.",
@@ -39,7 +39,6 @@
         "FilterCount": "%s entrée correspondent au filtre.",
         "Test": "Test",
         "InvalidFilter": "Filtre invalide.",
-        "ServerNameEditInstructions": "Pour modifier le nom d'un serveur LDAP, cliquez sur son nom.",
         "FirstNameField": "Champ Prénom",
         "FirstNameFieldDescription": "Attribut LDAP contenant le prénom.",
         "LastNameField": "Champ Nom",
@@ -62,9 +61,6 @@
         "ThisPiwikInstanceName": "Nom spécifique pour cette instance Piwik",
         "ThisPiwikInstanceNameDescription": "Nom spécifique utilisé pour identifier cette instance Piwik dans un attribut d'accès. Si rien n'est renseigné, nous cherchons l'URL de base de cette instance de Piwik.",
         "UnsupportedPasswordReset": "Impossible de réinitialiser le mot de passe utiliseur. Merci de contacter votre administrateur.",
-        "GenerateRandomTokenAuth": "Générer au hasard un jeton d'authentification (token) pour les nouveaux utilisateurs",
-        "GenerateRandomTokenAuthDescription": "Par défaut, le jeton d'authentification (token) d'un utilisateur est généré en utilisant le mot de passe LDAP de l'utilisateur. Cochez cette option pour générer un jeton d'authentification aléatoire pour chaque utilisateur.",
-        "GenerateRandomTokenAuthDescription2": "Si votre serveur LDAP ne permet pas l'accès aux hash des mots de passe de vos utilisateurs, vous devez cocher cette option.",
         "UserSyncSettings": "Paramètres de synchronisation des utilisateurs",
         "AccessSyncSettings": "Paramètres de synchronisation des accès",
         "SynchronizeUsersAfterLogin": "Synchroniser les utilisateurs après une authentification réussie",
@@ -88,6 +84,7 @@
         "LdapUrlPortWarning": "L'option port est ignorée quand la valeur de nom d'hôte est définie à une URL LDAP (c'est à dire ldap:\/\/localhost\/ au lieu de localhost).",
         "UpdateFromPre300Warning": "Puisque vous avez mis à jour depuis une version antérieure à 3.0.0, vous devriez probablement garder cette option non cochée. Avant la version 3.0.0 les mots de passe étaient stockés à la fois dans LDAP et dans la BDD Piwik. Cette option doit être décochée pour que les utilisateurs ajoutés à la mise à jour puissent continuer à s'authentifier.",
         "MobileAppIntegrationNote": "Note: si vous planifiez d'utiliser LDAP avec l'application mobile officielle, vous devez garder cette option décochée. Actuellement l'application mobile ne peut pas authentifier des utilisateurs si leur mot de passe n'est pas stocké dans la BDD Piwik.",
-        "PasswordFieldHelp": "Entrez un mot de passe pour remplacer le mot de passe existant ou laisser vide pour ne rien changer."
+        "PasswordFieldHelp": "Entrez un mot de passe pour remplacer le mot de passe existant ou laisser vide pour ne rien changer.",
+        "LdapUserCantChangePassword": "La modification du mot de passe n'est pas disponible pour les utilisateurs authentifiés par LDAP. Utilisant LDAP, vous informations d'authentification sont gérées directement dans l'annuaire. Pour plus d'informations, contactez votre administrateur LDAP ou Piwik."
     }
 }

@@ -1,5 +1,6 @@
 {
     "LoginLdap": {
+        "PluginDescription": "Plugin Đăng nhập với xác thực LDAP. Là một sự thay thế cho kiểu đăng nhập tiêu chuẩn cũ của Piwik.",
         "Test": "Thử nghiệm"
     }
 }

@@ -10,7 +10,6 @@
         "AdminPass": "Hasło LDAP",
         "LDAPServers": "Serwer LDAP",
         "OneUser": "1 użytkownik",
-        "Test": "Test",
-        "LdapUserCantChangePassword": "Nie możesz zmienić swojego hasła jako użytkownik LDAP. Hasło powinno być zmienione bezpośrednio na hoście LDAP. Aby uzyskać więcej informacji skontaktuj się ze swoim administratorem LDAP albo administratorem Piwika."
+        "Test": "Test"
     }
 }

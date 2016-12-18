@@ -28,7 +28,7 @@
         "Filter": "Filtro di ricerca LDAP",
         "FilterDescription": "Filtro LDAP utilizzato per determinare quali elementi possono essere utilizzati per l'autenticazione. Es. \"(objectClass=persona)\".",
         "Kerberos": "Usa Web Server Auth (es. Kerberos SSO)",
-        "KerberosDescription": "Se abilitato, il plugin controllerà la variabile $_SERVER['REMOTE_USER'] e assumerà che l'utente sia già autenticato. I normali super user potranno ancora autenticarsi normalmente.",
+        "KerberosDescription": "Se abilitato, il plugin controllerà la variabile $_SERVER['REMOTE_USER'] e riterrà l'utente come già autenticato. Se $_SERVER['REMOTE_USER'] non fosse presente, tutti gli utenti verranno considerati autenticati, secondo le altre impostazioni.",
         "LdapUserAdded": "Utente LDAP aggiunto con successo!",
         "LdapFunctionsMissing": "L'estensione PHP LDAP sembra non essere abilitata. essendo richiesta da questo plugin, si prega di installarla.",
         "CannotConnectToServer": "Impossibile connettersi al server LDAP.",
@@ -39,7 +39,6 @@
         "FilterCount": "%s hanno una corrispondenza con questo filtro.",
         "Test": "Prova",
         "InvalidFilter": "Filtro non valido.",
-        "ServerNameEditInstructions": "Per modificare un nome server, cliccaci su.",
         "FirstNameField": "Campo Nome",
         "FirstNameFieldDescription": "Attributo LDAP che contiene il nome dell'utente.",
         "LastNameField": "Campo Cognome",
@@ -62,9 +61,6 @@
         "ThisPiwikInstanceName": "Nome speciale per questa istanza di Piwik",
         "ThisPiwikInstanceNameDescription": "Nome speciale utilizzato per identificare questa istanza di Piwik in un attributo di accesso. Se non è specificato, ci si aspetta l'URL base di questo Piwik.",
         "UnsupportedPasswordReset": "Impossibile reimpostare la password di questo utente, si prega di contattare un amministratore.",
-        "GenerateRandomTokenAuth": "Genera un token_auth casuale per i nuovi utenti",
-        "GenerateRandomTokenAuthDescription": "Di default, il token_auth di un utente viene generato utilizzando la password LDAP dell'utente. Seleziona questa opzione per generare un token_auth casuale per ciascun utente.",
-        "GenerateRandomTokenAuthDescription2": "Se il tuo server LDAP non dà l'accesso alle password con hash o criptate degli utenti, devi spuntare questa opzione.",
         "UserSyncSettings": "Impostazioni di sincronizzazione utente",
         "AccessSyncSettings": "Impostazioni Sincronizzazione d'Accesso",
         "SynchronizeUsersAfterLogin": "Sincronizza gli utenti dopo il login avvenuto con successo",
@@ -88,6 +84,7 @@
         "LdapUrlPortWarning": "L'opzione porta viene ignorata quando l'hostname del server è impostato come URL LDAP (cioè, ldap:\/\/localhost\/ invece di localhost).",
         "UpdateFromPre300Warning": "Dato che hai aggiornato da una versione precedente alla 3.0.0, probabilmente dovrai mantenere non spuntata questa opzione. Prima della versione 3.0.0, password e nome utente erano entrambi immagazzinati sia in LDAP che nel DB di Piwik. Questa opzione non deve essere spuntata, in modo che anche gli utenti registrati prima dell'aggiornamento possano accedere.",
         "MobileAppIntegrationNote": "Nota: se prevedi di utilizzare LDAP con l'app mobile ufficiale, devi mantenere non spuntata questa opzione. Al momento, l'app mobile non può autenticare gli utenti se nome utente e password non sono immagazzinati nel DB di Piwik.",
-        "PasswordFieldHelp": "Inserisci una password per sovrascrivere quella esistente o lascia vuoto per non fare cambiamenti."
+        "PasswordFieldHelp": "Inserisci una password per sovrascrivere quella esistente o lascia vuoto per non fare cambiamenti.",
+        "LdapUserCantChangePassword": "Il cambio password non è supportato dagli utenti LDAP. Se utilizzi LDAP, le tue impostazioni utente vengono gestite direttamente da LDAP. Per ulteriori informazioni, si prega di contattare il tuo amministratore del server LDAP o il tuo amministratore di Piwik."
     }
 }

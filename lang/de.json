@@ -28,7 +28,7 @@
         "Filter": "LDAP Suchfilter",
         "FilterDescription": "( e.g. \"(objectClass=person)\" )",
         "Kerberos": "Verwende Web-Server-Authentifizierung (z.B. Kerberos SSO)",
-        "KerberosDescription": "Falls aktiviert, überprüft das Plugin die $_SERVER['REMOTE_USER'] Variable und geht davon aus, dass der Benutzer bereits bestätigt ist. Normale Superuser sind weiterhin berechtigt sich auf normale Weise zu authentifizieren.",
+        "KerberosDescription": "Falls aktiviert prüft das Plugin die Variable $_SERVER['REMOTE_USER'] und nimmt an, dass der Benutzer bereits angemeldet ist. Falls die Variable $_SERVER['REMOTE_USER'] nicht vorhanden ist, werden Benutzer gemäss den anderen Einstellungen bestätigt.",
         "LdapUserAdded": "LDAP Benutzer erfolgreich hinzugefügt!",
         "LdapFunctionsMissing": "PHP ldap_connect() Funktion fehlt, aktivieren Sie bitte LDAP-Modul auf Ihrer PHP-Konfiguration!",
         "CannotConnectToServer": "Es konnte keine Verbindung zum LDAP Server aufgebaut werden.",
@@ -39,7 +39,6 @@
         "FilterCount": "%s treffen auf diesen Filter zu.",
         "Test": "Test",
         "InvalidFilter": "Ungültiger Filter.",
-        "ServerNameEditInstructions": "Klicken Sie auf einen Server Namen um diesen zu bearbeiten.",
         "FirstNameField": "Feld Vorname",
         "FirstNameFieldDescription": "Die LDAP Eigenschaft enthält einen Vornamen für Benutzer.",
         "LastNameField": "Feld Nachname",
@@ -62,9 +61,6 @@
         "ThisPiwikInstanceName": "Spezialname für diese Piwik Instanz",
         "ThisPiwikInstanceNameDescription": "Ein spezieller Name, mit welchem diese Piwik Instanz in einem Zugriffsattribut identifiziert werden kann. Wenn keines spezifiziert ist, wird die Basis URL dieser Piwik Installation erwartet.",
         "UnsupportedPasswordReset": "Das Benutzerpasswort kann nicht zurückgesetzt werden, bitte kontaktieren Sie einen Administrator.",
-        "GenerateRandomTokenAuth": "Für neue Benutzer zufälligen token_auth generieren",
-        "GenerateRandomTokenAuthDescription": "Per Standard wird ein Benutzer Token mit dem Benutzer LDAP Passwort generiert. Wählen Sie diese Option an, um stattdessen eine zufällige Token Authentifizierung für jeden Benutzer generieren zu lassen.",
-        "GenerateRandomTokenAuthDescription2": "Wenn Ihr LDAP Server keinen Zugriff auf die gehashten oden verschlüsselten Passwörter Ihrer Benutzer erlaubt, müssen Sie diese Option anwählen.",
         "UserSyncSettings": "Einstellungen für Benutzersynchronisation",
         "AccessSyncSettings": "Synchronisationseinstellungen öffnen",
         "SynchronizeUsersAfterLogin": "Benutzer nach erfolgreichem Login synchronisieren",
@@ -88,6 +84,7 @@
         "LdapUrlPortWarning": "Die Port Einstellung wird ignoriert wenn der Server Hostname auf eine LDAP URL (zum Beispiel ldap:\/\/localhost\/ anstelle von localhost) gesetzt ist.",
         "UpdateFromPre300Warning": "Da Sie von einer Version älter als 3.0.0 aktualisieren, sollten Sie diese Option höchstwahrscheinlich ungewählt belassen. Vor der Version 3.0.0 wurden Passwörter sowohl in LDAP als auch in der Piwik Datenbank gespeichert. Diese Option muss abgewählt sein damit vor dem Update hinzugefügte Benutzer weiterhin in der Lage sind, sich anzumelden.",
         "MobileAppIntegrationNote": "Hinweis: Wenn Sie vorhaben, LDAP mit der offiziellen Mobile App einzusetzen, darf diese Option nicht angewählt sein. Aktuell kann die Mobile App Benutzer nicht authentifizieren wenn deren Passwort nicht in der Piwik Datenbank gespeichert ist.",
-        "PasswordFieldHelp": "Geben Sie ein Passwort ein, um das existierende Passwort zu überschreiben oder lassen Sie das Feld leer um keine Änderung vorzunehmen."
+        "PasswordFieldHelp": "Geben Sie ein Passwort ein, um das existierende Passwort zu überschreiben oder lassen Sie das Feld leer um keine Änderung vorzunehmen.",
+        "LdapUserCantChangePassword": "Eine Kennwortänderung ist für LDAP-Benutzer nicht möglich, da die Benutzereinstellungen von einem LDAP-Server verwaltet werden. Wenden Sie sich in diesem Fall an Ihren LDAP-Serveradministrator oder Ihren Piwik-Administrator, um weitere Hilfe zu erhalten."
     }
 }

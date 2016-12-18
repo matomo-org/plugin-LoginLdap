@@ -1,5 +1,6 @@
 {
     "LoginLdap": {
+        "MenuLdap": "Users da LDAP",
         "Test": "Teste"
     }
 }

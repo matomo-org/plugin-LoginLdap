@@ -9,7 +9,7 @@
         "AliasField": "Pole aliasu",
         "BaseDn": "Základní DN",
         "LdapPort": "Port serveru",
-        "MailField": "Pole e-mailové adresy",
+        "MailField": "Pole emailové adresy",
         "ServerUrl": "URL serveru",
         "UserIdField": "Pole id uživatele",
         "AliasFieldDescription": "např. \"cn\"",
@@ -28,7 +28,7 @@
         "Filter": "LDAP vyhledávací filtr",
         "FilterDescription": "( např. \"(objectClass=person)\" )",
         "Kerberos": "Kerberos povolen",
-        "KerberosDescription": "( \"true\" nebo \"false\" )",
+        "KerberosDescription": "Pokud zapnuto, zásuvný modul zkontroluje proměnnou $_SERVER['REMOTE_USER'] a předpokládá že je uživatel přihlášen. Pokud $_SERVER['REMOTE_USER'] není dostupný, všichni uživatelé jsou ověřeni v závislosti na dalších nastaveních.",
         "LdapUserAdded": "LDAP uživatel byl úspěšně přidán!",
         "LdapFunctionsMissing": "Chybí PHP funkce ldap_connect(), povolte ji ve vaší konfiguraci.",
         "CannotConnectToServer": "Nepodařilo se připojit k LDAP serveru.",
@@ -39,7 +39,6 @@
         "FilterCount": "%s odpovídá tomuto filtru.",
         "Test": "Vyzkoušet",
         "InvalidFilter": "Neplatný filtr.",
-        "ServerNameEditInstructions": "Pokud chcete upravit jméno serveru, klikněte na něj.",
         "FirstNameField": "Pole křestního jména",
         "FirstNameFieldDescription": "LDAP atribut obsahující křestní jméno uživatele.",
         "LastNameField": "Pole příjmení",
@@ -62,9 +61,6 @@
         "ThisPiwikInstanceName": "Speciální jméno této instance Piwiku",
         "ThisPiwikInstanceNameDescription": "Speciální jméno identifikující tuto instanci v atributu přístupu. Pokud není zadáno, očekáváme základní URL tohoto Piwiku.",
         "UnsupportedPasswordReset": "Heslo tohoto uživatele nelze resetovat, kontaktujte prosím administrátora.",
-        "GenerateRandomTokenAuth": "Generovat token_auth pro nové uživatele náhodně",
-        "GenerateRandomTokenAuthDescription": "Ve výchozím stavu je uživatelův token_auth vytvořen na základě uživatelova LDAP hesla. Zaškrtněte tuto možnost, pokud má být uživatelův token_auth vytvořen náhodně.",
-        "GenerateRandomTokenAuthDescription2": "Pokud váš LDAP server nepodporuje přístup k hashovaným nebo šifrovaným heslům uživatelů, potom musí být tato možnost zaškrtnuta.",
         "UserSyncSettings": "Nastavení synchronizace uživatelů",
         "AccessSyncSettings": "Přistupovat k nastavením synchronizace",
         "SynchronizeUsersAfterLogin": "Synchronizovat uživatele po úspěšném přihlášení",
@@ -88,6 +84,7 @@
         "LdapUrlPortWarning": "Možnost port je ignorována, pokud je jméno hostitele zadáno jako URL (t. j. ldap:\/\/localhost\/ místo localhost).",
         "UpdateFromPre300Warning": "Protože jste aktualizovali z verze starší než 3.0, nejspíš byste měli nechat tuto možnost odškrtnutou. Před verzí 3.0 byla hesla uchovávána jak na LDAP serveru, tak v databázi Piwiku. Tato možnost musí být odškrtnuta, nebo se uživatelé přidaní před aktualizací nebudou schopni přihlásit.",
         "MobileAppIntegrationNote": "Poznámka: Pokud plánujete používat LDAP s oficiální mobilní aplikací, musí být tato možnost odškrtnuta. Mobilní aplikace zatím nedokáže ověřit uživatele, pokud nejsou hesla uložena v databázi Piwiku.",
-        "PasswordFieldHelp": "Vložte heslo pro přepsání aktuálního hesla nebo ponechte prázdné pro ponechání beze změn."
+        "PasswordFieldHelp": "Vložte heslo pro přepsání aktuálního hesla nebo ponechte prázdné pro ponechání beze změn.",
+        "LdapUserCantChangePassword": "Změna hesla není podporována pro LDAP uživatele. Používáte LDAP a vaše nastavení jsou spravována přímo v LDAP. Pro více informací prosím kontaktujte svého administrátora LDAP serveru nebo administrátora instance Piwik."
     }
 }
