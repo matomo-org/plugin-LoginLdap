@@ -219,7 +219,7 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
     private function setUserModelMock($returnValue)
     {
         $mock = $this->getMockBuilder('Piwik\Plugins\UsersManager\Model')
-                     ->setMethods(array('getUser', 'deleteUserAccess'))
+                     ->setMethods(array('getUser', 'deleteUserAccess', 'setSuperUserAccess'))
                      ->getMock();
         $mock->expects($this->any())->method('getUser')->will($this->returnValue($returnValue));
 
