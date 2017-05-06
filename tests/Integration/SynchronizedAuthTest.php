@@ -155,7 +155,8 @@ class SynchronizedAuthTest extends LdapIntegrationTest
             'Tony Stark'
         );
 
-        UserMapper::markUserAsLdapUser(self::TEST_LOGIN);
+        $userMapper = new UserMapper();
+        $userMapper->markUserAsLdapUser(self::TEST_LOGIN);
     }
 
     private function addLdapUserWithWrongPassword()

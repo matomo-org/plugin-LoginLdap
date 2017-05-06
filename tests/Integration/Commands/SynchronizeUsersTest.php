@@ -128,10 +128,11 @@ class SynchronizeUsersTest extends LdapIntegrationTest
     private function getLdapUserLogins()
     {
         $rows = Db::fetchAll("SELECT login from " . Common::prefixTable('user') . ' ORDER BY login');
+        $userMapper = new UserMapper();
 
         $result = array();
         foreach ($rows as $row) {
-            if (UserMapper::isUserLdapUser($row['login'])) {
+            if ($userMapper->isUserLdapUser($row['login'])) {
                 $result[] = $row['login'];
             }
         }

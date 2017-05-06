@@ -135,14 +135,14 @@ class UserSynchronizer
                     $usersManagerApi->setUserAccess($user['login'], 'view', $newUserDefaultSitesWithViewAccess);
                 }
             } else {
-                if (!UserMapper::isUserLdapUser($existingUser['login'])) {
+                if (!$userMapper->isUserLdapUser($existingUser['login'])) {
                     $logger->warning("Unable to synchronize LDAP user '{user}', non-LDAP user with same name exists.", array('user' => $existingUser['login']));
                 } else {
                     $usersManagerApi->updateUser($user['login'], $user['password'], $user['email'], $user['alias'], $isPasswordHashed = true);
                 }
             }
 
-            UserMapper::markUserAsLdapUser($user['login']);
+            $userMapper->markUserAsLdapUser($user['login']);
 
             return $userModel->getUser($user['login']);
         });

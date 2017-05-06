@@ -117,7 +117,8 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
             'email' => 'billionairephilanthropistplayboy@starkindustries.com',
             'token_auth' => UsersManagerAPI::getInstance()->getTokenAuth(self::TEST_LOGIN, md5(self::TEST_PASS_LDAP))
         ), $user);
-        $this->assertTrue(UserMapper::isUserLdapUser(self::TEST_LOGIN));
+        $userMapper = new UserMapper();
+        $this->assertTrue($userMapper->isUserLdapUser(self::TEST_LOGIN));
     }
 
     private function isLdapServerRunning()

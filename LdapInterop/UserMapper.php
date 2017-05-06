@@ -393,7 +393,7 @@ class UserMapper
      * @param string $userLogin The user login
      * @return bool
      */
-    public static function isUserLdapUser($userLogin)
+    public function isUserLdapUser($userLogin)
     {
         return Access::doAsSuperUser(function () use ($userLogin) {
             $class      = Request::getClassNameAPI('UsersManager');
@@ -412,7 +412,7 @@ class UserMapper
      *
      * @param string $userLogin The user login
      */
-    public static function markUserAsLdapUser($userLogin)
+    public function markUserAsLdapUser($userLogin)
     {
         Access::doAsSuperUser(function () use ($userLogin) {
             $class     = Request::getClassNameAPI('UsersManager');

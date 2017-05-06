@@ -110,7 +110,8 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
                 LdapUserSynchronizationTest::TEST_LOGIN, LdapUserSynchronizationTest::TEST_PASS_LDAP, 'something@domain.com', $alias = false, $isPasswordHashed = false);
         });
 
-        UserMapper::markUserAsLdapUser(self::TEST_LOGIN);
+        $userMapper = new UserMapper();
+        $userMapper->markUserAsLdapUser(self::TEST_LOGIN);
 
         $this->authenticateViaLdap();
 
