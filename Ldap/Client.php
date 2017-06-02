@@ -12,6 +12,8 @@ use Exception;
 use Piwik\Container\StaticContainer;
 use Psr\Log\LoggerInterface;
 
+if (!defined('LDAP_OPT_NETWORK_TIMEOUT')) define('LDAP_OPT_NETWORK_TIMEOUT', 20485);
+
 /**
  * LDAP Client. Supports connecting to LDAP servers, binding to resource DNs and executing
  * LDAP queries.
@@ -325,10 +327,10 @@ class Client
             if (is_array($value)) { // index is for array, ie 0 => array(...)
                 $result[$i] = $this->transformLdapInfo($value);
             } else if (!is_numeric($value)
-                && isset($ldapInfo[$value])
+                && ( isset($ldapInfo[$value]) || isset($ldapInfo[strtolower($value)]) )
             ) { // index is for name of attribute, ie 0 => 'cn', 'cn' => array(...)
                 $key = strtolower($value);
-
+                if (isset($ldapInfo[$key])) $value = $key;
                 if (is_array($ldapInfo[$value])) {
                     $result[$key] = $this->transformLdapInfo($ldapInfo[$value]);
 
