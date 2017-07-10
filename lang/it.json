@@ -39,6 +39,7 @@
         "FilterCount": "%s hanno una corrispondenza con questo filtro.",
         "Test": "Prova",
         "InvalidFilter": "Filtro non valido.",
+        "ServerName": "Nome del server",
         "FirstNameField": "Campo Nome",
         "FirstNameFieldDescription": "Attributo LDAP che contiene il nome dell'utente.",
         "LastNameField": "Campo Cognome",

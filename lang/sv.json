@@ -39,6 +39,7 @@
         "FilterCount": "%s matchas av detta filter.",
         "Test": "Testa",
         "InvalidFilter": "Ogiltigt filter.",
+        "ServerName": "Servernamn",
         "FirstNameField": "Fält för förnamn",
         "FirstNameFieldDescription": "LDAP-attributet som innehåller användarens förnamn.",
         "LastNameField": "Fält för efternamn",

@@ -28,7 +28,7 @@
         "Filter": "Filtro búsqueda LDAP",
         "FilterDescription": "Un filtro LDAP utilizado para determinar qué entidades están permitidas para ser utilizadas a modo de autenticación, p. ej. \"(objectClass=persona)\".",
         "Kerberos": "Usar autorización de servidor de internet (p. ej. Kerberos SSO)",
-        "KerberosDescription": "Si está habilitado, el complemento verificará la variable $_SERVER['REMOTE_USER'] y asumirá que el usuario ya está autenticado. Si $_SERVER['REMOTE_USER'] no está presente, todos los usuarios son autenticados de acuerdo a sus propias configuraciones.",
+        "KerberosDescription": "Si está habilitado, el complemento verificará la variable $_SERVER['REMOTE_USER'] y asumirá que el usuario ya está autentificado. Si $_SERVER['REMOTE_USER'] no está presente, todos los usuarios son autenticados de acuerdo a las otras configuraciones.",
         "LdapUserAdded": "¡Usuario LDAP agregado exitosamente!",
         "LdapFunctionsMissing": "La extensión PHP LDAP no parece estar habilitada. Es necesaria para este complemento, por favor instálela.",
         "CannotConnectToServer": "No se pudo conectar con el servidor LDAP.",
@@ -55,7 +55,7 @@
         "LdapAdminAccessFieldDescription": "El atributo personalizado LDAP que determina a que sitios de internet un usuario posee accesos administrativos.",
         "LdapSuperUserAccessField": "Campo de acceso de Super Usuario LDAP",
         "LdapSuperUserAccessFieldDescription": "El atributo personalizado LDAP que determina si el usuario es un superusuario o no.",
-        "LdapUserAccessAttributeServerSpecDelimiter": "Delimitador de la especificación del atributo de acceso del usuario al servidor",
+        "LdapUserAccessAttributeServerSpecDelimiter": "\"User Access Attribute Server Specification Delimiter\"",
         "LdapUserAccessAttributeServerSpecDelimiterDescription": "La cadena utilizada para delimitar las especificaciones de servidor en un atributo de acceso para un usuario. Si es dispuesto en ';', el atributo de acceso esperado se verá como '<server-spec>;<server-spec>;...'.",
         "LdapUserAccessAttributeServerSeparator": "Atributo del servidor de acceso del usuario & separador de lista de sitios",
         "LdapUserAccessAttributeServerSeparatorDescription": "La cadena utilizada para separar la instancias IDs del servidor Piwik con las listas ID del sitio. Si se dispone en ':', el atributo de acceso esperado se verá así '<server-id>:<site-list>;<server-id>:<site-list>'.",
@@ -85,7 +85,7 @@
         "LdapUrlPortWarning": "La opción puerto es ignorada cuando el hostname del servidor se establece a una URL LDAP (ie, ldap:\/\/localhost\/ en lugar de localhost).",
         "UpdateFromPre300Warning": "Desde que actualizó desde una versión pre-3.0.0, probablemente debería mantener esta opción sin marcar. Antes de la versión 3.0.0, las contraseñas de usuario se almacenaban tanto en LDAP y en la base de datos Piwik. Esta opción debe estar desactivada para que los usuarios agregados antes de la actualización puedan iniciar sesión.",
         "MobileAppIntegrationNote": "Nota: Si planea utilizar LDAP con la aplicación móvil oficial, debe mantener esta opción deshabilitada. Actualmente, la aplicación móvil no puede autenticar usuarios si las contraseñas de los usuarios no están guardadas en la base de datos de Piwik.",
-        "PasswordFieldHelp": "Ingrese una contraseña para sobreescribir la actual o deje en blanco para no hacer cambios.",
+        "PasswordFieldHelp": "Introduce una contraseña para sobreescribir la actual o deja en blanco para no hacer cambios.",
         "LdapUserCantChangePassword": "Cambiando su contraseña no tiene soporte en usuarios LDAP. Si utiliza LDAP, su configuración es gestionada directamente desde LDAP. Para mayor información, por favor contáctese sea con su administrador de servidor LDAP o Piwik."
     }
 }

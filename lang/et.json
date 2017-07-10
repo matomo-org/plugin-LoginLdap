@@ -27,6 +27,7 @@
         "Kerberos": "Kerberos aktiveeritud",
         "LdapUserAdded": "LDAP kasutaja lisatud edukalt!",
         "LdapFunctionsMissing": "PHP ldap_connect() funktsioon puudub, palun seadista LDAP moodul PHP konfiguratsioonis!",
-        "Test": "Testi"
+        "Test": "Testi",
+        "Go": "OK"
     }
 }

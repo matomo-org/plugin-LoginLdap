@@ -28,6 +28,7 @@
         "Filter": "LDAP 検索フィルター",
         "FilterDescription": "( 例 \"( objectClass=person )\" )",
         "Kerberos": "Kerberos (ケルベロス)が有効になりました。",
+        "KerberosDescription": "有効にすると、プラグインは $ _SERVER ['REMOTE_USER'] 変数をチェックし、ユーザーが既に認証されていると想定します。 $ _SERVER ['REMOTE_USER'] が存在しない場合は、他の設定に従ってすべてのユーザーが認証されます。",
         "LdapUserAdded": "LDAP ユーザーの追加に成功しました!",
         "LdapFunctionsMissing": "PHP の ldap_connect() ファンクションが見当たりません。PHP コンフィグで LDAP を有効にしてください !",
         "CannotConnectToServer": "LDAP サーバーに接続できません。",
@@ -38,6 +39,7 @@
         "FilterCount": "%s は、このフィルターに一致しています。",
         "Test": "テスト",
         "InvalidFilter": "無効なフィルター。",
+        "ServerName": "サーバーネーム",
         "FirstNameField": "ファーストネームフィールド",
         "FirstNameFieldDescription": "ユーザーのファーストネームを含む LDAP 属性。",
         "LastNameField": "ラストネームフィールド",
@@ -82,6 +84,8 @@
         "MemberOfFieldDescription": "デフォルトの \"memberOf\" というメンバーシップを示すために LDAP により使われたフィールド",
         "LdapUrlPortWarning": "サーバのホスト名は LDAP URL (すなわち、localhost の代わりに ldap:\/\/localhost\/) に設定されている場合、ポートオプションは無視されます。",
         "UpdateFromPre300Warning": "3.0.0 以前のバージョンから更新する場合は、このオプションをチェック3.0.0 以前のバージョンから更新する場合は、このオプションをチェックしておく必要があります。バージョン 3.0.0 以前は、ユーザーのパスワードは、LDAP と Piwik DB の両方に格納されていました。アップグレード前に追加したユーザーがログインできるように、このオプションはオフにする必要があります。",
-        "MobileAppIntegrationNote": "注: 公式モバイル アプリで LDAP を使用している場合は、このオプションはオフにしておく必要があります。現在、携帯アプリでは、ユーザーのパスワードは Piwik の DB に格納されていない場合ユーザーを認証できません。"
+        "MobileAppIntegrationNote": "注: 公式モバイル アプリで LDAP を使用している場合は、このオプションはオフにしておく必要があります。現在、携帯アプリでは、ユーザーのパスワードは Piwik の DB に格納されていない場合ユーザーを認証できません。",
+        "PasswordFieldHelp": "既存のパスワードに上書きするか、ブランクのままにして変更しないでください。",
+        "LdapUserCantChangePassword": "LDAPユーザーの場合、パスワードの変更はサポートされていません。 LDAPを使用する場合、ユーザー設定はLDAPで直接管理されます。詳細については、LDAPサーバー管理者またはPiwik管理者にお問い合わせください。"
     }
 }

@@ -39,6 +39,7 @@
         "FilterCount": "%s odpovídá tomuto filtru.",
         "Test": "Vyzkoušet",
         "InvalidFilter": "Neplatný filtr.",
+        "ServerName": "Jméno serveru",
         "FirstNameField": "Pole křestního jména",
         "FirstNameFieldDescription": "LDAP atribut obsahující křestní jméno uživatele.",
         "LastNameField": "Pole příjmení",

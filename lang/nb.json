@@ -12,6 +12,7 @@
         "MemberOfCount": "%s er medlem av denne gruppen.",
         "Test": "Test",
         "InvalidFilter": "Ugyldig filter.",
+        "ServerName": "Servernavn",
         "Go": "Gå"
     }
 }

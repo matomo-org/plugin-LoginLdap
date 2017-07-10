@@ -39,6 +39,7 @@
         "FilterCount": "%s treffen auf diesen Filter zu.",
         "Test": "Test",
         "InvalidFilter": "Ungültiger Filter.",
+        "ServerName": "Server Name",
         "FirstNameField": "Feld Vorname",
         "FirstNameFieldDescription": "Die LDAP Eigenschaft enthält einen Vornamen für Benutzer.",
         "LastNameField": "Feld Nachname",

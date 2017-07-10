@@ -1,5 +1,6 @@
 {
     "LoginLdap": {
-        "LdapPort": "Port servera"
+        "LdapPort": "Port servera",
+        "Test": "Test"
     }
 }

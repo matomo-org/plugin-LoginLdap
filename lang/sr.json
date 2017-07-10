@@ -39,6 +39,7 @@
         "FilterCount": "%s je prepoznat ovim filtrom.",
         "Test": "Test",
         "InvalidFilter": "Filter je nevažeći.",
+        "ServerName": "Naziv servera",
         "FirstNameField": "Polje ime",
         "FirstNameFieldDescription": "LDAP atribut koji sadrži korisnikovo ime.",
         "LastNameField": "Polje prezime",
