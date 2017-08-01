@@ -5,11 +5,11 @@
 
 ## Description
 
-**Piwik authentication module that allows users in LDAP to log in to Piwik. Supports web server authentication (eg, for Kerberos SSO).**
+Allows users in LDAP to log in to Piwik Analytics. Supports web server authentication (eg, for Kerberos SSO).
 
 LoginLdap authenticates with an LDAP server and uses LDAP information to personalize Piwik.
 
-## Installation
+### Installation
 
 To start using LoginLdap, follow these steps:
 
@@ -27,11 +27,11 @@ To start using LoginLdap, follow these steps:
 _**Note:** LDAP users are not synchronized with Piwik until they are first logged in. This means you cannot access a token auth for an LDAP user until the user is synchronized.
 If you use the default LoginLdap configuration, you can synchronize all of your LDAP users at once using the `./console loginldap:synchronize-users` command._
 
-## Troubleshooting
+### Troubleshooting
 
 To troubleshoot any connectivity issues, read our [troubleshooting guide](https://github.com/piwik/plugin-LoginLdap/wiki/Troubleshooting).
 
-## Upgrading from 2.2.7
+### Upgrading from 2.2.7
 
 Version 3.0.0 is a major rewrite of the plugin, so if you are upgrading for 2.2.7 you will have to do some extra work when upgrading:
 
@@ -44,7 +44,7 @@ Version 3.0.0 is a major rewrite of the plugin, so if you are upgrading for 2.2.
   Version 2.2.7 and below used an authentication strategy where user passwords were stored both in Piwik and in LDAP. In order to keep your current
   users' token auths from changing, that same strategy has to be used.
 
-## Configurations
+### Configurations
 
 LoginLdap supports three different LDAP authentication strategies:
 
