@@ -1,5 +1,12 @@
 {
     "LoginLdap": {
-        "Test": "Test"
+        "MenuLdap": "LDAP Kullanıcıları",
+        "LoadUser": "LDAP tan kullanıcı yükle",
+        "Settings": "LDAP Ayarları",
+        "Test": "Test",
+        "UnsupportedPasswordReset": "Kullanıcı şifresi sıfırlanamıyor, lütfen yönetici ile iletişime geçin.",
+        "UseLdapForAuthentication": "Doğrulama için her zaman LDAP kullan",
+        "PasswordField": "Kullanıcı Şifre Alanı",
+        "Go": "Git"
     }
 }

@@ -1,5 +1,15 @@
 {
     "LoginLdap": {
-        "Test": "Percobaan"
+        "MenuLdap": "Pengguna LDAP",
+        "LoadUser": "Muat pengguna dari LDAP",
+        "Settings": "Pengaturan LDAP",
+        "AliasField": "Kolom Alias Pengguna",
+        "AdminPass": "Sandi lewat LDAP",
+        "LDAPServers": "Server LDAP",
+        "OneUser": "1 pengguna",
+        "Test": "Percobaan",
+        "ServerName": "Nama Server",
+        "FirstNameField": "Kolom Nama Depan",
+        "LastNameField": "Kolom Nama Belakang"
     }
 }
