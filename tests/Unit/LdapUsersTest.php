@@ -13,7 +13,7 @@ use InvalidArgumentException;
 use Piwik\Plugins\LoginLdap\Ldap\ServerInfo;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 
 /**
@@ -21,7 +21,7 @@ use PHPUnit_Framework_TestCase;
  * @group LoginLdap_Unit
  * @group LoginLdap_LdapUsersTest
  */
-class LdapUsersTest extends PHPUnit_Framework_TestCase
+class LdapUsersTest extends TestCase
 {
     const TEST_USER = "rose";
     const PASSWORD = "bw";

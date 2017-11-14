@@ -8,7 +8,7 @@
  */
 namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Piwik\Config;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserAccessAttributeParser;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserAccessMapper;
@@ -19,7 +19,7 @@ use Piwik\Plugins\SitesManager\API as SitesManagerAPI;
  * @group LoginLdap_Unit
  * @group LoginLdap_UserAccessMapperTest
  */
-class UserAccessMapperTest extends PHPUnit_Framework_TestCase
+class UserAccessMapperTest extends TestCase
 {
     /**
      * @var UserAccessMapper
