@@ -23,7 +23,7 @@
         "AdminUserDescription": "např. \"john\" - k dotazování na další uživatele musí mít právo číst",
         "AdminPass": "Heslo LDAP",
         "MemberOf": "Skupina Active Directory",
-        "MemberOfDescription": "( např. \"CN=Piwik User,CN=Users,DC=organization,DC=com\"",
+        "MemberOfDescription": "( např. \"CN=Matomo User,CN=Users,DC=organization,DC=com\"",
         "MemberOfDescription2": "Poznámka: Toto využívá LDAP filtr memberOf=?. To může vyžadovat konfiguraci LDAP serveru.",
         "Filter": "LDAP vyhledávací filtr",
         "FilterDescription": "( např. \"(objectClass=person)\" )",
@@ -58,9 +58,9 @@
         "LdapUserAccessAttributeServerSpecDelimiter": "Oddělovač specifikací serverů v atributu uživatelského přístupu",
         "LdapUserAccessAttributeServerSpecDelimiterDescription": "Řetězec, který odděluje specifikace serverů v atributu uživatelského přístupu. Pokud je nastaven na ';', pak bude atribut vypadat jako '<server-spec>;<server-spec>;...'.",
         "LdapUserAccessAttributeServerSeparator": "Oddělovač stránek & serverů v atributu uživatelského přístupu",
-        "LdapUserAccessAttributeServerSeparatorDescription": "Řetězec, který odděluje ID instance Piwik serveru od seznamů ID stránek. Pokud je nastaven na ':', pak bude přístupový atribut vypadat jako '<server-id>:<site-list>;<server-id>:<site-list>'.",
-        "ThisPiwikInstanceName": "Speciální jméno této instance Piwiku",
-        "ThisPiwikInstanceNameDescription": "Speciální jméno identifikující tuto instanci v atributu přístupu. Pokud není zadáno, očekáváme základní URL tohoto Piwiku.",
+        "LdapUserAccessAttributeServerSeparatorDescription": "Řetězec, který odděluje ID instance Matomo serveru od seznamů ID stránek. Pokud je nastaven na ':', pak bude přístupový atribut vypadat jako '<server-id>:<site-list>;<server-id>:<site-list>'.",
+        "ThisMatomoInstanceName": "Speciální jméno této instance Matomou",
+        "ThisMatomoInstanceNameDescription": "Speciální jméno identifikující tuto instanci v atributu přístupu. Pokud není zadáno, očekáváme základní URL tohoto Matomou.",
         "UnsupportedPasswordReset": "Heslo tohoto uživatele nelze resetovat, kontaktujte prosím administrátora.",
         "UserSyncSettings": "Nastavení synchronizace uživatelů",
         "AccessSyncSettings": "Přistupovat k nastavením synchronizace",
@@ -68,7 +68,7 @@
         "SynchronizeUsersAfterLoginDescription": "Pokud je povoleno, údaje uživatele v LDAP serveru budou po každém úspěšném přihlášení synchronizovány.",
         "SynchronizeUsersAfterLoginDescription2": "Pokud je zakázáno, zásuvný modul nebude automaticky synchronizovat údaje uživatelů po autentizaci, pokud není povoleno přihlášení pomocí LDAP. Pokud to bude možné, spojením s LDAP serverem se bude vyhýbat.",
         "UseLdapForAuthentication": "Vždy použít LDAP k ověření",
-        "UseLdapForAuthenticationDescription": "Pokud je zakázáno, hesla užibatelů budou uložena i v databázi Piwiku. To zkrátí čas potřebný k přihlášení, ale není to tak bezpečné.",
+        "UseLdapForAuthenticationDescription": "Pokud je zakázáno, hesla užibatelů budou uložena i v databázi Matomou. To zkrátí čas potřebný k přihlášení, ale není to tak bezpečné.",
         "PasswordField": "Pole hesla uživatele",
         "PasswordFieldDescription": "Jméno LDAP atributu obsahujícího heslo uživatele, např. 'userPassword' nebo 'unicodePwd'.",
         "PasswordFieldDescription2": "Pokud je 'Vždy použít LDAP pro ověření' povoleno a 'Vygenerovat náhodný token_auth pro nové uživatele' zakázáno, pak musí být v LDAP poli hash nebo zašifrovaná podoba uživatelova hesla",
@@ -83,9 +83,9 @@
         "MemberOfField": "LDAP pole memberOf",
         "MemberOfFieldDescription": "Pole používané vaším LDAP k určení členství, ve výchozím stavu \"memberOf\"",
         "LdapUrlPortWarning": "Možnost port je ignorována, pokud je jméno hostitele zadáno jako URL (t. j. ldap:\/\/localhost\/ místo localhost).",
-        "UpdateFromPre300Warning": "Protože jste aktualizovali z verze starší než 3.0, nejspíš byste měli nechat tuto možnost odškrtnutou. Před verzí 3.0 byla hesla uchovávána jak na LDAP serveru, tak v databázi Piwiku. Tato možnost musí být odškrtnuta, nebo se uživatelé přidaní před aktualizací nebudou schopni přihlásit.",
-        "MobileAppIntegrationNote": "Poznámka: Pokud plánujete používat LDAP s oficiální mobilní aplikací, musí být tato možnost odškrtnuta. Mobilní aplikace zatím nedokáže ověřit uživatele, pokud nejsou hesla uložena v databázi Piwiku.",
+        "UpdateFromPre300Warning": "Protože jste aktualizovali z verze starší než 3.0, nejspíš byste měli nechat tuto možnost odškrtnutou. Před verzí 3.0 byla hesla uchovávána jak na LDAP serveru, tak v databázi Matomou. Tato možnost musí být odškrtnuta, nebo se uživatelé přidaní před aktualizací nebudou schopni přihlásit.",
+        "MobileAppIntegrationNote": "Poznámka: Pokud plánujete používat LDAP s oficiální mobilní aplikací, musí být tato možnost odškrtnuta. Mobilní aplikace zatím nedokáže ověřit uživatele, pokud nejsou hesla uložena v databázi Matomou.",
         "PasswordFieldHelp": "Vložte heslo pro přepsání aktuálního hesla nebo ponechte prázdné pro ponechání beze změn.",
-        "LdapUserCantChangePassword": "Změna hesla není podporována pro LDAP uživatele. Používáte LDAP a vaše nastavení jsou spravována přímo v LDAP. Pro více informací prosím kontaktujte svého administrátora LDAP serveru nebo administrátora instance Piwik."
+        "LdapUserCantChangePassword": "Změna hesla není podporována pro LDAP uživatele. Používáte LDAP a vaše nastavení jsou spravována přímo v LDAP. Pro více informací prosím kontaktujte svého administrátora LDAP serveru nebo administrátora instance Matomo."
     }
 }

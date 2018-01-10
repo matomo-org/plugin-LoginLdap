@@ -1,6 +1,6 @@
 {
     "LoginLdap": {
-        "PluginDescription": "Dodatak za prijavljivanje na sistem koji koristi LDAP. Alternativa standardnom Piwik dodatku za prijavu.",
+        "PluginDescription": "Dodatak za prijavljivanje na sistem koji koristi LDAP. Alternativa standardnom Matomo dodatku za prijavu.",
         "MenuLdap": "LDAP korisnici",
         "LoadUser": "Učitaj korisnika iz LDAP-a",
         "LoadUserDescription": "Možete upotrebiti ovaj formular kako biste sinhronizovali LDAP korisnika.",
@@ -12,7 +12,7 @@
         "MailField": "Polje elektronska adresa",
         "ServerUrl": "URL servera",
         "UserIdField": "Polje korisnički ID",
-        "AliasFieldDescription": "LDAP atribut korišćen za generisanje korisnikovog Piwik aliasa, na primer \"cn\".",
+        "AliasFieldDescription": "LDAP atribut korišćen za generisanje korisnikovog Matomo aliasa, na primer \"cn\".",
         "MailFieldDescription": "LDAP atribut koji sadrži korisnikovu elektronsku adresu, na primer \"mail\".",
         "UserIdFieldDescription": "LDAP atribut koji sadrži korisnikovo korisničko ime, na primer \"uid\" ili \"userPrincipalName\".",
         "UserNotFound": "Korisnik \"%s\" nije nađen",
@@ -58,9 +58,9 @@
         "LdapUserAccessAttributeServerSpecDelimiter": "Delimiter za specifikaciju atributa korisničkih pristupa",
         "LdapUserAccessAttributeServerSpecDelimiterDescription": "Znak koji će da služi kao delimiter atributa korisničkih pristupa. Ako je postavljen na ';', lista atributa će izgledati poput '<server-spec>;<server-spec>;...'.",
         "LdapUserAccessAttributeServerSeparator": "Separator liste sajtova i atributa korisničkih pristupa",
-        "LdapUserAccessAttributeServerSeparatorDescription": "Znak koji će da razdvaja Piwik servere i sajtove. Ako je postavljen na ';', lista će izgledati poput '<server-id>:<site-list>;<server-id>:<site-list>'.",
-        "ThisPiwikInstanceName": "Specijalno ime ove Piwik instance",
-        "ThisPiwikInstanceNameDescription": "Specijalno ime koje će služiti za identifikaciju ove Piwik instance. Ukoliko nije navedeno, očekuje se da to bude osnovni URL na kojem se nalazi Piwik.",
+        "LdapUserAccessAttributeServerSeparatorDescription": "Znak koji će da razdvaja Matomo servere i sajtove. Ako je postavljen na ';', lista će izgledati poput '<server-id>:<site-list>;<server-id>:<site-list>'.",
+        "ThisMatomoInstanceName": "Specijalno ime ove Matomo instance",
+        "ThisMatomoInstanceNameDescription": "Specijalno ime koje će služiti za identifikaciju ove Matomo instance. Ukoliko nije navedeno, očekuje se da to bude osnovni URL na kojem se nalazi Matomo.",
         "UnsupportedPasswordReset": "Nije moguće resetovati lozinku ovog korisnika, molimo vas da kontaktirate administratora.",
         "UserSyncSettings": "Podešavanja sinhronizacije korisnika",
         "AccessSyncSettings": "Podešavanja sinhronizacije pristupa",
@@ -68,7 +68,7 @@
         "SynchronizeUsersAfterLoginDescription": "Ako je uključeno, detalji o korisniku u LDAP-u će uvek biti sinhronizovani nakon uspešne prijave.",
         "SynchronizeUsersAfterLoginDescription2": "Ako je isključeno, dodatak neće sinhronizovati korisničke podatke sem ako LDAP autentifikacija nije omogućena. Kad god je moguće, LDAP konekcije će biti izbegnute.",
         "UseLdapForAuthentication": "Uvek koristi LDAP za prijavljivanje",
-        "UseLdapForAuthenticationDescription": "Ako je isključeno, korisnička lozinka će biti sačuvana u Piwik bazi podataka. Ovo rezultuje bržom prijavom ali je manje bezbedno.",
+        "UseLdapForAuthenticationDescription": "Ako je isključeno, korisnička lozinka će biti sačuvana u Matomo bazi podataka. Ovo rezultuje bržom prijavom ali je manje bezbedno.",
         "PasswordField": "Polje lozinka",
         "PasswordFieldDescription": "Naziv LDAP atributa koji sadrži korisnikovu lozinku, na primer 'userPassword' ili 'unicodePwd'.",
         "PasswordFieldDescription2": "Ako je uključena opcija 'Uvek koristi LDAP za prijavljivanje' a opcija 'Generiši slučajan token_auth za nove korisnike' isključena, vrednost ovog polja u LDAP-u mora biti hešovana ili kriptovana lozinka korisnika.",
@@ -77,15 +77,15 @@
         "ExpectedLdapAttributesPrelude": "Sa ovim podešavanjima, LoginLdap očekuje LDAP atribute koji izgledaju ovako:",
         "NetworkTimeout": "Vremenski istek LDAP mrežnog zahteva (u sekundama)",
         "NetworkTimeoutDescription": "Vremenski limit u sekundama za LDAP mrežni zahtev.",
-        "NetworkTimeoutDescription2": "Što je veći vremenski limit, više vremena korisnik može da čeka pre nego što ga Piwik prijavi preko LDAP-a ako jedan ili više vaših servera postanu nedostupni.",
+        "NetworkTimeoutDescription2": "Što je veći vremenski limit, više vremena korisnik može da čeka pre nego što ga Matomo prijavi preko LDAP-a ako jedan ili više vaših servera postanu nedostupni.",
         "Go": "Kreni",
         "LoginPluginEnabledWarning": "I %1$s i %2$s su uključeni, što će dovesti do toga da vaši LDAP korisnici ne mogu da se prijave. Molimo vas da isključite dodatak %1$s.",
         "MemberOfField": "Polje LDAP",
         "MemberOfFieldDescription": "Polje koje LDAP koristi kako bi čuvao informacije o pripadnosti grupama. Podrazumevano to je \"memberOf\".",
         "LdapUrlPortWarning": "Broj porta se ignoriše kada je naziv hosta predstavljen LDAP URL-om (npr. ldap:\/\/localhost\/ umesto of localhost).",
-        "UpdateFromPre300Warning": "Pošto ste nadogradili Piwik sa verzije pre 3.0.0, ovu opciju bi trebalo da držite isključenu. Pre verzije 3.0.0, lozinke su čuvane i na LDAP-u i u Piwik bazi podataka. Ova opcija mora biti isključena kako bi korisnici dodati pre nadogradnje mogli da se prijave.",
-        "MobileAppIntegrationNote": "Pažnja: ako planirate da koristite LDAP sa zvaničnom aplikacijom za mobilni, ovu opciju morate držati isključenu. Mobilna aplikacija trenutno ne može da prijavi korisnika ako njegova lozinka nije sačuvana u Piwik bazi podataka.",
+        "UpdateFromPre300Warning": "Pošto ste nadogradili Matomo sa verzije pre 3.0.0, ovu opciju bi trebalo da držite isključenu. Pre verzije 3.0.0, lozinke su čuvane i na LDAP-u i u Matomo bazi podataka. Ova opcija mora biti isključena kako bi korisnici dodati pre nadogradnje mogli da se prijave.",
+        "MobileAppIntegrationNote": "Pažnja: ako planirate da koristite LDAP sa zvaničnom aplikacijom za mobilni, ovu opciju morate držati isključenu. Mobilna aplikacija trenutno ne može da prijavi korisnika ako njegova lozinka nije sačuvana u Matomo bazi podataka.",
         "PasswordFieldHelp": "Upišite lozinku kako biste promenili prethodnu ili ostavite prazno ako ne želite da je menjate.",
-        "LdapUserCantChangePassword": "Promena lozinke LDAP korisnika nije podržana. Pošto vi koristite LDAP, vašim korisničkim podešavanjima se direktno upravlja u LDAP-u. Za više informacija molimo vas da kontaktirate adminstratora vašeg LDAP servera ili vašeg Piwik administratora."
+        "LdapUserCantChangePassword": "Promena lozinke LDAP korisnika nije podržana. Pošto vi koristite LDAP, vašim korisničkim podešavanjima se direktno upravlja u LDAP-u. Za više informacija molimo vas da kontaktirate adminstratora vašeg LDAP servera ili vašeg Matomo administratora."
     }
 }

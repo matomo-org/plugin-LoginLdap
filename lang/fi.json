@@ -1,6 +1,6 @@
 {
     "LoginLdap": {
-        "PluginDescription": "Kirjautumislisäosa LDAP-autentikaatiolle. Tarjoaa vaihtoehdon Piwikin standardikirjautumiselle.",
+        "PluginDescription": "Kirjautumislisäosa LDAP-autentikaatiolle. Tarjoaa vaihtoehdon Matomoin standardikirjautumiselle.",
         "MenuLdap": "LDAP-käyttäjät",
         "LoadUser": "Lataa käyttäjä LDAP:sta",
         "Settings": "LDAP-asetukset",

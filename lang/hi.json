@@ -1,6 +1,5 @@
 {
     "LoginLdap": {
-        "PluginDescription": "बैंडविड्थ",
         "MenuLdap": "LDAP उपयोगकर्ताओं",
         "LoadUser": "एलडीएपी से लोड उपयोगकर्ता",
         "LoadUserDescription": "आप UIसे LDAP में एक भी उपयोगकर्ता सिंक्रनाइज़ करने के लिए इस प्रपत्र का उपयोग कर सकते हैं।",

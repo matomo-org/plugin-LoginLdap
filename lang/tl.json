@@ -1,6 +1,6 @@
 {
     "LoginLdap": {
-        "PluginDescription": "Ang plugi na pang-login na may kasamang LDAP authentication. Ay nagbibigay ng alternatibo sa pangkaraniwang Piwi Login plugin.",
+        "PluginDescription": "Ang plugi na pang-login na may kasamang LDAP authentication. Ay nagbibigay ng alternatibo sa pangkaraniwang Matomo Login plugin.",
         "MenuLdap": "Mga User ng LDAP",
         "LoadUser": "Mag-load ng user mula sa LDAP",
         "Settings": "Mga setting ng LDAP",
