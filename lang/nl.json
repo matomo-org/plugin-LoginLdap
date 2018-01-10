@@ -1,6 +1,6 @@
 {
     "LoginLdap": {
-        "PluginDescription": "Login plugin met LDAP authenticatie. Alternatief voor de standaard Piwik Login plugin.",
+        "PluginDescription": "Login plugin met LDAP authenticatie. Alternatief voor de standaard Matomo Login plugin.",
         "MenuLdap": "LDAP Gebruikers",
         "LoadUser": "Laad Gebruiker uit LDAP",
         "LoadUserDescription": "Je kunt dit formulier gebruiken om een enkele gebruiker in LDAP te synchroniseren vanuit de UI.",
@@ -12,7 +12,7 @@
         "MailField": "E-mailadres-veld",
         "ServerUrl": "Server-URL",
         "UserIdField": "Gebruiker-ID-veld",
-        "AliasFieldDescription": "te gebruiken LDAP attribuut om een Piwik gebruiker alias aan te maken, bijv. \"cn\".",
+        "AliasFieldDescription": "te gebruiken LDAP attribuut om een Matomo gebruiker alias aan te maken, bijv. \"cn\".",
         "MailFieldDescription": "Het LDAP attribuut die de gebruikers emailadres bevat, bijv. \"mail\".",
         "UserIdFieldDescription": "Het LDAP attribuut die de gebruikers gebruikersnaam bevat, bijv. \"uid\", of in Active Directory: \"userPrincipalName\".",
         "UserNotFound": "Gebruiker \"%s\" niet gevonden!",
@@ -51,14 +51,14 @@
         "LdapAdminAccessFieldDescription": "Het standaard LDAP attribuut dat bepaalt tot welke websites een gebruiker admin rechten geeft.",
         "LdapSuperUserAccessField": "LDAP Super Gebruiker Toegang Veld",
         "LdapSuperUserAccessFieldDescription": "Het standaard LDAP attribuut dat bepaalt of een gebruiker een superuser is of niet.",
-        "ThisPiwikInstanceName": "Speciale naam voor deze piwik instantie",
+        "ThisMatomoInstanceName": "Speciale naam voor deze Matomo instantie",
         "UnsupportedPasswordReset": "Kan wachtwoord van deze gebruiker niet resetten, neem a.u.b. contact op met een administrator.",
         "UserSyncSettings": "Gebruiker Synchronisatie Instellingen",
         "AccessSyncSettings": "Toegang synchronisatie instellingen",
         "SynchronizeUsersAfterLogin": "Synchroniseer gebruikers na een succesvolle login.",
         "SynchronizeUsersAfterLoginDescription": "Als ingesteld, gebruiker details in LDAP worden altijd gesynchroniseerd na een succesvolle aanmelding.",
         "UseLdapForAuthentication": "Altijd LDAP gebruiken voor authenticatie",
-        "UseLdapForAuthenticationDescription": "Indien uitgeschakeld, worden gebruikerswachtwoorden in de database van Piwik opgeslagen in plaats van LDAP. Dit resulteert in sneller inloggen, maar is minder veilig.",
+        "UseLdapForAuthenticationDescription": "Indien uitgeschakeld, worden gebruikerswachtwoorden in de database van Matomo opgeslagen in plaats van LDAP. Dit resulteert in sneller inloggen, maar is minder veilig.",
         "PasswordField": "Gebruiker Wachtwoord Veld",
         "ReadMoreAboutAccessSynchronization": "Om meer te weten over gebruikers toegang synchronisatie, %1$slees onze documentatie%2$s.",
         "ExpectedLdapAttributes": "Verwachte LDAP attributen",
@@ -70,7 +70,7 @@
         "MemberOfField": "LDAP memberOf Veld",
         "MemberOfFieldDescription": "Veld in je LDAP installatie om lidmaatschap aan te geven, standaard \"memberOf\"",
         "LdapUrlPortWarning": "De port optie wordt genegeerd wanneer de hostname van de server wordt aangepast naar een LDAP URL (bijvoorbeeld, ldap:\/\/localhost\/ in plaats van localhost).",
-        "MobileAppIntegrationNote": "Opmerking: als u van plan bent om LDAP met de officiële mobiele app te gebruiken, moet u deze optie niet aanvinken. Momenteel kan de mobiele app gebruikers niet authenticeren als gebruikerswachtwoorden niet in de database van Piwik zijn opgeslagen.",
+        "MobileAppIntegrationNote": "Opmerking: als u van plan bent om LDAP met de officiële mobiele app te gebruiken, moet u deze optie niet aanvinken. Momenteel kan de mobiele app gebruikers niet authenticeren als gebruikerswachtwoorden niet in de database van Matomo zijn opgeslagen.",
         "PasswordFieldHelp": "Voer een wachtwoord in om het bestaande wachtwoord te overschrijven of laat deze leeg, dan blijft het huidige bestaan."
     }
 }

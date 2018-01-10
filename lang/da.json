@@ -1,6 +1,6 @@
 {
     "LoginLdap": {
-        "PluginDescription": "Log ind udvidelse med LDAP-godkendelse. Giver et alternativ til den normale Piwik Log ind udvidelse.",
+        "PluginDescription": "Log ind udvidelse med LDAP-godkendelse. Giver et alternativ til den normale Matomo Log ind udvidelse.",
         "MenuLdap": "LDAP-brugere",
         "LoadUser": "Indlæs bruger fra LDAP",
         "LoadUserDescription": "Brug formularen til at synkronisere en enkelt bruger i LDAP fra brugergrænseflade.",
@@ -23,7 +23,7 @@
         "AdminUserDescription": "(fx. \"john\" - skal have læseadgang for at kunne forespørge på andre brugere)",
         "AdminPass": "LDAP adgangskode",
         "MemberOf": "ActiveDirectory gruppe",
-        "MemberOfDescription": "( fx. \"CN=Piwik User,CN=Users,DC=organization,DC=com\" )",
+        "MemberOfDescription": "( fx. \"CN=Matomo User,CN=Users,DC=organization,DC=com\" )",
         "MemberOfDescription2": "Bemærk: Denne indstilling bruger memberOf=? LDAP filter. Nogle LDAP-servere kræver ekstra opsætning for at dette virker.",
         "Filter": "LDAP søgefilter",
         "FilterDescription": "( fx. \"(objectClass=person)\" )",
@@ -56,9 +56,9 @@
         "LdapUserAccessAttributeServerSpecDelimiter": "Afgrænsningstegn for serverspecifikation brugeradgangsattribut",
         "LdapUserAccessAttributeServerSpecDelimiterDescription": "Strengen bruges til at afgrænse server specifikationer i en brugeradgangsattribut. Hvis sat til ';', vil attributadgangen forventes at ligne '<server-spec>;<server-spec>;... '.",
         "LdapUserAccessAttributeServerSeparator": "Brugeradgang attributserver & webside separator",
-        "LdapUserAccessAttributeServerSeparatorDescription": "Strengen bruges til at adskille Piwik serverforekomst id'er med webstedets ID lister. Hvis den er sat til ':', forventes adgangsattributten at ligne '<server-id>:<site-list>;<server-id>:<site-list> '.",
-        "ThisPiwikInstanceName": "Specielt navn for Piwik instansen",
-        "ThisPiwikInstanceNameDescription": "Et særligt navn, der bruges til at identificere Piwik instansen i en adgangsattribut. Hvis den ikke er angivet, forventes basis URL for Piwik installationen.",
+        "LdapUserAccessAttributeServerSeparatorDescription": "Strengen bruges til at adskille Matomo serverforekomst id'er med webstedets ID lister. Hvis den er sat til ':', forventes adgangsattributten at ligne '<server-id>:<site-list>;<server-id>:<site-list> '.",
+        "ThisMatomoInstanceName": "Specielt navn for Matomo instansen",
+        "ThisMatomoInstanceNameDescription": "Et særligt navn, der bruges til at identificere Matomo instansen i en adgangsattribut. Hvis den ikke er angivet, forventes basis URL for Matomo installationen.",
         "UnsupportedPasswordReset": "Kan ikke nulstille brugerens adgangskode, kontakt en administrator.",
         "UserSyncSettings": "Bruger synkroniseringsindstillinger",
         "AccessSyncSettings": "Adgang til synkroniseringsindstillinger",
@@ -66,7 +66,7 @@
         "SynchronizeUsersAfterLoginDescription": "Hvis aktiveret, vil brugernes detaljer i LDAP altid synkroniseres efter en vellykket logind.",
         "SynchronizeUsersAfterLoginDescription2": "Hvis deaktiveret, vil plugin ikke synkronisere brugeroplysninger efter log ind, medmindre LDAP-godkendelse er aktiveret. Når det er muligt, vil LDAP-forbindelser helt undgås.",
         "UseLdapForAuthentication": "Brug altid LDAP til godkendelse",
-        "UseLdapForAuthenticationDescription": "Hvis deaktiveret, vil brugernes adgangskode gemmes i Piwik DB foruden LDAP. Dette vil resultere i hurtigere logind, men er mindre sikker.",
+        "UseLdapForAuthenticationDescription": "Hvis deaktiveret, vil brugernes adgangskode gemmes i Matomo DB foruden LDAP. Dette vil resultere i hurtigere logind, men er mindre sikker.",
         "PasswordField": "Bruger adgangskodefelt",
         "PasswordFieldDescription": "Navn på LDAP-attribut, der indeholder en brugers adgangskode, fx 'userPassword' eller 'unicodePwd'.",
         "ReadMoreAboutAccessSynchronization": "Lære mere om synkronisering af brugeradgang ,%1$slæs dokumentation%2$s.",
@@ -74,12 +74,12 @@
         "ExpectedLdapAttributesPrelude": "Med denne konfiguration vil LoginLdap forvente attributter i LDAP der ser ud som",
         "NetworkTimeout": "LDAP netværk anmodning timeout (i sek)",
         "NetworkTimeoutDescription": "Tidsfristen i sekunder for en LDAP netværksanmodning .",
-        "NetworkTimeoutDescription2": "Jo større timeout, jo længere skal dine brugere vente, før de kan logge på Piwik via LDAP, hvis en eller flere af din servere ikke returnerer noget svar.",
+        "NetworkTimeoutDescription2": "Jo større timeout, jo længere skal dine brugere vente, før de kan logge på Matomo via LDAP, hvis en eller flere af din servere ikke returnerer noget svar.",
         "Go": "Start",
         "LoginPluginEnabledWarning": "Både %1$s og %2$s udvidelserne er slået til! Dette vil medføre at logind for LDAP-brugere vil mislykkes, deaktiver %1$s udvidelsen.",
         "MemberOfField": "LDAP memberOf felt",
         "MemberOfFieldDescription": "Felt bruges af LDAP til at angive medlemskab, standard \"memberOf\"",
         "LdapUrlPortWarning": "Port indstilling ignoreres når serverens værtsnavn er indstillet til en LDAP URL (fx. ldap:\/\/localhost\/ i stedet for localhost).",
-        "MobileAppIntegrationNote": "Bemærk: Hvis det planlægges at bruge LDAP med den officielle mobile app, skal denne indstilling være markeret. I øjeblikket kan den mobile app ikke godkende brugere, hvis brugernes adgangskode ikke er gemt i Piwik databasen."
+        "MobileAppIntegrationNote": "Bemærk: Hvis det planlægges at bruge LDAP med den officielle mobile app, skal denne indstilling være markeret. I øjeblikket kan den mobile app ikke godkende brugere, hvis brugernes adgangskode ikke er gemt i Matomo databasen."
     }
 }

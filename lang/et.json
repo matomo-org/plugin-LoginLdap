@@ -21,7 +21,7 @@
         "AdminUserDescription": "( n. \"john\" - serveris teiste kasutajate lugemisõigus )",
         "AdminPass": "LDAP parool",
         "MemberOf": "LDAP grupp",
-        "MemberOfDescription": "( n. \"CN=Piwik User,CN=Users,DC=organization,DC=com\" )",
+        "MemberOfDescription": "( n. \"CN=Matomo User,CN=Users,DC=organization,DC=com\" )",
         "Filter": "LDAP otsingu filter",
         "FilterDescription": "( n. \"(objectClass=person)\" )",
         "Kerberos": "Kerberos aktiveeritud",
