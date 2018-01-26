@@ -22,6 +22,9 @@ addons:
       - realpath
       - lftp
 
+git:
+  lfs_skip_smudge: true
+
 # Separate different test suites
 env:
   global:
@@ -40,14 +43,14 @@ env:
 
 matrix:
   exclude:
-    # execute latest stable tests only w/ PHP 5.5
+    # execute latest stable tests only w/ PHP 5.6
     - php: 5.5
       env: TEST_SUITE=PluginTests MYSQL_ADAPTER=PDO_MYSQL TEST_AGAINST_CORE=minimum_required_piwik
     # execute UI tests only w/ PHP 5.6
     - php: 5.5
       env: TEST_SUITE=UITests MYSQL_ADAPTER=PDO_MYSQL TEST_AGAINST_PIWIK_BRANCH=$PIWIK_TEST_TARGET
 
-dist: precise
+dist: trusty
 
 sudo: required
 
@@ -74,7 +77,7 @@ install:
   - '[ -d ./tests/travis/.git ] || sh -c "rm -rf ./tests/travis && git clone https://github.com/piwik/travis-scripts.git ./tests/travis"'
   - cd ./tests/travis ; git checkout master ; cd ../..
 
-  - export GENERATE_TRAVIS_YML_COMMAND="php ./tests/travis/generator/main.php generate:travis-yml --plugin=\"LoginLdap\" --verbose"
+  - export GENERATE_TRAVIS_YML_COMMAND="php ./tests/travis/generator/main.php generate:travis-yml --plugin=\"LoginLdap\" --dist-trusty --verbose"
   - '[[ "$TRAVIS_JOB_NUMBER" != *.1 || "$TRAVIS_PULL_REQUEST" != "false" ]] || ./tests/travis/autoupdate_travis_yml.sh'
 
   - ./tests/travis/checkout_test_against_branch.sh
