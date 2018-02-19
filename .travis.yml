@@ -58,9 +58,6 @@ script: $PIWIK_ROOT_DIR/tests/travis/travis.sh
 
 before_install:
 
-    # add ldap extension to php.ini
-  - echo "extension=ldap.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-
 install:
   # move all contents of current repo (which contains the plugin) to a new directory
   - mkdir $PLUGIN_NAME
