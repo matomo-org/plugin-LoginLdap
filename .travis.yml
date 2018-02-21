@@ -56,6 +56,8 @@ sudo: required
 
 script: $PIWIK_ROOT_DIR/tests/travis/travis.sh
 
+before_install:
+
 install:
   # move all contents of current repo (which contains the plugin) to a new directory
   - mkdir $PLUGIN_NAME
