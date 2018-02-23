@@ -11,7 +11,7 @@ namespace Piwik\Plugins\LoginLdap\tests\Unit;
 use Piwik\ErrorHandler;
 use Piwik\Plugins\LoginLdap\Ldap\Client as LdapClient;
 use Piwik\Plugins\LoginLdap\Ldap\LdapFunctions;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 require_once PIWIK_INCLUDE_PATH . '/plugins/LoginLdap/tests/Mocks/LdapFunctions.php';
 
@@ -20,7 +20,7 @@ require_once PIWIK_INCLUDE_PATH . '/plugins/LoginLdap/tests/Mocks/LdapFunctions.
  * @group LoginLdap_Unit
  * @group LoginLdap_LdapClientTest
  */
-class LdapClientTest extends PHPUnit_Framework_TestCase
+class LdapClientTest extends TestCase
 {
     const ERROR_MESSAGE = "triggered error";
 
