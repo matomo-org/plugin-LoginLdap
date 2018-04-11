@@ -604,9 +604,11 @@ class LdapUsers
 
         $result->setLdapServers(Config::getConfiguredLdapServers());
 
-        $usernameSuffix = Config::getLdapUserEmailSuffix();
-        if (!empty($usernameSuffix)) {
-            $result->setAuthenticationUsernameSuffix($usernameSuffix);
+        if (Config::shouldAppendUserEmailSuffixToUsername()) {
+            $usernameSuffix = Config::getLdapUserEmailSuffix();
+            if (!empty($usernameSuffix)) {
+                $result->setAuthenticationUsernameSuffix($usernameSuffix);
+            }
         }
 
         $requiredMemberOf = Config::getRequiredMemberOf();

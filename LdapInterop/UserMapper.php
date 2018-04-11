@@ -473,9 +473,7 @@ class UserMapper
         }
 
         $appendUserEmailSuffixToUsername = Config::shouldAppendUserEmailSuffixToUsername();
-        if (!empty($appendUserEmailSuffixToUsername)) {
-            $result->setAppendUserEmailSuffixToUsername($appendUserEmailSuffixToUsername);
-        }
+        $result->setAppendUserEmailSuffixToUsername($appendUserEmailSuffixToUsername);
 
         return $result;
     }
