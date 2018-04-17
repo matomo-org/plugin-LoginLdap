@@ -61,6 +61,16 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
         ), $access);
     }
 
+    public function test_PiwikUserIsCreated_WithEmailSuffixed_ButNotUser_IfShouldAppendEmailIsOff()
+    {
+        Config::getInstance()->LoginLdap['append_user_email_suffix_to_username'] = 0;
+        Config::getInstance()->LoginLdap['user_email_suffix'] = '@matthers.com';
+
+        $this->authenticateViaLdap('blackwidow', 'redledger');
+
+        $this->assertRomanovSynchronized('matthers.com');
+    }
+
     public function test_PiwikUserIsCreatedWithAccessToAllSites_WhenLdapLoginSucceeds_AndDefaultSitesToAddIsAll()
     {
         Config::getInstance()->LoginLdap['new_user_default_sites_view_access'] = 'all';

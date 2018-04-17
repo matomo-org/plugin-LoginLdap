@@ -103,7 +103,7 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
         return Db::fetchRow("SELECT login, password, alias, email, token_auth FROM " . Common::prefixTable('user') . " WHERE login = ?", array($login));
     }
 
-    protected function assertStarkSynchronized()
+    protected function assertStarkSynchronized($expectedDomain = 'starkindustries.com')
     {
         $user = $this->getUser(self::TEST_LOGIN);
         $this->assertNotEmpty($user);
@@ -113,11 +113,26 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
         $this->assertEquals(array(
             'login' => self::TEST_LOGIN,
             'alias' => 'Tony Stark',
-            'email' => 'billionairephilanthropistplayboy@starkindustries.com',
+            'email' => 'billionairephilanthropistplayboy@' . $expectedDomain,
             'token_auth' => UsersManagerAPI::getInstance()->getTokenAuth(self::TEST_LOGIN, md5(self::TEST_PASS_LDAP))
         ), $user);
         $userMapper = new UserMapper();
         $this->assertTrue($userMapper->isUserLdapUser(self::TEST_LOGIN));
+    }
+
+    protected function assertRomanovSynchronized($expectedDomain)
+    {
+        $user = $this->getUser('blackwidow');
+        $this->assertNotEmpty($user);
+        unset($user['password']);
+        unset($user['token_auth']);
+        $this->assertEquals(array(
+            'login' => 'blackwidow',
+            'alias' => 'Natalia Romanova',
+            'email' => 'blackwidow@' . $expectedDomain,
+        ), $user);
+        $userMapper = new UserMapper();
+        $this->assertTrue($userMapper->isUserLdapUser('blackwidow'));
     }
 
     private function isLdapServerRunning()
