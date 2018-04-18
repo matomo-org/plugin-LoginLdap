@@ -1,5 +1,9 @@
 # LoginLdap Changelog
 
+#### LoginLdap 4.0.4
+
+* Fixing bug that made it impossible to set append_user_email_suffix_to_username to 0 for appending username suffix to username for email and not during auth.
+
 #### LoginLdap 4.0.0
 
 * Compatibility with Piwik 3
