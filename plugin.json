@@ -1,20 +1,20 @@
 {
     "name": "LoginLdap",
-    "version": "4.0.4",
-    "description": "LDAP authentication and synchronization for Piwik.",
+    "version": "4.0.5",
+    "description": "LDAP authentication and synchronization for Matomo.",
     "theme": false,
     "keywords": ["ldap", "login", "authentication", "active", "directory", "kerberos", "sso"],
     "license": "GPL v3+",
-    "homepage": "https://github.com/piwik/plugin-LoginLdap",
+    "homepage": "https://github.com/matomo-org/plugin-LoginLdap",
     "require": {
         "piwik": ">=3.0.0-rc1,<4.0.0-b1",
         "php": ">=5.5"
     },
     "authors": [
         {
-            "name": "Piwik",
-            "email": "hello@piwik.org",
-            "homepage": "https://github.com/piwik"
+            "name": "Matomo",
+            "email": "hello@matomo.org",
+            "homepage": "https://github.com/matomo-org"
         },
         {
             "name": "Aivo Koger",
