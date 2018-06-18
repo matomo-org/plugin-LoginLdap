@@ -1,13 +1,12 @@
-# Piwik LoginLdap Plugin
+# Matomo LoginLdap Plugin
 
-[![Build Status](https://travis-ci.org/piwik/plugin-LoginLdap.svg?branch=master)](https://travis-ci.org/piwik/plugin-LoginLdap)
-[![Coverage Status](https://img.shields.io/coveralls/piwik/plugin-LoginLdap.svg)](https://coveralls.io/r/piwik/plugin-LoginLdap?branch=master)
+[![Build Status](https://travis-ci.org/matomo-org/plugin-LoginLdap.svg?branch=master)](https://travis-ci.org/matomo-org/plugin-LoginLdap)
 
 ## Description
 
-Allows users in LDAP to log in to Piwik Analytics. Supports web server authentication (eg, for Kerberos SSO).
+Allows users in LDAP to log in to MAtomo Analytics. Supports web server authentication (eg, for Kerberos SSO).
 
-LoginLdap authenticates with an LDAP server and uses LDAP information to personalize Piwik.
+LoginLdap authenticates with an LDAP server and uses LDAP information to personalize Matomo.
 
 ### Installation
 
@@ -24,12 +23,12 @@ To start using LoginLdap, follow these steps:
 
 6. You can now login with LDAP cedentials.
 
-_**Note:** LDAP users are not synchronized with Piwik until they are first logged in. This means you cannot access a token auth for an LDAP user until the user is synchronized.
+_**Note:** LDAP users are not synchronized with Matomo until they are first logged in. This means you cannot access a token auth for an LDAP user until the user is synchronized.
 If you use the default LoginLdap configuration, you can synchronize all of your LDAP users at once using the `./console loginldap:synchronize-users` command._
 
 ### Troubleshooting
 
-To troubleshoot any connectivity issues, read our [troubleshooting guide](https://github.com/piwik/plugin-LoginLdap/wiki/Troubleshooting).
+To troubleshoot any connectivity issues, read our [troubleshooting guide](https://github.com/matomo-org/plugin-LoginLdap/wiki/Troubleshooting).
 
 ### Upgrading from 2.2.7
 
@@ -41,7 +40,7 @@ Version 3.0.0 is a major rewrite of the plugin, so if you are upgrading for 2.2.
 
 - Uncheck the `Use LDAP for authentication` checkbox
 
-  Version 2.2.7 and below used an authentication strategy where user passwords were stored both in Piwik and in LDAP. In order to keep your current
+  Version 2.2.7 and below used an authentication strategy where user passwords were stored both in Matomo and in LDAP. In order to keep your current
   users' token auths from changing, that same strategy has to be used.
 
 ### Configurations
@@ -59,12 +58,12 @@ Each strategy has advantages and disadvantages. What you should use depends on y
 This strategy is more secure than the one below, but it requires connecting to the LDAP server on each login attempt.
 
 With this strategy, every time a user logs in, LoginLdap will connect to LDAP to authenticate. On successful login, the user can
-be synchronised, but the user's password is never stored in Piwik's DB, just in the LDAP server. Additionally, the token auth is generated using
+be synchronised, but the user's password is never stored in Matomo's DB, just in the LDAP server. Additionally, the token auth is generated using
 a hash of a hash of the password, or is generated randomly.
 
-This means that if the Piwik DB is ever compromised, your LDAP users' passwords will still be safe.
+This means that if the Matomo DB is ever compromised, your LDAP users' passwords will still be safe.
 
-_Note: With this auth strategy, non-LDAP users are still allowed to login to Piwik. These users must be created through Piwik, not in LDAP._
+_Note: With this auth strategy, non-LDAP users are still allowed to login to Matomo. These users must be created through Matomo, not in LDAP._
 
 **Steps to enable**
 
@@ -74,12 +73,12 @@ _Note: this is the default configuration._
 
 ### Using LDAP for synchronization only
 
-This strategy involves storing the user's passwords in the Piwik DB using Piwik's hashing. As a result, it is not as secure as the above
-method. If your Piwik DB is compromised, your LDAP users' passwords will be in greater danger of being cracked.
+This strategy involves storing the user's passwords in the Matomo DB using Matomo's hashing. As a result, it is not as secure as the above
+method. If your Matomo DB is compromised, your LDAP users' passwords will be in greater danger of being cracked.
 
 But, this strategy opens up the possibility of not communicating with LDAP servers at all during authentication, which may provide a better user experience.
 
-_Note: With this auth strategy, non-LDAP users can login to Piwik._
+_Note: With this auth strategy, non-LDAP users can login to Matomo._
 
 **Steps to enable**
 
@@ -87,7 +86,7 @@ _Note: With this auth strategy, non-LDAP users can login to Piwik._
 2. If you don't want to connect to LDAP while logging in, uncheck the `Synchronize Users After Successful Login` option.
    
    a. If you uncheck this option, make sure your users are synchronized in some other way (eg, by using the `loginldap:synchronize-users` command).
-      Piwik still needs information about your LDAP users in order to let them authenticate.
+      Matomo still needs information about your LDAP users in order to let them authenticate.
 
 ### Logging in with Kerberos SSO (or something similar)
 
@@ -104,7 +103,7 @@ _Note: With this auth strategy, any user that appears as a REMOTE_USER can login
 2. If you don't want to connect to LDAP while logging in, uncheck the `Synchronize Users After Successful Login` option.
    
    a. If you uncheck this option, make sure your users are synchronized in some other way (eg, by using the `loginldap:synchronize-users` command).
-      Piwik still needs information about your LDAP users in order to let them authenticate.
+      Matomo still needs information about your LDAP users in order to let them authenticate.
 
 ## Features
 
@@ -149,7 +148,7 @@ specify which LDAP attributes are used to determine a user's first & last name._
 
 **E-mail addresses**
 
-E-mail addresses are required for Piwik users. If your users in LDAP do not have e-mail addresses, you can set the **E-mail Address Suffix** setting to an e-mail
+E-mail addresses are required for Matomo users. If your users in LDAP do not have e-mail addresses, you can set the **E-mail Address Suffix** setting to an e-mail
 address suffix, for example:
 
 `@myorganization.com`
@@ -158,7 +157,7 @@ The suffix will be added to usernames to generate an e-mail address for your use
 
 Users are synchronized every time they log in. You can use the `loginldap:synchronize-users` command to synchronize users manually.
 
-### Piwik Access Synchronization
+### Matomo Access Synchronization
 
 LoginLdap also supports synchronizing access levels using attributes found in LDAP. To use this feature, first, you will need to modify your LDAP server's
 schema and add three special attributes to user entries:
@@ -179,22 +178,22 @@ Finally, in the LDAP settings page, check the **Enable User Access Synchronizati
 
 User access synchronization occurs at the same time as normal user synchronization. So the `loginldap:synchronize-users` command will synchronize access levels too.
 
-#### Managing Access for Multiple Piwik Instances
+#### Managing Access for Multiple Matomo Instances
 
-LoginLdap supports using a single LDAP server to manage access for multiple Piwik instances. If you'd like to use this feature, you must specify special values
+LoginLdap supports using a single LDAP server to manage access for multiple Matomo instances. If you'd like to use this feature, you must specify special values
 for LDAP access attributes. For example:
 
-- `view: mypiwikserver.whatever.com:1,2,3;myotherserver.com:all`
-- `admin: mypiwikserver.whatever.com:all;mythirdserver.com:3,4`
-- `superuser: myotherserver.com;myotherserver.com/otherpiwik`
+- `view: mymatomoserver.whatever.com:1,2,3;myotherserver.com:all`
+- `admin: mymatomoserver.whatever.com:all;mythirdserver.com:3,4`
+- `superuser: myotherserver.com;myotherserver.com/othermatomo`
 
-If you don't want to use URLs in your access attributes, you can use the **Special Name For This Piwik Instance** setting to specify a special name
-for each of your Piwiks. For example, if you set it to 'piwikServerA' in one Piwik and 'piwikServerB' in another, your LDAP attributes might look
+If you don't want to use URLs in your access attributes, you can use the **Special Name For This Matomo Instance** setting to specify a special name
+for each of your Matomos. For example, if you set it to 'matomoServerA' in one Matomo and 'matomoServerB' in another, your LDAP attributes might look
 like:
 
-- `view: piwikServerA:1,2,3;piwikServerB:all`
-- `admin: piwikServerA:4,5,6`
-- `superuser: piwikServerC`
+- `view: matomoServerA:1,2,3;matomoServerB:all`
+- `admin: matomoServerA:4,5,6`
+- `superuser: matomoServerC`
 
 **Using a custom access attribute format**
 
@@ -203,23 +202,23 @@ You can customize the separators used in access attributes by setting the **User
 
 If you set the **User Access Attribute Server Specification Delimiter** option to `'#'`, access attributes can be specified as:
 
-`view: piwikServerA:1,2,3#piwikServerB:all`
+`view: matomoServerA:1,2,3#matomoServerB:all`
 
 If you set the **User Access Attribute Server & Site List Separator** option to `'#'`, access attributes can be specified as:
 
-`view: piwikServerA#1,2,3;piwikServerB#all`
+`view: matomoServerA#1,2,3;matomoServerB#all`
 
 ## Security Considerations
 
 **User passwords**
 
-For added security, LoginLdap's default configuration will not store user passwords or a hash of a user password within Piwik's DB. So if the Piwik DB is compromised
+For added security, LoginLdap's default configuration will not store user passwords or a hash of a user password within Matomo's DB. So if the Matomo DB is compromised
 for whatever reason, user passwords will not be compromised.
 
 **Token Auths**
 
-LDAP has no concept of authentication tokens, so user token_auths are stored exclusively in Piwik's MySQL DB. If a token auth is compromised,
-you can have Piwik generate a new.
+LDAP has no concept of authentication tokens, so user token_auths are stored exclusively in Matomo's MySQL DB. If a token auth is compromised,
+you can have Matomo generate a new.
 
 **Logging**
 
@@ -234,12 +233,12 @@ If you use file logs, make sure to delete the logs after you are finished debugg
 LoginLdap comes with the following console commands:
 
 * `loginldap:synchronize-users`: Can be used to synchronize one, multiple, or all users in LDAP at once. If you'd like to setup user access
-  within Piwik before a user logs in, this command should be used.
+  within Matomo before a user logs in, this command should be used.
 
 ## Changelog
 
-See [https://github.com/piwik/plugin-LoginLdap/blob/master/CHANGELOG.md](https://github.com/piwik/plugin-LoginLdap/blob/master/CHANGELOG.md).
+See [https://github.com/matomo-org/plugin-LoginLdap/blob/master/CHANGELOG.md](https://github.com/matomo-org/plugin-LoginLdap/blob/master/CHANGELOG.md).
 
 ## Support
 
-**Please direct any feedback to [https://github.com/piwik/plugin-LoginLdap](https://github.com/piwik/plugin-LoginLdap).**
+**Please direct any feedback to [https://github.com/matomo-org/plugin-LoginLdap](https://github.com/matomo-org/plugin-LoginLdap).**
