@@ -1,6 +1,6 @@
 {
     "LoginLdap": {
-        "PluginDescription": "Carica il plugin con l'autenticazione LDAP. Dà un'alternativa al plugin di accesso standard di Matomo.",
+        "PluginDescription": "Carica il plugin con l'autenticazione LDAP. Esso fornisce un'alternativa al plugin di accesso standard di Matomo.",
         "MenuLdap": "Utenti LDAP",
         "LoadUser": "Carica utente da LDAP",
         "LoadUserDescription": "Puoi utilizzare questo form per sincronizzare in LDAP un singolo utente dalla UI.",
