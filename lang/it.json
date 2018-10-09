@@ -59,7 +59,7 @@
         "LdapUserAccessAttributeServerSpecDelimiterDescription": "Stringa utilizzata per delimitare le specifiche del server in un attributo di accesso utente. Se impostata a ';', ci si aspetta che l'attributo di accesso sia simile a '<server-spec>;<server-spec>;...'.",
         "LdapUserAccessAttributeServerSeparator": "Server Attributi Accesso Utente & Separatore Elenco Siti",
         "LdapUserAccessAttributeServerSeparatorDescription": "Stringa usata per separare gli ID delle istanze server dagli ID elenchi siti. Se impostata a ':', ci si aspetterà un attributo di accesso simile a '<server-id>:<site-list>;<server-id>:<site-list>'.",
-        "ThisMatomoInstanceName": "Nome speciale per questa istanza di Matomo",
+        "ThisMatomoInstanceName": "Nome Speciale per questa istanza di Matomo",
         "ThisMatomoInstanceNameDescription": "Nome speciale utilizzato per identificare questa istanza di Matomo in un attributo di accesso. Se non è specificato, ci si aspetta l'URL base di questo Matomo.",
         "UnsupportedPasswordReset": "Impossibile reimpostare la password di questo utente, si prega di contattare un amministratore.",
         "UserSyncSettings": "Impostazioni di sincronizzazione utente",
