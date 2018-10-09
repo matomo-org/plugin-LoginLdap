@@ -1,6 +1,6 @@
 {
     "LoginLdap": {
-        "PluginDescription": "Kirjautumislisäosa LDAP-autentikaatiolle. Tarjoaa vaihtoehdon Matomoin standardikirjautumiselle.",
+        "PluginDescription": "Kirjautumislisäosa LDAP-autentikaatiolle. Tarjoaa vaihtoehdon Matomon standardikirjautumiselle.",
         "MenuLdap": "LDAP-käyttäjät",
         "LoadUser": "Lataa käyttäjä LDAP:sta",
         "Settings": "LDAP-asetukset",
