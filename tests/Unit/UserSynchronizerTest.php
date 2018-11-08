@@ -163,12 +163,6 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
         } else {
             $mock->expects($this->any())->method('addUser');
         }
-        if ($throwsOnUpdateUser) {
-            $mock->expects($this->any())->method('updateUser')->willThrowException(new Exception("dummy message"));
-        } else {
-            $mock->expects($this->any())->method('updateUser');
-        }
-
         if ($throwsOnSetAccess) {
             $mock->expects($this->any())->method('setUserAccess')->willThrowException(new Exception("dummy message"));
         } else {
@@ -182,6 +176,18 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
         });
 
         $this->userSynchronizer->setUsersManagerApi($mock);
+
+        $mock = $this->getMockBuilder('Piwik\Plugins\UsersManager\UserUpdater')
+            ->setMethods(array('updateUserWithoutCurrentPassword'))
+            ->getMock();
+        if ($throwsOnUpdateUser) {
+            $mock->expects($this->any())->method('updateUserWithoutCurrentPassword')->willThrowException(new Exception("dummy message"));
+        } else {
+            $mock->expects($this->any())->method('updateUserWithoutCurrentPassword');
+        }
+
+        $this->userSynchronizer->setUserUpdater($mock);
+
     }
 
     private function getPiwikUserData()
