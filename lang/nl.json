@@ -23,7 +23,7 @@
         "AdminUserDescription": "Gebruikers met toegang tot andere gebruikersinfo. Laat leeg voor anonieme koppelingen.",
         "AdminPass": "LDAP Wachtwoord",
         "MemberOf": "Vereiste gebruikersgroep",
-        "MemberOfDescription2": "Let op\"deze instelling gebruikt het memberOf=? LDAP filter. Sommige LDAP servers hebben extra instellingen nodig om dit te laten werken.",
+        "MemberOfDescription2": "Opmerking: Deze instelling gebruikt het \"memberOf=?\" LDAP-filter. Sommige LDAP-servers hebben extra instellingen nodig om dit werkend te krijgen.",
         "Filter": "LDAP Zoek Filter",
         "FilterDescription": "Een LDAP filter wordt gebruikt om te bepalen welke entiteiten mogen worden gebruikt voor verificatie , bijv \" ( objectClass = persoon) \" .",
         "Kerberos": "Gebruik Web server authenticatie (bijv. Kerberos SSO)",
