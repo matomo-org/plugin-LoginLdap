@@ -314,6 +314,7 @@ class UserSynchronizer
         $result->setUserMapper(UserMapper::makeConfigured());
         $result->setUsersManagerApi(UsersManagerAPI::getInstance());
         $result->setUserModel(new UserModel());
+        $result->setUserUpdater(new UserUpdater());
 
         /** @var LoggerInterface $logger */
         $logger = StaticContainer::get('Psr\Log\LoggerInterface');
