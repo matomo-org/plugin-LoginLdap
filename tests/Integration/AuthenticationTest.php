@@ -179,7 +179,6 @@ class AuthenticationTest extends LdapIntegrationTest
 
     public function test_LdapAuth_AuthenticatesSuccessfully_WhenAuthenticatingNormalPiwikNonSuperUser()
     {
-        print Piwik::getCurrentUserLogin()."\n";
         UsersManagerAPI::getInstance()->addUser('pcoulson', 'thispasswordwillbechanged', 'pcoulson@shield.org', $alias = false);
         UsersManagerAPI::getInstance()->updateUser('pcoulson', 'vintage', false, false, false, self::TEST_SUPERUSER_PASS);
 

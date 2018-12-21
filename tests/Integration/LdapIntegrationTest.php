@@ -8,8 +8,10 @@
  */
 namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
+use Piwik\Access;
 use Piwik\Auth\Password;
 use Piwik\Common;
+use Piwik\Container\StaticContainer;
 use Piwik\Db;
 use Piwik\Config;
 use Piwik\Plugins\LoginLdap\Ldap\LdapFunctions;
@@ -89,6 +91,12 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
     {
         UsersManagerAPI::getInstance()->addUser(self::TEST_SUPERUSER_LOGIN, self::TEST_SUPERUSER_PASS, 'srodgers@aol.com', $alias = false);
         UsersManagerAPI::getInstance()->setSuperUserAccess(self::TEST_SUPERUSER_LOGIN, true);
+
+        $auth = StaticContainer::get('Piwik\Auth');
+        $auth->setLogin(self::TEST_SUPERUSER_LOGIN);
+        $auth->setPassword(self::TEST_SUPERUSER_PASS);
+        Access::getInstance()->setSuperUserAccess(false);
+        Access::getInstance()->reloadAccess(StaticContainer::get('Piwik\Auth'));
     }
 
     protected function addNonLdapUsers()
