@@ -14,6 +14,7 @@ use Piwik\Container\StaticContainer;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Plugins\UsersManager\Model as UserModel;
+use Piwik\Plugins\UsersManager\UserUpdater;
 use Piwik\Site;
 use Psr\Log\LoggerInterface;
 
@@ -81,6 +82,11 @@ class UserSynchronizer
     private $userModel;
 
     /**
+     * @var UserUpdater
+     */
+    private $userUpdater;
+
+    /**
      * The site IDs to grant view access to for every new LDAP user that is synchronized.
      * Defaults to the `[LoginLdap] new_user_default_sites_view_access` INI config option.
      *
@@ -112,9 +118,10 @@ class UserSynchronizer
         $userMapper = $this->userMapper;
         $usersManagerApi = $this->usersManagerApi;
         $userModel = $this->userModel;
+        $userUpdater = $this->userUpdater;
         $newUserDefaultSitesWithViewAccess = $this->newUserDefaultSitesWithViewAccess;
         $logger = $this->logger;
-        return Access::doAsSuperUser(function () use ($piwikLogin, $ldapUser, $userMapper, $usersManagerApi, $userModel, $newUserDefaultSitesWithViewAccess, $logger) {
+        return Access::doAsSuperUser(function () use ($piwikLogin, $ldapUser, $userMapper, $usersManagerApi, $userModel, $newUserDefaultSitesWithViewAccess, $logger, $userUpdater) {
             $piwikLogin = $userMapper->getExpectedLdapUsername($piwikLogin);
 
             $existingUser = $userModel->getUser($piwikLogin);
@@ -138,7 +145,7 @@ class UserSynchronizer
                 if (!$userMapper->isUserLdapUser($existingUser['login'])) {
                     $logger->warning("Unable to synchronize LDAP user '{user}', non-LDAP user with same name exists.", array('user' => $existingUser['login']));
                 } else {
-                    $usersManagerApi->updateUser($user['login'], $user['password'], $user['email'], $user['alias'], $isPasswordHashed = true);
+                    $userUpdater->updateUserWithoutCurrentPassword($user['login'], $user['password'], $user['email'], $user['alias'], $isPasswordHashed = true);
                 }
             }
 
@@ -287,6 +294,16 @@ class UserSynchronizer
     }
 
     /**
+     * Sets the {@link $$userUpdater} property.
+     *
+     * @param UserUpdater $userUpdater
+     */
+    public function setUserUpdater($userUpdater)
+    {
+        $this->userUpdater = $userUpdater;
+    }
+
+    /**
      * Creates a UserSynchronizer using INI configuration.
      *
      * @return UserSynchronizer
@@ -297,6 +314,7 @@ class UserSynchronizer
         $result->setUserMapper(UserMapper::makeConfigured());
         $result->setUsersManagerApi(UsersManagerAPI::getInstance());
         $result->setUserModel(new UserModel());
+        $result->setUserUpdater(new UserUpdater());
 
         /** @var LoggerInterface $logger */
         $logger = StaticContainer::get('Psr\Log\LoggerInterface');

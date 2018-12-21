@@ -7,7 +7,7 @@
     "license": "GPL v3+",
     "homepage": "https://github.com/matomo-org/plugin-LoginLdap",
     "require": {
-        "piwik": ">=3.0.0-rc1,<4.0.0-b1",
+        "piwik": ">=3.8.0-b5,<4.0.0-b1",
         "php": ">=5.5"
     },
     "authors": [
