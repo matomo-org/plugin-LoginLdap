@@ -12,6 +12,7 @@ use Piwik\AuthResult;
 use Piwik\Common;
 use Piwik\Config;
 use Piwik\Db;
+use Piwik\Piwik;
 use Piwik\Plugins\LoginLdap\Auth\LdapAuth;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Tests\Framework\Fixture;
@@ -178,9 +179,9 @@ class AuthenticationTest extends LdapIntegrationTest
 
     public function test_LdapAuth_AuthenticatesSuccessfully_WhenAuthenticatingNormalPiwikNonSuperUser()
     {
-
+        print Piwik::getCurrentUserLogin()."\n";
         UsersManagerAPI::getInstance()->addUser('pcoulson', 'thispasswordwillbechanged', 'pcoulson@shield.org', $alias = false);
-        UsersManagerAPI::getInstance()->updateUser('pcoulson', 'vintage', false, false, false, 'thispasswordwillbechanged');
+        UsersManagerAPI::getInstance()->updateUser('pcoulson', 'vintage', false, false, false, self::TEST_SUPERUSER_PASS);
 
         $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin('pcoulson');
