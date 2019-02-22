@@ -1,12 +1,16 @@
 {
     "LoginLdap": {
+        "MenuLdap": "LDAP 用户",
+        "Settings": "LDAP 设置",
         "LdapPort": "服务器端口",
+        "NoUserName": "没有提供用户名！",
         "AdminPass": "LDAP 密码",
         "Filter": "LDAP 搜索条件",
         "FilterCount": "%s 符合这个条件。",
         "Test": "测试",
         "FirstNameField": "名字字段",
         "FirstNameFieldDescription": "LDAP 属性包含用户的名字",
+        "UnsupportedPasswordReset": "无法重置该用户的密码，请联系管理员。",
         "ExpectedLdapAttributes": "需要 LDAP 属性",
         "Go": "下一步"
     }
