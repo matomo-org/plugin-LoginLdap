@@ -1,5 +1,9 @@
 # LoginLdap Changelog
 
+#### LoginLdap 4.0.7
+
+* Updated translations and Readme (no code change)
+
 #### LoginLdap 4.0.6
 
 * Make plugin compatible with latest Matomo version
