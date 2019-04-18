@@ -105,7 +105,7 @@ _Note: With this auth strategy, any user that appears as a REMOTE_USER can login
    a. If you uncheck this option, make sure your users are synchronized in some other way (eg, by using the `loginldap:synchronize-users` command).
       Matomo still needs information about your LDAP users in order to let them authenticate.
 
-## Features
+### Features
 
 ### Authenticating with Kerberos
 
@@ -208,7 +208,7 @@ If you set the **User Access Attribute Server & Site List Separator** option to 
 
 `view: matomoServerA#1,2,3;matomoServerB#all`
 
-## Security Considerations
+### Security Considerations
 
 **User passwords**
 
@@ -228,17 +228,17 @@ should still disable DEBUG logging in production_.
 If you need to debug a problem, enable it temporarily by changing the `[log] log_level` and `[log] log_writers` core INI config options.
 If you use file logs, make sure to delete the logs after you are finished debugging.
 
-## Commands
+### Commands
 
 LoginLdap comes with the following console commands:
 
 * `loginldap:synchronize-users`: Can be used to synchronize one, multiple, or all users in LDAP at once. If you'd like to setup user access
   within Matomo before a user logs in, this command should be used.
 
-## Changelog
+### Changelog
 
 See [https://github.com/matomo-org/plugin-LoginLdap/blob/master/CHANGELOG.md](https://github.com/matomo-org/plugin-LoginLdap/blob/master/CHANGELOG.md).
 
-## Support
+### Support
 
 **Please direct any feedback to [https://github.com/matomo-org/plugin-LoginLdap](https://github.com/matomo-org/plugin-LoginLdap).**
