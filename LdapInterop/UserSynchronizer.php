@@ -186,8 +186,7 @@ class UserSynchronizer
             Access::doAsSuperUser(function () use ($usersManagerApi, $userAccessLevel, $sites, $piwikLogin) {
                 if ($userAccessLevel == 'superuser') {
                     if (method_exists('Piwik\Plugins\UsersManager\UserUpdater', 'setSuperUserAccessWithoutCurrentPassword')) {
-                        $userUpdater = new UserUpdater();
-                        $userUpdater->setSuperUserAccessWithoutCurrentPassword($piwikLogin, true);
+                        $this->userUpdater->setSuperUserAccessWithoutCurrentPassword($piwikLogin, true);
                     } else {
                         $usersManagerApi->setSuperUserAccess($piwikLogin, true);
                     }

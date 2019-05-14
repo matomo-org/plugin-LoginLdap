@@ -17,6 +17,7 @@ use Piwik\Container\StaticContainer;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 use Piwik\Plugins\UsersManager\Model;
 use Piwik\Plugins\UsersManager\UserAccessFilter;
+use Piwik\Plugins\UsersManager\UserUpdater;
 
 /**
  * @group LoginLdap
@@ -171,20 +172,20 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
             });
         }
 
-        $mock->expects($this->any())->method('setSuperUserAccess')->willReturnCallback(function ($login, $hasSuperUserAccess) use ($self) {
-            $self->superUserAccess[] = array($login, $hasSuperUserAccess);
-        });
-
         $this->userSynchronizer->setUsersManagerApi($mock);
 
         $mock = $this->getMockBuilder('Piwik\Plugins\UsersManager\UserUpdater')
-            ->setMethods(array('updateUserWithoutCurrentPassword'))
+            ->setMethods(array('updateUserWithoutCurrentPassword', 'setSuperUserAccessWithoutCurrentPassword'))
             ->getMock();
         if ($throwsOnUpdateUser) {
             $mock->expects($this->any())->method('updateUserWithoutCurrentPassword')->willThrowException(new Exception("dummy message"));
         } else {
             $mock->expects($this->any())->method('updateUserWithoutCurrentPassword');
         }
+
+        $mock->expects($this->any())->method('setSuperUserAccessWithoutCurrentPassword')->willReturnCallback(function ($login, $hasSuperUserAccess) use ($self) {
+            $self->superUserAccess[] = array($login, $hasSuperUserAccess);
+        });
 
         $this->userSynchronizer->setUserUpdater($mock);
 
