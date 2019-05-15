@@ -162,7 +162,7 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
         );
     }
 
-    private function setSuperUserAccess($user, $hasAccess)
+    protected function setSuperUserAccess($user, $hasAccess)
     {
         $userUpdater = new UserUpdater();
         if (method_exists($userUpdater, 'setSuperUserAccessWithoutCurrentPassword')) {

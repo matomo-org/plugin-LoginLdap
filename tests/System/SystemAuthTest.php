@@ -168,8 +168,7 @@ class SystemAuthTest extends LdapIntegrationTest
 
         $this->assertNotEquals(AuthResult::FAILURE, $result->getCode());
 
-        $userUpdater = new UserUpdater();
-        $userUpdater->setSuperUserAccessWithoutCurrentPassword(self::TEST_SUPERUSER_LOGIN, true);
+        $this->setSuperUserAccess((self::TEST_SUPERUSER_LOGIN, true);
     }
 
     /**
