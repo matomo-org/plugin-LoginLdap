@@ -16,6 +16,7 @@ use Piwik\Db;
 use Piwik\Config;
 use Piwik\Plugins\LoginLdap\Ldap\LdapFunctions;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
+use Piwik\Plugins\UsersManager\UserUpdater;
 use Piwik\Tests\Framework\Fixture;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Tests\Framework\TestCase\IntegrationTestCase;
@@ -90,7 +91,7 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
     protected function addPreexistingSuperUser()
     {
         UsersManagerAPI::getInstance()->addUser(self::TEST_SUPERUSER_LOGIN, self::TEST_SUPERUSER_PASS, 'srodgers@aol.com', $alias = false);
-        UsersManagerAPI::getInstance()->setSuperUserAccess(self::TEST_SUPERUSER_LOGIN, true);
+        $this->setSuperUserAccess(self::TEST_SUPERUSER_LOGIN, true);
 
         $auth = StaticContainer::get('Piwik\Auth');
         $auth->setLogin(self::TEST_SUPERUSER_LOGIN);
@@ -102,7 +103,7 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
     protected function addNonLdapUsers()
     {
         UsersManagerAPI::getInstance()->addUser(self::NON_LDAP_USER, self::NON_LDAP_PASS, 'whatever@aol.com', $alias = false);
-        UsersManagerAPI::getInstance()->setSuperUserAccess(self::NON_LDAP_USER, true);
+        $this->setSuperUserAccess(self::NON_LDAP_USER, true);
         UsersManagerAPI::getInstance()->addUser(self::NON_LDAP_NORMAL_USER, self::NON_LDAP_NORMAL_PASS, 'witchy@sdhs.edu', $alias = false);
     }
 
@@ -159,5 +160,15 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
         return array(
             'Psr\Log\LoggerInterface' => \DI\get('Monolog\Logger'),
         );
+    }
+
+    protected function setSuperUserAccess($user, $hasAccess)
+    {
+        $userUpdater = new UserUpdater();
+        if (method_exists($userUpdater, 'setSuperUserAccessWithoutCurrentPassword')) {
+            $userUpdater->setSuperUserAccessWithoutCurrentPassword($user, $hasAccess);
+        } else {
+            UsersManagerAPI::getInstance()->setSuperUserAccess($user, $hasAccess);
+        }
     }
 }

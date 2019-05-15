@@ -17,6 +17,7 @@ use Piwik\Plugins\LoginLdap\Auth\LdapAuth;
 use Piwik\Plugins\LoginLdap\Auth\SynchronizedAuth;
 use Piwik\Plugins\LoginLdap\Auth\WebServerAuth;
 use Piwik\Plugins\LoginLdap\tests\Integration\LdapIntegrationTest;
+use Piwik\Plugins\UsersManager\UserUpdater;
 use Piwik\Tests\Framework\Fixture;
 use Piwik\Tests\Framework\TestingEnvironmentVariables;
 
@@ -167,7 +168,7 @@ class SystemAuthTest extends LdapIntegrationTest
 
         $this->assertNotEquals(AuthResult::FAILURE, $result->getCode());
 
-        \Piwik\Plugins\UsersManager\API::getInstance()->setSuperUserAccess(self::TEST_SUPERUSER_LOGIN, true);
+        $this->setSuperUserAccess(self::TEST_SUPERUSER_LOGIN, true);
     }
 
     /**
