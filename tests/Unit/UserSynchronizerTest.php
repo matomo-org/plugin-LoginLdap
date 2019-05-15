@@ -172,6 +172,11 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
             });
         }
 
+        // for previous version
+        $mock->expects($this->any())->method('setSuperUserAccess')->willReturnCallback(function ($login, $hasSuperUserAccess) use ($self) {
+            $self->superUserAccess[] = array($login, $hasSuperUserAccess);
+        });
+
         $this->userSynchronizer->setUsersManagerApi($mock);
 
         $mock = $this->getMockBuilder('Piwik\Plugins\UsersManager\UserUpdater')
