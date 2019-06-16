@@ -33,21 +33,22 @@ describe("LoginLdap_Admin", function () {
 
     var ldapAdminUrl = "?module=LoginLdap&action=admin&idSite=1&period=day&date=yesterday";
 
-    it("should load correctly and allow testing the filter and group fields", function (done) {
-        expect.screenshot('admin_page').to.be.captureSelector('#content', function (page) {
-            page.load(ldapAdminUrl, 2000);
+    it("should load correctly and allow testing the filter and group fields", async function () {
+        await page.goto(ldapAdminUrl);
+        await page.waitForFunction("$('input[name=required_member_of]').length > 0");
 
-            page.sendKeys('input#required_member_of', 'a');
-            page.sendKeys('input#ldap_user_filter', 'a');
+        await page.evaluate(function () {
+            $('input#required_member_of').val('cn=avengers,dc=avengers,dc=shield,dc=org').trigger('input');
+            $('input#ldap_user_filter').val('(objectClass=person)').trigger('input');
+        });
 
-            page.evaluate(function () {
-                $('input#required_member_of').val('cn=avengers,dc=avengers,dc=shield,dc=org').trigger('input');
-                $('input#ldap_user_filter').val('(objectClass=person)').trigger('input');
-            });
+        await page.evaluate(function () {
+            $('[piwik-login-ldap-testable-field] [piwik-save-button] input').click();
+        });
 
-            page.evaluate(function () {
-                $('[piwik-login-ldap-testable-field] [piwik-save-button] input').click();
-            }, 1000);
-        }, done);
+        await page.waitForNetworkIdle();
+
+        var elem = await page.jQuery('#content');
+        expect(await elem.screenshot()).to.matchImage('admin_page');
     });
 });
