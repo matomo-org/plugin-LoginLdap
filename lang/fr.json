@@ -58,7 +58,7 @@
         "LdapUserAccessAttributeServerSpecDelimiter": "Séparateur entre les serveurs dans l'attribut accès utilisateur",
         "LdapUserAccessAttributeServerSpecDelimiterDescription": "Chaîne de caractères utilisée pour séparer les différentes instances de Matomo dans l'attribut accès utilisateur. Si ';' est utilisé par exemple, l'attribut d'accès devrait ressembler à : '<server-spec>;<server-spec>;...'.",
         "LdapUserAccessAttributeServerSeparator": "Séparateur entre le serveur de la liste des sites dans l'attribut accès utilisateur",
-        "LdapUserAccessAttributeServerSeparatorDescription": "Chaîne de caractères utilisée pour séparer l'ID de l'instance de Matomo ID de la liste des ID de sites. Par exemple, si ':' est utilisé, l'attribut d'accès devrait être renseigné ainsi : '<server-id>:<site-list>;<server-id>:<site-list>'.",
+        "LdapUserAccessAttributeServerSeparatorDescription": "Chaîne de caractères utilisée pour séparer l'ID de l'instance de Matomo ID de la liste des ID de sites. Par exemple, si ' :' est utilisé, l'attribut d'accès devrait être renseigné ainsi : '<server-id>:<site-list>;<server-id>:<site-list>'.",
         "ThisMatomoInstanceName": "Nom spécifique pour cette instance Matomo",
         "ThisMatomoInstanceNameDescription": "Nom spécifique utilisé pour identifier cette instance Matomo dans un attribut d'accès. Si rien n'est renseigné, nous cherchons l'URL de base de cette instance de Matomo.",
         "UnsupportedPasswordReset": "Impossible de réinitialiser le mot de passe utiliseur. Merci de contacter votre administrateur.",
@@ -79,12 +79,12 @@
         "NetworkTimeoutDescription": "Durée maximale d'attente en secondes pour une réponse à une requête LDAP.",
         "NetworkTimeoutDescription2": "Supérieur au délai d'attente LDAP, temps maximum que vos utilisateurs peuvent avoir à attendre pour se connecter à Matomo via LDAP, si un ou plusieurs de vos serveurs LDAP ne répondent plus.",
         "Go": "Aller",
-        "LoginPluginEnabledWarning": "Les composants %1$s et %2$s sont tous deux activés! Cela va causer un échec de l'authentification pour les utilisateurs LDAP, veuillez désactiver le composant %1$s.",
+        "LoginPluginEnabledWarning": "Les composants %1$s et %2$s sont tous deux activés ! Cela va causer un échec de l'authentification pour les utilisateurs LDAP, veuillez désactiver le composant %1$s.",
         "MemberOfField": "Champ LDAP memberOf",
         "MemberOfFieldDescription": "Champs utilisé par votre LDAP pour indiquer l'appartenance, par défaut \"memberOf\"",
         "LdapUrlPortWarning": "L'option port est ignorée quand la valeur de nom d'hôte est définie à une URL LDAP (c'est à dire ldap:\/\/localhost\/ au lieu de localhost).",
         "UpdateFromPre300Warning": "Puisque vous avez mis à jour depuis une version antérieure à 3.0.0, vous devriez probablement garder cette option non cochée. Avant la version 3.0.0 les mots de passe étaient stockés à la fois dans LDAP et dans la BDD Matomo. Cette option doit être décochée pour que les utilisateurs ajoutés à la mise à jour puissent continuer à s'authentifier.",
-        "MobileAppIntegrationNote": "Note: si vous planifiez d'utiliser LDAP avec l'application mobile officielle, vous devez garder cette option décochée. Actuellement l'application mobile ne peut pas authentifier des utilisateurs si leur mot de passe n'est pas stocké dans la BDD Matomo.",
+        "MobileAppIntegrationNote": "Note : si vous planifiez d'utiliser LDAP avec l'application mobile officielle, vous devez garder cette option décochée. Actuellement l'application mobile ne peut pas authentifier des utilisateurs si leur mot de passe n'est pas stocké dans la BDD Matomo.",
         "PasswordFieldHelp": "Entrez un mot de passe pour remplacer le mot de passe existant ou laisser vide pour ne rien changer.",
         "LdapUserCantChangePassword": "La modification du mot de passe n'est pas disponible pour les utilisateurs authentifiés par LDAP. Utilisant LDAP, vous informations d'authentification sont gérées directement dans l'annuaire. Pour plus d'informations, contactez votre administrateur LDAP ou Matomo."
     }

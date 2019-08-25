@@ -27,7 +27,15 @@
         "Kerberos": "Kerberos aktiveeritud",
         "LdapUserAdded": "LDAP kasutaja lisatud edukalt!",
         "LdapFunctionsMissing": "PHP ldap_connect() funktsioon puudub, palun seadista LDAP moodul PHP konfiguratsioonis!",
+        "LDAPServers": "LDAP serverid",
+        "OneUser": "1 kasutaja",
         "Test": "Testi",
+        "InvalidFilter": "Vigane filter",
+        "FirstNameField": "Eenime väli",
+        "LastNameField": "Perekonnanime väli",
+        "UserSyncSettings": "Kasutaja sünkroonimise seaded",
+        "AccessSyncSettings": "Ligipääsu sünkroniseerimise seaded",
+        "PasswordField": "Kasutaja parooli väli",
         "Go": "OK"
     }
 }
