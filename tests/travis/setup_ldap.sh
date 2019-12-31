@@ -276,13 +276,13 @@ objectClass: groupOfNames
 objectClass: top
 member: cn=Natalia Romanova,$BASE_DN
 
-# USER ENTRY (pwd: cher)
+# USER ENTRY (pwd: cherry)
 dn: cn=Rogue,$BASE_DN
 objectClass: top
 objectClass: piwikPerson
 cn: Rogue
 uid: rogue@xmansion.org
-userPassword: `slappasswd -h {md5} -s cher`
+userPassword: `slappasswd -h {md5} -s cherry`
 sn: Doesnthaveone
 
 EOF
