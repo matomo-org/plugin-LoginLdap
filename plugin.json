@@ -1,6 +1,6 @@
 {
     "name": "LoginLdap",
-    "version": "4.0.7",
+    "version": "4.0.8",
     "description": "LDAP authentication and synchronization for Matomo.",
     "theme": false,
     "keywords": ["ldap", "login", "authentication", "active", "directory", "kerberos", "sso"],
