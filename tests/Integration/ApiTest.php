@@ -24,7 +24,7 @@ class ApiTest extends LdapIntegrationTest
      */
     private $api;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -49,12 +49,11 @@ class ApiTest extends LdapIntegrationTest
         $this->assertEquals(0, $count);
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage LoginLdap_InvalidFilter
-     */
     public function test_getCountOfUsersMatchingFilter_Throws_WhenFilterIsInvalid()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Invalid Filter');
+
         $this->api->getCountOfUsersMatchingFilter("lksjdf()a;sk");
     }
 
@@ -199,12 +198,11 @@ class ApiTest extends LdapIntegrationTest
         ), Config::getInstance()->LoginLdap_server2);
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage LoginLdap_UserNotFound
-     */
     public function test_synchronizeUser_Throws_WhenLdapUserDoesNotExist()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('User "unknownuser" not found!');
+
         $this->api->synchronizeUser('unknownuser');
     }
 

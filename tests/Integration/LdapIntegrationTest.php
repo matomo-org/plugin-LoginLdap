@@ -46,7 +46,7 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
     const NON_LDAP_NORMAL_USER = 'amber';
     const NON_LDAP_NORMAL_PASS = 'crossingthefourthwall';
 
-    public function setUp()
+    public function setUp(): void
     {
         if (empty(getenv('PLUGIN_NAME'))) {
             $this->markTestSkipped('LDAP tests can only be run as plugin tests.');
@@ -86,6 +86,15 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
         Fixture::createWebsite('2013-01-01 00:00:00');
         Fixture::createWebsite('2013-01-01 00:00:00');
         Fixture::createWebsite('2013-01-01 00:00:00');
+
+        Fixture::loadAllTranslations();
+    }
+
+    public function tearDown(): void
+    {
+        Fixture::resetTranslations();
+
+        parent::tearDown();
     }
 
     protected function addPreexistingSuperUser()

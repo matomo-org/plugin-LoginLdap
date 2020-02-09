@@ -10,6 +10,7 @@ namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
 use Piwik\Config;
 use Piwik\Plugins\LoginLdap\Auth\LdapAuth;
+use Piwik\Tests\Framework\Fixture;
 
 /**
  * @group LoginLdap
@@ -18,10 +19,8 @@ use Piwik\Plugins\LoginLdap\Auth\LdapAuth;
  */
 class MultipleServersTest extends LdapIntegrationTest
 {
-    public function setUp()
+    public function setUp(): void
     {
-        parent::setUp();
-
         Config::getInstance()->LoginLdap_dummyserver1 = array(
             'hostname' => "notanldaphost.com",
             'port' => self::SERVER_PORT,
@@ -56,12 +55,11 @@ class MultipleServersTest extends LdapIntegrationTest
         $this->doAuthTest();
     }
 
-    /**
-     * @expectedException \Piwik\Plugins\LoginLdap\Ldap\Exceptions\ConnectionException
-     * @expectedExceptionMessageContains Could not connect to any of the
-     */
     public function testAuthenticateFailsWhenAllServersFailToConnect()
     {
+        $this->expectException(\Piwik\Plugins\LoginLdap\Ldap\Exceptions\ConnectionException::class);
+        $this->expectExceptionMessage('Could not connect to any of the');
+
         Config::getInstance()->LoginLdap['servers'] = array('dummyserver1', 'dummyserver2');
 
         $this->doAuthTest($expectCode = 0);

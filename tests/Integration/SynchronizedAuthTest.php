@@ -20,7 +20,7 @@ use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
  */
 class SynchronizedAuthTest extends LdapIntegrationTest
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -90,12 +90,11 @@ class SynchronizedAuthTest extends LdapIntegrationTest
         $this->doAuthTestByPasswordHash($code = 1, self::NON_LDAP_NORMAL_USER, self::NON_LDAP_NORMAL_PASS);
     }
 
-    /**
-     * @expectedException \Piwik\Plugins\LoginLdap\Ldap\Exceptions\ConnectionException
-     */
     public function test_LdapUsersCannotLogin_IfUnsynchronized_AndLdapServerBroken()
     {
-        Config::getInstance()->LoginLdap['servers'] = array('brokenserver');
+        $this->expectException(\Piwik\Plugins\LoginLdap\Ldap\Exceptions\ConnectionException::class);
+
+        Config::getInstance()->LoginLdap['servers'] = ['brokenserver'];
 
         $this->doAuthTest($code = 0);
     }

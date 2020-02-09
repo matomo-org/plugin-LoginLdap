@@ -11,7 +11,7 @@ namespace Piwik\Plugins\LoginLdap\Ldap;
 // mocks ldap_* functions for Ldap\Client class
 class LdapFunctions
 {
-    /** @var \PHPUnit_Framework_MockObject_MockObject */
+    /** @var \PHPUnit\Framework\MockObject\MockObject */
     public static $phpUnitMock;
 
     public static function __callStatic($name, $arguments)

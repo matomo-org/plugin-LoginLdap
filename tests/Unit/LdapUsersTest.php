@@ -36,7 +36,7 @@ class LdapUsersTest extends TestCase
      */
     private $ldapUsers = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -45,11 +45,10 @@ class LdapUsersTest extends TestCase
         $this->ldapUsers->setLdapUserMapper(new UserMapper());
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
     public function test_authenticate_ThrowsException_IfUsernameEmpty()
     {
+        $this->expectException(InvalidArgumentException::class);
+
         $this->ldapUsers->authenticate(null, self::PASSWORD);
         $this->ldapUsers->authenticate("", self::PASSWORD);
     }
@@ -210,16 +209,15 @@ class LdapUsersTest extends TestCase
 
         $this->assertEquals(self::TEST_ADMIN_USER, $adminUserName);
         $this->assertEquals('thedn', $userName);
-        $this->assertContains("uid=?", $filterUsed);
+        self::assertStringContainsString("uid=?", $filterUsed);
         $this->assertEquals(array(self::TEST_USER . 'whoa'), $filterBind);
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Could not bind as LDAP admin.
-     */
     public function test_getUser_Throws_IfAdminBindFails()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Could not bind as LDAP admin.');
+
         $mockLdapClient = $this->makeMockLdapClient();
         $this->makeMockLdapClientFailOnBind($mockLdapClient);
 
@@ -274,9 +272,9 @@ class LdapUsersTest extends TestCase
         $this->ldapUsers->getUser(self::TEST_USER);
 
         $this->assertEquals(self::TEST_BASE_DN, $usedBaseDn);
-        $this->assertContains(self::TEST_EXTRA_FILTER, $usedFilter);
-        $this->assertContains("(".self::TEST_MEMBER_OF_Field."=?)", $usedFilter);
-        $this->assertContains(self::TEST_MEMBER_OF, $filterBind);
+        self::assertStringContainsString(self::TEST_EXTRA_FILTER, $usedFilter);
+        self::assertStringContainsString("(".self::TEST_MEMBER_OF_Field."=?)", $usedFilter);
+        self::assertTrue(in_array(self::TEST_MEMBER_OF, $filterBind));
     }
 
     public function test_getUser_CreatesOneClient_WhenNoExistingClientSupplied()
@@ -288,12 +286,11 @@ class LdapUsersTest extends TestCase
         $this->ldapUsers->getUser(self::TEST_USER);
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage dummy error
-     */
     public function test_getUser_ThrowsException_WhenLdapClientThrows()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('dummy error');
+
         $mockLdapClient = $this->makeMockLdapClient();
         $this->makeMockLdapClientThrowOnBind($mockLdapClient);
 
@@ -369,12 +366,11 @@ class LdapUsersTest extends TestCase
         $this->assertSame($serverInfos[2], $passedServerInfo);
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage test
-     */
     public function test_doWithClient_PropagatesCallbackExceptions()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('test');
+
         $mockLdapClient = $this->makeMockLdapClient($forSuccess = true);
         $this->ldapUsers->setLdapClientClass($mockLdapClient);
 
@@ -386,12 +382,11 @@ class LdapUsersTest extends TestCase
         });
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Could not bind as LDAP admin.
-     */
     public function test_getCountOfUsersMatchingFilter_Throws_IfAdminBindFails()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Could not bind as LDAP admin.');
+
         $mockLdapClient = $this->makeMockLdapClient();
         $this->makeMockLdapClientFailOnBind($mockLdapClient);
 
@@ -400,12 +395,11 @@ class LdapUsersTest extends TestCase
         $this->ldapUsers->getCountOfUsersMatchingFilter("dummy filter");
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage dummy error
-     */
     public function test_getCountOfUsersMatchingFilter_Throws_IfLdapClientConnectThrows()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('dummy error');
+
         $mockLdapClient = $this->makeMockLdapClient();
         $this->makeMockLdapClientThrowOnBind($mockLdapClient);
 
@@ -432,12 +426,11 @@ class LdapUsersTest extends TestCase
         $this->assertEquals(10, $count);
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage Could not bind as LDAP admin.
-     */
     public function test_getAllUserLogins_Throws_IfAdminBindFails()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Could not bind as LDAP admin.');
+
         $mockLdapClient = $this->makeMockLdapClient();
         $this->makeMockLdapClientFailOnBind($mockLdapClient);
 
@@ -446,12 +439,11 @@ class LdapUsersTest extends TestCase
         $this->ldapUsers->getAllUserLogins();
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage dummy error
-     */
     public function test_getAllUserLogins_Throws_IfLdapClientConnectThrows()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('dummy error');
+
         $mockLdapClient = $this->makeMockLdapClient();
         $this->makeMockLdapClientThrowOnBind($mockLdapClient);
 
@@ -486,7 +478,7 @@ class LdapUsersTest extends TestCase
 
         $mock = $this->getMockBuilder('Piwik\Plugins\LoginLdap\Ldap\Client')
                      ->disableOriginalConstructor()
-                     ->setMethods($methods)
+                     ->onlyMethods($methods)
                      ->getMock();
 
         if ($forSuccess) {
@@ -497,7 +489,7 @@ class LdapUsersTest extends TestCase
         return $mock;
     }
 
-    private function makeMockLdapClientFailOnBind(\PHPUnit_Framework_MockObject_MockObject $mockLdapClient)
+    private function makeMockLdapClientFailOnBind(\PHPUnit\Framework\MockObject\MockObject $mockLdapClient)
     {
         $mockLdapClient->expects($this->any())->method('bind')->will($this->returnCallback(function ($bindResource) {
             if ($bindResource == LdapUsersTest::TEST_ADMIN_USER) {
@@ -508,7 +500,7 @@ class LdapUsersTest extends TestCase
         }));
     }
 
-    private function makeMockLdapClientThrowOnBind(\PHPUnit_Framework_MockObject_MockObject $mockLdapClient)
+    private function makeMockLdapClientThrowOnBind(\PHPUnit\Framework\MockObject\MockObject $mockLdapClient)
     {
         $mockLdapClient->expects($this->any())->method('bind')->will($this->returnCallback(function () {
             throw new Exception("dummy error");

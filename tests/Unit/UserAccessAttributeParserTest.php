@@ -28,7 +28,7 @@ class UserAccessAttributeParserTest extends TestCase
      */
     private $userAccessAttributeParser;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -39,7 +39,7 @@ class UserAccessAttributeParserTest extends TestCase
         $this->userAccessAttributeParser = new UserAccessAttributeParser();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Option::setSingletonInstance(null);
     }
@@ -283,7 +283,7 @@ class UserAccessAttributeParserTest extends TestCase
     private function setSitesManagerApiMock()
     {
         $mock = $this->getMockBuilder('stdClass')
-                     ->setMethods( array('getSitesIdWithAtLeastViewAccess', 'getAllSitesId'))
+                     ->addMethods( array('getSitesIdWithAtLeastViewAccess', 'getAllSitesId'))
                      ->getMock();
         $mock->expects($this->any())->method('getSitesIdWithAtLeastViewAccess')->willReturn(array(1,2,3,4,5,6));
         $mock->expects($this->any())->method('getAllSitesId')->willReturn(array(1,2,3,4,5,6));
@@ -293,7 +293,7 @@ class UserAccessAttributeParserTest extends TestCase
     private function setThisPiwikUrl($thisUrl)
     {
         $mock = $this->getMockBuilder('stdClass')
-                     ->setMethods(array('getValue'))
+                     ->addMethods(array('getValue'))
                      ->getMock();
         $mock->expects($this->any())->method('getValue')->willReturnCallback(function ($key) use ($thisUrl) {
             if ($key == SettingsPiwik::OPTION_PIWIK_URL) {

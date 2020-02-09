@@ -23,7 +23,7 @@ use Piwik\Tests\Framework\Fixture;
  */
 class AuthenticationTest extends LdapIntegrationTest
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
