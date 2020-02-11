@@ -8,7 +8,7 @@
  */
 namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Piwik\Config;
 use Piwik\Option;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserAccessAttributeParser;
@@ -21,7 +21,7 @@ use Piwik\SettingsPiwik;
  * @group LoginLdap_Unit
  * @group LoginLdap_UserAccessAttributeParserTest
  */
-class UserAccessAttributeParserTest extends PHPUnit_Framework_TestCase
+class UserAccessAttributeParserTest extends TestCase
 {
     /**
      * @var UserAccessAttributeParser
