@@ -9,7 +9,7 @@
 namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
 use Exception;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Piwik\Auth\Password;
 use Piwik\Config;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
@@ -19,7 +19,7 @@ use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
  * @group LoginLdap_Unit
  * @group LoginLdap_UserMapperTest
  */
-class UserMapperTest extends PHPUnit_Framework_TestCase
+class UserMapperTest extends TestCase
 {
     /**
      * @var UserMapper

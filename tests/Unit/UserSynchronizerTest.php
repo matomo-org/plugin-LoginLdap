@@ -9,7 +9,7 @@
 namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
 use Exception;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Piwik\Access;
 use Piwik\Auth\Password;
 use Piwik\Config;
@@ -24,7 +24,7 @@ use Piwik\Plugins\UsersManager\UserUpdater;
  * @group LoginLdap_Unit
  * @group LoginLdap_UserSynchronizerTest
  */
-class UserSynchronizerTest extends PHPUnit_Framework_TestCase
+class UserSynchronizerTest extends TestCase
 {
     /**
      * @var UserSynchronizer
