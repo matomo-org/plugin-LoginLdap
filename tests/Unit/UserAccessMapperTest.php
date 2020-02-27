@@ -26,7 +26,7 @@ class UserAccessMapperTest extends TestCase
      */
     private $userAccessMapper;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -41,7 +41,7 @@ class UserAccessMapperTest extends TestCase
         $this->userAccessMapper->setUserAccessAttributeParser($attributeParser);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         SitesManagerAPI::unsetInstance();
     }
@@ -171,7 +171,7 @@ class UserAccessMapperTest extends TestCase
     private function setSitesManagerApiMock()
     {
         $mock = $this->getMockBuilder('stdClass')
-                     ->setMethods(array('getSitesIdWithAtLeastViewAccess', 'getAllSitesId'))
+                     ->addMethods(array('getSitesIdWithAtLeastViewAccess', 'getAllSitesId'))
                      ->getMock();
         $mock->expects($this->any())->method('getSitesIdWithAtLeastViewAccess')->willReturn(array(1,2,3,4,5,6));
         $mock->expects($this->any())->method('getAllSitesId')->willReturn(array(1,2,3,4,5,6));

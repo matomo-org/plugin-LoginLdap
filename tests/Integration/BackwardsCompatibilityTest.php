@@ -19,7 +19,7 @@ use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
  */
 class BackwardsCompatibilityTest extends LdapIntegrationTest
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

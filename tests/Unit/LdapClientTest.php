@@ -24,18 +24,18 @@ class LdapClientTest extends TestCase
 {
     const ERROR_MESSAGE = "triggered error";
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
         LdapFunctions::$phpUnitMock = $this->getMockBuilder('stdClass')
-                                           ->setMethods( array('ldap_connect', 'ldap_close',
+                                           ->addMethods( array('ldap_connect', 'ldap_close',
                                              'ldap_bind', 'ldap_search', 'ldap_set_option',
                                              'ldap_get_entries', 'ldap_count_entries'))
                                            ->getMock();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         restore_error_handler();
 
@@ -77,12 +77,11 @@ class LdapClientTest extends TestCase
         $this->assertTrue($ldapClient->isOpen());
     }
 
-    /**
-     * @expectedException \Piwik\Exception\ErrorException
-     * @expectedExceptionMessage triggered error
-     */
     public function test_connect_ThrowsPhpErrors()
     {
+        $this->expectException(\Piwik\Exception\ErrorException::class);
+        $this->expectExceptionMessage('triggered error');
+
         $this->setPiwikErrorHandling();
 
         $this->addLdapMethodThatTriggersPhpError('ldap_connect');
@@ -95,14 +94,15 @@ class LdapClientTest extends TestCase
     {
         $ldapClient = new LdapClient();
         $ldapClient->close();
+
+        self::assertTrue(true);
     }
 
-    /**
-     * @expectedException \Piwik\Exception\ErrorException
-     * @expectedExceptionMessage triggered error
-     */
     public function test_close_ThrowsPhpErrors()
     {
+        $this->expectException(\Piwik\Exception\ErrorException::class);
+        $this->expectExceptionMessage('triggered error');
+
         $this->setPiwikErrorHandling();
 
         $this->addLdapConnectMethodMock();
@@ -121,12 +121,11 @@ class LdapClientTest extends TestCase
         $this->assertEquals("ldap_bind result", $result);
     }
 
-    /**
-     * @expectedException \Piwik\Exception\ErrorException
-     * @expectedExceptionMessage triggered error
-     */
     public function test_bind_ThrowsPhpErrors()
     {
+        $this->expectException(\Piwik\Exception\ErrorException::class);
+        $this->expectExceptionMessage('triggered error');
+
         $this->setPiwikErrorHandling();
 
         $this->addLdapMethodThatTriggersPhpError('ldap_bind');
@@ -135,12 +134,11 @@ class LdapClientTest extends TestCase
         $ldapClient->bind("resource", "password");
     }
 
-    /**
-     * @expectedException \Piwik\Exception\ErrorException
-     * @expectedExceptionMessage triggered error
-     */
     public function test_fetchAll_ThrowsPhpErrors()
     {
+        $this->expectException(\Piwik\Exception\ErrorException::class);
+        $this->expectExceptionMessage('triggered error');
+
         $this->setPiwikErrorHandling();
 
         $this->addLdapMethodThatTriggersPhpError('ldap_search');
@@ -268,12 +266,11 @@ class LdapClientTest extends TestCase
         $this->assertEquals($expectedData, $result);
     }
 
-    /**
-     * @expectedException \Piwik\Exception\ErrorException
-     * @expectedExceptionMessage triggered error
-     */
     public function test_count_ThrowsPhpErrors()
     {
+        $this->expectException(\Piwik\Exception\ErrorException::class);
+        $this->expectExceptionMessage('triggered error');
+
         $this->setPiwikErrorHandling();
 
         LdapFunctions::$phpUnitMock->expects($this->any())->method('ldap_search')->will($this->returnValue("resource"));
@@ -283,11 +280,10 @@ class LdapClientTest extends TestCase
         $ldapClient->count("base dn", "filter");
     }
 
-    /**
-     * @expectedException \Exception
-     */
     public function test_count_Throws_IfLdapSearchReturnsNull()
     {
+        $this->expectException(\Exception::class);
+
         $this->setPiwikErrorHandling();
 
         LdapFunctions::$phpUnitMock->expects($this->any())->method('ldap_search')->will($this->returnValue(null));

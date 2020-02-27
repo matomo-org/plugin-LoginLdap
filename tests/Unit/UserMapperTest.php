@@ -26,7 +26,7 @@ class UserMapperTest extends TestCase
      */
     private $userMapper;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -139,11 +139,10 @@ class UserMapperTest extends TestCase
         ), $result);
     }
 
-    /**
-     * @expectedException Exception
-     */
     public function test_createPiwikUserFromLdapUser_FailsToCreatePiwikUser_WhenUIDAttributeIsMissing()
     {
+        $this->expectException(Exception::class);
+
         $this->userMapper->createPiwikUserFromLdapUser(array(
             'cn' => 'the impossible girl',
             'sn' => 'Oswald',

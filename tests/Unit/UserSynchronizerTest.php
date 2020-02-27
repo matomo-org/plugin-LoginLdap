@@ -41,7 +41,7 @@ class UserSynchronizerTest extends TestCase
      */
     public $superUserAccess;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -69,12 +69,11 @@ class UserSynchronizerTest extends TestCase
         $this->assertNotNull($result);
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage dummy
-     */
     public function test_synchronizeLdapUser_Throws_IfUserMapperCannotCorrectlyCreatePiwikUser()
     {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('dummy');
+
         $this->setUserMapperMock($value = null, $throws = true);
 
         $this->userSynchronizer->synchronizeLdapUser('piwikuser', array());
@@ -93,11 +92,10 @@ class UserSynchronizerTest extends TestCase
         ), $this->userAccess);
     }
 
-    /**
-     * @expectedException Exception
-     */
     public function test_synchronizeLdapUser_Throws_IfUserManagerApiThrows()
     {
+        $this->expectException(Exception::class);
+
         $this->setUserManagerApiMock($throwsInAddUser = true, $throwsInUpdateUser = true);
         $this->setUserModelMock(null);
 
@@ -110,6 +108,8 @@ class UserSynchronizerTest extends TestCase
         $this->setUserModelMock(null);
 
         $this->userSynchronizer->synchronizeLdapUser('piwikuser', array());
+
+        self::assertTrue(true);
     }
 
     public function test_synchronizePiwikAccessFromLdap_DoesNotSynchronizeUserAccessOnUpdate_WhenUserAccessMapperNotUsed()
@@ -117,6 +117,8 @@ class UserSynchronizerTest extends TestCase
         $this->setUserManagerApiMock($throwsOnAdd = false, $throwsOnUpdate = false, $throwsOnSetAccess = true);
 
         $this->userSynchronizer->synchronizePiwikAccessFromLdap('piwikuser', array());
+
+        self::assertTrue(true);
     }
 
     public function test_synchronizePiwikAccessFromLdap_WillSetAccessCorrectly()
@@ -156,7 +158,7 @@ class UserSynchronizerTest extends TestCase
         $model = new Model();
 
         $mock = $this->getMockBuilder('Piwik\Plugins\UsersManager\API')
-                     ->setMethods(array('addUser', 'updateUser', 'getUser', 'setUserAccess', 'setSuperUserAccess'))
+                     ->onlyMethods(array('addUser', 'updateUser', 'getUser', 'setUserAccess', 'setSuperUserAccess'))
                      ->setConstructorArgs(array($model, new UserAccessFilter($model, new Access()), new Password()))
                      ->getMock();
         if ($throwsOnAddUser) {
@@ -180,7 +182,7 @@ class UserSynchronizerTest extends TestCase
         $this->userSynchronizer->setUsersManagerApi($mock);
 
         $mock = $this->getMockBuilder('Piwik\Plugins\UsersManager\UserUpdater')
-            ->setMethods(array('updateUserWithoutCurrentPassword', 'setSuperUserAccessWithoutCurrentPassword'))
+            ->onlyMethods(array('updateUserWithoutCurrentPassword', 'setSuperUserAccessWithoutCurrentPassword'))
             ->getMock();
         if ($throwsOnUpdateUser) {
             $mock->expects($this->any())->method('updateUserWithoutCurrentPassword')->willThrowException(new Exception("dummy message"));
@@ -209,7 +211,7 @@ class UserSynchronizerTest extends TestCase
     private function setUserMapperMock($value, $throws = false)
     {
         $mock = $this->getMockBuilder('Piwik\Plugins\LoginLdap\LdapInterop\UserMapper')
-                     ->setMethods(array('createPiwikUserFromLdapUser', 'markUserAsLdapUser'))
+                     ->onlyMethods(array('createPiwikUserFromLdapUser', 'markUserAsLdapUser'))
                      ->getMock();
         if ($throws) {
             $mock->expects($this->any())->method('createPiwikUserFromLdapUser')->will($this->throwException(new Exception("dummy")));
@@ -222,7 +224,7 @@ class UserSynchronizerTest extends TestCase
     private function setUserAccessMapperMock($value)
     {
         $mock = $this->getMockBuilder('Piwik\Plugins\LoginLdap\LdapInterop\UserAccessMapper')
-                     ->setMethods( array('getPiwikUserAccessForLdapUser'))
+                     ->onlyMethods( array('getPiwikUserAccessForLdapUser'))
                      ->getMock();
         $mock->expects($this->any())->method('getPiwikUserAccessForLdapUser')->will($this->returnValue($value));
         $this->userSynchronizer->setUserAccessMapper($mock);
@@ -231,7 +233,7 @@ class UserSynchronizerTest extends TestCase
     private function setUserModelMock($returnValue)
     {
         $mock = $this->getMockBuilder('Piwik\Plugins\UsersManager\Model')
-                     ->setMethods(array('getUser', 'deleteUserAccess', 'setSuperUserAccess'))
+                     ->onlyMethods(array('getUser', 'deleteUserAccess', 'setSuperUserAccess'))
                      ->getMock();
         $mock->expects($this->any())->method('getUser')->will($this->returnValue($returnValue));
 

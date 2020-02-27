@@ -26,7 +26,7 @@ use Piwik\Tests\Framework\Fixture;
  */
 class LdapUserSynchronizationTest extends LdapIntegrationTest
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -38,7 +38,7 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
         Access::getInstance()->setSuperUserAccess(false);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Access::getInstance()->setSuperUserAccess(true);
 
