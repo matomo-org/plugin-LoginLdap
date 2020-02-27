@@ -52,7 +52,7 @@ class ApiTest extends LdapIntegrationTest
     public function test_getCountOfUsersMatchingFilter_Throws_WhenFilterIsInvalid()
     {
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Invalid Filter');
+        $this->expectExceptionMessage('Invalid filter');
 
         $this->api->getCountOfUsersMatchingFilter("lksjdf()a;sk");
     }

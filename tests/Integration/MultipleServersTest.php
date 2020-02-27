@@ -10,7 +10,6 @@ namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
 use Piwik\Config;
 use Piwik\Plugins\LoginLdap\Auth\LdapAuth;
-use Piwik\Tests\Framework\Fixture;
 
 /**
  * @group LoginLdap
@@ -21,6 +20,8 @@ class MultipleServersTest extends LdapIntegrationTest
 {
     public function setUp(): void
     {
+        parent::setUp();
+
         Config::getInstance()->LoginLdap_dummyserver1 = array(
             'hostname' => "notanldaphost.com",
             'port' => self::SERVER_PORT,
