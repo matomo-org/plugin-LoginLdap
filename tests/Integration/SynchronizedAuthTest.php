@@ -151,8 +151,7 @@ class SynchronizedAuthTest extends LdapIntegrationTest
         UsersManagerAPI::getInstance()->addUser(
             self::TEST_LOGIN,
             $pass,
-            'billionairephilanthropistplayboy@starkindustries.com',
-            'Tony Stark'
+            'billionairephilanthropistplayboy@starkindustries.com'
         );
 
         $userMapper = new UserMapper();

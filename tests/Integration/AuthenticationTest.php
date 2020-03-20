@@ -165,7 +165,7 @@ class AuthenticationTest extends LdapIntegrationTest
 
     public function test_LdapAuth_AuthenticatesSuccessfully_WhenAuthenticatingNormalPiwikSuperUser()
     {
-        UsersManagerAPI::getInstance()->addUser('zola', 'hydra___', 'zola@shield.org', $alias = false);
+        UsersManagerAPI::getInstance()->addUser('zola', 'hydra___', 'zola@shield.org');
         $this->setSuperUserAccess('zola', true);
 
         $ldapAuth = LdapAuth::makeConfigured();
@@ -178,8 +178,8 @@ class AuthenticationTest extends LdapIntegrationTest
 
     public function test_LdapAuth_AuthenticatesSuccessfully_WhenAuthenticatingNormalPiwikNonSuperUser()
     {
-        UsersManagerAPI::getInstance()->addUser('pcoulson', 'thispasswordwillbechanged', 'pcoulson@shield.org', $alias = false);
-        UsersManagerAPI::getInstance()->updateUser('pcoulson', 'vintage', false, false, false, self::TEST_SUPERUSER_PASS);
+        UsersManagerAPI::getInstance()->addUser('pcoulson', 'thispasswordwillbechanged', 'pcoulson@shield.org');
+        UsersManagerAPI::getInstance()->updateUser('pcoulson', 'vintage', false, false, self::TEST_SUPERUSER_PASS);
 
         $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin('pcoulson');

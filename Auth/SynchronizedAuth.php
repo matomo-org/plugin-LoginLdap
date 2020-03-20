@@ -124,7 +124,7 @@ class SynchronizedAuth extends Base
 
         $passwordHelper = new Password();
         $passwordHash = $passwordHelper->hash(UsersManager::getPasswordHash($this->password));
-        $this->usersModel->updateUser($this->login, $passwordHash, $user['email'], $user['alias'], $user['token_auth']);
+        $this->usersModel->updateUser($this->login, $passwordHash, $user['email']);
 
         $this->userForLogin['password'] = $passwordHash;
     }

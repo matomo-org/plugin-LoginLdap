@@ -91,8 +91,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(array(
             'login' => 'martha',
             'password' => md5('pass'),
-            'email' => 'martha@unit.co.uk',
-            'alias' => 'A real doctor'
+            'email' => 'martha@unit.co.uk'
         ), $result);
     }
 
@@ -118,8 +117,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(array(
             'login' => 'donna',
             'password' => md5('pass'),
-            'email' => 'donna@rstad.com',
-            'alias' => 'am i bovvered?'
+            'email' => 'donna@rstad.com'
         ), $result);
 
         $result = $this->userMapper->createPiwikUserFromLdapUser(array(
@@ -134,8 +132,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(array(
             'login' => 'donna',
             'password' => md5('pass'),
-            'email' => 'donna@rstad.com',
-            'alias' => 'Donna Noble'
+            'email' => 'donna@rstad.com'
         ), $result);
     }
 
@@ -151,17 +148,6 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
             'mail' => 'clara@coalhill.co.uk',
             'userpassword' => 'pass'
         ));
-    }
-
-    public function test_createPiwikUserFromLdapUser_CreatesPiwikUser_WhenAliasAndNamesAreMissing()
-    {
-        $result = $this->userMapper->createPiwikUserFromLdapUser(array(
-            'uid' => 'clara',
-            'mail' => 'clara@coalhill.co.uk',
-            'userpassword' => 'pass'
-        ));
-
-        $this->assertEmpty($result['alias']);
     }
 
     public function test_createPiwikUserFromLdapUser_CreatesPiwikUserWithRandomPassword_WhenUserPasswordIsMissing()
@@ -187,8 +173,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(array(
             'login' => 'pond',
             'password' => md5('pass'),
-            'email' => 'pond@mydomain.com',
-            'alias' => 'kissogram'
+            'email' => 'pond@mydomain.com'
         ), $result);
 
         $this->userMapper->setUserEmailSuffix('@royalleadworthhospital.co.uk');
@@ -201,8 +186,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(array(
             'login' => 'mrpond',
             'password' => md5('pass'),
-            'email' => 'mrpond@royalleadworthhospital.co.uk',
-            'alias' => 'not quite Bond'
+            'email' => 'mrpond@royalleadworthhospital.co.uk'
         ), $result);
     }
 
@@ -219,8 +203,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(array(
             'login' => 'harkness',
             'password' => md5('pass'),
-            'email' => 'harkness@mydomain.com',
-            'alias' => 'Captain Harkness'
+            'email' => 'harkness@mydomain.com'
         ), $result);
     }
 
@@ -239,8 +222,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(array(
             'login' => 'rose',
             'password' => md5('pass'),
-            'email' => 'rose@linda.com',
-            'alias' => 'bad wolf'
+            'email' => 'rose@linda.com'
         ), $result);
     }
 
@@ -248,7 +230,6 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
     {
         $existingUser = array(
             'login' => 'broken',
-            'alias' => 'alias',
             'email' => 'wrongmail',
             'password' => 'existingpass'
         );
@@ -262,7 +243,6 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals(array(
             'login' => 'leela',
-            'alias' => 'Leela of the Sevateem',
             'password' => 'existingpass',
             'email' => 'leela@gallifrey.???'
         ), $result);

@@ -201,8 +201,7 @@ class UserSynchronizerTest extends PHPUnit_Framework_TestCase
         return array(
             'login' => 'piwikuser',
             'password' => 'password',
-            'email' => 'email',
-            'alias' => 'alias'
+            'email' => 'email'
         );
     }
 

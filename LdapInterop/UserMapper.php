@@ -117,8 +117,7 @@ class UserMapper
         return array(
             'login' => $login,
             'password' => $this->getPiwikPasswordForLdapUser($ldapUser, $user),
-            'email' => $this->getEmailAddressForLdapUser($ldapUser, $login),
-            'alias' => $this->getAliasForLdapUser($ldapUser)
+            'email' => $this->getEmailAddressForLdapUser($ldapUser, $login)
         );
     }
 
