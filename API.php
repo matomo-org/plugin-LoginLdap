@@ -143,6 +143,25 @@ class API extends \Piwik\Plugin\API
         $this->userSynchronizer->synchronizePiwikAccessFromLdap($login, $ldapUser);
     }
 
+    /**
+     * Purges a single user based on LDAP. This method can be used by superusers to clean a user
+     * removed from LDAP.
+     *
+     * @param string $login The login of the user.
+     * @throws Exception if a problem occurs during synchronization.
+     */
+    public function purgeUser($login)
+    {
+        Piwik::checkUserHasSuperUserAccess();
+
+        $ldapUser = $this->ldapUsers->getUser($login);
+        if (!empty($ldapUser)) {
+            return;
+        }
+
+        $this->userSynchronizer->purgeLdapUser($login, $ldapUser);
+    }
+
     private function checkHttpMethodIsPost()
     {
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {

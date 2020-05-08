@@ -198,6 +198,43 @@ class UserSynchronizer
     }
 
     /**
+     * Purges a supplied Matomo login from DB based on LDAP entity absence.
+     *
+     * @param string $matomoLogin The username of the user who will be purged.
+     * @return string The Matomo user login that was purged.
+     */
+    public function purgeLdapUser($matomoLogin)
+    {
+        $userMapper = $this->userMapper;
+        $usersManagerAPI = $this->usersManagerApi;
+        $userModel = $this->userModel;
+        $logger = $this->logger;
+        return Access::doAsSuperUser(function () use ($matomoLogin, $userMapper, $usersManagerAPI, $userModel, $logger) {
+            $matomoLogin = $userMapper->getExpectedLdapUsername($matomoLogin);
+
+            $existingUser = $userModel->getUser($matomoLogin);
+
+            $logger->debug("UserSynchronizer::{func}: purging user [ Matomo login = {matomoLogin} ]", array(
+                'func' => 'purgeLdapUser',
+                'matomoLogin' => $matomoLogin
+            ));
+
+            if (empty($existingUser)) {
+                $logger->warning("Unable to purge LDAP user '{user}': no such user.", array('user' => $matomoLogin));
+                return FALSE;
+            } else {
+                if (!$userMapper->isUserLdapUser($existingUser['login'])) {
+                    $logger->warning("Unable to purge LDAP user '{user}': non-LDAP user.", array('user' => $existingUser['login']));
+                } else {
+                    $usersManagerAPI->deleteUser($existingUser['login']);
+                }
+            }
+
+            return $existingUser['login'];
+        });
+    }
+
+    /**
      * Returns the {@link $userMapper} password.
      *
      * @return UserMapper

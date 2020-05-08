@@ -92,6 +92,11 @@ class SynchronizeUsers extends ConsoleCommand
             }
         }
 
+        $localLogins = array_diff($this->usersManagerAPI->getUsersLogin(), $logins);
+        foreach ($localLogins as $localLogin) {
+            $this->loginLdapAPI->purgeUser($localLogin);
+        }
+
         $this->writeSuccessMessage($output, array("Synchronized $count users!"));
 
         if (!empty($failed)) {
