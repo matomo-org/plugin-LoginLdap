@@ -101,27 +101,6 @@
                  inline-help="{{ 'LoginLdap_MailFieldDescription'|translate|e('html_attr') }}">
             </div>
 
-            <div piwik-field uicontrol="text" name="ldap_alias_field"
-                 title="{{ 'LoginLdap_AliasField'|translate|e('html_attr') }}"
-                 value="{{ ldapConfig.ldap_alias_field }}"
-                 ng-model="ajaxForm.data.ldap_alias_field"
-                 inline-help="{{ 'LoginLdap_AliasFieldDescription'|translate|e('html_attr') }}">
-            </div>
-
-            <div piwik-field uicontrol="text" name="ldap_first_name_field"
-                 title="{{ 'LoginLdap_FirstNameField'|translate|e('html_attr') }}"
-                 value="{{ ldapConfig.ldap_first_name_field }}"
-                 ng-model="ajaxForm.data.ldap_first_name_field"
-                 inline-help="{{ 'LoginLdap_FirstNameFieldDescription'|translate|e('html_attr') }}<br /><br />{{ 'LoginLdap_FirstLastNameForAlias'|translate|e('html_attr') }}">
-            </div>
-
-            <div piwik-field uicontrol="text" name="ldap_last_name_field"
-                 title="{{ 'LoginLdap_LastNameField'|translate|e('html_attr') }}"
-                 value="{{ ldapConfig.ldap_last_name_field }}"
-                 ng-model="ajaxForm.data.ldap_last_name_field"
-                 inline-help="{{ 'LoginLdap_LastNameFieldDescription'|translate|e('html_attr') }}<br /><br />{{ 'LoginLdap_FirstLastNameForAlias'|translate|e('html_attr') }}">
-            </div>
-
             <div piwik-field uicontrol="text" name="user_email_suffix"
                  title="{{ 'LoginLdap_UsernameSuffix'|translate|e('html_attr') }}"
                  value="{{ ldapConfig.user_email_suffix }}"

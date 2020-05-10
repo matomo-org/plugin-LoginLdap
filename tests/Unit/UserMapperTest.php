@@ -37,9 +37,6 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
     {
         Config::getInstance()->LoginLdap = array(
             'ldap_user_id_field' => 'userIdField',
-            'ldap_last_name_field' => 'lastNameField',
-            'ldap_first_name_field' => 'firstNameField',
-            'ldap_alias_field' => 'aliasField',
             'ldap_mail_field' => 'mailField',
             'ldap_password_field' => 'passwordField',
             'user_email_suffix' => 'userEmailSuffix',
@@ -54,8 +51,6 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
     {
         Config::getInstance()->LoginLdap = array(
             'userIdField' => 'userIdField',
-            'ldap_last_name_field' => 'lastNameField',
-            'ldap_first_name_field' => 'firstNameField',
             'aliasField' => 'aliasField',
             'mailField' => 'mailField',
             'ldap_password_field' => 'passwordField',
@@ -91,7 +86,7 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(array(
             'login' => 'martha',
             'password' => md5('pass'),
-            'email' => 'martha@unit.co.uk'
+            'email' => 'martha@unit.co.uk',
         ), $result);
     }
 

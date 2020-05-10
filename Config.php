@@ -30,9 +30,6 @@ class Config
         'required_member_of_field' => 'memberOf',
         'ldap_user_filter' => '',
         'ldap_user_id_field' => 'uid',
-        'ldap_last_name_field' => 'sn',
-        'ldap_first_name_field' => 'givenName',
-        'ldap_alias_field' => 'cn',
         'ldap_mail_field' => 'mail',
         'ldap_password_field' => 'userPassword',
         'ldap_view_access_field' => 'view',
@@ -51,7 +48,6 @@ class Config
         'required_member_of' => array('memberOf'),
         'ldap_user_filter' => array('filter'),
         'ldap_user_id_field' => array('userIdField'),
-        'ldap_alias_field' => array('aliasField'),
         'ldap_mail_field' => array('mailField'),
         'use_webserver_auth' => array('useKerberos'),
     );
@@ -118,21 +114,6 @@ class Config
     public static function getLdapUserIdField()
     {
         return self::getConfigOption('ldap_user_id_field');
-    }
-
-    public static function getLdapLastNameField()
-    {
-        return self::getConfigOption('ldap_last_name_field');
-    }
-
-    public static function getLdapFirstNameField()
-    {
-        return self::getConfigOption('ldap_first_name_field');
-    }
-
-    public static function getLdapAliasField()
-    {
-        return self::getConfigOption('ldap_alias_field');
     }
 
     public static function getLdapMailField()
