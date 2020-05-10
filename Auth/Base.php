@@ -163,10 +163,6 @@ abstract class Base implements Auth
             return $this->token_auth;
         }
 
-        if (!empty($this->login) && $tokenAuthSecret = $this->getTokenAuthSecret()) {
-            return $this->usersManagerAPI->getTokenAuth($this->login, $tokenAuthSecret);
-        }
-
         return null;
     }
 

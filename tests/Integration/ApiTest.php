@@ -24,7 +24,7 @@ class ApiTest extends LdapIntegrationTest
      */
     private $api;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
