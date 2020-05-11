@@ -44,6 +44,7 @@ class SystemAuthTest extends LdapIntegrationTest
     {
         parent::setUp();
 
+        $this->addPreexistingSuperUser();
         $this->superUserTokenAuth = API::getInstance()->createAppSpecificTokenAuth(self::TEST_SUPERUSER_LOGIN,
             md5(self::TEST_SUPERUSER_PASS), 'test');
     }
