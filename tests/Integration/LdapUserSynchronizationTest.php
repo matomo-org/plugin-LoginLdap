@@ -98,7 +98,7 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
 
         $this->authenticateViaLdap();
 
-        $user = Db::fetchRow("SELECT login, password, email, token_auth FROM " . Common::prefixTable('user') . " WHERE login = ?", array(self::TEST_LOGIN));
+        $user = Db::fetchRow("SELECT login, password, email FROM " . Common::prefixTable('user') . " WHERE login = ?", array(self::TEST_LOGIN));
         $this->assertNotEmpty($user);
         $passwordHelper = new Password();
         $this->assertTrue($passwordHelper->verify(md5(self::TEST_PASS), $user['password']));
@@ -106,7 +106,6 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
         $this->assertEquals(array(
             'login' => self::TEST_LOGIN,
             'email' => 'billionairephilanthropistplayboy@starkindustries.com',
-            'token_auth' => UsersManagerAPI::getInstance()->getTokenAuth(self::TEST_LOGIN, md5(self::TEST_PASS))
         ), $user);
 
         $this->assertNoAccessInDb();

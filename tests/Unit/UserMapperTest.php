@@ -92,11 +92,8 @@ class UserMapperTest extends TestCase
 
     public function test_createPiwikUserFromLdapUser_CreatesCorrectPiwikUser_WhenCustomLdapAttributesAreUsedAndPresent()
     {
-        $this->userMapper->setLdapAliasField('testfield1');
         $this->userMapper->setLdapUserIdField('testfield2');
         $this->userMapper->setLdapMailField('testfield3');
-        $this->userMapper->setLdapFirstNameField('testfield4');
-        $this->userMapper->setLdapLastNameField('testfield5');
         $this->userMapper->setLdapUserPasswordField('testfield6');
 
         $result = $this->userMapper->createPiwikUserFromLdapUser(array(
@@ -245,9 +242,6 @@ class UserMapperTest extends TestCase
     private function assertUserMapperIsCorrectlyConfigured(UserMapper $userMapper)
     {
         $this->assertEquals('useridfield', $userMapper->getLdapUserIdField());
-        $this->assertEquals('lastnamefield', $userMapper->getLdapLastNameField());
-        $this->assertEquals('firstnamefield', $userMapper->getLdapFirstNameField());
-        $this->assertEquals('aliasfield', $userMapper->getLdapAliasField());
         $this->assertEquals('mailfield', $userMapper->getLdapMailField());
         $this->assertEquals('passwordfield', $userMapper->getLdapUserPasswordField());
         $this->assertEquals('userEmailSuffix', $userMapper->getUserEmailSuffix());
@@ -256,9 +250,6 @@ class UserMapperTest extends TestCase
     private function assertUserMapperHasCorrectDefaultPropertyValues(UserMapper $userMapper)
     {
         $this->assertEquals('uid', $userMapper->getLdapUserIdField());
-        $this->assertEquals('sn', $userMapper->getLdapLastNameField());
-        $this->assertEquals('givenname', $userMapper->getLdapFirstNameField());
-        $this->assertEquals('cn', $userMapper->getLdapAliasField());
         $this->assertEquals('mail', $userMapper->getLdapMailField());
         $this->assertEquals('userpassword', $userMapper->getLdapUserPasswordField());
         $this->assertEquals('@mydomain.com', $userMapper->getUserEmailSuffix());
