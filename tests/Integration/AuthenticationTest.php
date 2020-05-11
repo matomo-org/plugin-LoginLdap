@@ -173,6 +173,7 @@ class AuthenticationTest extends LdapIntegrationTest
         $ldapAuth->setTokenAuth($testLoginTokenAuth);
         $authResult = $ldapAuth->authenticate();
 
+        StaticContainer::get(LoggerInterface::class)->info("END TEST");
         $this->assertEquals(1, $authResult->getCode());
     }
 
