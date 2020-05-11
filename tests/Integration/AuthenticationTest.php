@@ -25,7 +25,6 @@ class AuthenticationTest extends LdapIntegrationTest
 {
     private $nonLdapUserAppPassword;
     private $nonLdapNormalUserAppPassword;
-    private $testLoginTokenAuth;
 
     public function setUp(): void
     {
@@ -42,8 +41,6 @@ class AuthenticationTest extends LdapIntegrationTest
             self::NON_LDAP_USER, md5(self::NON_LDAP_PASS), 'test');
         $this->nonLdapNormalUserAppPassword = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth(
             self::NON_LDAP_NORMAL_USER, md5(self::NON_LDAP_NORMAL_PASS), 'test');
-        $this->testLoginTokenAuth = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth(
-            self::TEST_LOGIN, md5(self::TEST_PASS), 'test');
     }
 
     public function test_LdapAuth_AuthenticatesUser_WithCorrectCredentials()
@@ -164,9 +161,12 @@ class AuthenticationTest extends LdapIntegrationTest
     {
         $this->test_LdapAuth_AuthenticatesUser_WithCorrectCredentials();
 
+        $testLoginTokenAuth = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth(
+            self::TEST_LOGIN, md5(self::TEST_PASS), 'test');
+
         $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin(self::TEST_LOGIN);
-        $ldapAuth->setTokenAuth($this->testLoginTokenAuth);
+        $ldapAuth->setTokenAuth($testLoginTokenAuth);
         $authResult = $ldapAuth->authenticate();
 
         $this->assertEquals(1, $authResult->getCode());
