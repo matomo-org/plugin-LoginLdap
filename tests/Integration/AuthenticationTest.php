@@ -14,6 +14,7 @@ use Piwik\Config;
 use Piwik\Db;
 use Piwik\Plugins\LoginLdap\Auth\LdapAuth;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
+use Piwik\Plugins\UsersManager\Model;
 use Piwik\Tests\Framework\Fixture;
 
 /**
@@ -23,7 +24,10 @@ use Piwik\Tests\Framework\Fixture;
  */
 class AuthenticationTest extends LdapIntegrationTest
 {
-    public function setUp()
+    private $nonLdapUserAppPassword;
+    private $nonLdapNormalUserAppPassword;
+
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -33,6 +37,11 @@ class AuthenticationTest extends LdapIntegrationTest
 
         $this->addNonLdapUsers();
         Fixture::createSuperUser();
+
+        $this->nonLdapUserAppPassword = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth(
+            self::NON_LDAP_USER, md5(self::NON_LDAP_PASS), 'test');
+        $this->nonLdapNormalUserAppPassword = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth(
+            self::NON_LDAP_NORMAL_USER, md5(self::NON_LDAP_NORMAL_PASS), 'test');
     }
 
     public function test_LdapAuth_AuthenticatesUser_WithCorrectCredentials()
@@ -211,11 +220,11 @@ class AuthenticationTest extends LdapIntegrationTest
 
     private function getNonLdapUserTokenAuth()
     {
-        return UsersManagerAPI::getInstance()->getTokenAuth(self::NON_LDAP_USER, md5(self::NON_LDAP_PASS));
+        return $this->nonLdapUserAppPassword;
     }
 
     private function getNonLdapNormalUserTokenAuth()
     {
-        return UsersManagerAPI::getInstance()->getTokenAuth(self::NON_LDAP_NORMAL_USER, md5(self::NON_LDAP_NORMAL_PASS));
+        return $this->nonLdapNormalUserAppPassword;
     }
 }
