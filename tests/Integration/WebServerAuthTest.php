@@ -21,11 +21,15 @@ use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
  */
 class WebServerAuthTest extends LdapIntegrationTest
 {
-    public function setUp()
+    private $testSuperUserTokenAuth;
+
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->addPreexistingSuperUser();
+        $this->testSuperUserTokenAuth = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth(
+            self::TEST_SUPERUSER_LOGIN, md5(self::TEST_SUPERUSER_PASS), 'test');
     }
 
     public function test_WebServerAuth_Works_IfUserExists_RegardlessOfPassword()
@@ -137,7 +141,7 @@ class WebServerAuthTest extends LdapIntegrationTest
 
         $ldapAuth = WebServerAuth::makeConfigured();
         $ldapAuth->setLogin(self::TEST_SUPERUSER_LOGIN);
-        $ldapAuth->setTokenAuth(UsersManagerAPI::getInstance()->getTokenAuth(self::TEST_SUPERUSER_LOGIN, md5(self::TEST_SUPERUSER_PASS)));
+        $ldapAuth->setTokenAuth($this->testSuperUserTokenAuth);
         $authResult = $ldapAuth->authenticate();
 
         $this->assertEquals(AuthResult::SUCCESS_SUPERUSER_AUTH_CODE, $authResult->getCode());
