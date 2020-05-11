@@ -340,16 +340,11 @@ abstract class Base implements Auth
     {
         $successCode = $userInfo['superuser_access'] ? AuthResult::SUCCESS_SUPERUSER_AUTH_CODE : AuthResult::SUCCESS;
 
-        if ($userInfo['token_auth']) {
-            $tokenAuth = $userInfo['token_auth'];
-        } else {
-            $tokenAuth = $this->getTokenAuth();
-
-            if (empty($userInfo['login']) || empty($tokenAuth)) {
-                throw new Exception('User couldn\'t be found');
-            }
+        if (empty($userInfo['login'])) {
+            throw new Exception('User couldn\'t be found');
         }
 
+        $tokenAuth = $this->getTokenAuth();
         return new AuthResult($successCode, $userInfo['login'], $tokenAuth);
     }
 
