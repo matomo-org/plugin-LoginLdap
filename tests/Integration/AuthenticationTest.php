@@ -11,10 +11,12 @@ namespace Piwik\Plugins\LoginLdap\tests\Integration;
 use Piwik\AuthResult;
 use Piwik\Common;
 use Piwik\Config;
+use Piwik\Container\StaticContainer;
 use Piwik\Db;
 use Piwik\Plugins\LoginLdap\Auth\LdapAuth;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Tests\Framework\Fixture;
+use Psr\Log\LoggerInterface;
 
 /**
  * @group LoginLdap
@@ -45,6 +47,7 @@ class AuthenticationTest extends LdapIntegrationTest
 
     public function test_LdapAuth_AuthenticatesUser_WithCorrectCredentials()
     {
+        StaticContainer::get(LoggerInterface::class)->info("START TEST");
         $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin(self::TEST_LOGIN);
         $ldapAuth->setPassword(self::TEST_PASS);

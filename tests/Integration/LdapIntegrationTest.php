@@ -8,6 +8,7 @@
  */
 namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
+use Monolog\Logger;
 use Piwik\Access;
 use Piwik\Auth\Password;
 use Piwik\Common;
@@ -164,6 +165,7 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
     {
         return array(
             'Psr\Log\LoggerInterface' => \DI\get('Monolog\Logger'),
+            'log.level' => Logger::DEBUG,
         );
     }
 
