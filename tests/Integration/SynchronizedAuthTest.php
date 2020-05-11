@@ -1,8 +1,8 @@
 <?php
 /**
- * Piwik - free/libre analytics platform
+ * Matomo - free/libre analytics platform
  *
- * @link http://piwik.org
+ * @link https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
 namespace Piwik\Plugins\LoginLdap\tests\Integration;
@@ -96,12 +96,11 @@ class SynchronizedAuthTest extends LdapIntegrationTest
         $this->doAuthTestByPasswordHash($code = 1, self::NON_LDAP_NORMAL_USER, self::NON_LDAP_NORMAL_PASS);
     }
 
-    /**
-     * @expectedException \Piwik\Plugins\LoginLdap\Ldap\Exceptions\ConnectionException
-     */
     public function test_LdapUsersCannotLogin_IfUnsynchronized_AndLdapServerBroken()
     {
-        Config::getInstance()->LoginLdap['servers'] = array('brokenserver');
+        $this->expectException(\Piwik\Plugins\LoginLdap\Ldap\Exceptions\ConnectionException::class);
+
+        Config::getInstance()->LoginLdap['servers'] = ['brokenserver'];
 
         $this->doAuthTest($code = 0);
     }

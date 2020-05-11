@@ -1,8 +1,8 @@
 <?php
 /**
- * Piwik - free/libre analytics platform
+ * Matomo - free/libre analytics platform
  *
- * @link http://piwik.org
+ * @link https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
 namespace Piwik\Plugins\LoginLdap\tests\System;
@@ -37,7 +37,7 @@ class SystemAuthTest extends LdapIntegrationTest
         );
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -171,12 +171,11 @@ class SystemAuthTest extends LdapIntegrationTest
         $this->setSuperUserAccess(self::TEST_SUPERUSER_LOGIN, true);
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage LoginLdap_LdapUserCantChangePassword
-     */
     public function testLdapUserPassChange()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Changing your password is not supported for LDAP users');
+
         $auth = LdapAuth::makeConfigured();
         $auth->setLogin(self::TEST_LOGIN);
         $auth->setPassword(self::TEST_PASS);

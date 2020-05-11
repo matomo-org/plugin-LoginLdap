@@ -1,14 +1,14 @@
 <?php
 /**
- * Piwik - free/libre analytics platform
+ * Matomo - free/libre analytics platform
  *
- * @link http://piwik.org
+ * @link https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
  */
 namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Piwik\Config;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserAccessAttributeParser;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserAccessMapper;
@@ -19,14 +19,14 @@ use Piwik\Plugins\SitesManager\API as SitesManagerAPI;
  * @group LoginLdap_Unit
  * @group LoginLdap_UserAccessMapperTest
  */
-class UserAccessMapperTest extends PHPUnit_Framework_TestCase
+class UserAccessMapperTest extends TestCase
 {
     /**
      * @var UserAccessMapper
      */
     private $userAccessMapper;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -41,7 +41,7 @@ class UserAccessMapperTest extends PHPUnit_Framework_TestCase
         $this->userAccessMapper->setUserAccessAttributeParser($attributeParser);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         SitesManagerAPI::unsetInstance();
     }
@@ -171,7 +171,7 @@ class UserAccessMapperTest extends PHPUnit_Framework_TestCase
     private function setSitesManagerApiMock()
     {
         $mock = $this->getMockBuilder('stdClass')
-                     ->setMethods(array('getSitesIdWithAtLeastViewAccess', 'getAllSitesId'))
+                     ->addMethods(array('getSitesIdWithAtLeastViewAccess', 'getAllSitesId'))
                      ->getMock();
         $mock->expects($this->any())->method('getSitesIdWithAtLeastViewAccess')->willReturn(array(1,2,3,4,5,6));
         $mock->expects($this->any())->method('getAllSitesId')->willReturn(array(1,2,3,4,5,6));

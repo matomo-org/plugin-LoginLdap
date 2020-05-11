@@ -1,8 +1,8 @@
 <?php
 /**
- * Piwik - free/libre analytics platform
+ * Matomo - free/libre analytics platform
  *
- * @link http://piwik.org
+ * @link https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
  */
@@ -11,7 +11,7 @@ namespace Piwik\Plugins\LoginLdap\Ldap;
 // mocks ldap_* functions for Ldap\Client class
 class LdapFunctions
 {
-    /** @var \PHPUnit_Framework_MockObject_MockObject */
+    /** @var \PHPUnit\Framework\MockObject\MockObject */
     public static $phpUnitMock;
 
     public static function __callStatic($name, $arguments)

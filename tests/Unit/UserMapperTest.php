@@ -1,15 +1,15 @@
 <?php
 /**
- * Piwik - free/libre analytics platform
+ * Matomo - free/libre analytics platform
  *
- * @link http://piwik.org
+ * @link https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
  */
 namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
 use Exception;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Piwik\Auth\Password;
 use Piwik\Config;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
@@ -19,14 +19,14 @@ use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
  * @group LoginLdap_Unit
  * @group LoginLdap_UserMapperTest
  */
-class UserMapperTest extends PHPUnit_Framework_TestCase
+class UserMapperTest extends TestCase
 {
     /**
      * @var UserMapper
      */
     private $userMapper;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -131,11 +131,10 @@ class UserMapperTest extends PHPUnit_Framework_TestCase
         ), $result);
     }
 
-    /**
-     * @expectedException Exception
-     */
     public function test_createPiwikUserFromLdapUser_FailsToCreatePiwikUser_WhenUIDAttributeIsMissing()
     {
+        $this->expectException(Exception::class);
+
         $this->userMapper->createPiwikUserFromLdapUser(array(
             'cn' => 'the impossible girl',
             'sn' => 'Oswald',

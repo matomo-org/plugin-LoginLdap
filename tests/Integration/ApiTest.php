@@ -1,8 +1,8 @@
 <?php
 /**
- * Piwik - free/libre analytics platform
+ * Matomo - free/libre analytics platform
  *
- * @link http://piwik.org
+ * @link https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
  */
@@ -49,12 +49,11 @@ class ApiTest extends LdapIntegrationTest
         $this->assertEquals(0, $count);
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage LoginLdap_InvalidFilter
-     */
     public function test_getCountOfUsersMatchingFilter_Throws_WhenFilterIsInvalid()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Invalid filter');
+
         $this->api->getCountOfUsersMatchingFilter("lksjdf()a;sk");
     }
 
@@ -199,12 +198,11 @@ class ApiTest extends LdapIntegrationTest
         ), Config::getInstance()->LoginLdap_server2);
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage LoginLdap_UserNotFound
-     */
     public function test_synchronizeUser_Throws_WhenLdapUserDoesNotExist()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('User "unknownuser" not found!');
+
         $this->api->synchronizeUser('unknownuser');
     }
 

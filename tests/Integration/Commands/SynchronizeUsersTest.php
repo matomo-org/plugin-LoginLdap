@@ -1,8 +1,8 @@
 <?php
 /**
- * Piwik - free/libre analytics platform
+ * Matomo - free/libre analytics platform
  *
- * @link http://piwik.org
+ * @link https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
  */
@@ -28,7 +28,7 @@ class SynchronizeUsersTest extends LdapIntegrationTest
      */
     protected $applicationTester = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -119,7 +119,7 @@ class SynchronizeUsersTest extends LdapIntegrationTest
         ));
 
         $this->assertEquals(0, $result, $this->getCommandDisplayOutputErrorMessage());
-        $this->assertContains("Skipping 'captainamerica', already exists in Piwik...", $this->applicationTester->getDisplay());
+        self::assertStringContainsString("Skipping 'captainamerica', already exists in Piwik...", $this->applicationTester->getDisplay());
 
         $users = $this->getLdapUserLogins();
         $this->assertEquals(array('ironman'), $users);

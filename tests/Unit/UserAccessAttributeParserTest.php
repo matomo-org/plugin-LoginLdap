@@ -1,14 +1,14 @@
 <?php
 /**
- * Piwik - free/libre analytics platform
+ * Matomo - free/libre analytics platform
  *
- * @link http://piwik.org
+ * @link https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
  */
 namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Piwik\Config;
 use Piwik\Option;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserAccessAttributeParser;
@@ -21,14 +21,14 @@ use Piwik\SettingsPiwik;
  * @group LoginLdap_Unit
  * @group LoginLdap_UserAccessAttributeParserTest
  */
-class UserAccessAttributeParserTest extends PHPUnit_Framework_TestCase
+class UserAccessAttributeParserTest extends TestCase
 {
     /**
      * @var UserAccessAttributeParser
      */
     private $userAccessAttributeParser;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -39,7 +39,7 @@ class UserAccessAttributeParserTest extends PHPUnit_Framework_TestCase
         $this->userAccessAttributeParser = new UserAccessAttributeParser();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Option::setSingletonInstance(null);
     }
@@ -283,7 +283,7 @@ class UserAccessAttributeParserTest extends PHPUnit_Framework_TestCase
     private function setSitesManagerApiMock()
     {
         $mock = $this->getMockBuilder('stdClass')
-                     ->setMethods( array('getSitesIdWithAtLeastViewAccess', 'getAllSitesId'))
+                     ->addMethods( array('getSitesIdWithAtLeastViewAccess', 'getAllSitesId'))
                      ->getMock();
         $mock->expects($this->any())->method('getSitesIdWithAtLeastViewAccess')->willReturn(array(1,2,3,4,5,6));
         $mock->expects($this->any())->method('getAllSitesId')->willReturn(array(1,2,3,4,5,6));
@@ -293,7 +293,7 @@ class UserAccessAttributeParserTest extends PHPUnit_Framework_TestCase
     private function setThisPiwikUrl($thisUrl)
     {
         $mock = $this->getMockBuilder('stdClass')
-                     ->setMethods(array('getValue'))
+                     ->addMethods(array('getValue'))
                      ->getMock();
         $mock->expects($this->any())->method('getValue')->willReturnCallback(function ($key) use ($thisUrl) {
             if ($key == SettingsPiwik::OPTION_PIWIK_URL) {
