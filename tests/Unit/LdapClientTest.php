@@ -31,7 +31,7 @@ class LdapClientTest extends TestCase
         LdapFunctions::$phpUnitMock = $this->getMockBuilder('stdClass')
                                            ->addMethods( array('ldap_connect', 'ldap_close',
                                              'ldap_bind', 'ldap_search', 'ldap_set_option',
-                                             'ldap_get_entries', 'ldap_count_entries'))
+                                             'ldap_get_entries', 'ldap_count_entries', 'ldap_error'))
                                            ->getMock();
     }
 
