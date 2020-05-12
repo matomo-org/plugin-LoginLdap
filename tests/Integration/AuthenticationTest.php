@@ -163,10 +163,10 @@ class AuthenticationTest extends LdapIntegrationTest
     {
         StaticContainer::get(LoggerInterface::class)->info("START TEST");
 
+        $this->test_LdapAuth_AuthenticatesUser_WithCorrectCredentials();
+
         $testLoginTokenAuth = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth(
             self::TEST_LOGIN, md5(self::TEST_PASS), 'test');
-
-        $this->test_LdapAuth_AuthenticatesUser_WithCorrectCredentials();
 
         $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin(self::TEST_LOGIN);
