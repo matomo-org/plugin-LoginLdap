@@ -13,6 +13,7 @@ use Piwik\Common;
 use Piwik\Config;
 use Piwik\Container\StaticContainer;
 use Piwik\Db;
+use Piwik\Plugin\Manager;
 use Piwik\Plugins\LoginLdap\Auth\LdapAuth;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Tests\Framework\Fixture;
@@ -164,10 +165,12 @@ class AuthenticationTest extends LdapIntegrationTest
         $this->test_LdapAuth_AuthenticatesUser_WithCorrectCredentials();
 
         StaticContainer::get(LoggerInterface::class)->info("START TEST");
-print_r(Db::fetchAll('SELECT * FROM ' . Common::prefixTable('user')));
-        print_r(Db::fetchAll('SELECT * FROM ' . Common::prefixTable('user_token_auth')));
+
+        // TODO: this issue should actually be fixed
+        Manager::getInstance()->unloadPlugin('LoginLdap'); // workaround PasswordVerifier limitation
         $testLoginTokenAuth = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth(
             self::TEST_LOGIN, md5(self::TEST_PASS), 'test');
+        Manager::getInstance()->loadPlugin('LoginLdap');
 
         $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin(self::TEST_LOGIN);
