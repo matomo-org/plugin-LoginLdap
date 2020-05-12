@@ -165,6 +165,7 @@ class AuthenticationTest extends LdapIntegrationTest
 
         StaticContainer::get(LoggerInterface::class)->info("START TEST");
 print_r(Db::fetchAll('SELECT * FROM ' . Common::prefixTable('user')));
+        print_r(Db::fetchAll('SELECT * FROM ' . Common::prefixTable('user_token_auth')));
         $testLoginTokenAuth = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth(
             self::TEST_LOGIN, md5(self::TEST_PASS), 'test');
 
