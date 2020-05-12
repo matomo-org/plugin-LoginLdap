@@ -164,20 +164,14 @@ class AuthenticationTest extends LdapIntegrationTest
     {
         $this->test_LdapAuth_AuthenticatesUser_WithCorrectCredentials();
 
-        StaticContainer::get(LoggerInterface::class)->info("START TEST");
-
-        // TODO: this issue should actually be fixed
-        Manager::getInstance()->unloadPlugin('LoginLdap'); // workaround PasswordVerifier limitation
         $testLoginTokenAuth = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth(
             self::TEST_LOGIN, md5(self::TEST_PASS), 'test');
-        Manager::getInstance()->loadPlugin('LoginLdap');
 
         $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin(self::TEST_LOGIN);
         $ldapAuth->setTokenAuth($testLoginTokenAuth);
         $authResult = $ldapAuth->authenticate();
 
-        StaticContainer::get(LoggerInterface::class)->info("END TEST");
         $this->assertEquals(1, $authResult->getCode());
     }
 
