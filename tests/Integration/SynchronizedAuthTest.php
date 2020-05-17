@@ -60,7 +60,7 @@ class SynchronizedAuthTest extends LdapIntegrationTest
 
         $this->addPreSynchronizedUser();
 
-        $this->doAuthTestByTokenAuth($code = 1);
+        $this->doAuthTestByTokenAuth($code = 1, self::TEST_LOGIN, self::TEST_PASS, $this->testUserTokenAuth);
     }
 
     public function test_NormalPiwikUsersCanLogin_WithoutConnectingToLdap_ByTokenAuth()
@@ -112,7 +112,7 @@ class SynchronizedAuthTest extends LdapIntegrationTest
     {
         Config::getInstance()->LoginLdap['synchronize_users_after_login'] = 0;
 
-        $this->doAuthTestByTokenAuth($code = 0);
+        $this->doAuthTestByTokenAuth($code = 0, self::TEST_LOGIN, self::TEST_PASS, $this->testUserTokenAuth);
     }
 
     public function test_LdapUserCannotLogin_IfUserNotInDb_AndAuthtenticatingByPasswordHash()
@@ -181,9 +181,9 @@ class SynchronizedAuthTest extends LdapIntegrationTest
         $this->assertEquals($expectCode, $result->getCode());
     }
 
-    private function doAuthTestByTokenAuth($expectCode, $login = self::TEST_LOGIN, $pass = self::TEST_PASS)
+    private function doAuthTestByTokenAuth($expectCode, $login = self::TEST_LOGIN, $pass = self::TEST_PASS, $tokenAuth = null)
     {
-        $tokenAuth = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth($login, $pass, 'test');
+        $tokenAuth = $tokenAuth ?: UsersManagerAPI::getInstance()->createAppSpecificTokenAuth($login, $pass, 'test');
 
         $auth = SynchronizedAuth::makeConfigured();
         $auth->setLogin($login);
