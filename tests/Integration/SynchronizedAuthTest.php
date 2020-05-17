@@ -35,7 +35,7 @@ class SynchronizedAuthTest extends LdapIntegrationTest
         );
 
         $this->testUserTokenAuth = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth(
-            self::TEST_LOGIN, md5(self::TEST_PASS), 'test');
+            self::TEST_LOGIN, self::TEST_PASS, 'test');
 
     }
 
@@ -145,7 +145,7 @@ class SynchronizedAuthTest extends LdapIntegrationTest
         $user = $this->getUser(self::TEST_LOGIN);
 
         $passwordHelper = new Password();
-        $this->assertTrue($passwordHelper->verify(md5(self::TEST_PASS), $user['password']));
+        $this->assertTrue($passwordHelper->verify(self::TEST_PASS, $user['password']));
     }
 
     private function addPreSynchronizedUser($pass = self::TEST_PASS)
@@ -184,7 +184,7 @@ class SynchronizedAuthTest extends LdapIntegrationTest
 
     private function doAuthTestByTokenAuth($expectCode, $login = self::TEST_LOGIN, $pass = self::TEST_PASS)
     {
-        $tokenAuth = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth($login, md5($pass), 'test');
+        $tokenAuth = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth($login, $pass, 'test');
 
         $auth = SynchronizedAuth::makeConfigured();
         $auth->setLogin($login);
@@ -198,7 +198,7 @@ class SynchronizedAuthTest extends LdapIntegrationTest
     {
         $auth = SynchronizedAuth::makeConfigured();
         $auth->setLogin($login);
-        $auth->setPasswordHash(md5($pass));
+        $auth->setPasswordHash($pass);
         $result = $auth->authenticate();
 
         $this->assertEquals($expectCode, $result->getCode());

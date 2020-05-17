@@ -41,9 +41,9 @@ class AuthenticationTest extends LdapIntegrationTest
         Fixture::createSuperUser();
 
         $this->nonLdapUserAppPassword = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth(
-            self::NON_LDAP_USER, md5(self::NON_LDAP_PASS), 'test');
+            self::NON_LDAP_USER, self::NON_LDAP_PASS, 'test');
         $this->nonLdapNormalUserAppPassword = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth(
-            self::NON_LDAP_NORMAL_USER, md5(self::NON_LDAP_NORMAL_PASS), 'test');
+            self::NON_LDAP_NORMAL_USER, self::NON_LDAP_NORMAL_PASS, 'test');
     }
 
     public function test_LdapAuth_AuthenticatesUser_WithCorrectCredentials()
@@ -165,7 +165,7 @@ class AuthenticationTest extends LdapIntegrationTest
         $this->test_LdapAuth_AuthenticatesUser_WithCorrectCredentials();
 
         $testLoginTokenAuth = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth(
-            self::TEST_LOGIN, md5(self::TEST_PASS), 'test');
+            self::TEST_LOGIN, self::TEST_PASS, 'test');
 
         $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin(self::TEST_LOGIN);
