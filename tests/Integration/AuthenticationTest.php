@@ -162,6 +162,7 @@ class AuthenticationTest extends LdapIntegrationTest
 
     public function test_LdapAuth_AuthenticatesSuccessfully_WhenTokenAuthOnlyAuthenticationUsed()
     {
+        StaticContainer::get(LoggerInterface::class)->info("TEST START");
         $this->test_LdapAuth_AuthenticatesUser_WithCorrectCredentials();
 
         $testLoginTokenAuth = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth(
@@ -171,7 +172,7 @@ class AuthenticationTest extends LdapIntegrationTest
         $ldapAuth->setLogin(self::TEST_LOGIN);
         $ldapAuth->setTokenAuth($testLoginTokenAuth);
         $authResult = $ldapAuth->authenticate();
-
+        StaticContainer::get(LoggerInterface::class)->info("TEST FINISH");
         $this->assertEquals(1, $authResult->getCode());
     }
 

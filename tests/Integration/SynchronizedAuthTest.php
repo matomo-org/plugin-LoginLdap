@@ -33,10 +33,6 @@ class SynchronizedAuthTest extends LdapIntegrationTest
             'admin_user' => 'cn=fury,' . self::SERVER_BASE_DN,
             'admin_pass' => 'secrets'
         );
-
-        $this->testUserTokenAuth = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth(
-            self::TEST_LOGIN, self::TEST_PASS, 'test');
-
     }
 
     public function test_SynchronizedLdapUsersCanLogin_WithoutConnectingToLdap_WhenUsersExistInPiwikDB()
@@ -158,6 +154,9 @@ class SynchronizedAuthTest extends LdapIntegrationTest
 
         $userMapper = new UserMapper();
         $userMapper->markUserAsLdapUser(self::TEST_LOGIN);
+
+        $this->testUserTokenAuth = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth(
+            self::TEST_LOGIN, $pass, 'test');
     }
 
     private function addLdapUserWithWrongPassword()
