@@ -7,11 +7,14 @@
  */
 namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
+use Piwik\Auth;
 use Piwik\Auth\Password;
 use Piwik\Config;
+use Piwik\Container\StaticContainer;
 use Piwik\Plugins\LoginLdap\Auth\SynchronizedAuth;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
+use Psr\Log\LoggerInterface;
 
 /**
  * @group LoginLdap
@@ -20,6 +23,8 @@ use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
  */
 class SynchronizedAuthTest extends LdapIntegrationTest
 {
+    private $testUserTokenAuth;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -58,7 +63,7 @@ class SynchronizedAuthTest extends LdapIntegrationTest
 
         $this->addPreSynchronizedUser();
 
-        $this->doAuthTestByTokenAuth($code = 1);
+        $this->doAuthTestByTokenAuth($code = 1, self::TEST_LOGIN, self::TEST_PASS, $this->testUserTokenAuth);
     }
 
     public function test_NormalPiwikUsersCanLogin_WithoutConnectingToLdap_ByTokenAuth()
@@ -82,6 +87,7 @@ class SynchronizedAuthTest extends LdapIntegrationTest
 
     public function test_NormalPiwikUsersCanLogin_WithoutConnectingToLdap_ByPasswordHash()
     {
+        StaticContainer::get(LoggerInterface::class)->info("NEXT TEST");
         Config::getInstance()->LoginLdap['servers'] = array('brokenserver');
 
         $this->addNonLdapUsers();
@@ -110,7 +116,7 @@ class SynchronizedAuthTest extends LdapIntegrationTest
     {
         Config::getInstance()->LoginLdap['synchronize_users_after_login'] = 0;
 
-        $this->doAuthTestByTokenAuth($code = 0);
+        $this->doAuthTestByTokenAuth($code = 0, self::TEST_LOGIN, self::TEST_PASS, 'garbagetokenauth');
     }
 
     public function test_LdapUserCannotLogin_IfUserNotInDb_AndAuthtenticatingByPasswordHash()
@@ -139,10 +145,7 @@ class SynchronizedAuthTest extends LdapIntegrationTest
         $user = $this->getUser(self::TEST_LOGIN);
 
         $passwordHelper = new Password();
-        $this->assertTrue($passwordHelper->verify(md5(self::TEST_PASS), $user['password']));
-
-        $newTokenAuth = $this->getLdapUserTokenAuth();
-        $this->assertEquals($newTokenAuth, $user['token_auth']);
+        $this->assertTrue($passwordHelper->verify(\Piwik\Plugins\UsersManager\UsersManager::getPasswordHash(self::TEST_PASS), $user['password']));
     }
 
     private function addPreSynchronizedUser($pass = self::TEST_PASS)
@@ -150,12 +153,14 @@ class SynchronizedAuthTest extends LdapIntegrationTest
         UsersManagerAPI::getInstance()->addUser(
             self::TEST_LOGIN,
             $pass,
-            'billionairephilanthropistplayboy@starkindustries.com',
-            'Tony Stark'
+            'billionairephilanthropistplayboy@starkindustries.com'
         );
 
         $userMapper = new UserMapper();
         $userMapper->markUserAsLdapUser(self::TEST_LOGIN);
+
+        $this->testUserTokenAuth = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth(
+            self::TEST_LOGIN, $pass, 'test');
     }
 
     private function addLdapUserWithWrongPassword()
@@ -180,11 +185,13 @@ class SynchronizedAuthTest extends LdapIntegrationTest
         $this->assertEquals($expectCode, $result->getCode());
     }
 
-    private function doAuthTestByTokenAuth($expectCode, $login = self::TEST_LOGIN, $pass = self::TEST_PASS)
+    private function doAuthTestByTokenAuth($expectCode, $login = self::TEST_LOGIN, $pass = self::TEST_PASS, $tokenAuth = null)
     {
-        $tokenAuth = UsersManagerAPI::getInstance()->getTokenAuth($login, md5($pass));
-
         $auth = SynchronizedAuth::makeConfigured();
+        StaticContainer::getContainer()->set(Auth::class, $auth);
+
+        $tokenAuth = $tokenAuth ?: UsersManagerAPI::getInstance()->createAppSpecificTokenAuth($login, $pass, 'test');
+
         $auth->setLogin($login);
         $auth->setTokenAuth($tokenAuth);
         $result = $auth->authenticate();
@@ -204,6 +211,6 @@ class SynchronizedAuthTest extends LdapIntegrationTest
 
     private function getLdapUserTokenAuth()
     {
-        return UsersManagerAPI::getInstance()->getTokenAuth(self::TEST_LOGIN, md5(self::TEST_PASS));
+        return $this->testUserTokenAuth;
     }
 }

@@ -13,11 +13,9 @@ use PHPUnit\Framework\TestCase;
 use Piwik\Access;
 use Piwik\Auth\Password;
 use Piwik\Config;
-use Piwik\Container\StaticContainer;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 use Piwik\Plugins\UsersManager\Model;
 use Piwik\Plugins\UsersManager\UserAccessFilter;
-use Piwik\Plugins\UsersManager\UserUpdater;
 
 /**
  * @group LoginLdap
@@ -43,8 +41,6 @@ class UserSynchronizerTest extends TestCase
 
     public function setUp(): void
     {
-        parent::setUp();
-
         $this->userSynchronizer = new UserSynchronizer();
         $this->userSynchronizer->setNewUserDefaultSitesWithViewAccess(array(1,2));
         $this->setUserModelMock($this->getPiwikUserData());
@@ -58,9 +54,6 @@ class UserSynchronizerTest extends TestCase
     {
         Config::getInstance()->LoginLdap = array(
             'ldap_user_id_field' => 'userIdField',
-            'ldap_last_name_field' => 'lastNameField',
-            'ldap_first_name_field' => 'firstNameField',
-            'ldap_alias_field' => 'aliasField',
             'ldap_mail_field' => 'mailField',
             'user_email_suffix' => 'userEmailSuffix',
         );
@@ -203,8 +196,7 @@ class UserSynchronizerTest extends TestCase
         return array(
             'login' => 'piwikuser',
             'password' => 'password',
-            'email' => 'email',
-            'alias' => 'alias'
+            'email' => 'email'
         );
     }
 

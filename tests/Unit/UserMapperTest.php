@@ -37,9 +37,6 @@ class UserMapperTest extends TestCase
     {
         Config::getInstance()->LoginLdap = array(
             'ldap_user_id_field' => 'userIdField',
-            'ldap_last_name_field' => 'lastNameField',
-            'ldap_first_name_field' => 'firstNameField',
-            'ldap_alias_field' => 'aliasField',
             'ldap_mail_field' => 'mailField',
             'ldap_password_field' => 'passwordField',
             'user_email_suffix' => 'userEmailSuffix',
@@ -54,8 +51,6 @@ class UserMapperTest extends TestCase
     {
         Config::getInstance()->LoginLdap = array(
             'userIdField' => 'userIdField',
-            'ldap_last_name_field' => 'lastNameField',
-            'ldap_first_name_field' => 'firstNameField',
             'aliasField' => 'aliasField',
             'mailField' => 'mailField',
             'ldap_password_field' => 'passwordField',
@@ -92,17 +87,13 @@ class UserMapperTest extends TestCase
             'login' => 'martha',
             'password' => md5('pass'),
             'email' => 'martha@unit.co.uk',
-            'alias' => 'A real doctor'
         ), $result);
     }
 
     public function test_createPiwikUserFromLdapUser_CreatesCorrectPiwikUser_WhenCustomLdapAttributesAreUsedAndPresent()
     {
-        $this->userMapper->setLdapAliasField('testfield1');
         $this->userMapper->setLdapUserIdField('testfield2');
         $this->userMapper->setLdapMailField('testfield3');
-        $this->userMapper->setLdapFirstNameField('testfield4');
-        $this->userMapper->setLdapLastNameField('testfield5');
         $this->userMapper->setLdapUserPasswordField('testfield6');
 
         $result = $this->userMapper->createPiwikUserFromLdapUser(array(
@@ -118,8 +109,7 @@ class UserMapperTest extends TestCase
         $this->assertEquals(array(
             'login' => 'donna',
             'password' => md5('pass'),
-            'email' => 'donna@rstad.com',
-            'alias' => 'am i bovvered?'
+            'email' => 'donna@rstad.com'
         ), $result);
 
         $result = $this->userMapper->createPiwikUserFromLdapUser(array(
@@ -134,8 +124,7 @@ class UserMapperTest extends TestCase
         $this->assertEquals(array(
             'login' => 'donna',
             'password' => md5('pass'),
-            'email' => 'donna@rstad.com',
-            'alias' => 'Donna Noble'
+            'email' => 'donna@rstad.com'
         ), $result);
     }
 
@@ -150,17 +139,6 @@ class UserMapperTest extends TestCase
             'mail' => 'clara@coalhill.co.uk',
             'userpassword' => 'pass'
         ));
-    }
-
-    public function test_createPiwikUserFromLdapUser_CreatesPiwikUser_WhenAliasAndNamesAreMissing()
-    {
-        $result = $this->userMapper->createPiwikUserFromLdapUser(array(
-            'uid' => 'clara',
-            'mail' => 'clara@coalhill.co.uk',
-            'userpassword' => 'pass'
-        ));
-
-        $this->assertEmpty($result['alias']);
     }
 
     public function test_createPiwikUserFromLdapUser_CreatesPiwikUserWithRandomPassword_WhenUserPasswordIsMissing()
@@ -186,8 +164,7 @@ class UserMapperTest extends TestCase
         $this->assertEquals(array(
             'login' => 'pond',
             'password' => md5('pass'),
-            'email' => 'pond@mydomain.com',
-            'alias' => 'kissogram'
+            'email' => 'pond@mydomain.com'
         ), $result);
 
         $this->userMapper->setUserEmailSuffix('@royalleadworthhospital.co.uk');
@@ -200,8 +177,7 @@ class UserMapperTest extends TestCase
         $this->assertEquals(array(
             'login' => 'mrpond',
             'password' => md5('pass'),
-            'email' => 'mrpond@royalleadworthhospital.co.uk',
-            'alias' => 'not quite Bond'
+            'email' => 'mrpond@royalleadworthhospital.co.uk'
         ), $result);
     }
 
@@ -218,8 +194,7 @@ class UserMapperTest extends TestCase
         $this->assertEquals(array(
             'login' => 'harkness',
             'password' => md5('pass'),
-            'email' => 'harkness@mydomain.com',
-            'alias' => 'Captain Harkness'
+            'email' => 'harkness@mydomain.com'
         ), $result);
     }
 
@@ -238,8 +213,7 @@ class UserMapperTest extends TestCase
         $this->assertEquals(array(
             'login' => 'rose',
             'password' => md5('pass'),
-            'email' => 'rose@linda.com',
-            'alias' => 'bad wolf'
+            'email' => 'rose@linda.com'
         ), $result);
     }
 
@@ -247,7 +221,6 @@ class UserMapperTest extends TestCase
     {
         $existingUser = array(
             'login' => 'broken',
-            'alias' => 'alias',
             'email' => 'wrongmail',
             'password' => 'existingpass'
         );
@@ -261,7 +234,6 @@ class UserMapperTest extends TestCase
 
         $this->assertEquals(array(
             'login' => 'leela',
-            'alias' => 'Leela of the Sevateem',
             'password' => 'existingpass',
             'email' => 'leela@gallifrey.???'
         ), $result);
@@ -270,9 +242,6 @@ class UserMapperTest extends TestCase
     private function assertUserMapperIsCorrectlyConfigured(UserMapper $userMapper)
     {
         $this->assertEquals('useridfield', $userMapper->getLdapUserIdField());
-        $this->assertEquals('lastnamefield', $userMapper->getLdapLastNameField());
-        $this->assertEquals('firstnamefield', $userMapper->getLdapFirstNameField());
-        $this->assertEquals('aliasfield', $userMapper->getLdapAliasField());
         $this->assertEquals('mailfield', $userMapper->getLdapMailField());
         $this->assertEquals('passwordfield', $userMapper->getLdapUserPasswordField());
         $this->assertEquals('userEmailSuffix', $userMapper->getUserEmailSuffix());
@@ -281,9 +250,6 @@ class UserMapperTest extends TestCase
     private function assertUserMapperHasCorrectDefaultPropertyValues(UserMapper $userMapper)
     {
         $this->assertEquals('uid', $userMapper->getLdapUserIdField());
-        $this->assertEquals('sn', $userMapper->getLdapLastNameField());
-        $this->assertEquals('givenname', $userMapper->getLdapFirstNameField());
-        $this->assertEquals('cn', $userMapper->getLdapAliasField());
         $this->assertEquals('mail', $userMapper->getLdapMailField());
         $this->assertEquals('userpassword', $userMapper->getLdapUserPasswordField());
         $this->assertEquals('@mydomain.com', $userMapper->getUserEmailSuffix());

@@ -35,32 +35,11 @@ class UserMapper
     private $ldapUserIdField = 'uid';
 
     /**
-     * The LDAP resource field to use when determining a user's alias.
-     *
-     * @var string
-     */
-    private $ldapAliasField = 'cn';
-
-    /**
      * The LDAP resource field to use when determining a user's email address.
      *
      * @var string
      */
     private $ldapMailField = 'mail';
-
-    /**
-     * The LDAP resource field to use when determining a user's first name.
-     *
-     * @var string
-     */
-    private $ldapFirstNameField = 'givenname';
-
-    /**
-     * The LDAP resource field to use when determining a user's last name.
-     *
-     * @var string
-     */
-    private $ldapLastNameField = 'sn';
 
     /**
      * The LDAP resource field to use when determining a user's password.
@@ -118,7 +97,6 @@ class UserMapper
             'login' => $login,
             'password' => $this->getPiwikPasswordForLdapUser($ldapUser, $user),
             'email' => $this->getEmailAddressForLdapUser($ldapUser, $login),
-            'alias' => $this->getAliasForLdapUser($ldapUser)
         );
     }
 
@@ -187,20 +165,6 @@ class UserMapper
         return $email;
     }
 
-    private function getAliasForLdapUser($ldapUser)
-    {
-        $alias = $this->getLdapUserField($ldapUser, $this->ldapAliasField);
-        if (empty($alias)
-            && !empty($ldapUser[$this->ldapFirstNameField])
-            && !empty($ldapUser[$this->ldapLastNameField])
-        ) {
-            $alias = $this->getRequiredLdapUserField($ldapUser, $this->ldapFirstNameField)
-                . ' '
-                . $this->getRequiredLdapUserField($ldapUser, $this->ldapLastNameField);
-        }
-        return $alias;
-    }
-
     private function getRequiredLdapUserField($ldapUser, $fieldName, $fetchSingleValue = true)
     {
         if (!isset($ldapUser[$fieldName])) {
@@ -238,26 +202,6 @@ class UserMapper
     }
 
     /**
-     * Returns the {@link $ldapAliasField} property.
-     *
-     * @return string
-     */
-    public function getLdapAliasField()
-    {
-        return $this->ldapAliasField;
-    }
-
-    /**
-     * Sets the {@link $ldapAliasField} property.
-     *
-     * @param string $ldapAliasField
-     */
-    public function setLdapAliasField($ldapAliasField)
-    {
-        $this->ldapAliasField = strtolower($ldapAliasField);
-    }
-
-    /**
      * Returns the {@link $ldapMailField} property.
      *
      * @return string
@@ -275,46 +219,6 @@ class UserMapper
     public function setLdapMailField($ldapMailField)
     {
         $this->ldapMailField = strtolower($ldapMailField);
-    }
-
-    /**
-     * Returns the {@link $ldapFirstNameField} property.
-     *
-     * @return string
-     */
-    public function getLdapFirstNameField()
-    {
-        return $this->ldapFirstNameField;
-    }
-
-    /**
-     * Sets the {@link $ldapFirstNameField} property.
-     *
-     * @param string $ldapFirstNameField
-     */
-    public function setLdapFirstNameField($ldapFirstNameField)
-    {
-        $this->ldapFirstNameField = strtolower($ldapFirstNameField);
-    }
-
-    /**
-     * Returns the {@link $ldapLastNameField} property.
-     *
-     * @return string
-     */
-    public function getLdapLastNameField()
-    {
-        return $this->ldapLastNameField;
-    }
-
-    /**
-     * Sets the {@link $ldapLastNameField} property.
-     *
-     * @param string $ldapLastNameField
-     */
-    public function setLdapLastNameField($ldapLastNameField)
-    {
-        $this->ldapLastNameField = strtolower($ldapLastNameField);
     }
 
     /**
@@ -440,21 +344,6 @@ class UserMapper
         $uidField = Config::getLdapUserIdField();
         if (!empty($uidField)) {
             $result->setLdapUserIdField($uidField);
-        }
-
-        $lastNameField = Config::getLdapLastNameField();
-        if (!empty($lastNameField)) {
-            $result->setLdapLastNameField($lastNameField);
-        }
-
-        $firstNameField = Config::getLdapFirstNameField();
-        if (!empty($firstNameField)) {
-            $result->setLdapFirstNameField($firstNameField);
-        }
-
-        $aliasField = Config::getLdapAliasField();
-        if (!empty($aliasField)) {
-            $result->setLdapAliasField($aliasField);
         }
 
         $mailField = Config::getLdapMailField();

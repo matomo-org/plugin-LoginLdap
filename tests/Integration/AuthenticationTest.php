@@ -8,10 +8,10 @@
  */
 namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
+use Piwik\Auth;
 use Piwik\AuthResult;
-use Piwik\Common;
 use Piwik\Config;
-use Piwik\Db;
+use Piwik\Container\StaticContainer;
 use Piwik\Plugins\LoginLdap\Auth\LdapAuth;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Tests\Framework\Fixture;
@@ -23,6 +23,9 @@ use Piwik\Tests\Framework\Fixture;
  */
 class AuthenticationTest extends LdapIntegrationTest
 {
+    private $nonLdapUserAppPassword;
+    private $nonLdapNormalUserAppPassword;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -33,6 +36,11 @@ class AuthenticationTest extends LdapIntegrationTest
 
         $this->addNonLdapUsers();
         Fixture::createSuperUser();
+
+        $this->nonLdapUserAppPassword = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth(
+            self::NON_LDAP_USER, self::NON_LDAP_PASS, 'test');
+        $this->nonLdapNormalUserAppPassword = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth(
+            self::NON_LDAP_NORMAL_USER, self::NON_LDAP_NORMAL_PASS, 'test');
     }
 
     public function test_LdapAuth_AuthenticatesUser_WithCorrectCredentials()
@@ -43,6 +51,8 @@ class AuthenticationTest extends LdapIntegrationTest
         $authResult = $ldapAuth->authenticate();
 
         $this->assertEquals(1, $authResult->getCode());
+
+        StaticContainer::getContainer()->set(Auth::class, $ldapAuth); // set global auth for createAppSpecificTokenAuth() to work properly
     }
 
     public function test_LdapAuth_DoesNotAuthenticateUser_WithIncorrectPassword()
@@ -153,11 +163,12 @@ class AuthenticationTest extends LdapIntegrationTest
     {
         $this->test_LdapAuth_AuthenticatesUser_WithCorrectCredentials();
 
-        $tokenAuth = Db::fetchOne("SELECT token_auth FROM " . Common::prefixTable("user") . " WHERE login = ?", array(self::TEST_LOGIN));
+        $testLoginTokenAuth = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth(
+            self::TEST_LOGIN, self::TEST_PASS, 'test');
 
         $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin(self::TEST_LOGIN);
-        $ldapAuth->setTokenAuth($tokenAuth);
+        $ldapAuth->setTokenAuth($testLoginTokenAuth);
         $authResult = $ldapAuth->authenticate();
 
         $this->assertEquals(1, $authResult->getCode());
@@ -165,7 +176,7 @@ class AuthenticationTest extends LdapIntegrationTest
 
     public function test_LdapAuth_AuthenticatesSuccessfully_WhenAuthenticatingNormalPiwikSuperUser()
     {
-        UsersManagerAPI::getInstance()->addUser('zola', 'hydra___', 'zola@shield.org', $alias = false);
+        UsersManagerAPI::getInstance()->addUser('zola', 'hydra___', 'zola@shield.org');
         $this->setSuperUserAccess('zola', true);
 
         $ldapAuth = LdapAuth::makeConfigured();
@@ -178,8 +189,8 @@ class AuthenticationTest extends LdapIntegrationTest
 
     public function test_LdapAuth_AuthenticatesSuccessfully_WhenAuthenticatingNormalPiwikNonSuperUser()
     {
-        UsersManagerAPI::getInstance()->addUser('pcoulson', 'thispasswordwillbechanged', 'pcoulson@shield.org', $alias = false);
-        UsersManagerAPI::getInstance()->updateUser('pcoulson', 'vintage', false, false, false, self::TEST_SUPERUSER_PASS);
+        UsersManagerAPI::getInstance()->addUser('pcoulson', 'thispasswordwillbechanged', 'pcoulson@shield.org');
+        UsersManagerAPI::getInstance()->updateUser('pcoulson', 'vintage', false, false, self::TEST_SUPERUSER_PASS);
 
         $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin('pcoulson');
@@ -211,11 +222,11 @@ class AuthenticationTest extends LdapIntegrationTest
 
     private function getNonLdapUserTokenAuth()
     {
-        return UsersManagerAPI::getInstance()->getTokenAuth(self::NON_LDAP_USER, md5(self::NON_LDAP_PASS));
+        return $this->nonLdapUserAppPassword;
     }
 
     private function getNonLdapNormalUserTokenAuth()
     {
-        return UsersManagerAPI::getInstance()->getTokenAuth(self::NON_LDAP_NORMAL_USER, md5(self::NON_LDAP_NORMAL_PASS));
+        return $this->nonLdapNormalUserAppPassword;
     }
 }

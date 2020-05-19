@@ -93,21 +93,19 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
     public function test_PiwikUserIsNotCreated_IfPiwikUserAlreadyExists()
     {
         Access::getInstance()->setSuperUserAccess(true);
-        UsersManagerAPI::getInstance()->addUser(self::TEST_LOGIN, self::TEST_PASS, 'billionairephilanthropistplayboy@starkindustries.com', $alias = false);
+        UsersManagerAPI::getInstance()->addUser(self::TEST_LOGIN, self::TEST_PASS, 'billionairephilanthropistplayboy@starkindustries.com');
         Access::getInstance()->setSuperUserAccess(false);
 
         $this->authenticateViaLdap();
 
-        $user = Db::fetchRow("SELECT login, password, alias, email, token_auth FROM " . Common::prefixTable('user') . " WHERE login = ?", array(self::TEST_LOGIN));
+        $user = Db::fetchRow("SELECT login, password, email FROM " . Common::prefixTable('user') . " WHERE login = ?", array(self::TEST_LOGIN));
         $this->assertNotEmpty($user);
         $passwordHelper = new Password();
         $this->assertTrue($passwordHelper->verify(md5(self::TEST_PASS), $user['password']));
         unset($user['password']);
         $this->assertEquals(array(
             'login' => self::TEST_LOGIN,
-            'alias' => self::TEST_LOGIN,
             'email' => 'billionairephilanthropistplayboy@starkindustries.com',
-            'token_auth' => UsersManagerAPI::getInstance()->getTokenAuth(self::TEST_LOGIN, md5(self::TEST_PASS))
         ), $user);
 
         $this->assertNoAccessInDb();
@@ -117,7 +115,7 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
     {
         Access::doAsSuperUser(function () {
             UsersManagerAPI::getInstance()->addUser(
-                LdapUserSynchronizationTest::TEST_LOGIN, LdapUserSynchronizationTest::TEST_PASS_LDAP, 'something@domain.com', $alias = false, $isPasswordHashed = false);
+                LdapUserSynchronizationTest::TEST_LOGIN, LdapUserSynchronizationTest::TEST_PASS_LDAP, 'something@domain.com', $isPasswordHashed = false);
         });
 
         $userMapper = new UserMapper();
@@ -153,7 +151,7 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
 
         Access::doAsSuperUser(function () {
             UsersManagerAPI::getInstance()->addUser(
-                LdapUserSynchronizationTest::TEST_LOGIN, md5('anypass'), 'something@domain.com', $alias = false, $isPasswordHashed = true);
+                LdapUserSynchronizationTest::TEST_LOGIN, md5('anypass'), 'something@domain.com', $isPasswordHashed = true);
             UsersManagerAPI::getInstance()->setUserAccess(LdapUserSynchronizationTest::TEST_LOGIN, 'view', array(4,5));
             UsersManagerAPI::getInstance()->setUserAccess(LdapUserSynchronizationTest::TEST_LOGIN, 'admin', array(6));
         });

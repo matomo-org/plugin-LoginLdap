@@ -7,9 +7,11 @@
  */
 namespace Piwik\Plugins\LoginLdap\tests\System;
 
+use Piwik\Auth;
 use Piwik\AuthResult;
 use Piwik\Common;
 use Piwik\Config;
+use Piwik\Container\StaticContainer;
 use Piwik\Date;
 use Piwik\Db;
 use Piwik\Plugins\LoginLdap\LoginLdap;
@@ -17,6 +19,7 @@ use Piwik\Plugins\LoginLdap\Auth\LdapAuth;
 use Piwik\Plugins\LoginLdap\Auth\SynchronizedAuth;
 use Piwik\Plugins\LoginLdap\Auth\WebServerAuth;
 use Piwik\Plugins\LoginLdap\tests\Integration\LdapIntegrationTest;
+use Piwik\Plugins\UsersManager\API;
 use Piwik\Plugins\UsersManager\UserUpdater;
 use Piwik\Tests\Framework\Fixture;
 use Piwik\Tests\Framework\TestingEnvironmentVariables;
@@ -28,6 +31,8 @@ use Piwik\Tests\Framework\TestingEnvironmentVariables;
  */
 class SystemAuthTest extends LdapIntegrationTest
 {
+    private $superUserTokenAuth;
+
     public function getAuthModesToTest()
     {
         return array(
@@ -35,6 +40,15 @@ class SystemAuthTest extends LdapIntegrationTest
             array('synchronized'),
             array('web_server'),
         );
+    }
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->addPreexistingSuperUser();
+        $this->superUserTokenAuth = API::getInstance()->createAppSpecificTokenAuth(self::TEST_SUPERUSER_LOGIN,
+            self::TEST_SUPERUSER_PASS, 'test');
     }
 
     public function tearDown(): void
@@ -143,8 +157,7 @@ class SystemAuthTest extends LdapIntegrationTest
 
     private function getSuperUserTokenAuth()
     {
-        return Db::fetchOne("SELECT token_auth FROM `" . Common::prefixTable('user')
-            . "` WHERE superuser_access = 1 AND login = ?", array(self::TEST_SUPERUSER_LOGIN));
+        return $this->superUserTokenAuth;
     }
 
     private function authenticateUserOnce($authStrategy)
@@ -161,6 +174,8 @@ class SystemAuthTest extends LdapIntegrationTest
         } else {
             throw new \Exception("Unknown LDAP auth strategy $authStrategy.");
         }
+
+        StaticContainer::getContainer()->set(Auth::class, $auth);
 
         $auth->setLogin(self::TEST_SUPERUSER_LOGIN);
         $auth->setPassword(self::TEST_SUPERUSER_PASS);

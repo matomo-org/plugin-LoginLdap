@@ -135,7 +135,7 @@ class UserSynchronizer
             ));
 
             if (empty($existingUser)) {
-                $usersManagerApi->addUser($user['login'], $user['password'], $user['email'], $user['alias'], $isPasswordHashed = true);
+                $usersManagerApi->addUser($user['login'], $user['password'], $user['email'], $isPasswordHashed = true);
 
                 // set new user view access
                 if (!empty($newUserDefaultSitesWithViewAccess)) {
@@ -145,7 +145,7 @@ class UserSynchronizer
                 if (!$userMapper->isUserLdapUser($existingUser['login'])) {
                     $logger->warning("Unable to synchronize LDAP user '{user}', non-LDAP user with same name exists.", array('user' => $existingUser['login']));
                 } else {
-                    $userUpdater->updateUserWithoutCurrentPassword($user['login'], $user['password'], $user['email'], $user['alias'], $isPasswordHashed = true);
+                    $userUpdater->updateUserWithoutCurrentPassword($user['login'], $user['password'], $user['email'], $isPasswordHashed = true);
                 }
             }
 

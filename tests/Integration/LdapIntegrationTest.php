@@ -8,6 +8,7 @@
  */
 namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
+use Monolog\Logger;
 use Piwik\Access;
 use Piwik\Auth\Password;
 use Piwik\Common;
@@ -99,7 +100,7 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
 
     protected function addPreexistingSuperUser()
     {
-        UsersManagerAPI::getInstance()->addUser(self::TEST_SUPERUSER_LOGIN, self::TEST_SUPERUSER_PASS, 'srodgers@aol.com', $alias = false);
+        UsersManagerAPI::getInstance()->addUser(self::TEST_SUPERUSER_LOGIN, self::TEST_SUPERUSER_PASS, 'srodgers@aol.com');
         $this->setSuperUserAccess(self::TEST_SUPERUSER_LOGIN, true);
 
         $auth = StaticContainer::get('Piwik\Auth');
@@ -111,14 +112,14 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
 
     protected function addNonLdapUsers()
     {
-        UsersManagerAPI::getInstance()->addUser(self::NON_LDAP_USER, self::NON_LDAP_PASS, 'whatever@aol.com', $alias = false);
+        UsersManagerAPI::getInstance()->addUser(self::NON_LDAP_USER, self::NON_LDAP_PASS, 'whatever@aol.com');
         $this->setSuperUserAccess(self::NON_LDAP_USER, true);
-        UsersManagerAPI::getInstance()->addUser(self::NON_LDAP_NORMAL_USER, self::NON_LDAP_NORMAL_PASS, 'witchy@sdhs.edu', $alias = false);
+        UsersManagerAPI::getInstance()->addUser(self::NON_LDAP_NORMAL_USER, self::NON_LDAP_NORMAL_PASS, 'witchy@sdhs.edu');
     }
 
     protected function getUser($login)
     {
-        return Db::fetchRow("SELECT login, password, alias, email, token_auth FROM " . Common::prefixTable('user') . " WHERE login = ?", array($login));
+        return Db::fetchRow("SELECT login, password, email FROM " . Common::prefixTable('user') . " WHERE login = ?", array($login));
     }
 
     protected function assertStarkSynchronized($expectedDomain = 'starkindustries.com')
@@ -130,9 +131,7 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
         unset($user['password']);
         $this->assertEquals(array(
             'login' => self::TEST_LOGIN,
-            'alias' => 'Tony Stark',
             'email' => 'billionairephilanthropistplayboy@' . $expectedDomain,
-            'token_auth' => UsersManagerAPI::getInstance()->getTokenAuth(self::TEST_LOGIN, md5(self::TEST_PASS_LDAP))
         ), $user);
         $userMapper = new UserMapper();
         $this->assertTrue($userMapper->isUserLdapUser(self::TEST_LOGIN));
@@ -143,10 +142,8 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
         $user = $this->getUser('blackwidow');
         $this->assertNotEmpty($user);
         unset($user['password']);
-        unset($user['token_auth']);
         $this->assertEquals(array(
             'login' => 'blackwidow',
-            'alias' => 'Natalia Romanova',
             'email' => 'blackwidow@' . $expectedDomain,
         ), $user);
         $userMapper = new UserMapper();
@@ -168,6 +165,7 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
     {
         return array(
             'Psr\Log\LoggerInterface' => \DI\get('Monolog\Logger'),
+            'log.level' => Logger::DEBUG,
         );
     }
 

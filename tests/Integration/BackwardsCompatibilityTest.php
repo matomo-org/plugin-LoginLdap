@@ -32,7 +32,7 @@ class BackwardsCompatibilityTest extends LdapIntegrationTest
             'useKerberos' => 'false'
         );
 
-        UsersManagerAPI::getInstance()->addUser(self::TEST_LOGIN, self::TEST_PASS, 'billionairephilanthropistplayboy@starkindustries.com', $alias = false);
+        UsersManagerAPI::getInstance()->addUser(self::TEST_LOGIN, self::TEST_PASS, 'billionairephilanthropistplayboy@starkindustries.com');
     }
 
     public function testAuthenticationWithOldServerConfig()
