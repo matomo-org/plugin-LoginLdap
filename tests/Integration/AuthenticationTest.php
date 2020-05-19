@@ -8,6 +8,7 @@
  */
 namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
+use Piwik\Auth;
 use Piwik\AuthResult;
 use Piwik\Common;
 use Piwik\Config;
@@ -54,6 +55,8 @@ class AuthenticationTest extends LdapIntegrationTest
         $authResult = $ldapAuth->authenticate();
 
         $this->assertEquals(1, $authResult->getCode());
+
+        StaticContainer::getContainer()->set(Auth::class, $ldapAuth); // set global auth for createAppSpecificTokenAuth() to work properly
     }
 
     public function test_LdapAuth_DoesNotAuthenticateUser_WithIncorrectPassword()
@@ -165,7 +168,7 @@ class AuthenticationTest extends LdapIntegrationTest
         StaticContainer::get(LoggerInterface::class)->info("TEST START");
         $this->test_LdapAuth_AuthenticatesUser_WithCorrectCredentials();
 
-        StaticContainer::get(LoggerInterface::class)->info("  ADDING APP SPECIFIC TOKEN");
+        StaticContainer::get(LoggerInterface::class)->info("  ADDING APP SPECIFIC TOKEN " . get_class(StaticContainer::get('Piwik\Auth')));
         $testLoginTokenAuth = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth(
             self::TEST_LOGIN, self::TEST_PASS, 'test');
 
