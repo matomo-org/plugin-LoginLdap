@@ -78,11 +78,10 @@ class SynchronizedAuthTest extends LdapIntegrationTest
 
     public function test_SynchronizedLdapUsersCanLogin_WithoutConnectingToLdap_ByPasswordHash()
     {
-        StaticContainer::get(LoggerInterface::class)->info("-> TEST START");
         Config::getInstance()->LoginLdap['servers'] = array('brokenserver');
 
         $this->addPreSynchronizedUser();
-        StaticContainer::get(LoggerInterface::class)->info("-> START AUTH");
+
         $this->doAuthTestByPasswordHash($code = 1);
     }
 
@@ -204,7 +203,7 @@ class SynchronizedAuthTest extends LdapIntegrationTest
     {
         $auth = SynchronizedAuth::makeConfigured();
         $auth->setLogin($login);
-        $auth->setPasswordHash($pass);
+        $auth->setPasswordHash(md5($pass));
         $result = $auth->authenticate();
 
         $this->assertEquals($expectCode, $result->getCode());

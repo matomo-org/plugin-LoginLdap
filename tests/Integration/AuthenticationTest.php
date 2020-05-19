@@ -10,15 +10,11 @@ namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
 use Piwik\Auth;
 use Piwik\AuthResult;
-use Piwik\Common;
 use Piwik\Config;
 use Piwik\Container\StaticContainer;
-use Piwik\Db;
-use Piwik\Plugin\Manager;
 use Piwik\Plugins\LoginLdap\Auth\LdapAuth;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Tests\Framework\Fixture;
-use Psr\Log\LoggerInterface;
 
 /**
  * @group LoginLdap
@@ -165,10 +161,8 @@ class AuthenticationTest extends LdapIntegrationTest
 
     public function test_LdapAuth_AuthenticatesSuccessfully_WhenTokenAuthOnlyAuthenticationUsed()
     {
-        StaticContainer::get(LoggerInterface::class)->info("TEST START");
         $this->test_LdapAuth_AuthenticatesUser_WithCorrectCredentials();
 
-        StaticContainer::get(LoggerInterface::class)->info("  ADDING APP SPECIFIC TOKEN " . get_class(StaticContainer::get('Piwik\Auth')));
         $testLoginTokenAuth = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth(
             self::TEST_LOGIN, self::TEST_PASS, 'test');
 
@@ -176,7 +170,7 @@ class AuthenticationTest extends LdapIntegrationTest
         $ldapAuth->setLogin(self::TEST_LOGIN);
         $ldapAuth->setTokenAuth($testLoginTokenAuth);
         $authResult = $ldapAuth->authenticate();
-        StaticContainer::get(LoggerInterface::class)->info("TEST FINISH");
+
         $this->assertEquals(1, $authResult->getCode());
     }
 
