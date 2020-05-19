@@ -14,6 +14,7 @@ use Piwik\Container\StaticContainer;
 use Piwik\Plugins\LoginLdap\Auth\SynchronizedAuth;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
+use Psr\Log\LoggerInterface;
 
 /**
  * @group LoginLdap
@@ -77,15 +78,17 @@ class SynchronizedAuthTest extends LdapIntegrationTest
 
     public function test_SynchronizedLdapUsersCanLogin_WithoutConnectingToLdap_ByPasswordHash()
     {
+        StaticContainer::get(LoggerInterface::class)->info("-> TEST START");
         Config::getInstance()->LoginLdap['servers'] = array('brokenserver');
 
         $this->addPreSynchronizedUser();
-
+        StaticContainer::get(LoggerInterface::class)->info("-> START AUTH");
         $this->doAuthTestByPasswordHash($code = 1);
     }
 
     public function test_NormalPiwikUsersCanLogin_WithoutConnectingToLdap_ByPasswordHash()
     {
+        StaticContainer::get(LoggerInterface::class)->info("NEXT TEST");
         Config::getInstance()->LoginLdap['servers'] = array('brokenserver');
 
         $this->addNonLdapUsers();
