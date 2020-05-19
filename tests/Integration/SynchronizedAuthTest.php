@@ -138,20 +138,14 @@ class SynchronizedAuthTest extends LdapIntegrationTest
 
     public function test_LdapUserPasswordUpdated_AfterSuccessfulLoginViaLdap()
     {
-        StaticContainer::get(LoggerInterface::class)->info("test start");
         $this->addLdapUserWithWrongPassword();
-
-        $user = $this->getUser(self::TEST_LOGIN);
-        StaticContainer::get(LoggerInterface::class)->info(print_r($user, true));
 
         $this->doAuthTest($code = 1);
 
         $user = $this->getUser(self::TEST_LOGIN);
-        StaticContainer::get(LoggerInterface::class)->info(print_r($user, true));
 
-        StaticContainer::get(LoggerInterface::class)->info("test end");
         $passwordHelper = new Password();
-        $this->assertTrue($passwordHelper->verify(self::TEST_PASS, $user['password']));
+        $this->assertTrue($passwordHelper->verify(\Piwik\Plugins\UsersManager\UsersManager::getPasswordHash(self::TEST_PASS), $user['password']));
     }
 
     private function addPreSynchronizedUser($pass = self::TEST_PASS)
