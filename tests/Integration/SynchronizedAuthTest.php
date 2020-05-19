@@ -7,8 +7,10 @@
  */
 namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
+use Piwik\Auth;
 use Piwik\Auth\Password;
 use Piwik\Config;
+use Piwik\Container\StaticContainer;
 use Piwik\Plugins\LoginLdap\Auth\SynchronizedAuth;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
@@ -183,9 +185,12 @@ class SynchronizedAuthTest extends LdapIntegrationTest
 
     private function doAuthTestByTokenAuth($expectCode, $login = self::TEST_LOGIN, $pass = self::TEST_PASS, $tokenAuth = null)
     {
+        $auth = SynchronizedAuth::makeConfigured();
+
+        StaticContainer::getContainer()->set(Auth::class, $auth);
+
         $tokenAuth = $tokenAuth ?: UsersManagerAPI::getInstance()->createAppSpecificTokenAuth($login, $pass, 'test');
 
-        $auth = SynchronizedAuth::makeConfigured();
         $auth->setLogin($login);
         $auth->setTokenAuth($tokenAuth);
         $result = $auth->authenticate();

@@ -29,7 +29,7 @@ class WebServerAuthTest extends LdapIntegrationTest
 
         $this->addPreexistingSuperUser();
         $this->testSuperUserTokenAuth = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth(
-            self::TEST_SUPERUSER_LOGIN, md5(self::TEST_SUPERUSER_PASS), 'test');
+            self::TEST_SUPERUSER_LOGIN, self::TEST_SUPERUSER_PASS, 'test');
     }
 
     public function test_WebServerAuth_Works_IfUserExists_RegardlessOfPassword()

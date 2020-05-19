@@ -7,9 +7,11 @@
  */
 namespace Piwik\Plugins\LoginLdap\tests\System;
 
+use Piwik\Auth;
 use Piwik\AuthResult;
 use Piwik\Common;
 use Piwik\Config;
+use Piwik\Container\StaticContainer;
 use Piwik\Date;
 use Piwik\Db;
 use Piwik\Plugins\LoginLdap\LoginLdap;
@@ -172,6 +174,8 @@ class SystemAuthTest extends LdapIntegrationTest
         } else {
             throw new \Exception("Unknown LDAP auth strategy $authStrategy.");
         }
+
+        StaticContainer::getContainer()->set(Auth::class, $auth);
 
         $auth->setLogin(self::TEST_SUPERUSER_LOGIN);
         $auth->setPassword(self::TEST_SUPERUSER_PASS);
