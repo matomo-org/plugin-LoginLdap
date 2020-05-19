@@ -114,7 +114,7 @@ class SynchronizedAuthTest extends LdapIntegrationTest
     {
         Config::getInstance()->LoginLdap['synchronize_users_after_login'] = 0;
 
-        $this->doAuthTestByTokenAuth($code = 0, self::TEST_LOGIN, self::TEST_PASS, $this->testUserTokenAuth);
+        $this->doAuthTestByTokenAuth($code = 0, self::TEST_LOGIN, self::TEST_PASS, 'garbagetokenauth');
     }
 
     public function test_LdapUserCannotLogin_IfUserNotInDb_AndAuthtenticatingByPasswordHash()
@@ -186,7 +186,6 @@ class SynchronizedAuthTest extends LdapIntegrationTest
     private function doAuthTestByTokenAuth($expectCode, $login = self::TEST_LOGIN, $pass = self::TEST_PASS, $tokenAuth = null)
     {
         $auth = SynchronizedAuth::makeConfigured();
-
         StaticContainer::getContainer()->set(Auth::class, $auth);
 
         $tokenAuth = $tokenAuth ?: UsersManagerAPI::getInstance()->createAppSpecificTokenAuth($login, $pass, 'test');
