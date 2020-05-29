@@ -151,8 +151,6 @@ class LoginLdap extends \Piwik\Plugin
     {
         $auth = AuthBase::factory();
         StaticContainer::getContainer()->set('Piwik\Auth', $auth);
-
-        Login::initAuthenticationFromCookie($auth, $activateCookieAuth);
     }
 
     /**
