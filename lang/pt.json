@@ -1,6 +1,6 @@
 {
     "LoginLdap": {
-        "PluginDescription": "Extensão de autenticação para o LDAP. Fornece uma alternativa à extensão de autenticação predefinida do Matomo.",
+        "PluginDescription": "Extensão de iniciar a sessão com autenticação LDAP. Fornece uma alternativa à extensão de iniciar a sessão predefinida do Matomo.",
         "MenuLdap": "Utilizadores do LDAP",
         "LoadUser": "Importar utilizador do LDAP",
         "LoadUserDescription": "Pode utilizar este formulário para sincronizar um utilizador do LDAP a partir da interface do utilizador.",
