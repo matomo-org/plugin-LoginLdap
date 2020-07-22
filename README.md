@@ -1,6 +1,6 @@
 # Matomo LoginLdap Plugin
 
-[![Build Status](https://travis-ci.org/matomo-org/plugin-LoginLdap.svg?branch=master)](https://travis-ci.org/matomo-org/plugin-LoginLdap)
+[![Build Status](https://travis-ci.org/matomo-org/plugin-LoginLdap.svg?branch=4.x-dev)](https://travis-ci.org/matomo-org/plugin-LoginLdap)
 
 ## Description
 
@@ -237,7 +237,7 @@ LoginLdap comes with the following console commands:
 
 ### Changelog
 
-See [https://github.com/matomo-org/plugin-LoginLdap/blob/master/CHANGELOG.md](https://github.com/matomo-org/plugin-LoginLdap/blob/master/CHANGELOG.md).
+See [https://github.com/matomo-org/plugin-LoginLdap/blob/4.x-dev/CHANGELOG.md](https://github.com/matomo-org/plugin-LoginLdap/blob/4.x-dev/CHANGELOG.md).
 
 ### Support
 
