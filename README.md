@@ -1,6 +1,6 @@
 # Matomo LoginLdap Plugin
 
-[![Build Status](https://travis-ci.org/matomo-org/plugin-LoginLdap.svg?branch=4.x-dev)](https://travis-ci.org/matomo-org/plugin-LoginLdap)
+[![Build Status](https://travis-ci.com/matomo-org/plugin-LoginLdap.svg?branch=4.x-dev)](https://travis-ci.com/matomo-org/plugin-LoginLdap)
 
 ## Description
 
