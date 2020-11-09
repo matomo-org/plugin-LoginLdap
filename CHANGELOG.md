@@ -1,5 +1,9 @@
 # LoginLdap Changelog
 
+#### LoginLdap 4.2.2
+
+* Fix issue with logging in that caused password confirmation dialog to log users out temporarily.
+
 #### LoginLdap 4.2.1
 
 * Compatibility with matomo 4.0 and above.
