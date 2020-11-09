@@ -10,7 +10,9 @@ namespace Piwik\Plugins\LoginLdap\LdapInterop;
 use Piwik\Access;
 use Piwik\API\Proxy;
 use Piwik\API\Request;
+use Piwik\Common;
 use Piwik\Container\StaticContainer;
+use Piwik\Db;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Plugins\UsersManager\Model as UserModel;
@@ -146,6 +148,10 @@ class UserSynchronizer
                     $logger->warning("Unable to synchronize LDAP user '{user}', non-LDAP user with same name exists.", array('user' => $existingUser['login']));
                 } else {
                     $userUpdater->updateUserWithoutCurrentPassword($user['login'], $user['password'], $user['email'], $isPasswordHashed = true);
+
+                    // manually reset ts_password_modified to user creation date since it will just cause sessions to prematurely expire
+                    // (note: it is not possible to change LDAP passwords through Matomo)
+                    $this->resetUserTsPassword($user['login']);
                 }
             }
 
@@ -351,5 +357,11 @@ class UserSynchronizer
         ));
 
         return $result;
+    }
+
+    private function resetUserTsPassword($login)
+    {
+        $sql = "UPDATE " . Common::prefixTable('user') . " SET ts_password_modified = date_registered WHERE login = ?";
+        Db::query($sql, [$login]);
     }
 }
