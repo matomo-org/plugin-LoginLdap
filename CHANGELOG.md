@@ -2,7 +2,7 @@
 
 #### LoginLdap 4.2.2
 
-* Fix issue with logging in that caused password confirmation dialog to log users out temporarily.
+* Fix issue with LDAP user login that caused password confirmation dialog to log users out temporarily.
 
 #### LoginLdap 4.2.1
 
