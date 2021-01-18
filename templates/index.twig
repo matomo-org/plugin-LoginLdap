@@ -38,6 +38,15 @@
                  inline-help="{{ 'LoginLdap_KerberosDescription'|translate|e('html_attr') }}">
             </div>
 
+            <div ng-show="ajaxForm.data.use_webserver_auth">
+                <div piwik-field uicontrol="checkbox" name="strip_domain_from_web_auth"
+                     title="{{ 'LoginLdap_StripDomainFromWebAuth'|translate|e('html_attr') }}"
+                     value="{{ ldapConfig.strip_domain_from_web_auth }}"
+                     ng-model="ajaxForm.data.strip_domain_from_web_auth"
+                     inline-help="{{ 'LoginLdap_StripDomainFromWebAuthDescription'|translate|e('html_attr') }}">
+                </div>
+            </div>
+
             <div piwik-field uicontrol="text" name="ldap_network_timeout"
                  title="{{ 'LoginLdap_NetworkTimeout'|translate|e('html_attr') }}"
                  value="{{ ldapConfig.ldap_network_timeout }}"

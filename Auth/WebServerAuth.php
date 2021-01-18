@@ -65,7 +65,11 @@ class WebServerAuth extends Base
 
                 return $this->tryFallbackAuth($onlySuperUsers = false, $this->fallbackAuth);
             } else {
-                $this->login = preg_replace('/@.*/', '', $webServerAuthUser);
+                if (Config::getStripDomainFromWebAuth()) {
+                    $this->login = preg_replace('/@.*/', '', $webServerAuthUser);
+                } else {
+                    $this->login = $webServerAuthUser;
+                }
                 $this->password = '';
 
                 $this->logger->info("User '{login}' authenticated by webserver.", array('login' => $this->login));
