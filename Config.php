@@ -35,6 +35,7 @@ class Config
         'ldap_view_access_field' => 'view',
         'ldap_admin_access_field' => 'admin',
         'ldap_superuser_access_field' => 'superuser',
+        'strip_domain_from_web_auth' => 1,
         'use_webserver_auth' => 0,
         'user_access_attribute_server_specification_delimiter' => ';',
         'user_access_attribute_server_separator' => ':',
@@ -184,6 +185,11 @@ class Config
     public static function shouldAppendUserEmailSuffixToUsername()
     {
         return self::getConfigOption('append_user_email_suffix_to_username') == 1;
+    }
+
+    public static function getStripDomainFromWebAuth()
+    {
+        return self::getConfigOption('strip_domain_from_web_auth') == 1;
     }
 
     public static function getServerConfig($server)

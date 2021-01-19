@@ -146,4 +146,21 @@ class WebServerAuthTest extends LdapIntegrationTest
 
         $this->assertEquals(AuthResult::SUCCESS_SUPERUSER_AUTH_CODE, $authResult->getCode());
     }
+
+    public function test_WebServerAuth_Fails_IfDomainNotStrippedCorrectly()
+    {
+        Config::getInstance()->LoginLdap['use_webserver_auth'] = 1;
+
+        Config::getInstance()->LoginLdap['strip_domain_from_web_auth'] = 1;
+        $_SERVER['REMOTE_USER'] = self::TEST_LOGIN . '@shield.org';
+        $ldapAuth = WebServerAuth::makeConfigured();
+        $authResult = $ldapAuth->authenticate();
+        $this->assertEquals(AuthResult::SUCCESS, $authResult->getCode());
+
+        Config::getInstance()->LoginLdap['strip_domain_from_web_auth'] = 0;
+        $_SERVER['REMOTE_USER'] = self::TEST_LOGIN . '@shield.org';
+        $ldapAuth = WebServerAuth::makeConfigured();
+        $authResult = $ldapAuth->authenticate();
+        $this->assertEquals(AuthResult::FAILURE, $authResult->getCode());
+    }
 }
