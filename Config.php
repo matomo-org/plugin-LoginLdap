@@ -189,7 +189,7 @@ class Config
 
     public static function getStripDomainFromWebAuth()
     {
-        return self::getConfigOption('strip_domain_from_web_auth');
+        return self::getConfigOption('strip_domain_from_web_auth') == 1;
     }
 
     public static function getServerConfig($server)
