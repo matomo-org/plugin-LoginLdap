@@ -2,7 +2,7 @@
 
 #### LoginLdap 4.3.0
 
-* Added new setting for the Web Server Auth strategy to avoid stripping off the domain of usernames. (change by @EmTeedee)
+* Added new setting for the Web Server Auth strategy to avoid stripping off the domain of usernames. (change by EmTeedee)
 
 #### LoginLdap 4.2.2
 
