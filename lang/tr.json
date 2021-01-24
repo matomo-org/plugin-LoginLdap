@@ -29,6 +29,8 @@
         "FilterDescription": "Kimlik doğrulama için kullanılacak kayıtların seçilmesini sağlayan LDAP süzgeci. Örnek: \"(objectClass=person)\".",
         "Kerberos": "Web Sunucu Kimlik Doğrulaması Kullanılsın (Örnek Kerberos SSO)",
         "KerberosDescription": "Bu seçenek etkinleştirildiğinde uygulama eki $_SERVER['REMOTE_USER'] değişkenini kullanarak kullanıcı kimliğinin zaten doğrulanmış olduğunu varsayar. $_SERVER['REMOTE_USER'] değişkeni yoksa tüm kullanıcıların kimliği diğer ayarlara göre doğrulanır.",
+        "StripDomainFromWebAuth": "Web Sunucusunda Kimliği Doğrulanmış Kullanıcının Etki Alanı Ayıklansın",
+        "StripDomainFromWebAuthDescription": "Bu seçenek etkinleştirildiğinde, $_SERVER['REMOTE_USER'] değişkenindeki kullanıcı adının etki alanı bölümü ayıklanır (ilk '@' simgesi ve sonrası gibi).",
         "LdapUserAdded": "LDAP kullanıcısı eklendi!",
         "LdapFunctionsMissing": "Bu uygulama ekinin çalışması için gerekli olan PHP LDAP eklentisi etkinleştirilmemiş gibi görünüyor. Lütfen bu eklentiyi kurun.",
         "CannotConnectToServer": "LDAP sunucusu ile bağlantı kurulamadı.",

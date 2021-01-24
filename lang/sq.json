@@ -29,6 +29,8 @@
         "FilterDescription": "Një filtër LDAP i përdorur për të përcaktuar cilat njësi lejohen për t’u përdorur për mirëfilltësim, p.sh. \"(objectClass=person)\".",
         "Kerberos": "Përdor Mirëfilltësim Shërbyesi Web (p.sh. Kerberos SSO)",
         "KerberosDescription": "Në u aktivizoftë, shtojca do të kontrollojë ndryshoren $_SERVER['REMOTE_USER'] dhe do të marrë si të mirëqenë se për përdoruesin është bërë tashmë mirëfilltësimi. Nëse $_SERVER['REMOTE_USER'] s’është i pranishëm, krejt përdoruesit mirëfilltësohen sipas rregullimeve të tjera.",
+        "StripDomainFromWebAuth": "Hiqe Përkatësinë nga Përdorues Mirëfilltësimi Me Shërbyes",
+        "StripDomainFromWebAuthDescription": "Në u aktivizoftë, pjesa e përkatësisë së përdoruesit, te ndryshorja $_SERVER['REMOTE_USER'] , do të hiqet (d.m.th., gjithçka pas dhe përfshi '@' e parë).",
         "LdapUserAdded": "Përdoruesi LDAP u shtua me sukses!",
         "LdapFunctionsMissing": "Zgjerimi PHP LDAP s’duket se është i aktivizuar. Është i domosdoshëm për këtë shtojcë, ju lutemi, instalojeni.",
         "CannotConnectToServer": "S’u lidh dot me shërbyesin LDAP.",
