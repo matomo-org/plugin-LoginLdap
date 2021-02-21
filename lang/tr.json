@@ -74,7 +74,7 @@
         "PasswordField": "Kullanıcı Parolası Alanı",
         "PasswordFieldDescription": "Bir kullanıcın parolasının bulunduğu LDAP özniteliği. Örnek: 'userPassword' ya da 'unicodePwd'.",
         "PasswordFieldDescription2": "'Kimlik Doğrulaması için Her Zaman LDAP Kullanılsın' seçeneği etkinleştirilmiş ve 'Yeni Kullanıcılar için Rastgele Kimlik Doğrulama Kodu (token_auth) Üretilsin' seçeneği devre dışı bırakılmış ise, LDAP üzerinde bu alanın değeri kullanıcının karılmış ya da şifrelenmiş parolası olmalıdır.",
-        "ReadMoreAboutAccessSynchronization": "Kullnıcı izinlerinin eşitlenmesi hakkında ayrıntılı bilgi almak için %1$sbelgelere bakın%2$s.",
+        "ReadMoreAboutAccessSynchronization": "Kullanıcı izinlerinin eşitlenmesi hakkında ayrıntılı bilgi almak için %1$sbelgelere bakın%2$s.",
         "ExpectedLdapAttributes": "Beklenen LDAP Öznitelikleri",
         "ExpectedLdapAttributesPrelude": "Bu yapılandırma kullanıldığında, LoginLdap uygulama eki LDAP sunucudan öznitelikleri şu şekilde bekler",
         "NetworkTimeout": "LDAP Ağ İsteği Zaman Aşımı (Saniye)",
