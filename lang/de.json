@@ -29,7 +29,7 @@
         "FilterDescription": "( e.g. \"(objectClass=person)\" )",
         "Kerberos": "Verwende Web-Server-Authentifizierung (z.B. Kerberos SSO)",
         "KerberosDescription": "Falls aktiviert prüft das Plugin die Variable $_SERVER['REMOTE_USER'] und nimmt an, dass der Benutzer bereits angemeldet ist. Falls die Variable $_SERVER['REMOTE_USER'] nicht vorhanden ist, werden Benutzer gemäß den anderen Einstellungen bestätigt.",
-        "StripDomainFromWebAuth": "Domain von der Web Server Benutzer Auth wegschneiden",
+        "StripDomainFromWebAuth": "Domain vom Web Server Benutzer Auth entfernen",
         "StripDomainFromWebAuthDescription": "Wenn aktiviert, wird der Teil des Benutzers in der $_SERVER['REMOTE_USER'] Variable weggeschnitten (also alles nach und inklusive dem ersten '@').",
         "LdapUserAdded": "LDAP Benutzer erfolgreich hinzugefügt!",
         "LdapFunctionsMissing": "PHP ldap_connect() Funktion fehlt, aktivieren Sie bitte LDAP-Modul auf Ihrer PHP-Konfiguration!",
