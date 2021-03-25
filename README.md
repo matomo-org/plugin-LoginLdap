@@ -123,7 +123,7 @@ _Note: The plugin will still communicate with the LDAP server in order to synchr
 
 In order to use LDAPS in the plugin, you would need to specify the hostname using ldaps://yourldapshost.com or alternatively using the LDAPS port of 636 in the configuration.
 
-_Please note: When using a hostname that contains ldap:// or ldaps:// the port number specified in the configuration will be ignored. If you need to us a non-standard port then you will need to specify the LDAP server hostname without ldap:// or ldaps:// _
+_Please note: When using a hostname that contains ldap:// or ldaps:// the port number specified in the configuration will be ignored. If you need to use a non-standard port then you will need to specify the LDAP server hostname without ldap:// or ldaps:// _
 
 When using LDAPS - the server that you are hosting Matomo on will need to trust the CA that has issued the certificates for your LDAPS server (These certificates are often stored in /etc/openldap/certs)
 
