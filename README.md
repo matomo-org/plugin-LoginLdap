@@ -119,6 +119,19 @@ normal authentication will take place.
 
 _Note: The plugin will still communicate with the LDAP server in order to synchronize user details, so if LDAP settings are incorrect, authentication will fail._
 
+### Authenticating using LDAPS.
+
+In order to use LDAPS in the plugin, you would need to specify the hostname using ldaps://yourldapshost.com or alternatively using the LDAPS port of 636 in the configuration.
+
+_Please note: When using a hostname that contains ldap:// or ldaps:// the port number specified in the configuration will be ignored. If you need to use a non-standard port then you will need to specify the LDAP server hostname without ldap:// or ldaps:// _
+
+When using LDAPS - the server that you are hosting Matomo on will need to trust the CA that has issued the certificates for your LDAPS server (These certificates are often stored in /etc/openldap/certs)
+
+Alternatively you can specify the location of the TSL certificates within the ldap.conf file that is normally stored in _/etc/openldap/ldap.conf_ by adding the following:
+TLS_REQCERT never
+TLS_CACERT /usr/local/ssl/certs/myldap.pem
+TLS_CACERTDIR /usr/local/ssl/certs
+
 ### Specifying Fallback Servers
 
 LoginLdap v3.0.0 and greater supports specifying multiple LDAP servers to use. If connecting to one server fails, the other servers are used as fallbacks.
