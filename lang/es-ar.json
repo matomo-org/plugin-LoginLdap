@@ -29,6 +29,8 @@
         "FilterDescription": "Un filtro LDAP usado para determinar qué entidades están permitidas para ser usadas en la autenticación; por ejemplo: \"(objectClass=person)\".",
         "Kerberos": "Usar autenticación de servidor web (por ejemplo: Kerberos SSO)",
         "KerberosDescription": "Si está habilitado, el plugin revisará la variable \"$_SERVER['REMOTE_USER']\" y asumirá que el usuario ya está autenticado. El no está presente dicha variable, todos los usuarios serán autenticados acorde a la otra configuración.",
+        "StripDomainFromWebAuth": "Desmontar dominio de Web Server Auth User",
+        "StripDomainFromWebAuthDescription": "Si está habilitado, la parte de dominio del usuario en la variable $_SERVER['REMOTE_USER'] será desmontada (por ejemplo: todo después de, e incluyendo la primera arroba).",
         "LdapUserAdded": "¡Se agregó el usuario LDAP exitosamente!",
         "LdapFunctionsMissing": "La extensión PHP LDAP no parece estar habilitada. Se requiere para este plugin; por favor, instalala.",
         "CannotConnectToServer": "No se pudo conectar al servidor LDAP.",
