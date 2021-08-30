@@ -60,7 +60,7 @@
         "LdapUserAccessAttributeServerSpecDelimiter": "Trennzeichen für die Server Spezifikation des Benutzerzugriffsattributs.",
         "LdapUserAccessAttributeServerSpecDelimiterDescription": "Das Trennzeichen um die Server Spezifikationen in einem Benutzerzugriffsattribut zu trennen. Wenn auf ';' gesetzt, wird ein Zugriffsattribut mit folgendem Aufbau erwartet: '<server-spec>;<server-spec>;...'.",
         "LdapUserAccessAttributeServerSeparator": "Benutzerzugriffs Eigenschaft Server- & Seitenlisten-Separator",
-        "LdapUserAccessAttributeServerSeparatorDescription": "Die eingesetzte Zeichenfolge, welche separate Matomo Server Instanzen mit Seiten-Ids auflistet. Wenn auf ':' gesetzt, wird ein Zugriffsattribut wie folgt erwartet: '<server-id>:<site-list>;<server-id>:<site-list>'",
+        "LdapUserAccessAttributeServerSeparatorDescription": "Die eingesetzte Zeichenfolge, welche separate Matomo Server Instanzen mit Seiten-Ids auflistet. Wenn auf ':' gesetzt, wird ein Zugriffsattribut wie folgt erwartet: '<server-id>:<site-list>;<server-id>:<site-list>'.</site-list></server-id></site-list></server-id>",
         "ThisMatomoInstanceName": "Spezialname für diese Matomo Instanz",
         "ThisMatomoInstanceNameDescription": "Ein spezieller Name, mit welchem diese Matomo Instanz in einem Zugriffsattribut identifiziert werden kann. Wenn keines spezifiziert ist, wird die Basis URL dieser Matomo Installation erwartet.",
         "UnsupportedPasswordReset": "Das Benutzerpasswort kann nicht zurückgesetzt werden, bitte kontaktieren Sie einen Administrator.",
