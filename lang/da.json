@@ -17,7 +17,7 @@
         "UserIdFieldDescription": "LDAP-attributten der indeholder brugerens brugernavn, fx “uid”, eller “userPrincipalName” for Active Directory. ",
         "UserNotFound": "Bruger \"%s\" blev ikke fundet!",
         "NoUserName": "Intet brugernavn opgivet!",
-        "UsernameSuffix": "Brugernavn suffix\/domæne",
+        "UsernameSuffix": "Brugernavn suffix/domæne",
         "UsernameSuffixDescription": "Tilføjes til brugernavne for at danne e-mailadressen for brugere, der ikke har en i LDAP. Sæt til fx “@localhost.com”.",
         "AdminUser": "LDAP-bind-brugernavn",
         "AdminUserDescription": "(fx. \"john\" - skal have læseadgang for at kunne forespørge på andre brugere)",
@@ -31,7 +31,7 @@
         "LdapUserAdded": "LDAP-bruger tilføjet!",
         "LdapFunctionsMissing": "PHP LDAP-udvidelsen ser ikke ud til at være aktiveret. Installer den, da den er krævet for denne udvidelse.",
         "CannotConnectToServer": "Kunne ikke forbinde til LDAP-serveren.",
-        "CannotConnectToServers": "Kunne ikke forbinde til nogen af ​​%s LDAP-serverne.",
+        "CannotConnectToServers": "Kunne ikke forbinde til nogen af %s LDAP-serverne.",
         "LDAPServers": "LDAP-servere",
         "OneUser": "1 bruger",
         "MemberOfCount": "%s er medlem af denne gruppe.",
@@ -79,7 +79,7 @@
         "LoginPluginEnabledWarning": "Både %1$s og %2$s udvidelserne er slået til! Dette vil medføre at logind for LDAP-brugere vil mislykkes, deaktiver %1$s udvidelsen.",
         "MemberOfField": "LDAP memberOf felt",
         "MemberOfFieldDescription": "Felt bruges af LDAP til at angive medlemskab, standard \"memberOf\"",
-        "LdapUrlPortWarning": "Port indstilling ignoreres når serverens værtsnavn er indstillet til en LDAP URL (fx. ldap:\/\/localhost\/ i stedet for localhost).",
+        "LdapUrlPortWarning": "Port indstilling ignoreres når serverens værtsnavn er indstillet til en LDAP URL (fx. ldap://localhost/ i stedet for localhost).",
         "MobileAppIntegrationNote": "Bemærk: Hvis det planlægges at bruge LDAP med den officielle mobile app, skal denne indstilling være markeret. I øjeblikket kan den mobile app ikke godkende brugere, hvis brugernes adgangskode ikke er gemt i Matomo databasen."
     }
 }
