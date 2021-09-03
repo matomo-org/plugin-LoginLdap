@@ -3,7 +3,7 @@
         "AccessSyncSettings": "Ρυθμίσεις Συγχρονισμού Πρόσβασης",
         "AdminPass": "Συνθηματικό LDAP",
         "AdminUser": "Όνομα χρήστη σύνδεσης LDAP",
-        "AdminUserDescription": "(πχ. \"john\" - πρέπει να έχει δικαίωμα ανάγνωσης για να κάνει ερωτήματα για άλλους χρήστες)",
+        "AdminUserDescription": "Χρήστης με πρόσβαση σε άλλες εγγραφές χρηστών ή κενό για σύνδεση ως ανώνυμος.",
         "AliasField": "Πεδίο ψευδωνύμου",
         "AliasFieldDescription": "Η ιδιότητα LDAP που θα χρησιμοποιείται για τη δημιουργία ενός ψευδώνυμου χρήστη στο Matomo, πχ. \"cn\".",
         "BaseDn": "Βασικό DN",
@@ -15,7 +15,7 @@
         "ExpectedLdapAttributesPrelude": "Με τη ρύθμιση αυτή, το LoginLdap αναμένει ορίσματα στο LDAP όπως",
         "Filter": "Φίλτρο αναζήτησης LDAP",
         "FilterCount": "%s ταιριάζουν με το φίλτρο.",
-        "FilterDescription": "( πχ. \"(objectClass=person)\" )",
+        "FilterDescription": "Ένα φίλτρο LDAP που θα χρησιμοποιείται για το ποιες οντότητες επιτρέπεται να χρησιμοποιούνται για αυθεντικοποίηση, πχ. \"(objectClass=person)\").",
         "FirstLastNameForAlias": "Το όνομα και επίθετο χρησιμοποιούνται για τη δημιουργία ενός ψευδωνύμου αν δεν μπορεί να βρεθεί ένα στο LDAP.",
         "FirstNameField": "Πεδίο ονόματος",
         "FirstNameFieldDescription": "Το όρισμα LDAP που περιέχει το όνομα του χρήστη.",
@@ -28,7 +28,7 @@
         "LastNameFieldDescription": "Το όρισμα LDAP που περιέχει το επώνυμο του χρήστη.",
         "LdapAdminAccessField": "Πεδίο Πρόσβασης Διαχειριστή LDAP",
         "LdapAdminAccessFieldDescription": "Το οριζόμενο όρισμα στο LDAP που καθορίζει σε ποιους ιστοτόπους θα έχει διαχειριστική πρόσβαση ο χρήστης.",
-        "LdapFunctionsMissing": "Η συνάρτηση PHP ldap_connect() δεν υπάρχει, παρακαλούμε ενεργοποιήστε το LDAP στην παραμετροποίηση PHP!",
+        "LdapFunctionsMissing": "Η επέκταση LDAP για την PHP δεν φαίνεται να είναι ενεργοποιημένη. Αυτό απαιτείται για αυτό το πρόσθετο, παρακαλούμε εγκαταστήστε την.",
         "LdapPort": "Θύρα διακομιστή",
         "LdapSuperUserAccessField": "Πεδίο Πρόσβασης Υπερ Χρήστη στο LDAP",
         "LdapSuperUserAccessFieldDescription": "Το οριζόμενο όρισμα στο LDAP που θα καθορίζει αν ένας χρήστης είναι υπερχρήστης ή όχι.",
@@ -84,10 +84,10 @@
         "UseLdapForAuthentication": "Να χρησιμοποιείται πάντα το LDAP για αυθεντικοποίηση",
         "UseLdapForAuthenticationDescription": "Αν είναι απενεργοποιημένο, τα συνθηματικά χρηστών θα αποθηκεύονται στη βάση του Matomo παράλληλα με το LDAP. Αυτό θα έχει ως αποτέλεσμα γρηγορότερη είσοδο, αλλά λιγότερη ασφάλεια.",
         "UserIdField": "Πεδίο αναγνωριστικού χρήστη",
-        "UserIdFieldDescription": "( πχ. \"uid\", AD: \"userPrincipalName\" )",
+        "UserIdFieldDescription": "Η ιδιότητα LDAP που περιέχει το όνομα χρήστη κάποιου, πχ. \"uid\" ή για το Active Directory AD: \"userPrincipalName\".",
         "UserNotFound": "Δε βρέθηκε ο χρήστης \"%s\"!",
         "UserSyncSettings": "Ρυθμίσεις Συγχρονισμού Χρήστη",
         "UsernameSuffix": "Επίθεμα ονόματος χρήστη / Τομέας",
-        "UsernameSuffixDescription": "( πχ. \"@localhost.com\" )"
+        "UsernameSuffixDescription": "Προστίθεται στο τέλος των ονομάτων χρηστών για τη δημιουργία διευθύνσεων e-mail για τους χρήστες που δεν έχουν καθόλου τιμή στο LDAP. Ορίστε για παράδειγμα \"@localhost.com\"."
     }
 }
