@@ -72,7 +72,7 @@
         "ServerUrl": "URL do Server",
         "Settings": "Configurações do LDAP",
         "StripDomainFromWebAuth": "Retirar o domínio do usuário de autenticação do servidor Web",
-        "StripDomainFromWebAuthDescription": "Se habilitado, a parte do domínio do usuário na variável $ _SERVER ['REMOTE_USER'] será removida (ou seja, qualquer coisa após e incluindo o primeiro '@').",
+        "StripDomainFromWebAuthDescription": "Se habilitado, a parte do domínio do usuário na variável $_SERVER['REMOTE_USER'] será removida (ou seja, qualquer coisa após e incluindo o primeiro '@').",
         "SynchronizeUsersAfterLogin": "Sincronizar Usuários Após Login Efetuado com Sucesso",
         "SynchronizeUsersAfterLoginDescription": "Se ativado, os detalhes do usuário em LDAP serão sempre sincronizados após um login bem-sucedido.",
         "SynchronizeUsersAfterLoginDescription2": "Se desativado, o plugin não irá sincronizar informações do usuário após o login, a menos que a autenticação LDAP seja ativada. Quando possível, conexões LDAP serão inteiramente evitadas.",
