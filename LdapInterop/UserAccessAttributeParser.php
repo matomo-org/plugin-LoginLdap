@@ -359,7 +359,7 @@ class UserAccessAttributeParser
             $parsed['port'] = 80;
         }
 
-        if (!isset($parsed['path']) || substr(@$parsed['path'], -1) !== '/') {
+        if (!isset($parsed['path']) || substr($parsed['path'], -1) !== '/') {
             $parsed['path'] = ($parsed['path'] ?? '') . '/';
         }
 
