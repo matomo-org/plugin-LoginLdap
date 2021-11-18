@@ -48,7 +48,7 @@
         "LastNameFieldDescription": "The LDAP attribute containing a user's last name.",
         "FirstLastNameForAlias": "The first and last name are used to generate an alias if one cannot be found in LDAP.",
         "NewUserDefaultSitesViewAccess": "Initial Sites With View Access For New Users",
-        "NewUserDefaultSitesViewAccessDescription": "If specified, when an LDAP user is synchronized for the first time (s)he is given view access to these sites. Should be set to a list of IDs or 'all'.",
+        "NewUserDefaultSitesViewAccessDescription": "If specified, when an LDAP user is synchronized for the first time they are given view access to these sites. Should be set to a list of IDs or 'all'.",
         "EnableLdapAccessSynchronization": "Enable User Access Synchronization from LDAP",
         "EnableLdapAccessSynchronizationDescription": "If enabled, user access levels are determined by custom LDAP attributes. Note: To use this feature you will have to modify your LDAP server's schema.",
         "LdapViewAccessField": "LDAP View Access Field",
