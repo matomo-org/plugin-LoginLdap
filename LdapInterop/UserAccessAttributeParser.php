@@ -143,7 +143,7 @@ class UserAccessAttributeParser
      */
     public function getSuperUserAccessFromSuperUserAttribute($attributeValue)
     {
-        $attributeValue = trim($attributeValue);
+        $attributeValue = trim($attributeValue ?? '');
 
         if ($attributeValue == 1
             || strtolower($attributeValue) == 'true'
@@ -232,7 +232,7 @@ class UserAccessAttributeParser
         $parts = explode($this->serverIdsSeparator, $spec);
 
         if (count($parts) == 1) { // there is no instanceId
-            $parts = array(null, $parts[0]);
+            return array(null, trim($parts[0]));
         } else if (count($parts) >= 2) { // malformed server access specification
             $this->logger->debug("UserAccessAttributeParser::{func}: Improper server specification in LDAP access attribute: '{value}'",
                 array('func' => __FUNCTION__, 'value' => $spec));
@@ -359,8 +359,8 @@ class UserAccessAttributeParser
             $parsed['port'] = 80;
         }
 
-        if (substr(@$parsed['path'], -1) !== '/') {
-            $parsed['path'] = @$parsed['path'] . '/';
+        if (!isset($parsed['path']) || substr($parsed['path'], -1) !== '/') {
+            $parsed['path'] = ($parsed['path'] ?? '') . '/';
         }
 
         return $parsed['host'] . ':' . $parsed['port'] . $parsed['path'];

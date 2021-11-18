@@ -138,7 +138,7 @@ class LdapUsers
     {
         $this->logger->debug(self::FUNCTION_START_LOG_MESSAGE, array(
             'function' => __FUNCTION__,
-            'params' => array($username, "<password[length=" . strlen($password) . "]>", $alreadyAuthenticated)
+            'params' => array($username, "<password[length=" . strlen($password ?? '') . "]>", $alreadyAuthenticated)
         ));
 
         if (empty($username)) {
