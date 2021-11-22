@@ -1,5 +1,10 @@
 # LoginLdap Changelog
 
+#### LoginLdap 4.3.1
+
+* Fixed deprecation warning for PHP8.1.
+* Updated pronoun in text.
+
 #### LoginLdap 4.3.0
 
 * Added new setting for the Web Server Auth strategy to avoid stripping off the domain of usernames. (change by EmTeedee)
