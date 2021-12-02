@@ -59,7 +59,7 @@
         "NetworkTimeoutDescription": "Saniye cinsinden LDAP ağ isteği zaman aşımı sınırı.",
         "NetworkTimeoutDescription2": "Zaman aşımı süresi arttırıldığında, bir ya da bir kaç LDAP sunucusunda sorun olursa LDAP üzerinden oturum açan Matomo kullanıcılarının daha fazla beklemesi gerekir.",
         "NewUserDefaultSitesViewAccess": "Yeni kullanıcılara görme izni verilecek başlangıç siteleri",
-        "NewUserDefaultSitesViewAccessDescription": "Belirtildiğinde, ilk kez eşitlenen LDAP kullanıcılara bu siteleri görüntüleme izni verilir. Kulanıcı kodlarının listesi ya da 'all' olarak ayarlanmalıdır.",
+        "NewUserDefaultSitesViewAccessDescription": "Belirtildiğinde, ilk kez eşitlenen LDAP kullanıcılarına bu siteleri görüntüleme izni verilir. Kullanıcı kodlarının listesi ya da 'all' olarak ayarlanmalıdır.",
         "NoUserName": "Herhangi bir kullanıcı adı belirtilmemiş!",
         "OneUser": "1 kullanıcı",
         "PasswordField": "Kullanıcı parolası alanı",
