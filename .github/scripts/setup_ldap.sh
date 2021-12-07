@@ -61,6 +61,7 @@ objectClass: olcHdbConfig
 olcDatabase: {2}hdb
 olcRootDN: cn=$ADMIN_USER,$BASE_DN
 olcRootPW: $ADMIN_PASS_HASH
+olcDbDirectory: /var/lib/ldap
 olcSuffix: $BASE_DN
 olcAccess: {0}to attrs=userPassword,shadowLastChange by self write by dn="cn=$ADMIN_USER,$BASE_DN" write by * auth
 olcAccess: {1}to dn.base="" by dn="cn=$ADMIN_USER,$BASE_DN" write by * read

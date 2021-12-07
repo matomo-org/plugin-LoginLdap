@@ -1,0 +1,54 @@
+name: Plugin LoginLdap Tests
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+  push:
+    branches:
+      - '**.x-dev'
+      - 'next_release'
+  workflow_dispatch:
+
+
+permissions:
+  actions: read
+  checks: none
+  contents: read
+  deployments: none
+  issues: write
+  packages: none
+  pull-requests: write
+  repository-projects: none
+  security-events: none
+  statuses: none
+concurrency:
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  PluginTests:
+    runs-on: ubuntu-20.04
+    env:
+      TARGET_BRANCH: github-aciton
+      PLUGIN: LoginLdap
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - type: PluginTests
+            php-versions: '7.2'
+          - type: UI
+            php-versions: '7.4'
+          - type: PluginTests
+            php-versions: '8.0'
+    steps:
+      - name: run tests
+        uses: matomo-org/github-action-tests@v1
+        with:
+          plugin-name:  ${{ env.PLUGIN }}
+          php-version: ${{ matrix.php-versions }}
+          test-type: ${{ matrix.type }}
+          git-head: ${{ github.head_ref }}
+          addition: 'ldap'
+
