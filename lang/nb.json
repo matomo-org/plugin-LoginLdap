@@ -1,18 +1,21 @@
 {
     "LoginLdap": {
-        "MenuLdap": "LDAP-brukere",
-        "LoadUser": "Hent bruker fra LDAP",
-        "LoadUserCommandDesc": "For å synkronisere flere brukere, bruk %s kommandoen.",
-        "Settings": "LDAP-innstillinger",
-        "UserNotFound": "Brukeren «%s» ble ikke funnet!",
         "AdminPass": "LDAP-passord",
         "Filter": "LDAP-søkefilter",
-        "LDAPServers": "LDAP-servere",
-        "OneUser": "1 bruker",
-        "MemberOfCount": "%s er medlem av denne gruppen.",
-        "Test": "Test",
+        "Go": "Gå",
         "InvalidFilter": "Ugyldig filter.",
+        "LDAPServers": "LDAP-servere",
+        "LdapPort": "Tjenerport",
+        "LdapUserAdded": "LDAP-user lagt til!",
+        "LoadUser": "Hent bruker fra LDAP",
+        "LoadUserCommandDesc": "For å synkronisere flere brukere, bruk %s kommandoen.",
+        "MemberOfCount": "%s er medlem av denne gruppen.",
+        "MenuLdap": "LDAP-brukere",
+        "OneUser": "1 bruker",
         "ServerName": "Servernavn",
-        "Go": "Gå"
+        "ServerUrl": "Tjenernettadresse",
+        "Settings": "LDAP-innstillinger",
+        "Test": "Test",
+        "UserNotFound": "Brukeren «%s» ble ikke funnet!"
     }
 }
