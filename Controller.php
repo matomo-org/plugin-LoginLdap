@@ -8,14 +8,12 @@
 namespace Piwik\Plugins\LoginLdap;
 
 use Exception;
-use Piwik\Nonce;
 use Piwik\Notification;
 use Piwik\Option;
 use Piwik\Piwik;
 use Piwik\Plugin\ControllerAdmin;
 use Piwik\Plugin\Manager as PluginManager;
 use Piwik\Plugins\LoginLdap\Ldap\ServerInfo;
-use Piwik\Session;
 use Piwik\View;
 
 /**

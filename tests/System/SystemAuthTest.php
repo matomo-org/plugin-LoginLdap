@@ -20,7 +20,6 @@ use Piwik\Plugins\LoginLdap\Auth\SynchronizedAuth;
 use Piwik\Plugins\LoginLdap\Auth\WebServerAuth;
 use Piwik\Plugins\LoginLdap\tests\Integration\LdapIntegrationTest;
 use Piwik\Plugins\UsersManager\API;
-use Piwik\Plugins\UsersManager\UserUpdater;
 use Piwik\Tests\Framework\Fixture;
 use Piwik\Tests\Framework\TestingEnvironmentVariables;
 

@@ -10,7 +10,6 @@ namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
 use Piwik\AuthResult;
 use Piwik\Config;
-use Piwik\Db;
 use Piwik\Plugins\LoginLdap\Auth\WebServerAuth;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 

@@ -8,19 +8,14 @@
 namespace Piwik\Plugins\LoginLdap;
 
 use Exception;
-use Piwik\Access;
 use Piwik\Auth;
 use Piwik\Common;
 use Piwik\Container\StaticContainer;
 use Piwik\FrontController;
-use Piwik\Menu\MenuAdmin;
 use Piwik\Piwik;
 use Piwik\Plugin\Manager;
-use Piwik\Plugins\Login\Login;
 use Piwik\Plugins\LoginLdap\Auth\Base as AuthBase;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
-use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
-use Piwik\Session;
 use Piwik\View;
 
 /**

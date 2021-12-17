@@ -8,7 +8,6 @@
  */
 namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
-use Exception;
 use Piwik\Config;
 use Piwik\Plugins\LoginLdap\API;
 

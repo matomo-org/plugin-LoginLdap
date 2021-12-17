@@ -8,8 +8,6 @@
 namespace Piwik\Plugins\LoginLdap\LdapInterop;
 
 use Piwik\Access;
-use Piwik\API\Proxy;
-use Piwik\API\Request;
 use Piwik\Common;
 use Piwik\Container\StaticContainer;
 use Piwik\Db;

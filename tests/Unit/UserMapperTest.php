@@ -10,7 +10,6 @@ namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
-use Piwik\Auth\Password;
 use Piwik\Config;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 

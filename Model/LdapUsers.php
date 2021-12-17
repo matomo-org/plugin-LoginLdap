@@ -8,7 +8,6 @@
 namespace Piwik\Plugins\LoginLdap\Model;
 
 use Piwik\Container\StaticContainer;
-use Piwik\Db;
 use Piwik\Piwik;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;

@@ -11,7 +11,6 @@ use Piwik\Access;
 use Piwik\Container\StaticContainer;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Site;
-use Piwik\Url;
 use Piwik\SettingsPiwik;
 use Psr\Log\LoggerInterface;
 
