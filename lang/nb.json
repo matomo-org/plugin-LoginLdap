@@ -12,6 +12,7 @@
         "MemberOfCount": "%s er medlem av denne gruppen.",
         "MenuLdap": "LDAP-brukere",
         "OneUser": "1 bruker",
+        "PluginDescription": "Innloggingsprogramtillegg med LDAP-identitetsbekreftelse. Tilbyr et alternativ til forvalgt programtillegg for Matomo-innlogging.",
         "ServerName": "Servernavn",
         "ServerUrl": "Tjenernettadresse",
         "Settings": "LDAP-innstillinger",
