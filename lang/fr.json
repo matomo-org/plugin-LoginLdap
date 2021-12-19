@@ -59,7 +59,7 @@
         "NetworkTimeoutDescription": "Durée maximale d'attente en secondes pour une réponse à une requête LDAP.",
         "NetworkTimeoutDescription2": "Supérieur au délai d'attente LDAP, temps maximum que vos utilisateurs peuvent avoir à attendre pour se connecter à Matomo via LDAP, si un ou plusieurs de vos serveurs LDAP ne répondent plus.",
         "NewUserDefaultSitesViewAccess": "Sites initialement accessibles en consultation pour les nouveaux utilisateurs",
-        "NewUserDefaultSitesViewAccessDescription": "Sites auxquels un utilisateur du LDAP a accès en consultation lorsqu'il est synchronisé pour la première fois. Entrer la liste des ID des sites auxquels donner un accès en consultation ou utiliser 'all' pour tous.",
+        "NewUserDefaultSitesViewAccessDescription": "S'il est spécifié, lorsqu'un utilisateur LDAP est synchronisé pour la première fois, il reçoit un accès de visualisation à ces sites. Doit être défini comme une liste d'ID ou 'all'.",
         "NoUserName": "Pas de nom d'utilisateur saisi !",
         "OneUser": "1 utilisateur",
         "PasswordField": "Champ mot de passe utilisateur",
