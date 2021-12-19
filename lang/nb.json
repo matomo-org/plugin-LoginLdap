@@ -9,6 +9,8 @@
         "LdapUserAdded": "LDAP-user lagt til!",
         "LoadUser": "Hent bruker fra LDAP",
         "LoadUserCommandDesc": "For å synkronisere flere brukere, bruk %s kommandoen.",
+        "LoadUserDescription": "Du kan bruke dette skjemaet til å synkronisere én bruker i LDAP fra grensesnittet.",
+        "MailField": "E-postadressefelt",
         "MemberOfCount": "%s er medlem av denne gruppen.",
         "MenuLdap": "LDAP-brukere",
         "OneUser": "1 bruker",
