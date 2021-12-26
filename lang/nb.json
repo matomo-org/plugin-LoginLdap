@@ -1,6 +1,7 @@
 {
     "LoginLdap": {
         "AdminPass": "LDAP-passord",
+        "AdminUserDescription": "Bruker med tilgang til andre brukeroppføringer, eller tom for anonym binding.",
         "Filter": "LDAP-søkefilter",
         "Go": "Gå",
         "InvalidFilter": "Ugyldig filter.",
@@ -11,14 +12,17 @@
         "LoadUserCommandDesc": "For å synkronisere flere brukere, bruk %s kommandoen.",
         "LoadUserDescription": "Du kan bruke dette skjemaet til å synkronisere én bruker i LDAP fra grensesnittet.",
         "MailField": "E-postadressefelt",
+        "MemberOf": "Påkrevd brukergruppe",
         "MemberOfCount": "%s er medlem av denne gruppen.",
         "MenuLdap": "LDAP-brukere",
+        "NoUserName": "Brukernavn er ikke angitt.",
         "OneUser": "1 bruker",
         "PluginDescription": "Innloggingsprogramtillegg med LDAP-identitetsbekreftelse. Tilbyr et alternativ til forvalgt programtillegg for Matomo-innlogging.",
         "ServerName": "Servernavn",
         "ServerUrl": "Tjenernettadresse",
         "Settings": "LDAP-innstillinger",
         "Test": "Test",
-        "UserNotFound": "Brukeren «%s» ble ikke funnet!"
+        "UserNotFound": "Brukeren «%s» ble ikke funnet!",
+        "UsernameSuffixDescription": "Tilføy i brukernavn for å generere e-postadresser for brukere som ikke har noen i LDAP. Sett til f.eks. «@localhost.com»."
     }
 }
