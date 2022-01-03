@@ -538,7 +538,7 @@ class LdapUsers
 
         foreach ($this->ldapServers as $server) {
             try {
-                $this->ldapClient->connect($server->getServerHostname(), $server->getServerPort(), $this->getLdapNetworkTimeout());
+                $this->ldapClient->connect($server->getServerHostname(), $server->getServerPort(), $this->getLdapNetworkTimeout(), $server->getStartTLS());
                 $this->currentServerInfo = $server;
 
                 $this->logger->info("LdapUsers::{function}: Using LDAP server {host}:{port}", array(

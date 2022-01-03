@@ -132,6 +132,19 @@ TLS_REQCERT never
 TLS_CACERT /usr/local/ssl/certs/myldap.pem
 TLS_CACERTDIR /usr/local/ssl/certs
 
+### Authenticating using LDAP + TLS.
+
+In order to use LDAP + TLS in the plugin, you would need to check the checkbox "Enable TLS".
+
+_Please note: This will call the ldap_start_tls() PHP function to start TLS before calling the ldap_bind()_
+
+When using LDAP + TLS - the server that you are hosting Matomo on will need to trust the CA that has issued the certificates for your LDAP server (These certificates are often stored in /etc/openldap/certs)
+
+Alternatively you can specify the location of the TSL certificates within the ldap.conf file that is normally stored in _/etc/openldap/ldap.conf_ by adding the following:
+TLS_REQCERT never
+TLS_CACERT /usr/local/ssl/certs/myldap.pem
+TLS_CACERTDIR /usr/local/ssl/certs
+
 ### Specifying Fallback Servers
 
 LoginLdap v3.0.0 and greater supports specifying multiple LDAP servers to use. If connecting to one server fails, the other servers are used as fallbacks.

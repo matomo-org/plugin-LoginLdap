@@ -1,5 +1,10 @@
 # LoginLdap Changelog
 
+#### LoginLdap 4.4.0
+
+* Fixed domain strip from login when equal to Domain\UserLogin.
+* Added Start TLS option per LDAP server (change by Tomolimo).
+
 #### LoginLdap 4.3.1
 
 * Fixed deprecation warning for PHP8.1.
