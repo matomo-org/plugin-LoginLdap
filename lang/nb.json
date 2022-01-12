@@ -1,12 +1,19 @@
 {
     "LoginLdap": {
+        "AccessSyncSettings": "Adgang til synkroniseringsinnstillinger",
         "AdminPass": "LDAP-passord",
+        "AdminUser": "LDAP-forbindelsesbrukernavn",
         "AdminUserDescription": "Bruker med tilgang til andre brukeroppføringer, eller tom for anonym binding.",
+        "AliasField": "Brukeralias-felt",
+        "ExpectedLdapAttributes": "Forventet LDAP-attributter",
         "Filter": "LDAP-søkefilter",
+        "FirstNameField": "Fornavnsfelt",
         "Go": "Gå",
         "InvalidFilter": "Ugyldig filter.",
         "LDAPServers": "LDAP-servere",
+        "LastNameField": "Etternavnsfelt",
         "LdapPort": "Tjenerport",
+        "LdapSuperUserAccessField": "Felt for LDAP-superbrukertilgang",
         "LdapUserAdded": "LDAP-user lagt til!",
         "LoadUser": "Hent bruker fra LDAP",
         "LoadUserCommandDesc": "For å synkronisere flere brukere, bruk %s kommandoen.",
@@ -17,12 +24,18 @@
         "MenuLdap": "LDAP-brukere",
         "NoUserName": "Brukernavn er ikke angitt.",
         "OneUser": "1 bruker",
+        "PasswordField": "Brukerpassord-felt",
         "PluginDescription": "Innloggingsprogramtillegg med LDAP-identitetsbekreftelse. Tilbyr et alternativ til forvalgt programtillegg for Matomo-innlogging.",
         "ServerName": "Servernavn",
         "ServerUrl": "Tjenernettadresse",
         "Settings": "LDAP-innstillinger",
+        "SynchronizeUsersAfterLogin": "Synkroniser brukere etter innlogging",
         "Test": "Test",
+        "UseLdapForAuthentication": "Alltid bruk LDAP for identitetsbekreftelse",
+        "UserIdField": "Bruker-ID-felt",
         "UserNotFound": "Brukeren «%s» ble ikke funnet!",
+        "UserSyncSettings": "Innstillinger for brukersynkronisering",
+        "UsernameSuffix": "E-postadresse-endelse",
         "UsernameSuffixDescription": "Tilføy i brukernavn for å generere e-postadresser for brukere som ikke har noen i LDAP. Sett til f.eks. «@localhost.com»."
     }
 }
