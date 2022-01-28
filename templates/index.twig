@@ -257,6 +257,12 @@
                          inline-help="{{ 'LoginLdap_LdapUrlPortWarning'|translate|e('html_attr') }}">
                     </div>
 
+                    <div piwik-field uicontrol="checkbox"
+                         title="{{ 'LoginLdap_StartTLS'|translate|e('html_attr') }}"
+                         ng-model="serverInfo.start_tls"
+                         inline-help="{{ 'LoginLdap_StartTLSFieldHelp'|translate|e('html_attr') }}">
+                    </div>
+
                     <div piwik-field uicontrol="text"
                          title="{{ 'LoginLdap_BaseDn'|translate|e('html_attr') }}"
                          ng-model="serverInfo.base_dn" placeholder="dc=example,dc=site,dc=org">

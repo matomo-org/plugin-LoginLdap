@@ -71,7 +71,7 @@ class Client
      * @throws Exception If an error occurs during the `ldap_connect` call or if there is a connection
      *                   issue during the subsequent anonymous bind.
      */
-    public function connect($serverHostName, $port = ServerInfo::DEFAULT_LDAP_PORT, $timeout = self::DEFAULT_TIMEOUT_SECS)
+    public function connect($serverHostName, $port = ServerInfo::DEFAULT_LDAP_PORT, $timeout = self::DEFAULT_TIMEOUT_SECS, $startTLS = false)
     {
         $this->closeIfCurrentlyOpen();
 
@@ -88,14 +88,21 @@ class Client
         // ldap_connect will not always try to connect to the server, so execute a bind
         // to test the connection
         try {
+            if ($startTLS) {
+               if (!ldap_start_tls($this->connectionResource)) {
+                  throw new Exception("ldap_start_tls failed: " . ldap_error($this->connectionResource));
+               }
+            }
             ldap_bind($this->connectionResource);
 
-            $this->logger->debug("anonymous ldap_bind call finished; connection ok");
+            $this->logger->debug("anonymous ldap_bind call finished; connection ok" . ($startTLS ? ' + TLS is started' : ''));
         } catch (Exception $ex) {
             // if the error was due to a connection error, rethrow, otherwise ignore it
             $errno = ldap_errno($this->connectionResource);
 
-            $this->logger->debug("anonymous ldap_bind returned error '{err}'", array('err' => $errno));
+            $fct = ($startTLS ? "ldap_start_tls" : "ldap_bind");
+
+            $this->logger->debug("anonymous {fct} returned error '{err}'", array('err' => $errno, 'fct' => $fct));
 
             if (!in_array($errno, self::$initialBindErrorCodesToIgnore)) {
                 throw $ex;

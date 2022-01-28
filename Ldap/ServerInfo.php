@@ -55,6 +55,13 @@ class ServerInfo
     private $adminPassword;
 
     /**
+     * Should we start TLS?
+     *
+     * @var bool
+     */
+    private $startTLS;
+
+    /**
      * Constructor.
      *
      * @param string $serverHostname See {@link $serverHostname}.
@@ -62,15 +69,17 @@ class ServerInfo
      * @param int $serverPort See {@link $serverPort}.
      * @param string|null $adminUsername See {@link $adminUsername}.
      * @param string|null $adminPassword See {@link $adminPassword}.
+     * @param bool|null $startTLS See {@link $startTLS}.
      */
     public function __construct($serverHostname, $baseDn, $serverPort = self::DEFAULT_LDAP_PORT, $adminUsername = null,
-                                $adminPassword = null)
+                                $adminPassword = null, $startTLS = null)
     {
         $this->serverHostname = $serverHostname;
         $this->baseDn = $baseDn;
         $this->serverPort = $serverPort;
         $this->adminUsername = $adminUsername;
         $this->adminPassword = $adminPassword;
+        $this->startTLS = $startTLS;
     }
 
     /**
@@ -107,6 +116,24 @@ class ServerInfo
      */
     public function setServerPort($serverPort) {
         $this->serverPort = $serverPort;
+    }
+
+    /**
+     * Sets the {@link $startTLS} property.
+     *
+     * @param bool $startTLS
+     */
+    public function setStartTLS($startTLS) {
+       $this->startTLS = $startTLS;
+    }
+
+    /**
+     * Get the {@link $startTLS} property.
+     *
+     * @return bool
+     */
+    public function getStartTLS() {
+       return $this->startTLS;
     }
 
     /**
@@ -176,7 +203,8 @@ class ServerInfo
             'port' => $this->getServerPort(),
             'base_dn' => $this->getBaseDn(),
             'admin_user' => $this->getAdminUsername(),
-            'admin_pass' => $this->getAdminPassword()
+            'admin_pass' => $this->getAdminPassword(),
+            'start_tls' => $this->getStartTLS()
         );
     }
 
@@ -215,6 +243,7 @@ class ServerInfo
      * - **port** The port to use when connecting to the server.
      * - **admin_user** The name of an admin user that has read access to other users.
      * - **admin_pass** The password to use when binding with the admin user.
+     * - **start_tls** use of TLS.
      *
      * @param string $name The name of the LDAP server in config. This value can be
      *                     used in the `[LoginLdap] servers[] = ` config option to
@@ -260,6 +289,11 @@ class ServerInfo
             $result->setAdminPassword($adminPass);
         }
 
+        $startTLS = $config['start_tls'];
+        if (!empty($startTLS)) {
+           $result->setStartTLS((bool)$startTLS);
+        }
+
         return $result;
     }
 
@@ -297,6 +331,7 @@ class ServerInfo
             'base_dn' => $serverInfo['base_dn'],
             'admin_user' => @$serverInfo['admin_user'],
             'admin_pass' => $passwordToSet,
+            'start_tls' => $serverInfo['start_tls'],
         );
 
         $config->__set($configSectionName, $configSection);
