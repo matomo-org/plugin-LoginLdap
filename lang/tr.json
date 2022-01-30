@@ -71,6 +71,8 @@
         "ServerName": "Sunucu adı",
         "ServerUrl": "Sunucu adresi",
         "Settings": "LDAP ayarları",
+        "StartTLS": "TLS'yi etkinleştir",
+        "StartTLSFieldHelp": "Bu sunucu için TLS'yi etkinleştirmek için",
         "StripDomainFromWebAuth": "Web sunucusunda kimliği doğrulanmış kullanıcının etki alanı ayıklansın",
         "StripDomainFromWebAuthDescription": "Bu seçenek etkinleştirildiğinde, $_SERVER['REMOTE_USER'] değişkenindeki kullanıcı adının etki alanı bölümü ayıklanır (ilk '@' simgesi ve sonrası gibi).",
         "SynchronizeUsersAfterLogin": "Kullanıcılar oturum açıldıktan sonra eşitlensin",
