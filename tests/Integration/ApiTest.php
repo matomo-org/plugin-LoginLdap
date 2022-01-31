@@ -97,7 +97,8 @@ class ApiTest extends LdapIntegrationTest
                 'name' => 'server1',
                 'hostname' => 'ahost.com',
                 'port' => 389,
-                'base_dn' => 'somedn'
+                'base_dn' => 'somedn',
+                'start_tls' => false
             ),
             array(
                 'invaliddata' => 'sdfjklsdj',
@@ -106,7 +107,8 @@ class ApiTest extends LdapIntegrationTest
                 'port' => 456,
                 'base_dn' => 'thedn',
                 'admin_user' => 'admin',
-                'admin_pass' => 'pass'
+                'admin_pass' => 'pass',
+                'start_tls' => false
             ),
         );
 
@@ -117,7 +119,8 @@ class ApiTest extends LdapIntegrationTest
             'port' => 389,
             'base_dn' => 'somedn',
             'admin_user' => null,
-            'admin_pass' => null
+            'admin_pass' => null,
+            'start_tls' => null
         ), Config::getInstance()->LoginLdap_server1);
 
         $this->assertEquals(array(
@@ -125,7 +128,8 @@ class ApiTest extends LdapIntegrationTest
             'port' => 456,
             'base_dn' => 'thedn',
             'admin_user' => 'admin',
-            'admin_pass' => 'pass'
+            'admin_pass' => 'pass',
+            'start_tls' => null
         ), Config::getInstance()->LoginLdap_server2);
     }
 
@@ -138,7 +142,8 @@ class ApiTest extends LdapIntegrationTest
             'port' => 456,
             'base_dn' => 'thedn',
             'admin_user' => 'admin',
-            'admin_pass' => 'firstpass'
+            'admin_pass' => 'firstpass',
+            'start_tls' => false
         );
 
         $serverInfos = array(
@@ -148,7 +153,8 @@ class ApiTest extends LdapIntegrationTest
                 'port' => 456,
                 'base_dn' => 'thedn',
                 'admin_user' => 'admin',
-                'admin_pass' => ''
+                'admin_pass' => '',
+                'start_tls' => false
             ),
         );
 
@@ -159,7 +165,8 @@ class ApiTest extends LdapIntegrationTest
             'port' => 456,
             'base_dn' => 'thedn',
             'admin_user' => 'admin',
-            'admin_pass' => 'firstpass'
+            'admin_pass' => 'firstpass',
+            'start_tls' => null
         ), Config::getInstance()->LoginLdap_server2);
     }
 
@@ -172,7 +179,8 @@ class ApiTest extends LdapIntegrationTest
             'port' => 456,
             'base_dn' => 'thedn',
             'admin_user' => 'admin',
-            'admin_pass' => 'firstpass'
+            'admin_pass' => 'firstpass',
+            'start_tls' => false
         );
 
         $serverInfos = array(
@@ -182,7 +190,8 @@ class ApiTest extends LdapIntegrationTest
                 'port' => 456,
                 'base_dn' => 'thedn',
                 'admin_user' => 'admin',
-                'admin_pass' => 'pass'
+                'admin_pass' => 'pass',
+                'start_tls' => false
             ),
         );
 
@@ -193,7 +202,8 @@ class ApiTest extends LdapIntegrationTest
             'port' => 456,
             'base_dn' => 'thedn',
             'admin_user' => 'admin',
-            'admin_pass' => 'pass'
+            'admin_pass' => 'pass',
+            'start_tls' => null
         ), Config::getInstance()->LoginLdap_server2);
     }
 
