@@ -78,7 +78,8 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
             'port' => self::SERVER_PORT,
             'base_dn' => self::SERVER_BASE_DN,
             'admin_user' => 'cn=fury,' . self::SERVER_BASE_DN,
-            'admin_pass' => 'secrets'
+            'admin_pass' => 'secrets',
+            'start_tls' => false
         );
 
         LdapFunctions::$phpUnitMock = null;

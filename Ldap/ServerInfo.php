@@ -289,9 +289,8 @@ class ServerInfo
             $result->setAdminPassword($adminPass);
         }
 
-        $startTLS = $config['start_tls'];
-        if (!empty($startTLS)) {
-           $result->setStartTLS((bool)$startTLS);
+        if (!empty($config['start_tls'])) {
+           $result->setStartTLS((bool)$config['start_tls']);
         }
 
         return $result;

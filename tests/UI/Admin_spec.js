@@ -26,7 +26,8 @@ describe("LoginLdap_Admin", function () {
                 port: 389,
                 base_dn: 'dc=avengers,dc=shield,dc=org',
                 admin_user: 'cn=fury,dc=avengers,dc=shield,dc=org',
-                admin_pass: 'secrets'
+                admin_pass: 'secrets',
+                start_tls: false
             }
         };
         testEnvironment.save();
