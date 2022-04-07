@@ -71,6 +71,8 @@
         "ServerName": "Server Name",
         "ServerUrl": "Server-URL",
         "Settings": "LDAP Einstellungen",
+        "StartTLS": "TLS aktivieren",
+        "StartTLSFieldHelp": "Aktivierung von TLS für diesen Server",
         "StripDomainFromWebAuth": "Domain vom Web Server Benutzer Auth entfernen",
         "StripDomainFromWebAuthDescription": "Wenn aktiviert, wird der Teil des Benutzers in der $_SERVER['REMOTE_USER'] Variable weggeschnitten (also alles nach und inklusive dem ersten '@').",
         "SynchronizeUsersAfterLogin": "Benutzer nach erfolgreichem Login synchronisieren",
