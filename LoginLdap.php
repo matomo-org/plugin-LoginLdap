@@ -48,7 +48,6 @@ class LoginLdap extends \Piwik\Plugin
     {
         $jsFiles[] = "plugins/Login/javascripts/login.js";
         $jsFiles[] = "plugins/LoginLdap/angularjs/admin/admin.controller.js";
-        $jsFiles[] = "plugins/LoginLdap/angularjs/login-ldap-testable-field/login-ldap-testable-field.directive.js";
     }
 
     public function getStylesheetFiles(&$stylesheetFiles)
