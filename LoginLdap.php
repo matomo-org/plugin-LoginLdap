@@ -47,15 +47,14 @@ class LoginLdap extends \Piwik\Plugin
     public function getJsFiles(&$jsFiles)
     {
         $jsFiles[] = "plugins/Login/javascripts/login.js";
-        $jsFiles[] = "plugins/LoginLdap/angularjs/admin/admin.controller.js";
     }
 
     public function getStylesheetFiles(&$stylesheetFiles)
     {
         $stylesheetFiles[] = "plugins/Login/stylesheets/login.less";
         $stylesheetFiles[] = "plugins/Login/stylesheets/variables.less";
-        $stylesheetFiles[] = "plugins/LoginLdap/angularjs/admin/admin.controller.less";
-        $stylesheetFiles[] = "plugins/LoginLdap/angularjs/login-ldap-testable-field/login-ldap-testable-field.directive.less";
+        $stylesheetFiles[] = "plugins/LoginLdap/vue/src/Admin/Admin.less";
+        $stylesheetFiles[] = "plugins/LoginLdap/vue/src/TestableField/TestableField.less";
     }
 
     public function getClientSideTranslationKeys(&$keys)
