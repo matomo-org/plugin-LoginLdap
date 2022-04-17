@@ -18,7 +18,6 @@
   ./plugins/LoginLdap/templates/index.twig
   ./plugins/LoginLdap/angularjs/admin/admin.controller.js
 - create PR
-- v-html check
 </todo>
 
 <template>
@@ -320,7 +319,7 @@
         </div>
         <br />
       </div>
-      <span v-html="loadUserCommandDesc"></span>
+      <span v-html="$sanitize(loadUserCommandDesc)"></span>
     </ContentBlock>
     <ContentBlock :content-title="translate('LoginLdap_LDAPServers')">
       <div>
