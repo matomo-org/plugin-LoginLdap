@@ -18,7 +18,7 @@
         :send-json-payload="true"
         :form-data="actualLdapConfig"
       >
-        <template v-slot:default="ajaxForm">
+        <template #default="ajaxForm">
           <ContentBlock
             id="ldapSettings"
             :content-title="translate('LoginLdap_Settings')"
