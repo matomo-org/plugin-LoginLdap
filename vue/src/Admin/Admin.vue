@@ -4,19 +4,8 @@
   @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
 -->
 
-// TODO
 <todo>
-- conversion check (mistakes get fixed in quickmigrate)
-- property types
-- state types
-- look over template
-- look over component code
-- get to build
-- REMOVE DUPLICATE CODE IN TEMPLATE
 - test in UI
-- check uses:
-  ./plugins/LoginLdap/templates/index.twig
-  ./plugins/LoginLdap/angularjs/admin/admin.controller.js
 - create PR
 </todo>
 
@@ -400,7 +389,7 @@
                 </Field>
               </div>
               <SaveButton
-                @confirm="actualServers.splice($index, 1)"
+                @confirm="actualServers.splice(index, 1)"
                 :value="translate('General_Delete')"
               />
             </div>

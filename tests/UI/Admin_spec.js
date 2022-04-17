@@ -45,7 +45,7 @@ describe("LoginLdap_Admin", function () {
         });
 
         await page.evaluate(function () {
-            $('[piwik-login-ldap-testable-field] [piwik-save-button] input').click();
+            $('.loginLdapTestableField .matomo-save-button input').click();
         });
 
         await page.waitForNetworkIdle();

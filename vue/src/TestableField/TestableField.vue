@@ -4,25 +4,14 @@
   @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
 -->
 
-// TODO
 <todo>
-- conversion check (mistakes get fixed in quickmigrate)
-- property types
-- state types
-- look over template
-- look over component code
-- get to build
 - test in UI
-- check uses:
-  ./plugins/LoginLdap/tests/UI/Admin_spec.js
-  ./plugins/LoginLdap/templates/index.twig
-  ./plugins/LoginLdap/angularjs/login-ldap-testable-field/login-ldap-testable-field.directive.js
 - create PR
 - v-html check
 </todo>
 
 <template>
-  <div>
+  <div class="loginLdapTestableField">
     <div>
       <Field
         uicontrol="text"
