@@ -123,6 +123,18 @@ class LoginLdap extends \Piwik\Plugin
         $keys[] = 'LoginLdap_AdminUserDescription';
         $keys[] = 'LoginLdap_AdminPass';
         $keys[] = 'LoginLdap_PasswordFieldHelp';
+        $keys[] = 'LoginLdap_UseLdapForAuthenticationDescription';
+        $keys[] = 'LoginLdap_MobileAppIntegrationNote';
+        $keys[] = 'LoginLdap_NetworkTimeoutDescription';
+        $keys[] = 'LoginLdap_NetworkTimeoutDescription2';
+        $keys[] = 'LoginLdap_MemberOfDescription';
+        $keys[] = 'LoginLdap_MemberOfDescription2';
+        $keys[] = 'LoginLdap_PasswordFieldDescription';
+        $keys[] = 'LoginLdap_PasswordFieldDescription2';
+        $keys[] = 'LoginLdap_LoadUserCommandDesc';
+        $keys[] = 'LoginLdap_ReadMoreAboutAccessSynchronization';
+        $keys[] = 'LoginLdap_ThisMatomoInstanceNameDescription';
+        $keys[] = 'LoginLdap_ThisMatomoInstanceName';
     }
 
     /**

@@ -4,11 +4,6 @@
   @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
 -->
 
-<todo>
-- test in UI
-- create PR
-</todo>
-
 <template>
   <div>
     <div>
@@ -113,7 +108,7 @@
             </div>
             <hr />
             <SaveButton
-              :saving="ajaxform.isSubmitting"
+              :saving="ajaxForm.isSubmitting"
               @confirm="ajaxForm.submitForm()"
             />
           </ContentBlock>
@@ -173,7 +168,7 @@
             </div>
             <hr />
             <SaveButton
-              :saving="ajaxform.isSubmitting"
+              :saving="ajaxForm.isSubmitting"
               @confirm="ajaxForm.submitForm()"
             />
           </ContentBlock>
@@ -195,7 +190,7 @@
             </div>
             <div v-show="actualLdapConfig.enable_synchronize_access_from_ldap">
               <div>
-                <Notification context="info">
+                <Notification context="info" :noclear="true">
                   <strong>{{ translate('LoginLdap_ExpectedLdapAttributes') }}</strong><br />
                   <br />
                   {{ translate('LoginLdap_ExpectedLdapAttributesPrelude') }}:<br />
@@ -264,14 +259,14 @@
                   uicontrol="text"
                   name="instance_name"
                   v-model="actualLdapConfig.instance_name"
-                  :title="translate('LoginLdap_ThisPiwikInstanceName')"
-                  :inline-help="translate('LoginLdap_ThisPiwikInstanceNameDescription')"
+                  :title="translate('LoginLdap_ThisMatomoInstanceName')"
+                  :inline-help="translate('LoginLdap_ThisMatomoInstanceNameDescription')"
                 >
                 </Field>
               </div>
               <hr />
               <SaveButton
-                :saving="ajaxform.isSubmitting"
+                :saving="ajaxForm.isSubmitting"
                 @confirm="ajaxForm.submitForm()"
               />
             </div>
@@ -295,6 +290,7 @@
       <SaveButton
         @confirm="synchronizeUser(userToSynchronize)"
         :value="translate('LoginLdap_Go')"
+        style="margin-right:7px"
       />
       <img
         src="plugins/Morpheus/images/loading-blue.gif"
@@ -313,10 +309,10 @@
     <ContentBlock :content-title="translate('LoginLdap_LDAPServers')">
       <div>
         <AjaxForm
-          submit-api-method="'LoginLdap.saveServersInfo'"
-          send-json-payload="true"
-          use-custom-data-binding="true"
-          v-model="actualServers"
+          submit-api-method="LoginLdap.saveServersInfo"
+          :send-json-payload="true"
+          :use-custom-data-binding="true"
+          :form-data="actualServers"
         >
           <template v-slot:default="ajaxForm">
             <div
@@ -345,7 +341,7 @@
                 <Field
                   uicontrol="text"
                   v-model="serverInfo.port"
-                  :placeholder="389"
+                  placeholder="389"
                   :title="translate('LoginLdap_LdapPort')"
                   :inline-help="translate('LoginLdap_LdapUrlPortWarning')"
                 >
@@ -397,9 +393,10 @@
             <SaveButton
               @confirm="addServer()"
               :value="translate('General_Add')"
+              style="margin-right:3.5px"
             />
             <SaveButton
-              :saving="ajaxform.isSubmitting"
+              :saving="ajaxForm.isSubmitting"
               @confirm="ajaxForm.submitForm()"
             />
           </template>
@@ -576,7 +573,7 @@ export default defineComponent({
       const link = 'https://github.com/matomo-org/plugin-LoginLdap#matomo-access-synchronization';
       return translate(
         'LoginLdap_ReadMoreAboutAccessSynchronization',
-        `<a target="_blank" href="${link}">`,
+        `<a target="_blank" href="${link}" rel="noreferrer noopener">`,
         '</a>',
       );
     },
@@ -584,7 +581,7 @@ export default defineComponent({
       const link = 'https://github.com/matomo-org/plugin-LoginLdap#commands';
       return translate(
         'LoginLdap_LoadUserCommandDesc',
-        `<a target="_blank" href="${link}">loginldap:synchronize-users</a>}`,
+        `<a target="_blank" href="${link}" rel="noreferrer noopener">loginldap:synchronize-users</a>`,
       );
     },
     useLdapForAuthHelp() {

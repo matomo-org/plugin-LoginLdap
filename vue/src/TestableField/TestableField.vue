@@ -4,12 +4,6 @@
   @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
 -->
 
-<todo>
-- test in UI
-- create PR
-- v-html check
-</todo>
-
 <template>
   <div class="loginLdapTestableField">
     <div>
@@ -27,7 +21,7 @@
     <SaveButton
       v-show="actualInputValue"
       :saving="isChecking"
-      @confirm="testValue()"
+      @confirm="testInputValue()"
       :value="translate('LoginLdap_Test')"
     />
     <div

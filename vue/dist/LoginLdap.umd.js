@@ -103,13 +103,6 @@ module.exports = __WEBPACK_EXTERNAL_MODULE__19dc__;
 
 /***/ }),
 
-/***/ "4b04":
-/***/ (function(module, exports) {
-
-
-
-/***/ }),
-
 /***/ "8bbf":
 /***/ (function(module, exports) {
 
@@ -121,13 +114,6 @@ module.exports = __WEBPACK_EXTERNAL_MODULE__8bbf__;
 /***/ (function(module, exports) {
 
 module.exports = __WEBPACK_EXTERNAL_MODULE_a5a2__;
-
-/***/ }),
-
-/***/ "b9a0":
-/***/ (function(module, exports) {
-
-
 
 /***/ }),
 
@@ -164,7 +150,7 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_ = __webpack_require__("8bbf");
 // EXTERNAL MODULE: external "CoreHome"
 var external_CoreHome_ = __webpack_require__("19dc");
 
-// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/LoginLdap/vue/src/TestableField/TestableField.vue?vue&type=template&id=076ace8e
+// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/LoginLdap/vue/src/TestableField/TestableField.vue?vue&type=template&id=d9af8f34
 
 var _hoisted_1 = {
   class: "loginLdapTestableField"
@@ -193,7 +179,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   }, null, 8, ["model-value", "name", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
     saving: _ctx.isChecking,
     onConfirm: _cache[2] || (_cache[2] = function ($event) {
-      return _ctx.testValue();
+      return _ctx.testInputValue();
     }),
     value: _ctx.translate('LoginLdap_Test')
   }, null, 8, ["saving", "value"]), [[external_commonjs_vue_commonjs2_vue_root_Vue_["vShow"], _ctx.actualInputValue]]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", {
@@ -203,7 +189,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     class: "test-config-option-error"
   }, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.testError), 513), [[external_commonjs_vue_commonjs2_vue_root_Vue_["vShow"], _ctx.testError]])]);
 }
-// CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/TestableField/TestableField.vue?vue&type=template&id=076ace8e
+// CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/TestableField/TestableField.vue?vue&type=template&id=d9af8f34
 
 // EXTERNAL MODULE: external "CorePluginsAdmin"
 var external_CorePluginsAdmin_ = __webpack_require__("a5a2");
@@ -306,19 +292,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 }));
 // CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/TestableField/TestableField.vue?vue&type=script&lang=ts
  
-// EXTERNAL MODULE: ./plugins/LoginLdap/vue/src/TestableField/TestableField.vue?vue&type=custom&index=0&blockType=todo
-var TestableFieldvue_type_custom_index_0_blockType_todo = __webpack_require__("b9a0");
-var TestableFieldvue_type_custom_index_0_blockType_todo_default = /*#__PURE__*/__webpack_require__.n(TestableFieldvue_type_custom_index_0_blockType_todo);
-
 // CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/TestableField/TestableField.vue
 
 
 
 TestableFieldvue_type_script_lang_ts.render = render
-/* custom blocks */
-
-if (typeof TestableFieldvue_type_custom_index_0_blockType_todo_default.a === 'function') TestableFieldvue_type_custom_index_0_blockType_todo_default()(TestableFieldvue_type_script_lang_ts)
-
 
 /* harmony default export */ var TestableField = (TestableFieldvue_type_script_lang_ts);
 // CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/TestableField/TestableField.adapter.ts
@@ -404,13 +382,13 @@ if (typeof TestableFieldvue_type_custom_index_0_blockType_todo_default.a === 'fu
     }
   }
 }));
-// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/LoginLdap/vue/src/Admin/Admin.vue?vue&type=template&id=ddfc912e
+// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/LoginLdap/vue/src/Admin/Admin.vue?vue&type=template&id=311910aa
 
-var Adminvue_type_template_id_ddfc912e_hoisted_1 = {
+var Adminvue_type_template_id_311910aa_hoisted_1 = {
   key: 0
 };
 
-var Adminvue_type_template_id_ddfc912e_hoisted_2 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("hr", null, null, -1);
+var Adminvue_type_template_id_311910aa_hoisted_2 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("hr", null, null, -1);
 
 var _hoisted_3 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("hr", null, null, -1);
 
@@ -449,7 +427,7 @@ var _hoisted_19 = ["innerHTML"];
 
 var _hoisted_20 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("hr", null, null, -1);
 
-function Adminvue_type_template_id_ddfc912e_render(_ctx, _cache, $props, $setup, $data, $options) {
+function Adminvue_type_template_id_311910aa_render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_Notification = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("Notification");
 
   var _component_Field = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("Field");
@@ -474,7 +452,7 @@ function Adminvue_type_template_id_ddfc912e_render(_ctx, _cache, $props, $setup,
         "content-title": _ctx.translate('LoginLdap_Settings')
       }, {
         default: Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withCtx"])(function () {
-          return [_ctx.updatedFromPre30 ? (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("div", Adminvue_type_template_id_ddfc912e_hoisted_1, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Notification, {
+          return [_ctx.updatedFromPre30 ? (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("div", Adminvue_type_template_id_311910aa_hoisted_1, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Notification, {
             id: "pre300AlwaysUseLdapWarning",
             context: "warning",
             noclear: true
@@ -552,8 +530,8 @@ function Adminvue_type_template_id_ddfc912e_render(_ctx, _cache, $props, $setup,
             "success-translation": "LoginLdap_FilterCount",
             title: _ctx.translate('LoginLdap_Filter'),
             "inline-help": _ctx.translate('LoginLdap_FilterDescription')
-          }, null, 8, ["modelValue", "title", "inline-help"])]), Adminvue_type_template_id_ddfc912e_hoisted_2, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
-            saving: _ctx.ajaxform.isSubmitting,
+          }, null, 8, ["modelValue", "title", "inline-help"])]), Adminvue_type_template_id_311910aa_hoisted_2, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
+            saving: ajaxForm.isSubmitting,
             onConfirm: function onConfirm($event) {
               return ajaxForm.submitForm();
             }
@@ -611,7 +589,7 @@ function Adminvue_type_template_id_ddfc912e_render(_ctx, _cache, $props, $setup,
             title: _ctx.translate('LoginLdap_NewUserDefaultSitesViewAccess'),
             "inline-help": _ctx.translate('LoginLdap_NewUserDefaultSitesViewAccessDescription')
           }, null, 8, ["modelValue", "title", "inline-help"])]), _hoisted_3, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
-            saving: _ctx.ajaxform.isSubmitting,
+            saving: ajaxForm.isSubmitting,
             onConfirm: function onConfirm($event) {
               return ajaxForm.submitForm();
             }
@@ -635,7 +613,8 @@ function Adminvue_type_template_id_ddfc912e_render(_ctx, _cache, $props, $setup,
             title: _ctx.translate('LoginLdap_EnableLdapAccessSynchronization'),
             "inline-help": _ctx.translate('LoginLdap_EnableLdapAccessSynchronizationDescription')
           }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Notification, {
-            context: "info"
+            context: "info",
+            noclear: true
           }, {
             default: Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withCtx"])(function () {
               return [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("strong", null, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('LoginLdap_ExpectedLdapAttributes')), 1), _hoisted_5, _hoisted_6, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createTextVNode"])(" " + Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('LoginLdap_ExpectedLdapAttributesPrelude')) + ":", 1), _hoisted_7, _hoisted_8, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("ul", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("li", {
@@ -699,10 +678,10 @@ function Adminvue_type_template_id_ddfc912e_render(_ctx, _cache, $props, $setup,
             "onUpdate:modelValue": _cache[18] || (_cache[18] = function ($event) {
               return _ctx.actualLdapConfig.instance_name = $event;
             }),
-            title: _ctx.translate('LoginLdap_ThisPiwikInstanceName'),
-            "inline-help": _ctx.translate('LoginLdap_ThisPiwikInstanceNameDescription')
+            title: _ctx.translate('LoginLdap_ThisMatomoInstanceName'),
+            "inline-help": _ctx.translate('LoginLdap_ThisMatomoInstanceNameDescription')
           }, null, 8, ["modelValue", "title", "inline-help"])]), _hoisted_12, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
-            saving: _ctx.ajaxform.isSubmitting,
+            saving: ajaxForm.isSubmitting,
             onConfirm: function onConfirm($event) {
               return ajaxForm.submitForm();
             }
@@ -728,7 +707,10 @@ function Adminvue_type_template_id_ddfc912e_render(_ctx, _cache, $props, $setup,
         onConfirm: _cache[20] || (_cache[20] = function ($event) {
           return _ctx.synchronizeUser(_ctx.userToSynchronize);
         }),
-        value: _ctx.translate('LoginLdap_Go')
+        value: _ctx.translate('LoginLdap_Go'),
+        style: {
+          "margin-right": "7px"
+        }
       }, null, 8, ["value"]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("img", _hoisted_13, null, 512), [[external_commonjs_vue_commonjs2_vue_root_Vue_["vShow"], _ctx.isSynchronizing]]), _hoisted_14, _hoisted_15, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [_ctx.synchronizeUserError ? (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("div", {
         key: 0,
         innerHTML: _ctx.$sanitize(_ctx.synchronizeUserError)
@@ -742,13 +724,10 @@ function Adminvue_type_template_id_ddfc912e_render(_ctx, _cache, $props, $setup,
   }, {
     default: Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withCtx"])(function () {
       return [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_AjaxForm, {
-        "submit-api-method": "'LoginLdap.saveServersInfo'",
-        "send-json-payload": "true",
-        "use-custom-data-binding": "true",
-        modelValue: _ctx.actualServers,
-        "onUpdate:modelValue": _cache[22] || (_cache[22] = function ($event) {
-          return _ctx.actualServers = $event;
-        })
+        "submit-api-method": "LoginLdap.saveServersInfo",
+        "send-json-payload": true,
+        "use-custom-data-binding": true,
+        "form-data": _ctx.actualServers
       }, {
         default: Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withCtx"])(function (ajaxForm) {
           return [(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(true), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])(external_commonjs_vue_commonjs2_vue_root_Vue_["Fragment"], null, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["renderList"])(_ctx.actualServers, function (serverInfo, index) {
@@ -776,7 +755,7 @@ function Adminvue_type_template_id_ddfc912e_render(_ctx, _cache, $props, $setup,
               "onUpdate:modelValue": function onUpdateModelValue($event) {
                 return serverInfo.port = $event;
               },
-              placeholder: 389,
+              placeholder: "389",
               title: _ctx.translate('LoginLdap_LdapPort'),
               "inline-help": _ctx.translate('LoginLdap_LdapUrlPortWarning')
             }, null, 8, ["modelValue", "onUpdate:modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
@@ -822,21 +801,24 @@ function Adminvue_type_template_id_ddfc912e_render(_ctx, _cache, $props, $setup,
             onConfirm: _cache[21] || (_cache[21] = function ($event) {
               return _ctx.addServer();
             }),
-            value: _ctx.translate('General_Add')
+            value: _ctx.translate('General_Add'),
+            style: {
+              "margin-right": "3.5px"
+            }
           }, null, 8, ["value"]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
-            saving: _ctx.ajaxform.isSubmitting,
+            saving: ajaxForm.isSubmitting,
             onConfirm: function onConfirm($event) {
               return ajaxForm.submitForm();
             }
           }, null, 8, ["saving", "onConfirm"])];
         }),
         _: 1
-      }, 8, ["modelValue"])])];
+      }, 8, ["form-data"])])];
     }),
     _: 1
   }, 8, ["content-title"])]);
 }
-// CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/Admin/Admin.vue?vue&type=template&id=ddfc912e
+// CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/Admin/Admin.vue?vue&type=template&id=311910aa
 
 // CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-typescript/node_modules/cache-loader/dist/cjs.js??ref--14-0!./node_modules/babel-loader/lib!./node_modules/@vue/cli-plugin-typescript/node_modules/ts-loader??ref--14-2!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/LoginLdap/vue/src/Admin/Admin.vue?vue&type=script&lang=ts
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
@@ -961,11 +943,11 @@ function getSampleAccessAttribute(config, accessField, firstValue, secondValue) 
     },
     readMoreAboutAccessSynchronization: function readMoreAboutAccessSynchronization() {
       var link = 'https://github.com/matomo-org/plugin-LoginLdap#matomo-access-synchronization';
-      return Object(external_CoreHome_["translate"])('LoginLdap_ReadMoreAboutAccessSynchronization', "<a target=\"_blank\" href=\"".concat(link, "\">"), '</a>');
+      return Object(external_CoreHome_["translate"])('LoginLdap_ReadMoreAboutAccessSynchronization', "<a target=\"_blank\" href=\"".concat(link, "\" rel=\"noreferrer noopener\">"), '</a>');
     },
     loadUserCommandDesc: function loadUserCommandDesc() {
       var link = 'https://github.com/matomo-org/plugin-LoginLdap#commands';
-      return Object(external_CoreHome_["translate"])('LoginLdap_LoadUserCommandDesc', "<a target=\"_blank\" href=\"".concat(link, "\">loginldap:synchronize-users</a>}"));
+      return Object(external_CoreHome_["translate"])('LoginLdap_LoadUserCommandDesc', "<a target=\"_blank\" href=\"".concat(link, "\" rel=\"noreferrer noopener\">loginldap:synchronize-users</a>"));
     },
     useLdapForAuthHelp: function useLdapForAuthHelp() {
       var start = Object(external_CoreHome_["translate"])('LoginLdap_UseLdapForAuthenticationDescription');
@@ -987,19 +969,11 @@ function getSampleAccessAttribute(config, accessField, firstValue, secondValue) 
 }));
 // CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/Admin/Admin.vue?vue&type=script&lang=ts
  
-// EXTERNAL MODULE: ./plugins/LoginLdap/vue/src/Admin/Admin.vue?vue&type=custom&index=0&blockType=todo
-var Adminvue_type_custom_index_0_blockType_todo = __webpack_require__("4b04");
-var Adminvue_type_custom_index_0_blockType_todo_default = /*#__PURE__*/__webpack_require__.n(Adminvue_type_custom_index_0_blockType_todo);
-
 // CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/Admin/Admin.vue
 
 
 
-Adminvue_type_script_lang_ts.render = Adminvue_type_template_id_ddfc912e_render
-/* custom blocks */
-
-if (typeof Adminvue_type_custom_index_0_blockType_todo_default.a === 'function') Adminvue_type_custom_index_0_blockType_todo_default()(Adminvue_type_script_lang_ts)
-
+Adminvue_type_script_lang_ts.render = Adminvue_type_template_id_311910aa_render
 
 /* harmony default export */ var Admin = (Adminvue_type_script_lang_ts);
 // CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/index.ts
