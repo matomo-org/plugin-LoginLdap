@@ -40,8 +40,8 @@ describe("LoginLdap_Admin", function () {
         await page.waitForFunction("$('input[name=required_member_of]').length > 0");
 
         await page.evaluate(function () {
-            $('input#required_member_of').val('cn=avengers,dc=avengers,dc=shield,dc=org').trigger('input');
-            $('input#ldap_user_filter').val('(objectClass=person)').trigger('input');
+            $('input#required_member_of').val('cn=avengers,dc=avengers,dc=shield,dc=org').trigger('change');
+            $('input#ldap_user_filter').val('(objectClass=person)').trigger('change');
         });
 
         await page.evaluate(function () {
