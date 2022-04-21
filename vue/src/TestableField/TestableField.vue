@@ -139,7 +139,13 @@ export default defineComponent({
   },
   computed: {
     successMessage() {
-      const usersTranslation = this.testResult === 1 ? 'LoginLdap_OneUser' : 'General_NUsers';
+      if (this.testResult === null) {
+        return '';
+      }
+
+      const usersTranslation = this.testResult === 1
+        ? 'LoginLdap_OneUser'
+        : translate('General_NUsers', `${this.testResult}`);
       return translate(
         this.successTranslation,
         `<strong>${translate(usersTranslation)}</strong>`,
