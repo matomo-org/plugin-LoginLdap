@@ -144,12 +144,9 @@ export default defineComponent({
       }
 
       const usersTranslation = this.testResult === 1
-        ? 'LoginLdap_OneUser'
+        ? translate('LoginLdap_OneUser')
         : translate('General_NUsers', `${this.testResult}`);
-      return translate(
-        this.successTranslation,
-        `<strong>${translate(usersTranslation)}</strong>`,
-      );
+      return translate(this.successTranslation, `<strong>${usersTranslation}</strong>`);
     },
   },
 });

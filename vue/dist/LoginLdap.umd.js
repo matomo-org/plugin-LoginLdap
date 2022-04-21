@@ -150,7 +150,7 @@ var external_commonjs_vue_commonjs2_vue_root_Vue_ = __webpack_require__("8bbf");
 // EXTERNAL MODULE: external "CoreHome"
 var external_CoreHome_ = __webpack_require__("19dc");
 
-// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/LoginLdap/vue/src/TestableField/TestableField.vue?vue&type=template&id=5a7a6218
+// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/LoginLdap/vue/src/TestableField/TestableField.vue?vue&type=template&id=74c2fd9c
 
 var _hoisted_1 = {
   class: "loginLdapTestableField"
@@ -189,7 +189,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     class: "test-config-option-error"
   }, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.testError), 513), [[external_commonjs_vue_commonjs2_vue_root_Vue_["vShow"], _ctx.testError]])]);
 }
-// CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/TestableField/TestableField.vue?vue&type=template&id=5a7a6218
+// CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/TestableField/TestableField.vue?vue&type=template&id=74c2fd9c
 
 // EXTERNAL MODULE: external "CorePluginsAdmin"
 var external_CorePluginsAdmin_ = __webpack_require__("a5a2");
@@ -289,8 +289,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         return '';
       }
 
-      var usersTranslation = this.testResult === 1 ? 'LoginLdap_OneUser' : Object(external_CoreHome_["translate"])('General_NUsers', "".concat(this.testResult));
-      return Object(external_CoreHome_["translate"])(this.successTranslation, "<strong>".concat(Object(external_CoreHome_["translate"])(usersTranslation), "</strong>"));
+      var usersTranslation = this.testResult === 1 ? Object(external_CoreHome_["translate"])('LoginLdap_OneUser') : Object(external_CoreHome_["translate"])('General_NUsers', "".concat(this.testResult));
+      return Object(external_CoreHome_["translate"])(this.successTranslation, "<strong>".concat(usersTranslation, "</strong>"));
     }
   }
 }));
