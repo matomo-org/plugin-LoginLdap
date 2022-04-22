@@ -1,5 +1,9 @@
 # LoginLdap Changelog
 
+#### LoginLdap 4.5.0
+
+* Migrate from AngularJS to Vue.
+
 #### LoginLdap 4.4.0
 
 * Fixed domain strip from login when equal to Domain\UserLogin.
