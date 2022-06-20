@@ -9,3 +9,4 @@ import './TestableField/TestableField.adapter';
 
 export { default as TestableField } from './TestableField/TestableField.vue';
 export { default as Admin } from './Admin/Admin.vue';
+export { default as AdminPage } from './Admin/AdminPage.vue';

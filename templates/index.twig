@@ -1,16 +1,11 @@
 {% extends 'admin.twig' %}
 
 {% block content %}
-    {% if isLoginControllerActivated|default(false) %}
-        <div piwik-notification context="warning" noclear="true">
-            <strong>{{ 'General_Warning'|translate }}</strong>: {{ 'LoginLdap_LoginPluginEnabledWarning'|translate("Login", "LoginLdap") }}
-        </div>
-    {% endif %}
-
-<div
-  vue-entry="LoginLdap.Admin"
-  servers="{{ servers|default(null)|json_encode|e('html_attr') }}"
-  updated-from-pre30="{{ (updatedFromPre30 == 1)|default(false)|json_encode|e('html_attr') }}"
-  ldap-config="{{ ldapConfig|default(null)|json_encode|e('html_attr') }}"
-></div>
+    <div
+      vue-entry="LoginLdap.AdminPage"
+      servers="{{ servers|default(null)|json_encode|e('html_attr') }}"
+      updated-from-pre30="{{ (updatedFromPre30 == 1)|default(false)|json_encode|e('html_attr') }}"
+      ldap-config="{{ ldapConfig|default(null)|json_encode|e('html_attr') }}"
+      is-login-controller-activated="{{ isLoginControllerActivated|default(false)|json_encode|e('html_attr') }}"
+    ></div>
 {% endblock %}
