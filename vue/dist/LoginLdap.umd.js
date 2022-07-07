@@ -148,9 +148,6 @@ if (typeof window !== 'undefined') {
 // EXTERNAL MODULE: external {"commonjs":"vue","commonjs2":"vue","root":"Vue"}
 var external_commonjs_vue_commonjs2_vue_root_Vue_ = __webpack_require__("8bbf");
 
-// EXTERNAL MODULE: external "CoreHome"
-var external_CoreHome_ = __webpack_require__("19dc");
-
 // CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/LoginLdap/vue/src/TestableField/TestableField.vue?vue&type=template&id=74c2fd9c
 
 var _hoisted_1 = {
@@ -191,6 +188,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   }, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.testError), 513), [[external_commonjs_vue_commonjs2_vue_root_Vue_["vShow"], _ctx.testError]])]);
 }
 // CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/TestableField/TestableField.vue?vue&type=template&id=74c2fd9c
+
+// EXTERNAL MODULE: external "CoreHome"
+var external_CoreHome_ = __webpack_require__("19dc");
 
 // EXTERNAL MODULE: external "CorePluginsAdmin"
 var external_CorePluginsAdmin_ = __webpack_require__("a5a2");
@@ -304,89 +304,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 TestableFieldvue_type_script_lang_ts.render = render
 
 /* harmony default export */ var TestableField = (TestableFieldvue_type_script_lang_ts);
-// CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/TestableField/TestableField.adapter.ts
-/*!
- * Matomo - free/libre analytics platform
- *
- * @link https://matomo.org
- * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
- */
-
-
-
-/* harmony default export */ var TestableField_adapter = (Object(external_CoreHome_["createAngularJsAdapter"])({
-  component: TestableField,
-  scope: {
-    value: {
-      angularJsBind: '@'
-    },
-    name: {
-      angularJsBind: '@'
-    },
-    successTranslation: {
-      angularJsBind: '@'
-    },
-    testApiMethod: {
-      angularJsBind: '='
-    },
-    testApiMethodArg: {
-      angularJsBind: '='
-    },
-    inlineHelp: {
-      angularJsBind: '@'
-    },
-    title: {
-      angularJsBind: '@'
-    }
-  },
-  directiveName: 'piwikLoginLdapTestableField',
-  $inject: ['$timeout'],
-  events: {
-    'update:modelValue': function updateModelValue(newValue, vm, scope, element, attrs, ngModel, $timeout) {
-      var currentValue = ngModel ? ngModel.$viewValue : scope.value;
-
-      if (newValue !== currentValue) {
-        $timeout(function () {
-          if (!ngModel) {
-            scope.value = newValue;
-            return;
-          } // ngModel being used
-
-
-          ngModel.$setViewValue(newValue);
-          ngModel.$render(); // not detected by the watch for some reason
-        });
-      }
-    }
-  },
-  postCreate: function postCreate(vm, scope, element, attrs, controller) {
-    var ngModel = controller;
-
-    if (!ngModel) {
-      scope.$watch('value', function (newVal) {
-        if (newVal !== vm.modelValue) {
-          Object(external_commonjs_vue_commonjs2_vue_root_Vue_["nextTick"])(function () {
-            vm.modelValue = newVal;
-          });
-        }
-      });
-      return;
-    } // ngModel being used
-
-
-    ngModel.$render = function () {
-      Object(external_commonjs_vue_commonjs2_vue_root_Vue_["nextTick"])(function () {
-        vm.modelValue = Object(external_CoreHome_["removeAngularJsSpecificProperties"])(ngModel.$viewValue);
-      });
-    };
-
-    if (typeof scope.value !== 'undefined') {
-      ngModel.$setViewValue(scope.value);
-    } else {
-      ngModel.$setViewValue(vm.modelValue);
-    }
-  }
-}));
 // CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/LoginLdap/vue/src/Admin/Admin.vue?vue&type=template&id=311910aa
 
 var Adminvue_type_template_id_311910aa_hoisted_1 = {
@@ -1043,7 +960,6 @@ AdminPagevue_type_script_lang_ts.render = AdminPagevue_type_template_id_30c5d858
  * @link https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
-
 
 
 
