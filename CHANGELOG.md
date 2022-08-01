@@ -1,5 +1,9 @@
 # LoginLdap Changelog
 
+#### LoginLdap 4.5.1
+
+* Translation updates.
+
 #### LoginLdap 4.5.0
 
 * Migrate from AngularJS to Vue.
