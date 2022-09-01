@@ -145,7 +145,13 @@ class UserSynchronizer
                 if (!$userMapper->isUserLdapUser($existingUser['login'])) {
                     $logger->warning("Unable to synchronize LDAP user '{user}', non-LDAP user with same name exists.", array('user' => $existingUser['login']));
                 } else {
-                    $userUpdater->updateUserWithoutCurrentPassword($user['login'], $user['password'], $user['email'], $isPasswordHashed = true);
+                    if (Config::getShouldSynchronizeUsersAfterLogin()) {
+                        $usersManagerApi::$UPDATE_USER_REQUIRE_PASSWORD_CONFIRMATION = false;
+                        $usersManagerApi->updateUser($user['login'], $user['password'], $user['email'], $isPasswordHashed = true, true);
+                        $usersManagerApi::$UPDATE_USER_REQUIRE_PASSWORD_CONFIRMATION = true;
+                    } else {
+                        $userUpdater->updateUserWithoutCurrentPassword($user['login'], $user['password'], $user['email'], $isPasswordHashed = true);
+                    }
 
                     // manually reset ts_password_modified to user creation date since it will just cause sessions to prematurely expire
                     // (note: it is not possible to change LDAP passwords through Matomo)
