@@ -99,6 +99,11 @@ class UserSynchronizer
      */
     private $logger;
 
+    /**
+     * @var bool
+     */
+    public static $skipPasswordConfirmation = false;
+
     public function __construct(LoggerInterface $logger = null)
     {
         $this->logger = $logger ?: StaticContainer::get('Psr\Log\LoggerInterface');
@@ -135,7 +140,10 @@ class UserSynchronizer
             ));
 
             if (empty($existingUser)) {
+                //Need to set this to ensure we can add a new user without any password confirmation, refer skipPasswordConfirmation() in LoginLdap.php for further usage
+                self::$skipPasswordConfirmation = true;
                 $usersManagerApi->addUser($user['login'], $user['password'], $user['email'], $isPasswordHashed = true);
+                self::$skipPasswordConfirmation = false;
 
                 // set new user view access
                 if (!empty($newUserDefaultSitesWithViewAccess)) {
