@@ -1,5 +1,9 @@
 # LoginLdap Changelog
 
+#### LoginLdap 4.5.2
+* Started updating user password on sync for existing user if synchronize_users_after_login=1
+* Fix to add new user  during sync without password confirmation
+
 #### LoginLdap 4.5.1
 
 * Translation updates.
