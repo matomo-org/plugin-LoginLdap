@@ -8,7 +8,7 @@
  */
 namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
-use Monolog\Logger;
+use Matomo\Dependencies\Monolog\Logger;
 use Piwik\Access;
 use Piwik\Auth\Password;
 use Piwik\Common;
@@ -165,7 +165,7 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
     public function provideContainerConfig()
     {
         return array(
-            'Psr\Log\LoggerInterface' => \DI\get('Monolog\Logger'),
+            'Psr\Log\LoggerInterface' => \DI\get('Matomo\Dependencies\Monolog\Logger'),
             'log.level' => Logger::DEBUG,
         );
     }
