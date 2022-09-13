@@ -127,7 +127,7 @@ class UserMapper
     {
         $ldapPassword = $this->getLdapUserField($ldapUser, $this->ldapUserPasswordField);
 
-        if (!empty($user['password'])) {
+        if (!empty($user['password']) && !Config::getShouldSynchronizeUsersAfterLogin()) {
             // do not generate new passwords for users that are already synchronized
             return $user['password'];
         } elseif (!empty($ldapPassword)) {

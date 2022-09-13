@@ -218,6 +218,7 @@ class UserMapperTest extends TestCase
 
     public function test_createPiwikUserEntryForLdapUser_UsesExistingPassword()
     {
+        Config::getInstance()->LoginLdap['synchronize_users_after_login'] = 0;
         $existingUser = array(
             'login' => 'broken',
             'email' => 'wrongmail',
@@ -236,6 +237,30 @@ class UserMapperTest extends TestCase
             'password' => 'existingpass',
             'email' => 'leela@gallifrey.???'
         ), $result);
+    }
+
+    public function test_createPiwikUserEntryForLdapUser_UpdatesExistingPassword()
+    {
+        Config::getInstance()->LoginLdap['synchronize_users_after_login'] = 1;
+        $existingUser = array(
+            'login' => 'broken',
+            'email' => 'wrongmail',
+            'password' => 'existingpass'
+        );
+
+        $result = $this->userMapper->createPiwikUserFromLdapUser(array(
+            'uid' => 'leela',
+            'cn' => 'Leela of the Sevateem',
+            'mail' => 'leela@gallifrey.???',
+            'userpassword' => 'pass'
+        ), $existingUser);
+
+        $this->assertEquals(array(
+            'login' => 'leela',
+            'password' => '1a1dc91c907325c69271ddf0c944bc72',
+            'email' => 'leela@gallifrey.???'
+        ), $result);
+        Config::getInstance()->LoginLdap['synchronize_users_after_login'] = 0;
     }
 
     private function assertUserMapperIsCorrectlyConfigured(UserMapper $userMapper)
