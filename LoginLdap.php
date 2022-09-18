@@ -16,6 +16,7 @@ use Piwik\Piwik;
 use Piwik\Plugin\Manager;
 use Piwik\Plugins\LoginLdap\Auth\Base as AuthBase;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
+use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 use Piwik\View;
 
 /**
@@ -40,6 +41,7 @@ class LoginLdap extends \Piwik\Plugin
             'Controller.LoginLdap.resetPassword'     => 'disablePasswordResetForLdapUsers',
             'Controller.Login.confirmResetPassword'  => 'disableConfirmResetPasswordForLdapUsers',
             'UsersManager.checkPassword'             => 'checkPassword',
+            'Login.userRequiresPasswordConfirmation' => 'skipPasswordConfirmation',
         );
         return $hooks;
     }
@@ -266,5 +268,18 @@ class LoginLdap extends \Piwik\Plugin
     {
         $auth = StaticContainer::get('Piwik\Auth');
         $this->disablePasswordChangeForLdapUsers($auth);
+    }
+
+    /**
+     * @param $requiresPasswordConfirmation
+     * @param $login
+     *
+     * Skip password confirmation if its being added by LDAP sync
+     */
+    public function skipPasswordConfirmation(&$requiresPasswordConfirmation, $login)
+    {
+        if (UserSynchronizer::$skipPasswordConfirmation) {
+            $requiresPasswordConfirmation = false;
+        }
     }
 }
