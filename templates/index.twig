@@ -9,7 +9,7 @@
 
 <div
   vue-entry="LoginLdap.Admin"
-  servers="{{ servers|default(null)|json_encode|e('html_attr') }}"
+  servers="{{ servers|default([])|json_encode|e('html_attr') }}"
   updated-from-pre30="{{ (updatedFromPre30 == 1)|default(false)|json_encode|e('html_attr') }}"
   ldap-config="{{ ldapConfig|default(null)|json_encode|e('html_attr') }}"
 ></div>
