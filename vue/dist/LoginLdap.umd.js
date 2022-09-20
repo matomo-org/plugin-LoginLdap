@@ -127,6 +127,7 @@ __webpack_require__.r(__webpack_exports__);
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, "TestableField", function() { return /* reexport */ TestableField; });
 __webpack_require__.d(__webpack_exports__, "Admin", function() { return /* reexport */ Admin; });
+__webpack_require__.d(__webpack_exports__, "AdminPage", function() { return /* reexport */ AdminPage; });
 
 // CONCATENATED MODULE: ./node_modules/@vue/cli-service/lib/commands/build/setPublicPath.js
 // This file is imported into lib/wc client bundles.
@@ -146,9 +147,6 @@ if (typeof window !== 'undefined') {
 
 // EXTERNAL MODULE: external {"commonjs":"vue","commonjs2":"vue","root":"Vue"}
 var external_commonjs_vue_commonjs2_vue_root_Vue_ = __webpack_require__("8bbf");
-
-// EXTERNAL MODULE: external "CoreHome"
-var external_CoreHome_ = __webpack_require__("19dc");
 
 // CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/LoginLdap/vue/src/TestableField/TestableField.vue?vue&type=template&id=74c2fd9c
 
@@ -190,6 +188,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   }, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.testError), 513), [[external_commonjs_vue_commonjs2_vue_root_Vue_["vShow"], _ctx.testError]])]);
 }
 // CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/TestableField/TestableField.vue?vue&type=template&id=74c2fd9c
+
+// EXTERNAL MODULE: external "CoreHome"
+var external_CoreHome_ = __webpack_require__("19dc");
 
 // EXTERNAL MODULE: external "CorePluginsAdmin"
 var external_CorePluginsAdmin_ = __webpack_require__("a5a2");
@@ -303,89 +304,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 TestableFieldvue_type_script_lang_ts.render = render
 
 /* harmony default export */ var TestableField = (TestableFieldvue_type_script_lang_ts);
-// CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/TestableField/TestableField.adapter.ts
-/*!
- * Matomo - free/libre analytics platform
- *
- * @link https://matomo.org
- * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
- */
-
-
-
-/* harmony default export */ var TestableField_adapter = (Object(external_CoreHome_["createAngularJsAdapter"])({
-  component: TestableField,
-  scope: {
-    value: {
-      angularJsBind: '@'
-    },
-    name: {
-      angularJsBind: '@'
-    },
-    successTranslation: {
-      angularJsBind: '@'
-    },
-    testApiMethod: {
-      angularJsBind: '='
-    },
-    testApiMethodArg: {
-      angularJsBind: '='
-    },
-    inlineHelp: {
-      angularJsBind: '@'
-    },
-    title: {
-      angularJsBind: '@'
-    }
-  },
-  directiveName: 'piwikLoginLdapTestableField',
-  $inject: ['$timeout'],
-  events: {
-    'update:modelValue': function updateModelValue(newValue, vm, scope, element, attrs, ngModel, $timeout) {
-      var currentValue = ngModel ? ngModel.$viewValue : scope.value;
-
-      if (newValue !== currentValue) {
-        $timeout(function () {
-          if (!ngModel) {
-            scope.value = newValue;
-            return;
-          } // ngModel being used
-
-
-          ngModel.$setViewValue(newValue);
-          ngModel.$render(); // not detected by the watch for some reason
-        });
-      }
-    }
-  },
-  postCreate: function postCreate(vm, scope, element, attrs, controller) {
-    var ngModel = controller;
-
-    if (!ngModel) {
-      scope.$watch('value', function (newVal) {
-        if (newVal !== vm.modelValue) {
-          Object(external_commonjs_vue_commonjs2_vue_root_Vue_["nextTick"])(function () {
-            vm.modelValue = newVal;
-          });
-        }
-      });
-      return;
-    } // ngModel being used
-
-
-    ngModel.$render = function () {
-      Object(external_commonjs_vue_commonjs2_vue_root_Vue_["nextTick"])(function () {
-        vm.modelValue = Object(external_CoreHome_["removeAngularJsSpecificProperties"])(ngModel.$viewValue);
-      });
-    };
-
-    if (typeof scope.value !== 'undefined') {
-      ngModel.$setViewValue(scope.value);
-    } else {
-      ngModel.$setViewValue(vm.modelValue);
-    }
-  }
-}));
 // CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/LoginLdap/vue/src/Admin/Admin.vue?vue&type=template&id=311910aa
 
 var Adminvue_type_template_id_311910aa_hoisted_1 = {
@@ -980,6 +898,61 @@ function getSampleAccessAttribute(config, accessField, firstValue, secondValue) 
 Adminvue_type_script_lang_ts.render = Adminvue_type_template_id_311910aa_render
 
 /* harmony default export */ var Admin = (Adminvue_type_script_lang_ts);
+// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/LoginLdap/vue/src/Admin/AdminPage.vue?vue&type=template&id=30c5d858
+
+function AdminPagevue_type_template_id_30c5d858_render(_ctx, _cache, $props, $setup, $data, $options) {
+  var _component_Notification = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("Notification");
+
+  var _component_Admin = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("Admin");
+
+  return Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("div", null, [_ctx.isLoginControllerActivated ? (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createBlock"])(_component_Notification, {
+    key: 0,
+    context: "warning",
+    noclear: true
+  }, {
+    default: Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withCtx"])(function () {
+      return [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("strong", null, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('General_Warning')), 1), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createTextVNode"])(": " + Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('LoginLdap_LoginPluginEnabledWarning', 'Login', 'LoginLdap')), 1)];
+    }),
+    _: 1
+  })) : Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createCommentVNode"])("", true), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Admin, {
+    servers: _ctx.servers,
+    "ldap-config": _ctx.ldapConfig,
+    "updated-from-pre30": _ctx.updatedFromPre30
+  }, null, 8, ["servers", "ldap-config", "updated-from-pre30"])]);
+}
+// CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/Admin/AdminPage.vue?vue&type=template&id=30c5d858
+
+// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-typescript/node_modules/cache-loader/dist/cjs.js??ref--14-0!./node_modules/babel-loader/lib!./node_modules/@vue/cli-plugin-typescript/node_modules/ts-loader??ref--14-2!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/LoginLdap/vue/src/Admin/AdminPage.vue?vue&type=script&lang=ts
+
+
+
+/* harmony default export */ var AdminPagevue_type_script_lang_ts = (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["defineComponent"])({
+  props: {
+    isLoginControllerActivated: Boolean,
+    ldapConfig: {
+      type: Object,
+      required: true
+    },
+    servers: {
+      type: Array,
+      required: true
+    },
+    updatedFromPre30: Boolean
+  },
+  components: {
+    Notification: external_CoreHome_["Notification"],
+    Admin: Admin
+  }
+}));
+// CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/Admin/AdminPage.vue?vue&type=script&lang=ts
+ 
+// CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/Admin/AdminPage.vue
+
+
+
+AdminPagevue_type_script_lang_ts.render = AdminPagevue_type_template_id_30c5d858_render
+
+/* harmony default export */ var AdminPage = (AdminPagevue_type_script_lang_ts);
 // CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/index.ts
 /*!
  * Matomo - free/libre analytics platform

@@ -66,7 +66,6 @@ class LoginLdap extends \Piwik\Plugin
         $keys[] = "LoginLdap_MemberOfCount";
         $keys[] = "LoginLdap_FilterCount";
         $keys[] = "LoginLdap_Test";
-        $keys[] = "General_NUsers";
         $keys[] = 'LoginLdap_Settings';
         $keys[] = 'General_Note';
         $keys[] = 'LoginLdap_UpdateFromPre300Warning';
@@ -79,9 +78,7 @@ class LoginLdap extends \Piwik\Plugin
         $keys[] = 'LoginLdap_MemberOfField';
         $keys[] = 'LoginLdap_MemberOfFieldDescription';
         $keys[] = 'LoginLdap_MemberOf';
-        $keys[] = 'LoginLdap_MemberOfCount';
         $keys[] = 'LoginLdap_Filter';
-        $keys[] = 'LoginLdap_FilterCount';
         $keys[] = 'LoginLdap_FilterDescription';
         $keys[] = 'LoginLdap_UserSyncSettings';
         $keys[] = 'LoginLdap_UserIdField';
@@ -137,6 +134,8 @@ class LoginLdap extends \Piwik\Plugin
         $keys[] = 'LoginLdap_ReadMoreAboutAccessSynchronization';
         $keys[] = 'LoginLdap_ThisMatomoInstanceNameDescription';
         $keys[] = 'LoginLdap_ThisMatomoInstanceName';
+        $keys[] = 'General_Warning';
+        $keys[] = 'LoginLdap_LoginPluginEnabledWarning';
     }
 
     /**
