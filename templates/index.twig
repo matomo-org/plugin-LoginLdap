@@ -3,9 +3,9 @@
 {% block content %}
     <div
       vue-entry="LoginLdap.AdminPage"
-      servers="{{ servers|default(null)|json_encode }}"
+      servers="{{ servers|default([])|json_encode }}"
       updated-from-pre30="{{ (updatedFromPre30 == 1)|default(false)|json_encode }}"
-      ldap-config="{{ ldapConfig|default(null)|json_encode }}"
+      ldap-config="{{ ldapConfig|default({})|json_encode }}"
       is-login-controller-activated="{{ isLoginControllerActivated|default(false)|json_encode }}"
     ></div>
 {% endblock %}
