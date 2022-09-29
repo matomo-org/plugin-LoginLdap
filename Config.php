@@ -194,7 +194,7 @@ class Config
 
     public static function getServerConfig($server)
     {
-        $configName = 'LoginLdap_' . $server;
+        $configName = 'LoginLdap_' . preg_replace('/[^a-zA-Z0-9_-]/', '', $server);
         return PiwikConfig::getInstance()->__get($configName);
     }
 
