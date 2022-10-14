@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 4.5.4
+* Started replacing invalid characters from server name key before fetching from config
+
 #### LoginLdap 4.5.3
 * Added default value of servers as array instead of null
 
