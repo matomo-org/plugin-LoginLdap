@@ -187,7 +187,7 @@ class ServerInfo
      * @param string $adminPassword
      */
     public function setAdminPassword($adminPassword) {
-        $this->adminPassword = $adminPassword;
+        $this->adminPassword = stripcslashes($adminPassword);
     }
 
     /**
