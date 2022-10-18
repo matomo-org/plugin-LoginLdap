@@ -78,7 +78,7 @@ class ServerInfo
         $this->baseDn = $baseDn;
         $this->serverPort = $serverPort;
         $this->adminUsername = $adminUsername;
-        $this->adminPassword = $adminPassword;
+        $this->setAdminPassword($adminPassword);
         $this->startTLS = $startTLS;
     }
 
@@ -187,7 +187,7 @@ class ServerInfo
      * @param string $adminPassword
      */
     public function setAdminPassword($adminPassword) {
-        $this->adminPassword = stripcslashes($adminPassword);
+        $this->adminPassword = !empty($adminPassword) ? stripcslashes($adminPassword) : $adminPassword;
     }
 
     /**
