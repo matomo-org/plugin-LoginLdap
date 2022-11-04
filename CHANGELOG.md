@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 4.5.5
+* Allow single quote character in admin password, #308
+
 #### LoginLdap 4.5.4
 * Started replacing invalid characters from server name key before fetching from config
 
