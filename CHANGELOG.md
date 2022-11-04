@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 5.0.0
+* Compatibility with Matomo 5
+
 #### LoginLdap 4.5.5
 * Allow single quote character in admin password, #308
 
