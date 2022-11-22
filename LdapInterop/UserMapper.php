@@ -133,7 +133,7 @@ class UserMapper
         } elseif (!empty($ldapPassword)) {
             return $this->hashLdapPassword($ldapPassword);
         } else {
-            $this->logger->warning("UserMapper::{func}: Could not find LDAP password for user '{user}', generating random one.",
+            $this->logger->debug("UserMapper::{func}: Could not find LDAP password for user '{user}', generating random one.",
                 array(
                     'func' => __FUNCTION__,
                     'user' => @$ldapUser[$this->ldapUserIdField]
