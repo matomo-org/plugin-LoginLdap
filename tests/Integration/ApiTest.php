@@ -82,6 +82,35 @@ class ApiTest extends LdapIntegrationTest
         $ldapConfig = Config::getInstance()->LoginLdap;
         $this->assertEquals(0, $ldapConfig['use_ldap_for_authentication']);
         $this->assertEquals(0, $ldapConfig['synchronize_users_after_login']);
+        $this->assertEquals(0, $ldapConfig['enable_password_confirmation']);
+        $this->assertEquals(1, $ldapConfig['enable_synchronize_access_from_ldap']);
+        $this->assertEquals('10,11,13', $ldapConfig['new_user_default_sites_view_access']);
+        $this->assertTrue(empty($ldapConfig['servers']));
+        $this->assertTrue(empty($ldapConfig['nonconfigoption']));
+    }
+
+    public function test_saveLdapConfig_SavesConfigToINIFile_AndIgnoresInvalidConfigNames2()
+    {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+
+        Config::getInstance()->LoginLdap['servers'] = array();
+
+        $configToSave = array(
+            'use_ldap_for_authentication' => 0,
+            'synchronize_users_after_login' => 0,
+            'enable_synchronize_access_from_ldap' => 1,
+            'enable_password_confirmation' => 1,
+            'new_user_default_sites_view_access' => '10,11,13',
+            'servers' => 'abc',
+            'nonconfigoption' => 'def'
+        );
+
+        $this->api->saveLdapConfig(json_encode($configToSave));
+
+        $ldapConfig = Config::getInstance()->LoginLdap;
+        $this->assertEquals(0, $ldapConfig['use_ldap_for_authentication']);
+        $this->assertEquals(0, $ldapConfig['synchronize_users_after_login']);
+        $this->assertEquals(1, $ldapConfig['enable_password_confirmation']);
         $this->assertEquals(1, $ldapConfig['enable_synchronize_access_from_ldap']);
         $this->assertEquals('10,11,13', $ldapConfig['new_user_default_sites_view_access']);
         $this->assertTrue(empty($ldapConfig['servers']));
