@@ -72,6 +72,7 @@ class ApiTest extends LdapIntegrationTest
             'use_ldap_for_authentication' => 0,
             'synchronize_users_after_login' => 0,
             'enable_synchronize_access_from_ldap' => 1,
+            'enable_password_confirmation' => 0,
             'new_user_default_sites_view_access' => '10,11,13',
             'servers' => 'abc',
             'nonconfigoption' => 'def'
