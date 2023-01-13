@@ -137,6 +137,8 @@ class LoginLdap extends \Piwik\Plugin
         $keys[] = 'LoginLdap_ReadMoreAboutAccessSynchronization';
         $keys[] = 'LoginLdap_ThisMatomoInstanceNameDescription';
         $keys[] = 'LoginLdap_ThisMatomoInstanceName';
+        $keys[] = 'LoginLdap_OptionsPWCONFIRMATION';
+        $keys[] = 'LoginLdap_OptionsPWCONFIRMATIONDescription';
     }
 
     /**

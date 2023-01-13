@@ -386,13 +386,13 @@ TestableFieldvue_type_script_lang_ts.render = render
     }
   }
 }));
-// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/LoginLdap/vue/src/Admin/Admin.vue?vue&type=template&id=311910aa
+// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/LoginLdap/vue/src/Admin/Admin.vue?vue&type=template&id=1e910070
 
-var Adminvue_type_template_id_311910aa_hoisted_1 = {
+var Adminvue_type_template_id_1e910070_hoisted_1 = {
   key: 0
 };
 
-var Adminvue_type_template_id_311910aa_hoisted_2 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("hr", null, null, -1);
+var Adminvue_type_template_id_1e910070_hoisted_2 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("hr", null, null, -1);
 
 var _hoisted_3 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("hr", null, null, -1);
 
@@ -431,7 +431,7 @@ var _hoisted_19 = ["innerHTML"];
 
 var _hoisted_20 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("hr", null, null, -1);
 
-function Adminvue_type_template_id_311910aa_render(_ctx, _cache, $props, $setup, $data, $options) {
+function Adminvue_type_template_id_1e910070_render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_Notification = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("Notification");
 
   var _component_Field = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("Field");
@@ -456,7 +456,7 @@ function Adminvue_type_template_id_311910aa_render(_ctx, _cache, $props, $setup,
         "content-title": _ctx.translate('LoginLdap_Settings')
       }, {
         default: Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withCtx"])(function () {
-          return [_ctx.updatedFromPre30 ? (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("div", Adminvue_type_template_id_311910aa_hoisted_1, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Notification, {
+          return [_ctx.updatedFromPre30 ? (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("div", Adminvue_type_template_id_1e910070_hoisted_1, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Notification, {
             id: "pre300AlwaysUseLdapWarning",
             context: "warning",
             noclear: true
@@ -483,11 +483,20 @@ function Adminvue_type_template_id_311910aa_render(_ctx, _cache, $props, $setup,
             }),
             title: _ctx.translate('LoginLdap_Kerberos'),
             "inline-help": _ctx.translate('LoginLdap_KerberosDescription')
+          }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+            uicontrol: "checkbox",
+            name: "enable_password_confirmation",
+            modelValue: _ctx.actualLdapConfig.enable_password_confirmation,
+            "onUpdate:modelValue": _cache[2] || (_cache[2] = function ($event) {
+              return _ctx.actualLdapConfig.enable_password_confirmation = $event;
+            }),
+            title: _ctx.translate('LoginLdap_OptionsPWCONFIRMATION'),
+            "inline-help": _ctx.translate('LoginLdap_OptionsPWCONFIRMATIONDescription')
           }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
             uicontrol: "checkbox",
             name: "strip_domain_from_web_auth",
             modelValue: _ctx.actualLdapConfig.strip_domain_from_web_auth,
-            "onUpdate:modelValue": _cache[2] || (_cache[2] = function ($event) {
+            "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
               return _ctx.actualLdapConfig.strip_domain_from_web_auth = $event;
             }),
             title: _ctx.translate('LoginLdap_StripDomainFromWebAuth'),
@@ -496,7 +505,7 @@ function Adminvue_type_template_id_311910aa_render(_ctx, _cache, $props, $setup,
             uicontrol: "text",
             name: "ldap_network_timeout",
             modelValue: _ctx.actualLdapConfig.ldap_network_timeout,
-            "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
+            "onUpdate:modelValue": _cache[4] || (_cache[4] = function ($event) {
               return _ctx.actualLdapConfig.ldap_network_timeout = $event;
             }),
             title: _ctx.translate('LoginLdap_NetworkTimeout'),
@@ -505,7 +514,7 @@ function Adminvue_type_template_id_311910aa_render(_ctx, _cache, $props, $setup,
             uicontrol: "text",
             name: "required_member_of_field",
             modelValue: _ctx.actualLdapConfig.required_member_of_field,
-            "onUpdate:modelValue": _cache[4] || (_cache[4] = function ($event) {
+            "onUpdate:modelValue": _cache[5] || (_cache[5] = function ($event) {
               return _ctx.actualLdapConfig.required_member_of_field = $event;
             }),
             title: _ctx.translate('LoginLdap_MemberOfField'),
@@ -513,7 +522,7 @@ function Adminvue_type_template_id_311910aa_render(_ctx, _cache, $props, $setup,
           }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_TestableField, {
             uicontrol: "text",
             modelValue: _ctx.actualLdapConfig.required_member_of,
-            "onUpdate:modelValue": _cache[5] || (_cache[5] = function ($event) {
+            "onUpdate:modelValue": _cache[6] || (_cache[6] = function ($event) {
               return _ctx.actualLdapConfig.required_member_of = $event;
             }),
             name: "required_member_of",
@@ -525,7 +534,7 @@ function Adminvue_type_template_id_311910aa_render(_ctx, _cache, $props, $setup,
           }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_TestableField, {
             uicontrol: "text",
             modelValue: _ctx.actualLdapConfig.ldap_user_filter,
-            "onUpdate:modelValue": _cache[6] || (_cache[6] = function ($event) {
+            "onUpdate:modelValue": _cache[7] || (_cache[7] = function ($event) {
               return _ctx.actualLdapConfig.ldap_user_filter = $event;
             }),
             name: "ldap_user_filter",
@@ -534,7 +543,7 @@ function Adminvue_type_template_id_311910aa_render(_ctx, _cache, $props, $setup,
             "success-translation": "LoginLdap_FilterCount",
             title: _ctx.translate('LoginLdap_Filter'),
             "inline-help": _ctx.translate('LoginLdap_FilterDescription')
-          }, null, 8, ["modelValue", "title", "inline-help"])]), Adminvue_type_template_id_311910aa_hoisted_2, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
+          }, null, 8, ["modelValue", "title", "inline-help"])]), Adminvue_type_template_id_1e910070_hoisted_2, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
             saving: ajaxForm.isSubmitting,
             onConfirm: function onConfirm($event) {
               return ajaxForm.submitForm();
@@ -551,7 +560,7 @@ function Adminvue_type_template_id_311910aa_render(_ctx, _cache, $props, $setup,
             uicontrol: "text",
             name: "ldap_user_id_field",
             modelValue: _ctx.actualLdapConfig.ldap_user_id_field,
-            "onUpdate:modelValue": _cache[7] || (_cache[7] = function ($event) {
+            "onUpdate:modelValue": _cache[8] || (_cache[8] = function ($event) {
               return _ctx.actualLdapConfig.ldap_user_id_field = $event;
             }),
             title: _ctx.translate('LoginLdap_UserIdField'),
@@ -560,7 +569,7 @@ function Adminvue_type_template_id_311910aa_render(_ctx, _cache, $props, $setup,
             uicontrol: "text",
             name: "ldap_password_field",
             modelValue: _ctx.actualLdapConfig.ldap_password_field,
-            "onUpdate:modelValue": _cache[8] || (_cache[8] = function ($event) {
+            "onUpdate:modelValue": _cache[9] || (_cache[9] = function ($event) {
               return _ctx.actualLdapConfig.ldap_password_field = $event;
             }),
             title: _ctx.translate('LoginLdap_PasswordField'),
@@ -569,7 +578,7 @@ function Adminvue_type_template_id_311910aa_render(_ctx, _cache, $props, $setup,
             uicontrol: "text",
             name: "ldap_mail_field",
             modelValue: _ctx.actualLdapConfig.ldap_mail_field,
-            "onUpdate:modelValue": _cache[9] || (_cache[9] = function ($event) {
+            "onUpdate:modelValue": _cache[10] || (_cache[10] = function ($event) {
               return _ctx.actualLdapConfig.ldap_mail_field = $event;
             }),
             title: _ctx.translate('LoginLdap_MailField'),
@@ -578,7 +587,7 @@ function Adminvue_type_template_id_311910aa_render(_ctx, _cache, $props, $setup,
             uicontrol: "text",
             name: "user_email_suffix",
             modelValue: _ctx.actualLdapConfig.user_email_suffix,
-            "onUpdate:modelValue": _cache[10] || (_cache[10] = function ($event) {
+            "onUpdate:modelValue": _cache[11] || (_cache[11] = function ($event) {
               return _ctx.actualLdapConfig.user_email_suffix = $event;
             }),
             title: _ctx.translate('LoginLdap_UsernameSuffix'),
@@ -587,7 +596,7 @@ function Adminvue_type_template_id_311910aa_render(_ctx, _cache, $props, $setup,
             uicontrol: "text",
             name: "new_user_default_sites_view_access",
             modelValue: _ctx.actualLdapConfig.new_user_default_sites_view_access,
-            "onUpdate:modelValue": _cache[11] || (_cache[11] = function ($event) {
+            "onUpdate:modelValue": _cache[12] || (_cache[12] = function ($event) {
               return _ctx.actualLdapConfig.new_user_default_sites_view_access = $event;
             }),
             title: _ctx.translate('LoginLdap_NewUserDefaultSitesViewAccess'),
@@ -611,7 +620,7 @@ function Adminvue_type_template_id_311910aa_render(_ctx, _cache, $props, $setup,
             uicontrol: "checkbox",
             name: "enable_synchronize_access_from_ldap",
             modelValue: _ctx.actualLdapConfig.enable_synchronize_access_from_ldap,
-            "onUpdate:modelValue": _cache[12] || (_cache[12] = function ($event) {
+            "onUpdate:modelValue": _cache[13] || (_cache[13] = function ($event) {
               return _ctx.actualLdapConfig.enable_synchronize_access_from_ldap = $event;
             }),
             title: _ctx.translate('LoginLdap_EnableLdapAccessSynchronization'),
@@ -634,7 +643,7 @@ function Adminvue_type_template_id_311910aa_render(_ctx, _cache, $props, $setup,
             uicontrol: "text",
             name: "ldap_view_access_field",
             modelValue: _ctx.actualLdapConfig.ldap_view_access_field,
-            "onUpdate:modelValue": _cache[13] || (_cache[13] = function ($event) {
+            "onUpdate:modelValue": _cache[14] || (_cache[14] = function ($event) {
               return _ctx.actualLdapConfig.ldap_view_access_field = $event;
             }),
             title: _ctx.translate('LoginLdap_LdapViewAccessField'),
@@ -643,7 +652,7 @@ function Adminvue_type_template_id_311910aa_render(_ctx, _cache, $props, $setup,
             uicontrol: "text",
             name: "ldap_admin_access_field",
             modelValue: _ctx.actualLdapConfig.ldap_admin_access_field,
-            "onUpdate:modelValue": _cache[14] || (_cache[14] = function ($event) {
+            "onUpdate:modelValue": _cache[15] || (_cache[15] = function ($event) {
               return _ctx.actualLdapConfig.ldap_admin_access_field = $event;
             }),
             title: _ctx.translate('LoginLdap_LdapAdminAccessField'),
@@ -652,7 +661,7 @@ function Adminvue_type_template_id_311910aa_render(_ctx, _cache, $props, $setup,
             uicontrol: "text",
             name: "ldap_superuser_access_field",
             modelValue: _ctx.actualLdapConfig.ldap_superuser_access_field,
-            "onUpdate:modelValue": _cache[15] || (_cache[15] = function ($event) {
+            "onUpdate:modelValue": _cache[16] || (_cache[16] = function ($event) {
               return _ctx.actualLdapConfig.ldap_superuser_access_field = $event;
             }),
             title: _ctx.translate('LoginLdap_LdapSuperUserAccessField'),
@@ -661,7 +670,7 @@ function Adminvue_type_template_id_311910aa_render(_ctx, _cache, $props, $setup,
             uicontrol: "text",
             name: "user_access_attribute_server_specification_delimiter",
             modelValue: _ctx.actualLdapConfig.user_access_attribute_server_specification_delimiter,
-            "onUpdate:modelValue": _cache[16] || (_cache[16] = function ($event) {
+            "onUpdate:modelValue": _cache[17] || (_cache[17] = function ($event) {
               return _ctx.actualLdapConfig.user_access_attribute_server_specification_delimiter = $event;
             }),
             title: _ctx.translate('LoginLdap_LdapUserAccessAttributeServerSpecDelimiter'),
@@ -670,7 +679,7 @@ function Adminvue_type_template_id_311910aa_render(_ctx, _cache, $props, $setup,
             uicontrol: "text",
             name: "user_access_attribute_server_separator",
             modelValue: _ctx.actualLdapConfig.user_access_attribute_server_separator,
-            "onUpdate:modelValue": _cache[17] || (_cache[17] = function ($event) {
+            "onUpdate:modelValue": _cache[18] || (_cache[18] = function ($event) {
               return _ctx.actualLdapConfig.user_access_attribute_server_separator = $event;
             }),
             title: _ctx.translate('LoginLdap_LdapUserAccessAttributeServerSeparator'),
@@ -679,7 +688,7 @@ function Adminvue_type_template_id_311910aa_render(_ctx, _cache, $props, $setup,
             uicontrol: "text",
             name: "instance_name",
             modelValue: _ctx.actualLdapConfig.instance_name,
-            "onUpdate:modelValue": _cache[18] || (_cache[18] = function ($event) {
+            "onUpdate:modelValue": _cache[19] || (_cache[19] = function ($event) {
               return _ctx.actualLdapConfig.instance_name = $event;
             }),
             title: _ctx.translate('LoginLdap_ThisMatomoInstanceName'),
@@ -704,11 +713,11 @@ function Adminvue_type_template_id_311910aa_render(_ctx, _cache, $props, $setup,
         uicontrol: "text",
         placeholder: "Enter a username...",
         modelValue: _ctx.userToSynchronize,
-        "onUpdate:modelValue": _cache[19] || (_cache[19] = function ($event) {
+        "onUpdate:modelValue": _cache[20] || (_cache[20] = function ($event) {
           return _ctx.userToSynchronize = $event;
         })
       }, null, 8, ["modelValue"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
-        onConfirm: _cache[20] || (_cache[20] = function ($event) {
+        onConfirm: _cache[21] || (_cache[21] = function ($event) {
           return _ctx.synchronizeUser(_ctx.userToSynchronize);
         }),
         value: _ctx.translate('LoginLdap_Go'),
@@ -802,7 +811,7 @@ function Adminvue_type_template_id_311910aa_render(_ctx, _cache, $props, $setup,
               value: _ctx.translate('General_Delete')
             }, null, 8, ["onConfirm", "value"])]);
           }), 128)), _hoisted_20, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
-            onConfirm: _cache[21] || (_cache[21] = function ($event) {
+            onConfirm: _cache[22] || (_cache[22] = function ($event) {
               return _ctx.addServer();
             }),
             value: _ctx.translate('General_Add'),
@@ -822,7 +831,7 @@ function Adminvue_type_template_id_311910aa_render(_ctx, _cache, $props, $setup,
     _: 1
   }, 8, ["content-title"])]);
 }
-// CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/Admin/Admin.vue?vue&type=template&id=311910aa
+// CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/Admin/Admin.vue?vue&type=template&id=1e910070
 
 // CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-typescript/node_modules/cache-loader/dist/cjs.js??ref--14-0!./node_modules/babel-loader/lib!./node_modules/@vue/cli-plugin-typescript/node_modules/ts-loader??ref--14-2!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/LoginLdap/vue/src/Admin/Admin.vue?vue&type=script&lang=ts
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
@@ -977,7 +986,7 @@ function getSampleAccessAttribute(config, accessField, firstValue, secondValue) 
 
 
 
-Adminvue_type_script_lang_ts.render = Adminvue_type_template_id_311910aa_render
+Adminvue_type_script_lang_ts.render = Adminvue_type_template_id_1e910070_render
 
 /* harmony default export */ var Admin = (Adminvue_type_script_lang_ts);
 // CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/index.ts
