@@ -48,6 +48,16 @@
               >
               </Field>
             </div>
+            <div>
+              <Field
+                uicontrol="checkbox"
+                name="enable_password_confirmation"
+                v-model="actualLdapConfig.enable_password_confirmation"
+                :title="translate('LoginLdap_OptionsPWCONFIRMATION')"
+                :inline-help="translate('LoginLdap_OptionsPWCONFIRMATIONDescription')"
+              >
+              </Field>
+            </div>
             <div v-show="actualLdapConfig.use_webserver_auth">
               <div>
                 <Field
@@ -421,6 +431,7 @@ import TestableField from '../TestableField/TestableField.vue';
 interface LoginLdapConfig {
   use_ldap_for_authentication: string|number;
   use_webserver_auth: string|number;
+  enable_password_confirmation: number;
   strip_domain_from_web_auth: string|number;
   ldap_network_timeout: string|number;
   required_member_of_field: string;

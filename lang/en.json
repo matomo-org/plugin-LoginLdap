@@ -90,6 +90,8 @@
         "PasswordFieldHelp": "Enter a password to overwrite the existing password or leave blank to make no change.",
         "LdapUserCantChangePassword": "Changing your password is not supported for LDAP users. As you use LDAP, your user settings are managed in LDAP directly. For more information, please contact your LDAP server administrator or your Matomo administrator.",
         "StartTLS": "Enable TLS",
-        "StartTLSFieldHelp": "To activate TLS for this server"
+        "StartTLSFieldHelp": "To activate TLS for this server",
+        "OptionsPWCONFIRMATION": "Enable password confirmation",
+        "OptionsPWCONFIRMATIONDescription": "If enabled, the requirement of a password challenge to validate admin actions will be shown and you need to enter a valid password to continue further."
     }
 }
