@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 4.6.0
+* Added option to disable/enable password confirmation.
+
 #### LoginLdap 4.5.6
 * Updated log level to debug from warning during random password generation for a user.
 
