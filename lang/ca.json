@@ -62,6 +62,8 @@
         "NewUserDefaultSitesViewAccessDescription": "Si s'especifica, quan un usuari LDAP es sincronitza per primera vegada se li dóna accés de visualització a aquests llocs. S'hauria de definir una llista d'identificadors o \"tots\".",
         "NoUserName": "No s'ha subministrat cap nom d'usuari!",
         "OneUser": "1 usuari",
+        "OptionsPWCONFIRMATION": "Activa la confirmació de la contrasenya",
+        "OptionsPWCONFIRMATIONDescription": "Si està activat, es mostrarà el requisit d'un desafiament de contrasenya per validar les accions de l'administrador i haureu d'introduir una contrasenya vàlida per continuar.",
         "PasswordField": "Camp Contrasenya d'usuari",
         "PasswordFieldDescription": "Nom de l'atribut LDAP que conté la contrasenya d'un usuari, pex. 'userPassword' o 'unicodePwd'.",
         "PasswordFieldDescription2": "Si \"Utilitza sempre LDAP per a l'autenticació\" està habilitat i \"Genera token_auth aleatori per a usuaris nous\" està desactivat, el valor d'aquest camp a LDAP ha de ser la contrasenya xifrada o codificada d'un usuari.",
