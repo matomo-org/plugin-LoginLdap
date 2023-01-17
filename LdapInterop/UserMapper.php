@@ -127,13 +127,13 @@ class UserMapper
     {
         $ldapPassword = $this->getLdapUserField($ldapUser, $this->ldapUserPasswordField);
 
-        if (!empty($user['password'])) {
+        if (!empty($user['password']) && !Config::getShouldSynchronizeUsersAfterLogin()) {
             // do not generate new passwords for users that are already synchronized
             return $user['password'];
         } elseif (!empty($ldapPassword)) {
             return $this->hashLdapPassword($ldapPassword);
         } else {
-            $this->logger->warning("UserMapper::{func}: Could not find LDAP password for user '{user}', generating random one.",
+            $this->logger->debug("UserMapper::{func}: Could not find LDAP password for user '{user}', generating random one.",
                 array(
                     'func' => __FUNCTION__,
                     'user' => @$ldapUser[$this->ldapUserIdField]

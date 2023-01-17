@@ -1,13 +1,13 @@
 {
     "name": "LoginLdap",
-    "version": "4.4.0",
+    "version": "4.6.0",
     "description": "LDAP authentication and synchronization for Matomo.",
     "theme": false,
     "keywords": ["ldap", "login", "authentication", "active", "directory", "kerberos", "sso"],
     "license": "GPL v3+",
     "homepage": "https://github.com/matomo-org/plugin-LoginLdap",
     "require": {
-        "matomo": ">=4.0.0-b1,<5.0.0-b1"
+        "matomo": ">=4.10.0-b1,<5.0.0-b1"
     },
     "authors": [
         {

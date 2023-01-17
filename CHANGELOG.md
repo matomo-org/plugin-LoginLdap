@@ -1,5 +1,32 @@
 # LoginLdap Changelog
 
+#### LoginLdap 4.6.0
+* Added option to disable/enable password confirmation.
+
+#### LoginLdap 4.5.6
+* Updated log level to debug from warning during random password generation for a user.
+
+#### LoginLdap 4.5.5
+* Allow single quote character in admin password, #308
+
+#### LoginLdap 4.5.4
+* Started replacing invalid characters from server name key before fetching from config
+
+#### LoginLdap 4.5.3
+* Added default value of servers as array instead of null
+
+#### LoginLdap 4.5.2
+* Started updating user password on sync for existing user if synchronize_users_after_login=1
+* Fix to add new user  during sync without password confirmation
+
+#### LoginLdap 4.5.1
+
+* Translation updates.
+
+#### LoginLdap 4.5.0
+
+* Migrate from AngularJS to Vue.
+
 #### LoginLdap 4.4.0
 
 * Fixed domain strip from login when equal to Domain\UserLogin.

@@ -1,1 +1,11 @@
-{}
+{
+    "LoginLdap": {
+        "AliasField": "Medan Alias Pengguna",
+        "LoadUser": "Muatkan Pengguna daripada LDAP",
+        "LoadUserCommandDesc": "Untuk menyegerakkan lebih ramai pengguna, gunakan arahan %s.",
+        "LoadUserDescription": "Anda boleh menggunakan borang ini untuk menyegerakkan pengguna tunggal dalam LDAP daripada UI.",
+        "MenuLdap": "Pengguna LDAP",
+        "PluginDescription": "Pemalam log masuk dengan pengesahan LDAP. Menyediakan alternatif kepada pemalam Log Masuk Matomo standard.",
+        "Settings": "Tetapan LDAP"
+    }
+}

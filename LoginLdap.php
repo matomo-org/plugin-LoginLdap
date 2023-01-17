@@ -16,6 +16,7 @@ use Piwik\Piwik;
 use Piwik\Plugin\Manager;
 use Piwik\Plugins\LoginLdap\Auth\Base as AuthBase;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
+use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 use Piwik\View;
 
 /**
@@ -40,6 +41,7 @@ class LoginLdap extends \Piwik\Plugin
             'Controller.LoginLdap.resetPassword'     => 'disablePasswordResetForLdapUsers',
             'Controller.Login.confirmResetPassword'  => 'disableConfirmResetPasswordForLdapUsers',
             'UsersManager.checkPassword'             => 'checkPassword',
+            'Login.userRequiresPasswordConfirmation' => 'skipPasswordConfirmation',
         );
         return $hooks;
     }
@@ -47,16 +49,14 @@ class LoginLdap extends \Piwik\Plugin
     public function getJsFiles(&$jsFiles)
     {
         $jsFiles[] = "plugins/Login/javascripts/login.js";
-        $jsFiles[] = "plugins/LoginLdap/angularjs/admin/admin.controller.js";
-        $jsFiles[] = "plugins/LoginLdap/angularjs/login-ldap-testable-field/login-ldap-testable-field.directive.js";
     }
 
     public function getStylesheetFiles(&$stylesheetFiles)
     {
         $stylesheetFiles[] = "plugins/Login/stylesheets/login.less";
         $stylesheetFiles[] = "plugins/Login/stylesheets/variables.less";
-        $stylesheetFiles[] = "plugins/LoginLdap/angularjs/admin/admin.controller.less";
-        $stylesheetFiles[] = "plugins/LoginLdap/angularjs/login-ldap-testable-field/login-ldap-testable-field.directive.less";
+        $stylesheetFiles[] = "plugins/LoginLdap/vue/src/Admin/Admin.less";
+        $stylesheetFiles[] = "plugins/LoginLdap/vue/src/TestableField/TestableField.less";
     }
 
     public function getClientSideTranslationKeys(&$keys)
@@ -67,6 +67,78 @@ class LoginLdap extends \Piwik\Plugin
         $keys[] = "LoginLdap_FilterCount";
         $keys[] = "LoginLdap_Test";
         $keys[] = "General_NUsers";
+        $keys[] = 'LoginLdap_Settings';
+        $keys[] = 'General_Note';
+        $keys[] = 'LoginLdap_UpdateFromPre300Warning';
+        $keys[] = 'LoginLdap_UseLdapForAuthentication';
+        $keys[] = 'LoginLdap_Kerberos';
+        $keys[] = 'LoginLdap_KerberosDescription';
+        $keys[] = 'LoginLdap_StripDomainFromWebAuth';
+        $keys[] = 'LoginLdap_StripDomainFromWebAuthDescription';
+        $keys[] = 'LoginLdap_NetworkTimeout';
+        $keys[] = 'LoginLdap_MemberOfField';
+        $keys[] = 'LoginLdap_MemberOfFieldDescription';
+        $keys[] = 'LoginLdap_MemberOf';
+        $keys[] = 'LoginLdap_MemberOfCount';
+        $keys[] = 'LoginLdap_Filter';
+        $keys[] = 'LoginLdap_FilterCount';
+        $keys[] = 'LoginLdap_FilterDescription';
+        $keys[] = 'LoginLdap_UserSyncSettings';
+        $keys[] = 'LoginLdap_UserIdField';
+        $keys[] = 'LoginLdap_UserIdFieldDescription';
+        $keys[] = 'LoginLdap_PasswordField';
+        $keys[] = 'LoginLdap_MailField';
+        $keys[] = 'LoginLdap_MailFieldDescription';
+        $keys[] = 'LoginLdap_UsernameSuffix';
+        $keys[] = 'LoginLdap_UsernameSuffixDescription';
+        $keys[] = 'LoginLdap_NewUserDefaultSitesViewAccess';
+        $keys[] = 'LoginLdap_NewUserDefaultSitesViewAccessDescription';
+        $keys[] = 'LoginLdap_AccessSyncSettings';
+        $keys[] = 'LoginLdap_EnableLdapAccessSynchronization';
+        $keys[] = 'LoginLdap_EnableLdapAccessSynchronizationDescription';
+        $keys[] = 'LoginLdap_ExpectedLdapAttributes';
+        $keys[] = 'LoginLdap_ExpectedLdapAttributesPrelude';
+        $keys[] = 'LoginLdap_LdapViewAccessField';
+        $keys[] = 'LoginLdap_LdapViewAccessFieldDescription';
+        $keys[] = 'LoginLdap_LdapAdminAccessField';
+        $keys[] = 'LoginLdap_LdapAdminAccessFieldDescription';
+        $keys[] = 'LoginLdap_LdapSuperUserAccessField';
+        $keys[] = 'LoginLdap_LdapSuperUserAccessFieldDescription';
+        $keys[] = 'LoginLdap_LdapUserAccessAttributeServerSpecDelimiter';
+        $keys[] = 'LoginLdap_LdapUserAccessAttributeServerSpecDelimiterDescription';
+        $keys[] = 'LoginLdap_LdapUserAccessAttributeServerSeparator';
+        $keys[] = 'LoginLdap_LdapUserAccessAttributeServerSeparatorDescription';
+        $keys[] = 'LoginLdap_ThisPiwikInstanceName';
+        $keys[] = 'LoginLdap_ThisPiwikInstanceNameDescription';
+        $keys[] = 'LoginLdap_LoadUser';
+        $keys[] = 'LoginLdap_LoadUserDescription';
+        $keys[] = 'LoginLdap_Go';
+        $keys[] = 'LoginLdap_LDAPServers';
+        $keys[] = 'LoginLdap_ServerName';
+        $keys[] = 'LoginLdap_ServerUrl';
+        $keys[] = 'LoginLdap_LdapPort';
+        $keys[] = 'LoginLdap_LdapUrlPortWarning';
+        $keys[] = 'LoginLdap_StartTLS';
+        $keys[] = 'LoginLdap_StartTLSFieldHelp';
+        $keys[] = 'LoginLdap_BaseDn';
+        $keys[] = 'LoginLdap_AdminUser';
+        $keys[] = 'LoginLdap_AdminUserDescription';
+        $keys[] = 'LoginLdap_AdminPass';
+        $keys[] = 'LoginLdap_PasswordFieldHelp';
+        $keys[] = 'LoginLdap_UseLdapForAuthenticationDescription';
+        $keys[] = 'LoginLdap_MobileAppIntegrationNote';
+        $keys[] = 'LoginLdap_NetworkTimeoutDescription';
+        $keys[] = 'LoginLdap_NetworkTimeoutDescription2';
+        $keys[] = 'LoginLdap_MemberOfDescription';
+        $keys[] = 'LoginLdap_MemberOfDescription2';
+        $keys[] = 'LoginLdap_PasswordFieldDescription';
+        $keys[] = 'LoginLdap_PasswordFieldDescription2';
+        $keys[] = 'LoginLdap_LoadUserCommandDesc';
+        $keys[] = 'LoginLdap_ReadMoreAboutAccessSynchronization';
+        $keys[] = 'LoginLdap_ThisMatomoInstanceNameDescription';
+        $keys[] = 'LoginLdap_ThisMatomoInstanceName';
+        $keys[] = 'LoginLdap_OptionsPWCONFIRMATION';
+        $keys[] = 'LoginLdap_OptionsPWCONFIRMATIONDescription';
     }
 
     /**
@@ -199,5 +271,18 @@ class LoginLdap extends \Piwik\Plugin
     {
         $auth = StaticContainer::get('Piwik\Auth');
         $this->disablePasswordChangeForLdapUsers($auth);
+    }
+
+    /**
+     * @param $requiresPasswordConfirmation
+     * @param $login
+     *
+     * Skip password confirmation if its being added by LDAP sync
+     */
+    public function skipPasswordConfirmation(&$requiresPasswordConfirmation, $login)
+    {
+        if (UserSynchronizer::$skipPasswordConfirmation) {
+            $requiresPasswordConfirmation = false;
+        }
     }
 }
