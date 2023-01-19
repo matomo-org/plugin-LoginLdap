@@ -1,7 +1,7 @@
 # Action for running tests
 # This file has been automatically created.
 # To recreate it you can run this command
-# ./console generate:test-action --plugin="LoginLdap" --php-versions="7.2,8.1"
+# ./console generate:test-action --plugin="LoginLdap" --php-versions="7.2,8.1" --setup-script=".github/scripts/setup_ldap.sh"
 
 name: Plugin LoginLdap Tests
 
@@ -49,6 +49,7 @@ jobs:
           php-version: ${{ matrix.php }}
           test-type: 'PluginTests'
           matomo-test-branch: ${{ matrix.target }}
+          setup-script: '.github/scripts/setup_ldap.sh'
           artifacts-pass: ${{ secrets.ARTIFACTS_PASS }}
           upload-artifacts: ${{ matrix.php == '7.2' && matrix.target == 'maximum_supported_matomo' }}
   UI:
@@ -63,6 +64,7 @@ jobs:
         with:
           plugin-name: 'LoginLdap'
           matomo-test-branch: 'maximum_supported_matomo'
+          setup-script: '.github/scripts/setup_ldap.sh'
           test-type: 'UI'
           php-version: '7.2'
           node-version: '16'
