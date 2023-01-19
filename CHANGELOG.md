@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 4.7.0
+* Started using SHA-256 instead of MD5 encryption in Base.php
+
 #### LoginLdap 4.6.0
 * Added option to disable/enable password confirmation.
 
