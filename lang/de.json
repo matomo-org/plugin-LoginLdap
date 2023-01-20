@@ -62,6 +62,8 @@
         "NewUserDefaultSitesViewAccessDescription": "Wenn spezifiziert, wird zum ersten Mal synchronisierten Benutzern Lesezugriff für die Seiten gewährt. Sollte eine Liste mit IDs sein oder 'all' für alle.",
         "NoUserName": "Sie haben keinen Benutzernamen angegeben!",
         "OneUser": "1 Benutzer",
+        "OptionsPWCONFIRMATION": "Passwortabfrage aktivieren",
+        "OptionsPWCONFIRMATIONDescription": "Wenn diese Option aktiviert ist, wird die Abfrage eines Passworts zur Validierung von Admin-Aktionen angezeigt und Sie müssen ein gültiges Passwort eingeben, um fortzufahren.",
         "PasswordField": "Feld Benutzerpasswort",
         "PasswordFieldDescription": "Name der LDAP Eigenschaft, welche das Benutzerpasswort enthält, z. B. 'userPassword' or 'unicodePwd'.",
         "PasswordFieldDescription2": "Wenn 'Immer LDAP für die Authentifizierung einsetzen' angewählt und 'Für neue Benutzer zufälligen token_auth generieren' deaktiviert ist, muss der Wert dieses Feldes in LDAP ein gehashtes oder verschlüsseltes Benutzerpasswort sein.",
