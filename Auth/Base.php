@@ -178,7 +178,7 @@ abstract class Base implements Auth
         }
 
         if (!empty($this->password)) {
-            return md5($this->password);
+            return hash('sha256', $this->password);
         }
 
         return null;

@@ -62,6 +62,8 @@
         "NewUserDefaultSitesViewAccessDescription": "Belirtildiğinde, ilk kez eşitlenen LDAP kullanıcılarına bu siteleri görüntüleme izni verilir. Kullanıcı kodlarının listesi ya da 'all' olarak ayarlanmalıdır.",
         "NoUserName": "Herhangi bir kullanıcı adı belirtilmemiş!",
         "OneUser": "1 kullanıcı",
+        "OptionsPWCONFIRMATION": "Parola doğrulaması kullanılsın",
+        "OptionsPWCONFIRMATIONDescription": "Bu seçenek etkinleştirildiğinde, yönetici işlemlerini doğrulamak için parola istenir ve işlemi yapabilmek için geçerli bir parolanın yazılması gerekir.",
         "PasswordField": "Kullanıcı parolası alanı",
         "PasswordFieldDescription": "Bir kullanıcın parolasının bulunduğu LDAP özniteliği. Örnek: 'userPassword' ya da 'unicodePwd'.",
         "PasswordFieldDescription2": "'Kimlik doğrulaması için her zaman LDAP kullanılsın' seçeneği etkinleştirilmiş ve 'Yeni kullanıcılar için rastgele kimlik doğrulama kodu (token_auth) üretilsin' seçeneği devre dışı bırakılmış ise, LDAP üzerinde bu alanın değeri kullanıcının karılmış ya da şifrelenmiş parolası olmalıdır.",
