@@ -1,1 +1,0 @@
-  - sudo grep slapd /var/log/syslog
