@@ -61,7 +61,7 @@ objectClass: olcHdbConfig
 olcDatabase: {2}hdb
 olcRootDN: cn=$ADMIN_USER,$BASE_DN
 olcRootPW: $ADMIN_PASS_HASH
-olcDbDirectory: /tmp/ldap
+olcDbDirectory: /var/lib/ldap
 olcSuffix: $BASE_DN
 olcAccess: {0}to attrs=userPassword,shadowLastChange by self write by dn="cn=$ADMIN_USER,$BASE_DN" write by * auth
 olcAccess: {1}to dn.base="" by dn="cn=$ADMIN_USER,$BASE_DN" write by * read
@@ -308,5 +308,5 @@ fi
 echo ldapsearch -x -D "cn=Tony Stark,$BASE_DN" -w "piedpiper" -b "$BASE_DN" "(uid=ironman)" memberOf
 ldapsearch -x -D "cn=Tony Stark,$BASE_DN" -w "piedpiper" -b "$BASE_DN" "(uid=ironman)" memberOf
 
-echo ldapsearch -x -D "cn=$ADMIN_USER,$BASE_DN" -w "$ADMIN_PASS" -b "$BASE_DN" 
-ldapsearch -x -D "cn=$ADMIN_USER,$BASE_DN" -w "$ADMIN_PASS" -b "$BASE_DN" 
+echo ldapsearch -x -D "cn=$ADMIN_USER,$BASE_DN" -w "$ADMIN_PASS" -b "$BASE_DN"
+ldapsearch -x -D "cn=$ADMIN_USER,$BASE_DN" -w "$ADMIN_PASS" -b "$BASE_DN"
