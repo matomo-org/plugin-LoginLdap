@@ -10,12 +10,12 @@ namespace Piwik\Plugins\LoginLdap;
 
 use Piwik\Updater;
 use Piwik\Updates;
-use Piwik\Plugins\LoginLdap\Model\LdapUsers;
+use Piwik\Plugins\UsersManager\Model as UsersModel;
 use Piwik\Plugins\LoginLdap\API as LoginLdapAPI;
 
 /**
  */
-class Updates_4_7_0 extends Updates
+class Updates_4_7_1 extends Updates
 {
     public function doUpdate(Updater $updater)
     {
@@ -25,13 +25,13 @@ class Updates_4_7_0 extends Updates
         \Piwik\Config::getInstance()->LoginLdap['synchronize_users_after_login'] = 1;
         \Piwik\Config::getInstance()->forceSave();
 
-        $ldapUsers = LdapUsers::makeConfigured();
-        $logins = $ldapUsers->getAllUserLogins();
+        $userModel = new UsersModel();
+        $logins = $userModel->getUsers([]);
         $loginLdapAPI = LoginLdapAPI::getInstance();
 
         foreach ($logins as $login) {
             try {
-                $loginLdapAPI->synchronizeUser($login);
+                $loginLdapAPI->synchronizeUser($login['login']);
             } catch (\Exception $ex) {
 
             }
