@@ -3,6 +3,9 @@
 #### LoginLdap 5.0.0
 * Compatibility with Matomo 5
 
+#### LoginLdap 4.7.1
+* Updated migration script to include only users synced in Matomo
+
 #### LoginLdap 4.7.0
 * Started using SHA-256 instead of MD5 encryption while hashing auth secret
 
