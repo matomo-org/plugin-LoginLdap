@@ -62,6 +62,8 @@
         "NewUserDefaultSitesViewAccessDescription": "Nëse jepen vlera, kur një përdorues LDAP njëkohësohet për herë të parë, atij i jepen të drejta parje për këto sajte. Duhet plotësuar si një listë ID-sh ose t’i jepet vlera 'all'.",
         "NoUserName": "S’u dha emër përdoruesi!",
         "OneUser": "1 përdorues",
+        "OptionsPWCONFIRMATION": "Aktivizoni ripohim fjalëkalimi",
+        "OptionsPWCONFIRMATIONDescription": "Në u aktivizoftë, do të shfaqet një hap i domosdoshëm fjalëkalimi për vleftësim veprimesh përgjegjësi dhe duhet të jepni një fjalëkalim të vlefshëm, që të vazhdoni më tej.",
         "PasswordField": "Fushë Fjalëkalimi Përdoruesi",
         "PasswordFieldDescription": "Emri i atributit LDAP që përmban fjalëkalimin e një përdoruesi, p.sh., 'userPassword' ose 'unicodePwd'.",
         "PasswordFieldDescription2": "Nëse 'Përdor Përherë LDAP për Mirëfilltësim' është e aktivizuar dhe 'Prodho token_auth Kuturu Për Përdorues të Rinj' është e çaktivizuar, vlera e kësaj fushe në LDAP duhet të jetë fjalëkalimi i përdoruesit, i trajtuar me hash ose i fshehtëzuar.",
