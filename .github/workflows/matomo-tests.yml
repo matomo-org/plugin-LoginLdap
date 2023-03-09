@@ -1,7 +1,7 @@
 # Action for running tests
 # This file has been automatically created.
 # To recreate it you can run this command
-# ./console generate:test-action --plugin="LoginLdap" --php-versions="7.2,8.1" --setup-script=".github/scripts/setup_ldap.sh"
+# ./console generate:test-action --plugin="LoginLdap" --php-versions="7.2,8.2" --setup-script=".github/scripts/setup_ldap.sh" --has-submodules --schedule-cron="25 3 * * 6"
 
 name: Plugin LoginLdap Tests
 
@@ -12,6 +12,8 @@ on:
     branches:
       - '**.x-dev'
   workflow_dispatch:
+  schedule:
+  - cron: "25 3 * * 6"
 
 permissions:
   actions: read
@@ -35,13 +37,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [ '7.2', '8.1' ]
+        php: [ '7.2', '8.2' ]
         target: ['minimum_required_matomo', 'maximum_supported_matomo']
     steps:
       - uses: actions/checkout@v3
         with:
           lfs: true
           persist-credentials: false
+          submodules: true
       - name: Run tests
         uses: matomo-org/github-action-tests@main
         with:
@@ -59,6 +62,7 @@ jobs:
         with:
           lfs: true
           persist-credentials: false
+          submodules: true
       - name: running tests
         uses: matomo-org/github-action-tests@main
         with:
