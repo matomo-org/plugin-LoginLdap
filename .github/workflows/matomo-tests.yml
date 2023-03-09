@@ -1,7 +1,7 @@
 # Action for running tests
 # This file has been automatically created.
 # To recreate it you can run this command
-# ./console generate:test-action --plugin="LoginLdap" --php-versions="7.2,8.2" --schedule-cron="25 3 * * 6"
+# ./console generate:test-action --plugin="LoginLdap" --php-versions="7.2,8.2" --setup-script=".github/scripts/setup_ldap.sh" --has-submodules --schedule-cron="25 3 * * 6"
 
 name: Plugin LoginLdap Tests
 
@@ -44,6 +44,7 @@ jobs:
         with:
           lfs: true
           persist-credentials: false
+          submodules: true
       - name: Run tests
         uses: matomo-org/github-action-tests@main
         with:
@@ -51,6 +52,7 @@ jobs:
           php-version: ${{ matrix.php }}
           test-type: 'PluginTests'
           matomo-test-branch: ${{ matrix.target }}
+          setup-script: '.github/scripts/setup_ldap.sh'
           artifacts-pass: ${{ secrets.ARTIFACTS_PASS }}
           upload-artifacts: ${{ matrix.php == '7.2' && matrix.target == 'maximum_supported_matomo' }}
   UI:
@@ -60,11 +62,13 @@ jobs:
         with:
           lfs: true
           persist-credentials: false
+          submodules: true
       - name: running tests
         uses: matomo-org/github-action-tests@main
         with:
           plugin-name: 'LoginLdap'
           matomo-test-branch: 'maximum_supported_matomo'
+          setup-script: '.github/scripts/setup_ldap.sh'
           test-type: 'UI'
           php-version: '7.2'
           node-version: '16'
