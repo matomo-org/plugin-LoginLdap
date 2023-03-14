@@ -4,7 +4,7 @@
 
 ## Description
 
-Allows users in LDAP to log in to MAtomo Analytics. Supports web server authentication (eg, for Kerberos SSO).
+Allows users in LDAP to log in to Matomo Analytics. Supports web server authentication (eg, for Kerberos SSO).
 
 LoginLdap authenticates with an LDAP server and uses LDAP information to personalize Matomo.
 
