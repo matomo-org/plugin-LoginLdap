@@ -57,6 +57,12 @@ class SynchronizeUsers extends ConsoleCommand
             . "update user info if it has changed in LDAP.");
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
+     */
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $logins = $input->getOption('login');
@@ -99,9 +105,11 @@ class SynchronizeUsers extends ConsoleCommand
             foreach ($failed as $missingLogin) {
                 $output->writeln($missingLogin['login'] . "\t\t<comment>{$missingLogin['reason']}</comment>");
             }
+
+            return self::FAILURE;
         }
 
-        return count($failed);
+        return self::SUCCESS;
     }
 
     private function userExistsInPiwik($login)
