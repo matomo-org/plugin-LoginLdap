@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 4.7.2
+* Fixed _isLDAPUser option not being deleted from option table on user deletion.
+
 #### LoginLdap 4.7.1
 * Updated migration script to include only users synced in Matomo
 
