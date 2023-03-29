@@ -20,7 +20,7 @@ use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 
 /**
  */
-class Updates_4_7_2 extends Updates
+class Updates_4_7_3 extends Updates
 {
     /**
      * @var MigrationFactory
