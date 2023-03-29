@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 4.7.3
+* Fixed migration script error for installs without prefix
+
 #### LoginLdap 4.7.2
 * Fixed _isLDAPUser option not being deleted from option table on user deletion.
 

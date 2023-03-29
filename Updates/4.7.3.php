@@ -20,7 +20,7 @@ use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 
 /**
  */
-class Updates_4_7_2 extends Updates
+class Updates_4_7_3 extends Updates
 {
     /**
      * @var MigrationFactory
@@ -44,7 +44,7 @@ class Updates_4_7_2 extends Updates
 
         $searchPattern = UsersManagerAPI::OPTION_NAME_PREFERENCE_SEPARATOR . UserMapper::USER_PREFERENCE_NAME_IS_LDAP_USER;
         $db = Db::get();
-        $optionValues = $db->fetchAll("Select option_name from $optionTable where option_name like '%$searchPattern'");
+        $optionValues = $db->fetchAll("Select option_name from `$optionTable` where option_name like '%$searchPattern'");
         foreach ($logins as $login) {
             $loginNames[$login['login']] = 1;
         }
