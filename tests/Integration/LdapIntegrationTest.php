@@ -165,7 +165,7 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
     public function provideContainerConfig()
     {
         return array(
-            'Psr\Log\LoggerInterface' => \DI\get('Monolog\Logger'),
+            'Psr\Log\LoggerInterface' => \Piwik\DI::get('Monolog\Logger'),
             'log.level' => Logger::DEBUG,
         );
     }

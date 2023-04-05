@@ -13,8 +13,8 @@
  * @license For license details see https://www.innocraft.com/license
  */
 return [
-    'observers.global' => \DI\add([
-        ['Login.userRequiresPasswordConfirmation', \DI\value(function (&$requiresPasswordConfirmation, $login) {
+    'observers.global' => \Piwik\DI::add([
+        ['Login.userRequiresPasswordConfirmation', \Piwik\DI::value(function (&$requiresPasswordConfirmation, $login) {
             $enablePasswordConfirmation = \Piwik\Plugins\LoginLdap\Config::getConfigOption('enable_password_confirmation');
             if (!$enablePasswordConfirmation) {
                 $requiresPasswordConfirmation = false;
