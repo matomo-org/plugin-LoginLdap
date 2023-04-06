@@ -10,7 +10,7 @@ namespace Piwik\Plugins\LoginLdap\Ldap;
 
 use Exception;
 use Piwik\Container\StaticContainer;
-use Psr\Log\LoggerInterface;
+use Piwik\Log\LoggerInterface;
 
 /**
  * LDAP Client. Supports connecting to LDAP servers, binding to resource DNs and executing
@@ -51,7 +51,7 @@ class Client
     public function __construct($serverHostName = null, $port = ServerInfo::DEFAULT_LDAP_PORT, $timeout = self::DEFAULT_TIMEOUT_SECS,
                                 LoggerInterface $logger = null)
     {
-        $this->logger = $logger ?: StaticContainer::get('Psr\Log\LoggerInterface');
+        $this->logger = $logger ?: StaticContainer::get(LoggerInterface::class);
 
         if (!empty($serverHostName)) {
             $this->connect($serverHostName, $port, $timeout);

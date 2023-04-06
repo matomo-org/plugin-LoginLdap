@@ -12,7 +12,7 @@ use Piwik\Container\StaticContainer;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Site;
 use Piwik\SettingsPiwik;
-use Psr\Log\LoggerInterface;
+use Piwik\Log\LoggerInterface;
 
 /**
  * Parses the values of LDAP attributes that describe an LDAP user's Piwik access.
@@ -109,7 +109,7 @@ class UserAccessAttributeParser
 
     public function __construct(LoggerInterface $logger = null)
     {
-        $this->logger = $logger ?: StaticContainer::get('Psr\Log\LoggerInterface');
+        $this->logger = $logger ?: StaticContainer::get(LoggerInterface::class);
     }
 
     /**
@@ -391,7 +391,7 @@ class UserAccessAttributeParser
             if ($result->getServerIdsSeparator() == ':') {
                 // TODO: remove this warning and move it to the settings page.
                 /** @var LoggerInterface $logger */
-                $logger = StaticContainer::get('Psr\Log\LoggerInterface');
+                $logger = StaticContainer::get(LoggerInterface::class);
                 $logger->info("UserAttributesParser::{func}: Configured with no instance name so matching by URL, but server/site IDs"
                         . " separator set to special ':' character. This character may show up in URLs in LDAP, which will "
                         . "cause problems. We recommend you use a character not often found in URLs, such as '|'.",

@@ -16,7 +16,7 @@ use Piwik\Plugins\LoginLdap\Ldap\ServerInfo;
 use Piwik\Plugins\LoginLdap\Ldap\Exceptions\ConnectionException;
 use InvalidArgumentException;
 use Exception;
-use Psr\Log\LoggerInterface;
+use Piwik\Log\LoggerInterface;
 
 /**
  * DAO class for user related operations that use LDAP as a backend.
@@ -117,7 +117,7 @@ class LdapUsers
      */
     public function __construct(LoggerInterface $logger = null)
     {
-        $this->logger = $logger ?: StaticContainer::get('Psr\Log\LoggerInterface');
+        $this->logger = $logger ?: StaticContainer::get(LoggerInterface::class);
     }
 
     /**
