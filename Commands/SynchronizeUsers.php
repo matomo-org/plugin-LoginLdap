@@ -12,9 +12,7 @@ use Piwik\Plugin\ConsoleCommand;
 use Piwik\Plugins\LoginLdap\API as LoginLdapAPI;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Command to synchronize multiple users in LDAP w/ Piwik's MySQL DB. Can be used
@@ -58,13 +56,12 @@ class SynchronizeUsers extends ConsoleCommand
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
      * @return int
      */
-
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function doExecute(): int
     {
+        $input = $this->getInput();
+        $output = $this->getOutput();
         $logins = $input->getOption('login');
         $skipExisting = $input->getOption('skip-existing');
 
@@ -73,7 +70,7 @@ class SynchronizeUsers extends ConsoleCommand
         }
 
         $count = 0;
-        $failed = array();
+        $failed = [];
 
         foreach ($logins as $login) {
             if ($skipExisting
@@ -98,7 +95,7 @@ class SynchronizeUsers extends ConsoleCommand
             }
         }
 
-        $this->writeSuccessMessage($output, array("Synchronized $count users!"));
+        $this->writeSuccessMessage(array("Synchronized $count users!"));
 
         if (!empty($failed)) {
             $output->writeln("<info>Could not synchronize the following users in LDAP:</info>");
