@@ -12,7 +12,6 @@ use Piwik\Plugin\ConsoleCommand;
 use Piwik\Plugins\LoginLdap\API as LoginLdapAPI;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
-use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Command to synchronize multiple users in LDAP w/ Piwik's MySQL DB. Can be used
@@ -48,9 +47,9 @@ class SynchronizeUsers extends ConsoleCommand
     {
         $this->setName('loginldap:synchronize-users');
         $this->setDescription('Synchronizes one, multiple or all LDAP users that the current config has access to.');
-        $this->addOption('login', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED,
-            'List of users to synchronize. If not specified, all users in LDAP are synchronized.');
-        $this->addOption('skip-existing', null, InputOption::VALUE_NONE,
+        $this->addRequiredValueOption('login', null,
+            'List of users to synchronize. If not specified, all users in LDAP are synchronized.', null, true);
+        $this->addNoValueOption('skip-existing', null,
             "Skip users that have been synchronized at least once. Using this option will be much faster, but will not "
             . "update user info if it has changed in LDAP.");
     }
