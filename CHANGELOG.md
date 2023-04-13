@@ -3,6 +3,12 @@
 #### LoginLdap 5.0.0
 * Compatibility with Matomo 5
 
+#### LoginLdap 4.7.3
+* Fixed migration script error for installs without prefix
+
+#### LoginLdap 4.7.2
+* Fixed _isLDAPUser option not being deleted from option table on user deletion.
+
 #### LoginLdap 4.7.1
 * Updated migration script to include only users synced in Matomo
 

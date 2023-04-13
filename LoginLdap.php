@@ -12,12 +12,14 @@ use Piwik\Auth;
 use Piwik\Common;
 use Piwik\Container\StaticContainer;
 use Piwik\FrontController;
+use Piwik\Option;
 use Piwik\Piwik;
 use Piwik\Plugin\Manager;
 use Piwik\Plugins\LoginLdap\Auth\Base as AuthBase;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 use Piwik\View;
+use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 
 /**
  *
@@ -41,6 +43,7 @@ class LoginLdap extends \Piwik\Plugin
             'Controller.LoginLdap.resetPassword'     => 'disablePasswordResetForLdapUsers',
             'Controller.Login.confirmResetPassword'  => 'disableConfirmResetPasswordForLdapUsers',
             'UsersManager.checkPassword'             => 'checkPassword',
+            'UsersManager.deleteUser'                => 'onUserDeleted',
             'Login.userRequiresPasswordConfirmation' => 'skipPasswordConfirmation',
         );
         return $hooks;
@@ -282,6 +285,20 @@ class LoginLdap extends \Piwik\Plugin
     {
         if (UserSynchronizer::$skipPasswordConfirmation) {
             $requiresPasswordConfirmation = false;
+        }
+    }
+
+    /**
+     * @param $userLogin
+     *
+     * On User deleted hook
+     */
+    public function onUserDeleted($userLogin)
+    {
+        //if we do not delete this option value, it creates a problem in syncing the same user as checkPassword is executed and $this->>disablePasswordChangeForLdapUsers throws an exception, since it determines it as an LDAP user
+        if ($this->isUserLdapUser($userLogin)) {
+            $key = $userLogin . UsersManagerAPI::OPTION_NAME_PREFERENCE_SEPARATOR . UserMapper::USER_PREFERENCE_NAME_IS_LDAP_USER;
+            Option::delete($key);
         }
     }
 }
