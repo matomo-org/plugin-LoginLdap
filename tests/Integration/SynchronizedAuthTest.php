@@ -14,7 +14,7 @@ use Piwik\Container\StaticContainer;
 use Piwik\Plugins\LoginLdap\Auth\SynchronizedAuth;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
-use Psr\Log\LoggerInterface;
+use Piwik\Log\LoggerInterface;
 
 /**
  * @group LoginLdap

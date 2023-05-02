@@ -8,13 +8,14 @@
  */
 namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
-use Monolog\Logger;
+use Piwik\Log\Logger;
 use Piwik\Access;
 use Piwik\Auth\Password;
 use Piwik\Common;
 use Piwik\Container\StaticContainer;
 use Piwik\Db;
 use Piwik\Config;
+use Piwik\Log\LoggerInterface;
 use Piwik\Plugins\LoginLdap\Ldap\LdapFunctions;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\Plugins\UsersManager\UserUpdater;
@@ -165,7 +166,7 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
     public function provideContainerConfig()
     {
         return array(
-            'Psr\Log\LoggerInterface' => \DI\get('Monolog\Logger'),
+            LoggerInterface::class => \Piwik\DI::get(Logger::class),
             'log.level' => Logger::DEBUG,
         );
     }

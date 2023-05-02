@@ -11,7 +11,7 @@ use Piwik\Access;
 use Piwik\Container\StaticContainer;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\SitesManager\API as SitesManagerAPI;
-use Psr\Log\LoggerInterface;
+use Piwik\Log\LoggerInterface;
 
 /**
  * Uses custom LDAP attributes to determine an LDAP user's Piwik permissions
@@ -85,7 +85,7 @@ class UserAccessMapper
      */
     public function __construct(LoggerInterface $logger = null)
     {
-        $this->logger = $logger ?: StaticContainer::get('Psr\Log\LoggerInterface');
+        $this->logger = $logger ?: StaticContainer::get(LoggerInterface::class);
     }
 
     /**

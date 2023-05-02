@@ -17,7 +17,7 @@ use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Plugins\UsersManager\Model as UserModel;
-use Psr\Log\LoggerInterface;
+use Piwik\Log\LoggerInterface;
 
 /**
  * Base class for LoginLdap authentication implementations.
@@ -98,7 +98,7 @@ abstract class Base implements Auth
 
     public function __construct(LoggerInterface $logger = null)
     {
-        $this->logger = $logger ?: StaticContainer::get('Psr\Log\LoggerInterface');
+        $this->logger = $logger ?: StaticContainer::get(LoggerInterface::class);
     }
 
     /**

@@ -16,7 +16,7 @@ use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Plugins\UsersManager\Model as UserModel;
 use Piwik\Plugins\UsersManager\UserUpdater;
 use Piwik\Site;
-use Psr\Log\LoggerInterface;
+use Piwik\Log\LoggerInterface;
 
 /**
  * Synchronizes LDAP user information with the Piwik database.
@@ -106,7 +106,7 @@ class UserSynchronizer
 
     public function __construct(LoggerInterface $logger = null)
     {
-        $this->logger = $logger ?: StaticContainer::get('Psr\Log\LoggerInterface');
+        $this->logger = $logger ?: StaticContainer::get(LoggerInterface::class);
     }
 
     /**
@@ -339,7 +339,7 @@ class UserSynchronizer
         $result->setUserUpdater(new UserUpdater());
 
         /** @var LoggerInterface $logger */
-        $logger = StaticContainer::get('Psr\Log\LoggerInterface');
+        $logger = StaticContainer::get(LoggerInterface::class);
 
         if (Config::isAccessSynchronizationEnabled()) {
             $result->setUserAccessMapper(UserAccessMapper::makeConfigured());
