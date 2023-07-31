@@ -62,6 +62,8 @@
         "NewUserDefaultSitesViewAccessDescription": "Jika sudah diatur, saat pengguna LDAP disinkronkan untuk pertama kalinya, mereka diberi akses lihat ke situs ini. Harus diatur ke daftar ID atau 'semua'.",
         "NoUserName": "Tidak ada nama pengguna yang diberikan!",
         "OneUser": "1 pengguna",
+        "OptionsPWCONFIRMATION": "Aktifkan konfirmasi kata sandi",
+        "OptionsPWCONFIRMATIONDescription": "Jika diaktifkan, persyaratan tantangan kata sandi untuk memvalidasi tindakan admin akan ditampilkan dan Anda harus memasukkan kata sandi yang valid untuk melanjutkannya.",
         "PasswordField": "Kolom Kata Sandi Pengguna",
         "PasswordFieldDescription": "Nama atribut LDAP yang berisi kata sandi pengguna, mis. 'userPassword' atau 'unicodePwd'.",
         "PasswordFieldDescription2": "Jika 'Selalu Gunakan LDAP untuk Autentikasi' diaktifkan dan 'Hasilkan token_auth Acak untuk Pengguna Baru' dinonaktifkan, nilai kolom ini di LDAP harus berupa kata sandi terenkripsi (hash).",

@@ -62,6 +62,8 @@
         "NewUserDefaultSitesViewAccessDescription": "Se especificado, quando um usuário LDAP é sincronizado pela primeira vez é dado a ele(a) acesso de leitura a esses sites. Deve ser definido para uma lista de IDs para 'todos'.",
         "NoUserName": "Não há esse nome de usuário!",
         "OneUser": "1 usuário",
+        "OptionsPWCONFIRMATION": "Ativar confirmação de senha",
+        "OptionsPWCONFIRMATIONDescription": "Se ativado, o requisito de um desafio de senha para validar as ações do administrador será mostrado e você precisará inserir uma senha válida para continuar.",
         "PasswordField": "Campo de Senha do Usuário",
         "PasswordFieldDescription": "Nome do atributo LDAP que contém a senha de um usuário, por exemplo, 'userPassword' ou 'unicodePwd'.",
         "PasswordFieldDescription2": "Se 'Sempre Usar LDAP para Autenticação' estiver ativado e \"Gerar token_auth aleatórios para Novos Usuários\" estiver desativado, o valor deste campo em LDAP deve ser mascarado ou a senha do usuário criptografada.",

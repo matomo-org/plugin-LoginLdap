@@ -62,6 +62,8 @@
         "NewUserDefaultSitesViewAccessDescription": "Se specificato, quando un utente LDAP viene sincronizzato per la prima volta, gli viene concesso l'accesso di visualizzazione a questi siti. Deve essere impostato su un elenco di ID o su \"tutti\".",
         "NoUserName": "Nessun nome utente!",
         "OneUser": "1 utente",
+        "OptionsPWCONFIRMATION": "Abilita la conferma della password",
+        "OptionsPWCONFIRMATIONDescription": "Se abilitata, verrà visualizzata la richiesta di una password di sfida per convalidare le azioni dell'amministratore e sarà necessario inserire una password valida per proseguire.",
         "PasswordField": "Campo Password utente",
         "PasswordFieldDescription": "Nome dell'attributo LDAP che contiene la password di un utente, es. 'userPassword' o 'unicodePwd'.",
         "PasswordFieldDescription2": "Se è abilitato 'Usa sempre LDAP per l'autenticazione', ed è disabilitato 'Genera un token auth casuale per i nuovi visitatori', il valore di questo campo in LDAP deve essere una password utente hashed o criptata.",
