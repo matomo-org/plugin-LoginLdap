@@ -147,7 +147,7 @@ class Client
         $this->logger->debug("Calling ldap_bind({conn}, '{dn}', <password[length={passlen}]>)", array(
             'conn' => $connectionResource,
             'dn' => $resourceDn,
-            'passlen' => strlen($password)
+            'passlen' => $password ? strlen($password) : 0
         ));
 
         $result = ldap_bind($connectionResource, $resourceDn, $password);
