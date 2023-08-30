@@ -58,7 +58,7 @@
         "LdapSuperUserAccessField": "LDAP Super User Access Field",
         "LdapSuperUserAccessFieldDescription": "The custom LDAP attribute that determines whether a user is a superuser or not.",
         "LdapUserAccessAttributeServerSpecDelimiter": "User Access Attribute Server Specification Delimiter",
-        "LdapUserAccessAttributeServerSpecDelimiterDescription": "The string used to delimit server specifications in a user access attribute. If set to ';', the access attribute will be expected to look like '<server-spec>;<server-spec>;...'.",
+        "LdapUserAccessAttributeServerSpecDelimiterDescription": "The string used to delimit server specifications in a user access attribute. If set to ';', the access attribute will be expected to look like '<server-spec>;<server-spec>;…'.",
         "LdapUserAccessAttributeServerSeparator": "User Access Attribute Server & Site List Separator",
         "LdapUserAccessAttributeServerSeparatorDescription": "The string used to separate Matomo server instance IDs with site ID lists. If set to ':', the access attribute will be expected to look like '<server-id>:<site-list>;<server-id>:<site-list>'.",
         "ThisMatomoInstanceName": "Special Name For This Matomo Instance",
