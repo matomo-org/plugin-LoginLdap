@@ -62,6 +62,8 @@
         "NewUserDefaultSitesViewAccessDescription": "Gir visningstilgang til disse nettsidene når en LDAP-bruker synkroniseres for første gang. Bør være en liste over ID-er, eller «all» for alle.",
         "NoUserName": "Brukernavn er ikke angitt.",
         "OneUser": "1 bruker",
+        "OptionsPWCONFIRMATION": "Skru på passordbekreftelse",
+        "OptionsPWCONFIRMATIONDescription": "Krever et passord for å bekrefte administratorhandlinger som vises før du kan fortsette.",
         "PasswordField": "Brukerpassord-felt",
         "PasswordFieldDescription": "Navn på LDAP-attributten som inneholder en brukers passord, f.eks. «userPassword» eller «unicodePwd».",
         "PasswordFieldDescription2": "Hvis «Alltid bruk LDAP for identitetsbekreftelse» er påslått og «Generer tilfeldig token_auth for nye brukere» er av, må verdien av dette feltet i LDAP være en brukers sjekksummerte eller krypterte passord.",
