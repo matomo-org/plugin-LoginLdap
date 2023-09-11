@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 5.0.1
+* Prefer using ellipsis over three dots
+
 #### LoginLdap 5.0.0
 * Compatibility with Matomo 5
 
