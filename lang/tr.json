@@ -36,7 +36,7 @@
         "LdapUserAccessAttributeServerSeparator": "Kullanıcı izni özniteliği sunucu ve site listesi ayracı",
         "LdapUserAccessAttributeServerSeparatorDescription": "Matomo sunucu kopya kimlikleri ile site kimliği listelerini ayırmak için kullanılacak dizge. ':'&nbsp;olarak ayarlanırsa izin özniteliğinin şu şekilde görünmesi beklenir '<server-id>:<site-list>;<server-id>:<site-list>'.</site-list></server-id></site-list></server-id>.",
         "LdapUserAccessAttributeServerSpecDelimiter": "Kullanıcı izni özniteliği sunucu belirteci ayracı",
-        "LdapUserAccessAttributeServerSpecDelimiterDescription": "Sunucu belirteçlerini ayırmak için kullanılacak dizge. ';' olarak ayarlanırsa izin özniteliğinin şu şekilde görünmesi beklenir '<server-spec>;<server-spec>;...'.",
+        "LdapUserAccessAttributeServerSpecDelimiterDescription": "Bir kullanıcı erişimi özniteliğinde sunucu belirteçlerini ayırmak için kullanılacak dizge. ';' olarak ayarlanırsa erişim özniteliğinin şu şekilde görünmesi beklenir '<server-spec>;<server-spec>;…'.</server-spec></server-spec>",
         "LdapUserAdded": "LDAP kullanıcısı eklendi!",
         "LdapUserCantChangePassword": "LDAP kullanıcıları için parola değiştirme özelliği desteklenmiyor. LDAP kullandığınız için kullanıcı ayarlarınız doğrudan LDAP tarafından belirleniyor. Ayrıntılı bilgi almak için LDAP sunucusu yöneticisi ya da Matomo yöneticisi ile görüşün.",
         "LdapViewAccessField": "LDAP görüntüleme izni alanı",
