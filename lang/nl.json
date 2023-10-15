@@ -36,7 +36,7 @@
         "LdapUserAccessAttributeServerSeparator": "Gebruikerstoegang Attribute Server &amp; Site List scheidingsteken",
         "LdapUserAccessAttributeServerSeparatorDescription": "De string die gebruikt wordt om Matomo server-instanctie ID's te scheiden met site ID lijsten. Indien ingesteld op ':', zal het toegangsattribuut er waarschijnlijk uitzien zoals '<server-id>:<site-list>;<server-id>:<site-list>'.</site-list></server-id></site-list></server-id>",
         "LdapUserAccessAttributeServerSpecDelimiter": "Gebruikerstoegang Attribute Server Specificatie scheidingsteken",
-        "LdapUserAccessAttributeServerSpecDelimiterDescription": "De tekenreeks die wordt gebruikt om serverspecificaties af te bakenen in een gebruikerstoegangskenmerk. Indien ingesteld op ';', zal het toegangskenmerk er waarschijnlijk uitzien als '<server-spec>;<server-spec>;...'.</server-spec></server-spec>",
+        "LdapUserAccessAttributeServerSpecDelimiterDescription": "De tekenreeks die gebruikt wordt om serverspecificaties af te bakenen in een gebruikerstoegangskenmerk. Indien ingesteld op ';', zal het toegangskenmerk er waarschijnlijk uitzien als '<server-spec>;<server-spec>;...'.</server-spec></server-spec>",
         "LdapUserAdded": "LDAP-gebruiker succesvol toegevoegd!",
         "LdapUserCantChangePassword": "Het wijzigen van het wachtwoord wordt niet ondersteund voor LDAP-gebruikers. Als u LDAP gebruikt, worden uw gebruikersinstellingen direct in LDAP beheerd. Neem voor meer informatie contact op met uw LDAP-server beheerder of uw Matomo-beheerder.",
         "LdapViewAccessField": "LDAP View Access Veld",
