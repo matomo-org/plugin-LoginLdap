@@ -34,6 +34,7 @@ describe("LoginLdap_Admin", function () {
     });
 
     var ldapAdminUrl = "?module=LoginLdap&action=admin&idSite=1&period=day&date=yesterday";
+    var addNewTokenUrl = "?module=UsersManager&action=addNewToken&idSite=1&period=day&date=yesterday";
 
     it("should load correctly and allow testing the filter and group fields", async function () {
         await page.goto(ldapAdminUrl);
@@ -52,5 +53,21 @@ describe("LoginLdap_Admin", function () {
 
         var elem = await page.jQuery('#content');
         expect(await elem.screenshot()).to.matchImage('admin_page');
+    });
+
+    it("should show the password confirmation screen when add new token screen is called", async function () {
+        await page.goto(addNewTokenUrl);
+        await page.waitForNetworkIdle();
+        var elem = await page.jQuery('.page');
+        expect(await elem.screenshot()).to.matchImage('addNewToken_with_password');
+    });
+
+    it("should show the add new token screen", async function () {
+        testEnvironment.configOverride.LoginLdap = { enable_password_confirmation: 0 };
+        testEnvironment.save();
+        await page.goto(addNewTokenUrl);
+        await page.waitForNetworkIdle();
+        var elem = await page.jQuery('.page');
+        expect(await elem.screenshot()).to.matchImage('addNewToken_without_password');
     });
 });
