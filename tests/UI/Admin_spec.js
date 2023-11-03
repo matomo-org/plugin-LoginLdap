@@ -56,6 +56,8 @@ describe("LoginLdap_Admin", function () {
     });
 
     it("should show the password confirmation screen when add new token screen is called", async function () {
+        testEnvironment.configOverride.LoginLdap = { enable_password_confirmation: 1 };
+        testEnvironment.save();
         await page.goto(addNewTokenUrl);
         await page.waitForNetworkIdle();
         var elem = await page.jQuery('.page');
