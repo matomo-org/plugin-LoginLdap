@@ -60,7 +60,7 @@ describe("LoginLdap_Admin", function () {
         testEnvironment.save();
         await page.goto(addNewTokenUrl);
         await page.waitForNetworkIdle();
-        var elem = await page.jQuery('#loginPage');
+        var elem = await page.jQuery('.page');
         expect(await elem.screenshot()).to.matchImage('addNewToken_with_password');
     });
 
@@ -69,7 +69,7 @@ describe("LoginLdap_Admin", function () {
         testEnvironment.save();
         await page.goto(addNewTokenUrl);
         await page.waitForNetworkIdle();
-        var elem = await page.jQuery('.page');
+        var elem = await page.jQuery('#loginPage');
         expect(await elem.screenshot()).to.matchImage('addNewToken_without_password');
     });
 });
