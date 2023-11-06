@@ -27,7 +27,7 @@ class LdapFunctions
 function ldap_connect($hostname = null, $port = null) {
     /** @noinspection PhpUndefinedMethodInspection */
     if (version_compare(PHP_VERSION, 8.3, '>=')) {
-        return LdapFunctions::ldap_connect($hostname . ':' . $port);
+        return LdapFunctions::ldap_connect('ldaps://' . $hostname . ':' . $port . ',' . 'ldap://' . $hostname . ':' . $port);
     }
 
     return LdapFunctions::ldap_connect($hostname, $port);

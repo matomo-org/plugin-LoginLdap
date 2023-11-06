@@ -78,7 +78,7 @@ class Client
         $this->logger->debug("Calling ldap_connect('{host}', {port})", array('host' => $serverHostName, 'port' => $port));
 
         if (version_compare(PHP_VERSION, 8.3, '>=')) {
-            $this->connectionResource = ldap_connect($serverHostName . ':' . $port);
+            $this->connectionResource = ldap_connect('ldaps://' . $serverHostName . ':' . $port . ',' . 'ldap://' . $serverHostName . ':' . $port);
         } else {
             $this->connectionResource = ldap_connect($serverHostName, $port);
         }
