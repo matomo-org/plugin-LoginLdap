@@ -77,7 +77,11 @@ class Client
 
         $this->logger->debug("Calling ldap_connect('{host}', {port})", array('host' => $serverHostName, 'port' => $port));
 
-        $this->connectionResource = ldap_connect($serverHostName, $port);
+        if (version_compare(PHP_VERSION, 8.3, '>=')) {
+            $this->connectionResource = ldap_connect($serverHostName . ':' . $port);
+        } else {
+            $this->connectionResource = ldap_connect($serverHostName, $port);
+        }
 
         ldap_set_option($this->connectionResource, LDAP_OPT_PROTOCOL_VERSION, 3);
         ldap_set_option($this->connectionResource, LDAP_OPT_REFERRALS, 0);
