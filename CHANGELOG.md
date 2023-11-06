@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 5.0.2
+* Added code to skip password confirmation for create token auth
+
 #### LoginLdap 5.0.1
 * Prefer using ellipsis over three dots
 
