@@ -304,13 +304,24 @@ class LdapClientTest extends TestCase
 
     private function addLdapConnectMethodMock($hostname = null, $port = null)
     {
-        $getConnectionResource = function ($hostname, $port) {
-            return "connection_resource_$hostname" . '_' . $port;
-        };
+        if (version_compare(PHP_VERSION, 8.3, '>=')) {
+            $getConnectionResource = function ($hostname) {
+                $name = str_replace(array('ldap://', ':'), array('','_'),$hostname);
+                return "connection_resource_$name";
+            };
 
-        $method = LdapFunctions::$phpUnitMock->expects($this->any())->method('ldap_connect');
-        if (!empty($hostname) || !empty($port)) {
-            $method = $method->with($this->equalTo($hostname), $this->equalTo($port));
+            $method = LdapFunctions::$phpUnitMock->expects($this->any())->method('ldap_connect');
+            if (!empty($hostname)) {
+                $method = $method->with($this->equalTo('ldap://' . $hostname . ':' . $port));
+            }
+        } else {
+            $getConnectionResource = function ($hostname, $port) {
+                return "connection_resource_$hostname" . '_' . $port;
+            };
+            $method = LdapFunctions::$phpUnitMock->expects($this->any())->method('ldap_connect');
+            if (!empty($hostname) || !empty($port)) {
+                $method = $method->with($this->equalTo($hostname), $this->equalTo($port));
+            }
         }
         $method->will($this->returnCallback($getConnectionResource));
 
