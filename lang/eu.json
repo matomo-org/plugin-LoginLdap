@@ -1,5 +1,24 @@
 {
     "LoginLdap": {
-        "Test": "Probatu"
+        "AdminPass": "LDAP pasahitza",
+        "AliasField": "Erabiltzailearen ezizenaren eremua",
+        "AliasFieldDescription": "Erabiltzaile baten Matomoko ezizena sortzeko erabilitako LDAP atributua, adibidez \"cn\".",
+        "BaseDn": "Oinarrizko DN",
+        "LdapPort": "Zerbitzariaren ataka",
+        "LoadUser": "Kargatu erabiltzailea LDAPetik",
+        "LoadUserCommandDesc": "Erabiltzaile gehiago sinkronizatzeko, erabili %s komandoa.",
+        "LoadUserDescription": "Formulario hau erabili dezakezu LDAPeko erabiltzaile bat sinkronizatzeko erabiltzaile interfazetik.",
+        "MailField": "Posta elektronikoko helbidearen eremua",
+        "MailFieldDescription": "Erabiltzaile baten posta elektronikoko helbidea duen LDAP atributua, adibidez \"mail\".",
+        "MenuLdap": "LDAP erabiltzaileak",
+        "NoUserName": "Erabiltzaile-izenik ez!",
+        "PluginDescription": "LDAP autentifikazioarekin saio hasteko plugina. Matomoren saio hasiera plugin estandarraren alternatiba bat.",
+        "ServerUrl": "Zerbitzariaren URLa",
+        "Settings": "LDAP ezarpenak",
+        "Test": "Probatu",
+        "UserIdField": "Erabiltzailearen ID eremua",
+        "UserIdFieldDescription": "Erabiltzaile baten erabiltzaile-izena duen LDAP atributua, adibidez \"uid\", edo Active Directory-n: \"userPrincipalName\".",
+        "UserNotFound": "\"%s\" erabiltzailea ez da aurkitu!",
+        "UsernameSuffix": "Posta elektronikoko helbidearen atzizkia"
     }
 }
