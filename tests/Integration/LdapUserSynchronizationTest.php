@@ -119,7 +119,7 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
         UsersManagerAPI::getInstance()->inviteUser(self::TEST_LOGIN2, $email, 1);
         Access::getInstance()->setSuperUserAccess(false);
 
-        $this->authenticateViaLdap();
+        $this->authenticateViaLdap(self::TEST_LOGIN2, self::TEST_PASS);
 
         $user = Db::fetchRow("SELECT login, password, email, invite_token, invite_link_token, invite_expired_at, invite_accept_at FROM " . Common::prefixTable('user') . " WHERE login = ?", array(self::TEST_LOGIN2));
         $user['invite_accept_at'] = substr($user['invite_accept_at'], 0, 16); // since seconds value might differ
