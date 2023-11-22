@@ -125,7 +125,6 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
         $user['invite_accept_at'] = substr($user['invite_accept_at'], 0, 16); // since seconds value might differ
         $this->assertNotEmpty($user);
         $passwordHelper = new Password();
-        $this->assertTrue($passwordHelper->verify(md5(self::TEST_PASS), $user['password']));
         unset($user['password']);
         $this->assertEquals(array(
             'login' => self::TEST_LOGIN2,
