@@ -11,6 +11,7 @@ namespace Piwik\Plugins\LoginLdap\tests\Integration;
 use Piwik\Access;
 use Piwik\Auth\Password;
 use Piwik\Config;
+use Piwik\Date;
 use Piwik\Db;
 use Piwik\Common;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
@@ -94,11 +95,13 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
     {
         Access::getInstance()->setSuperUserAccess(true);
         UsersManagerAPI::getInstance()->addUser(self::TEST_LOGIN, self::TEST_PASS, 'billionairephilanthropistplayboy@starkindustries.com');
+        UsersManagerAPI::getInstance()->inviteUser(self::TEST_LOGIN,'billionairephilanthropistplayboy@starkindustries.com');
         Access::getInstance()->setSuperUserAccess(false);
 
         $this->authenticateViaLdap();
 
-        $user = Db::fetchRow("SELECT login, password, email FROM " . Common::prefixTable('user') . " WHERE login = ?", array(self::TEST_LOGIN));
+        $user = Db::fetchRow("SELECT login, password, email, invite_token, invite_link_token, invite_expired_at, invite_accept_at FROM " . Common::prefixTable('user') . " WHERE login = ?", array(self::TEST_LOGIN));
+        $user['invite_accept_at'] = substr($user['invite_accept_at'], 0, 16); // since seconds value might differ
         $this->assertNotEmpty($user);
         $passwordHelper = new Password();
         $this->assertTrue($passwordHelper->verify(md5(self::TEST_PASS), $user['password']));
@@ -106,6 +109,9 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
         $this->assertEquals(array(
             'login' => self::TEST_LOGIN,
             'email' => 'billionairephilanthropistplayboy@starkindustries.com',
+            'invite_token' => null,
+            'invite_expired_at' => null,
+            'invite_accept_at' => substr(Date::now()->getDatetime(),0, 16),
         ), $user);
 
         $this->assertNoAccessInDb();
