@@ -130,6 +130,7 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
             'login' => self::TEST_LOGIN2,
             'email' => $email,
             'invite_token' => null,
+            'invite_link_token' => null,
             'invite_expired_at' => null,
             'invite_accept_at' => substr(Date::now()->getDatetime(),0, 16),
         ), $user);
