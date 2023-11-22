@@ -95,7 +95,7 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
     {
         Access::getInstance()->setSuperUserAccess(true);
         UsersManagerAPI::getInstance()->addUser(self::TEST_LOGIN, self::TEST_PASS, 'billionairephilanthropistplayboy@starkindustries.com');
-        UsersManagerAPI::getInstance()->inviteUser(self::TEST_LOGIN,'billionairephilanthropistplayboy@starkindustries.com');
+        UsersManagerAPI::getInstance()->inviteUser(self::TEST_LOGIN,'billionairephilanthropistplayboy@starkindustries.com', 1);
         Access::getInstance()->setSuperUserAccess(false);
 
         $this->authenticateViaLdap();
