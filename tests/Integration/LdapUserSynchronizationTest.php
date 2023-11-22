@@ -94,21 +94,22 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
     public function test_PiwikUserIsNotCreated_IfPiwikUserAlreadyExists()
     {
         Access::getInstance()->setSuperUserAccess(true);
-        UsersManagerAPI::getInstance()->addUser(self::TEST_LOGIN, self::TEST_PASS, 'billionairephilanthropistplayboy@starkindustries.com');
-        UsersManagerAPI::getInstance()->inviteUser(self::TEST_LOGIN,'billionairephilanthropistplayboy@starkindustries.com', 1);
+        $email = 'billionairephilanthropistplayboy2@starkindustries.com';
+        UsersManagerAPI::getInstance()->addUser(self::TEST_LOGIN2, self::TEST_PASS, $email);
+        UsersManagerAPI::getInstance()->inviteUser(self::TEST_LOGIN2, $email, 1);
         Access::getInstance()->setSuperUserAccess(false);
 
         $this->authenticateViaLdap();
 
-        $user = Db::fetchRow("SELECT login, password, email, invite_token, invite_link_token, invite_expired_at, invite_accept_at FROM " . Common::prefixTable('user') . " WHERE login = ?", array(self::TEST_LOGIN));
+        $user = Db::fetchRow("SELECT login, password, email, invite_token, invite_link_token, invite_expired_at, invite_accept_at FROM " . Common::prefixTable('user') . " WHERE login = ?", array(self::TEST_LOGIN2));
         $user['invite_accept_at'] = substr($user['invite_accept_at'], 0, 16); // since seconds value might differ
         $this->assertNotEmpty($user);
         $passwordHelper = new Password();
         $this->assertTrue($passwordHelper->verify(md5(self::TEST_PASS), $user['password']));
         unset($user['password']);
         $this->assertEquals(array(
-            'login' => self::TEST_LOGIN,
-            'email' => 'billionairephilanthropistplayboy@starkindustries.com',
+            'login' => self::TEST_LOGIN2,
+            'email' => $email,
             'invite_token' => null,
             'invite_expired_at' => null,
             'invite_accept_at' => substr(Date::now()->getDatetime(),0, 16),
