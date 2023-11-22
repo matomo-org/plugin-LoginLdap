@@ -94,6 +94,27 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
     public function test_PiwikUserIsNotCreated_IfPiwikUserAlreadyExists()
     {
         Access::getInstance()->setSuperUserAccess(true);
+        UsersManagerAPI::getInstance()->addUser(self::TEST_LOGIN, self::TEST_PASS, 'billionairephilanthropistplayboy@starkindustries.com');
+        Access::getInstance()->setSuperUserAccess(false);
+
+        $this->authenticateViaLdap();
+
+        $user = Db::fetchRow("SELECT login, password, email FROM " . Common::prefixTable('user') . " WHERE login = ?", array(self::TEST_LOGIN));
+        $this->assertNotEmpty($user);
+        $passwordHelper = new Password();
+        $this->assertTrue($passwordHelper->verify(md5(self::TEST_PASS), $user['password']));
+        unset($user['password']);
+        $this->assertEquals(array(
+            'login' => self::TEST_LOGIN,
+            'email' => 'billionairephilanthropistplayboy@starkindustries.com',
+        ), $user);
+
+        $this->assertNoAccessInDb();
+    }
+
+    public function test_PiwikUserIsNotCreated_IfPiwikUserAlreadyExistsAutoAcceptInviteIfPresent()
+    {
+        Access::getInstance()->setSuperUserAccess(true);
         $email = 'billionairephilanthropistplayboy2@starkindustries.com';
         UsersManagerAPI::getInstance()->addUser(self::TEST_LOGIN2, self::TEST_PASS, $email);
         UsersManagerAPI::getInstance()->inviteUser(self::TEST_LOGIN2, $email, 1);
