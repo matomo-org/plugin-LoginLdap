@@ -135,7 +135,7 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
             'invite_accept_at' => substr(Date::now()->getDatetime(),0, 16),
         ), $user);
 
-        $this->assertNoAccessInDb(self::TEST_LOGIN2,);
+        $this->assertNoAccessInDb(self::TEST_LOGIN2);
     }
 
     public function test_PiwikUserIsUpdated_IfLdapUserAlreadySynchronized_ButLdapUserInfoIsDifferent()
