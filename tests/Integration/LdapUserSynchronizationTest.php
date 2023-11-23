@@ -122,20 +122,28 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
         $this->authenticateViaLdap(self::TEST_LOGIN2, self::TEST_PASS);
 
         $user = Db::fetchRow("SELECT login, password, email, invite_token, invite_link_token, invite_expired_at, invite_accept_at FROM " . Common::prefixTable('user') . " WHERE login = ?", array(self::TEST_LOGIN2));
-        $user['invite_accept_at'] = substr($user['invite_accept_at'], 0, 16); // since seconds value might differ
+        $inviteAcceptAt = $user['invite_accept_at'];
         $this->assertNotEmpty($user);
-        $passwordHelper = new Password();
         unset($user['password']);
+        unset($user['invite_accept_at']);
         $this->assertEquals(array(
             'login' => self::TEST_LOGIN2,
             'email' => $email,
             'invite_token' => null,
             'invite_link_token' => null,
             'invite_expired_at' => null,
-            'invite_accept_at' => substr(Date::now()->getDatetime(),0, 16),
         ), $user);
 
-        $this->assertNoAccessInDb(self::TEST_LOGIN2);
+        $this->assertNotEmpty($inviteAcceptAt);
+
+        $access = $this->getAccessFor(self::TEST_LOGIN2);
+
+        $this->assertEquals([
+            [
+                'site' => 1,
+                'access' => 'view',
+            ]
+        ], $access);
     }
 
     public function test_PiwikUserIsUpdated_IfLdapUserAlreadySynchronized_ButLdapUserInfoIsDifferent()
