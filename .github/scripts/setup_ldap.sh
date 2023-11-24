@@ -215,6 +215,21 @@ view: 1,2
 view: 3
 admin: 3
 
+# USER ENTRY (pwd: piedpiper)
+dn: cn=Tony Stark1,$BASE_DN
+cn: Tony Stark1
+sn: Stark1
+givenName: Tony1
+objectClass: piwikPerson
+objectClass: top
+uid: ironman2
+userPassword: `slappasswd -h {md5} -s piedpiper`
+mobile: 555-555-5556
+mail: billionairephilanthropistplayboy2@starkindustries.com
+view: 1,2
+view: 3
+admin: 3
+
 # USER ENTRY (pwd: redledger)
 dn: cn=Natalia Romanova,$BASE_DN
 cn: Natalia Romanova

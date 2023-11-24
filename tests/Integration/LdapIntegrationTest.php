@@ -36,6 +36,8 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
     const TEST_PASS = 'piedpiper';
     const TEST_PASS_LDAP = '{MD5}Dv6yiT/W4FvaM5gBdqHwlQ==';
 
+    const TEST_LOGIN2 = 'ironman2';
+
     const OTHER_TEST_LOGIN = 'blackwidow';
     const OTHER_TEST_PASS = 'redledger';
 

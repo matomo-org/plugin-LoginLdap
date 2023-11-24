@@ -10,6 +10,7 @@ namespace Piwik\Plugins\LoginLdap\LdapInterop;
 use Piwik\Access;
 use Piwik\Common;
 use Piwik\Container\StaticContainer;
+use Piwik\Date;
 use Piwik\Db;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
@@ -168,6 +169,9 @@ class UserSynchronizer
             }
 
             $userMapper->markUserAsLdapUser($user['login']);
+            if (!empty($existingUser['invite_token'])) {
+                $this->autoAcceptInvite($user['login']);
+            }
 
             return $userModel->getUser($user['login']);
         });
@@ -375,5 +379,11 @@ class UserSynchronizer
     {
         $sql = "UPDATE " . Common::prefixTable('user') . " SET ts_password_modified = date_registered WHERE login = ?";
         Db::query($sql, [$login]);
+    }
+
+    private function autoAcceptInvite($login)
+    {
+        $sql = "UPDATE " . Common::prefixTable('user') . " SET invite_token = null, invite_link_token = null, invite_expired_at = null, invite_accept_at = ?  WHERE login = ?";
+        Db::query($sql, [Date::now()->getDatetime(), $login]);
     }
 }

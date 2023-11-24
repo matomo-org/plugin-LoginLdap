@@ -11,6 +11,7 @@ namespace Piwik\Plugins\LoginLdap\tests\Integration;
 use Piwik\Access;
 use Piwik\Auth\Password;
 use Piwik\Config;
+use Piwik\Date;
 use Piwik\Db;
 use Piwik\Common;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
@@ -109,6 +110,40 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
         ), $user);
 
         $this->assertNoAccessInDb();
+    }
+
+    public function test_PiwikUserIsNotCreated_IfPiwikUserAlreadyExistsAutoAcceptInviteIfPresent()
+    {
+        Access::getInstance()->setSuperUserAccess(true);
+        $email = 'billionairephilanthropistplayboy2@starkindustries.com';
+        UsersManagerAPI::getInstance()->inviteUser(self::TEST_LOGIN2, $email, 1);
+        Access::getInstance()->setSuperUserAccess(false);
+
+        $this->authenticateViaLdap(self::TEST_LOGIN2, self::TEST_PASS);
+
+        $user = Db::fetchRow("SELECT login, password, email, invite_token, invite_link_token, invite_expired_at, invite_accept_at FROM " . Common::prefixTable('user') . " WHERE login = ?", array(self::TEST_LOGIN2));
+        $inviteAcceptAt = $user['invite_accept_at'];
+        $this->assertNotEmpty($user);
+        unset($user['password']);
+        unset($user['invite_accept_at']);
+        $this->assertEquals(array(
+            'login' => self::TEST_LOGIN2,
+            'email' => $email,
+            'invite_token' => null,
+            'invite_link_token' => null,
+            'invite_expired_at' => null,
+        ), $user);
+
+        $this->assertNotEmpty($inviteAcceptAt);
+
+        $access = $this->getAccessFor(self::TEST_LOGIN2);
+
+        $this->assertEquals([
+            [
+                'site' => 1,
+                'access' => 'view',
+            ]
+        ], $access);
     }
 
     public function test_PiwikUserIsUpdated_IfLdapUserAlreadySynchronized_ButLdapUserInfoIsDifferent()
@@ -251,9 +286,9 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
         $this->authenticateViaLdap($login = 'rogue', $pass = 'cherry');
     }
 
-    private function assertNoAccessInDb()
+    private function assertNoAccessInDb($login = self::TEST_LOGIN)
     {
-        $access = $this->getAccessFor(self::TEST_LOGIN);
+        $access = $this->getAccessFor($login);
         $this->assertEquals(array(), $access);
 
         $superusers = $this->getSuperUsers();
