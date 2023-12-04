@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 5.0.3
+* Added code to auto accept invitation if present
+
 #### LoginLdap 5.0.2
 * Added code to skip password confirmation for create token auth
 
