@@ -8,6 +8,7 @@
 namespace Piwik\Plugins\LoginLdap\LdapInterop;
 
 use Piwik\Access;
+use Piwik\ArchiveProcessor\PluginsArchiver;
 use Piwik\Common;
 use Piwik\Container\StaticContainer;
 use Piwik\Date;
@@ -348,8 +349,10 @@ class UserSynchronizer
         if (Config::isAccessSynchronizationEnabled()) {
             $result->setUserAccessMapper(UserAccessMapper::makeConfigured());
 
-            $logger->debug("UserSynchronizer::{func}(): Using UserAccessMapper when synchronizing users.", array('func' => __FUNCTION__));
-        } else {
+            if (PluginsArchiver::isArchivingProcessActive()) {
+                $logger->debug("UserSynchronizer::{func}(): Using UserAccessMapper when synchronizing users.", array('func' => __FUNCTION__));
+            }
+        } else if (PluginsArchiver::isArchivingProcessActive())  {
             $logger->debug("UserSynchronizer::{func}(): LDAP access synchronization not enabled.", array('func' => __FUNCTION__));
         }
 
@@ -359,7 +362,7 @@ class UserSynchronizer
                 return Site::getIdSitesFromIdSitesString($defaultSitesWithViewAccess);
             });
 
-            if (empty($siteIds)) {
+            if (empty($siteIds) && PluginsArchiver::isArchivingProcessActive()) {
                 $logger->warning("UserSynchronizer::{func}(): new_user_default_sites_view_access INI config option has no "
                     . "entries. Newly synchronized users will not have any access.", array('func' => __FUNCTION__));
             }
@@ -367,10 +370,12 @@ class UserSynchronizer
             $result->setNewUserDefaultSitesWithViewAccess($siteIds);
         }
 
-        $logger->debug("UserSynchronizer::{func}: configuring with defaultSitesWithViewAccess = {sites}", array(
-            'func' => __FUNCTION__,
-            'sites' => $defaultSitesWithViewAccess
-        ));
+        if (PluginsArchiver::isArchivingProcessActive()) {
+            $logger->debug("UserSynchronizer::{func}: configuring with defaultSitesWithViewAccess = {sites}", array(
+                'func' => __FUNCTION__,
+                'sites' => $defaultSitesWithViewAccess
+            ));
+        }
 
         return $result;
     }

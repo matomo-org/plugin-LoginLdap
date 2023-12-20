@@ -8,6 +8,7 @@
 namespace Piwik\Plugins\LoginLdap\LdapInterop;
 
 use Piwik\Access;
+use Piwik\ArchiveProcessor\PluginsArchiver;
 use Piwik\Container\StaticContainer;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Site;
@@ -388,7 +389,7 @@ class UserAccessAttributeParser
         if (!empty($thisPiwikInstanceName)) {
             $result->setThisPiwikInstanceName($thisPiwikInstanceName);
         } else {
-            if ($result->getServerIdsSeparator() == ':') {
+            if ($result->getServerIdsSeparator() == ':' && PluginsArchiver::isArchivingProcessActive()) {
                 // TODO: remove this warning and move it to the settings page.
                 /** @var LoggerInterface $logger */
                 $logger = StaticContainer::get(LoggerInterface::class);
