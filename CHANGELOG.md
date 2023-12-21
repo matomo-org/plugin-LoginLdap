@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 5.0.4
+* Fixed archiving error due to logs being printed for non-archive requests
+
 #### LoginLdap 5.0.3
 * Added code to auto accept invitation if present
 
