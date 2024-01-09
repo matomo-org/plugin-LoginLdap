@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 5.0.5
+* Fixes for PHP 8.3 uri determination logic
+
 #### LoginLdap 5.0.4
 * Fixed archiving error due to logs being printed for non-archive requests
 
