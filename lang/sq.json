@@ -36,7 +36,7 @@
         "LdapUserAccessAttributeServerSeparator": "Ndarës Shërbyesi & Listë Sajti në Atribut Hyrjesh Përdoruesi",
         "LdapUserAccessAttributeServerSeparatorDescription": "Vargu i përdorur për të ndarë ID instancash shërbyesi Matomo me lista ID-sh sajti. Nëse caktohet si ':', atributi i hyrjeve do të pritet të duket si '<server-id>:<site-list>;<server-id>:<site-list>'.",
         "LdapUserAccessAttributeServerSpecDelimiter": "Kufizues Specifikimesh Shërbyesi në Atribut Hyrjesh Përdoruesi",
-        "LdapUserAccessAttributeServerSpecDelimiterDescription": "Vargu i përdorur për të kufizuar specifikime shërbyesi brenda një atributi hyrjesh përdoruesi. Nëse caktohet si ';', atributi i hyrjeve do të pritet të duket si '<server-spec>;<server-spec>;…'.",
+        "LdapUserAccessAttributeServerSpecDelimiterDescription": "Vargu i përdorur për të kufizuar specifikime shërbyesi brenda një atributi hyrjesh përdoruesi. Nëse caktohet si “;”, atributi i hyrjeve duhet pritur të duket si “<server-spec>;</server-spec>;…”.",
         "LdapUserAdded": "Përdoruesi LDAP u shtua me sukses!",
         "LdapUserCantChangePassword": "Ndryshimi i fjalëkalimit nuk mbulohet për përdorues LDAP. Kur përdorni LDAP, rregullimet tuaja të përdoruesit administrohen drejtpërsëdrejti nga LDAP-ja. Për më tepër hollësi, ju lutemi, lidhuni me përgjegjësin e shërbyesit tuaj LDAP ose përgjegjësin e instalimit tuaj Matomo.",
         "LdapViewAccessField": "Fusha LDAP për Hyrje Parjesh",
