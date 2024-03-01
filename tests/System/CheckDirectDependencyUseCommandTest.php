@@ -31,6 +31,7 @@ class CheckDirectDependencyUseCommandTest extends SystemTestCase
         );
         $inputObject = new ArrayInput($arguments);
         $command->run($inputObject, new NullOutput());
+        $this->assertEmpty($checkDirectDependencyUse->usesFoundList);
 
         $this->assertEquals([
             'DI\\' => [
