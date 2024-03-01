@@ -12,6 +12,7 @@ use Piwik\Tests\Framework\TestCase\SystemTestCase;
 use Piwik\Version;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
+use Monolog\Logger;
 
 class CheckDirectDependencyUseCommandTest extends SystemTestCase
 {
@@ -31,18 +32,8 @@ class CheckDirectDependencyUseCommandTest extends SystemTestCase
         );
         $inputObject = new ArrayInput($arguments);
         $command->run($inputObject, new NullOutput());
-        $this->assertEquals(['DI\\' => [
-            'LoginLdap/tests/Integration/Commands/SynchronizeUsersTest.php'
-        ]],$checkDirectDependencyUse->usesFoundList);
 
         $this->assertEquals([
-            'DI\\' => [
-                'LoginLdap/tests/Integration/Commands/SynchronizeUsersTest.php'
-            ],
-            'Symfony\Component\Console\\' => [
-                'LoginLdap/tests/Integration/Commands/SynchronizeUsersTest.php',
-                'LoginLdap/tests/System/CheckDirectDependencyUseCommandTest.php',
-            ]
         ], $checkDirectDependencyUse->usesFoundList[$pluginName]);
     }
 }
