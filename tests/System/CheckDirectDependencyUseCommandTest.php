@@ -12,7 +12,6 @@ use Piwik\Tests\Framework\TestCase\SystemTestCase;
 use Piwik\Version;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
-use Monolog\Logger;
 
 class CheckDirectDependencyUseCommandTest extends SystemTestCase
 {
