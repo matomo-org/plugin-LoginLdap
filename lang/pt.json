@@ -59,7 +59,7 @@
         "NetworkTimeoutDescription": "O tempo limite em segundos para um pedido LDAP à rede.",
         "NetworkTimeoutDescription2": "Quanto maior o tempo limite, mais tempo os utilizadores poderão ter de esperar antes do Matomo os autenticar via LDAP, caso um ou mais servidores estejam inoperacionais.",
         "NewUserDefaultSitesViewAccess": "Sites iniciais com acesso de Visualização para novos utilizadores",
-        "NewUserDefaultSitesViewAccessDescription": "Se especificado, quando um usuário LDAP é sincronizado pela primeira vez, ele recebe acesso de visualização a esses sites. Deve ser definido como uma lista de IDs ou 'todos'.",
+        "NewUserDefaultSitesViewAccessDescription": "Se especificado, quando um utilizador LDAP é sincronizado pela primeira vez, é-lhe concedido acesso de visualização a estes sites. Deve ser definido para uma lista de ID ou 'todos'.",
         "NoUserName": "Não foi fornecido um nome de utilizador!",
         "OneUser": "1 utilizador",
         "OptionsPWCONFIRMATION": "Ativar confirmação de senha",
