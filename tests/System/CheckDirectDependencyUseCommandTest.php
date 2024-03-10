@@ -39,6 +39,6 @@ class CheckDirectDependencyUseCommandTest extends SystemTestCase
                 'LoginLdap/tests/Integration/Commands/SynchronizeUsersTest.php',
                 'LoginLdap/tests/System/CheckDirectDependencyUseCommandTest.php',
             ]
-        ], $checkDirectDependencyUse->usesFoundList['DI']);
+        ], $checkDirectDependencyUse->usesFoundList);
     }
 }
