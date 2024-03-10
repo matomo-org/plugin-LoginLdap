@@ -83,7 +83,7 @@ class CheckDirectDependencyUse extends ConsoleCommand
         $rgOutput = [];
 
         if ($plugin) {
-            $plugin = '/' . $plugin;
+            $plugin = '/plugins/' . $plugin;
         }
 
         $vendorScan = '--glob=\\!vendor';
@@ -98,7 +98,7 @@ class CheckDirectDependencyUse extends ConsoleCommand
             $regex = '\\b' . preg_quote($prefix) . '_';
         }
 
-        $command = 'rg \'' . $regex . '\' --glob=*.php ' . $vendorScan . ' --json --sort path ' . PIWIK_INCLUDE_PATH . '/plugins' . $plugin;
+        $command = 'rg \'' . $regex . '\' --glob=*.php ' . $vendorScan . ' --json --sort path ' . PIWIK_INCLUDE_PATH . $plugin;
         echo PHP_EOL . $command . PHP_EOL;
         exec($command, $rgOutput, $returnCode);
 
