@@ -20,7 +20,7 @@ class CheckDirectDependencyUseCommandTest extends SystemTestCase
         if (version_compare(Version::VERSION, '5.0.2', '<=') && !file_exists(PIWIK_INCLUDE_PATH . '/plugins/TestRunner/Commands/CheckDirectDependencyUse.php')) {
             $this->markTestSkipped('tests:check-direct-dependency-use is not available in this version');
         }
-//        $pluginName = 'LoginLdap';
+        $pluginName = 'LoginLdap';
         $console = new \Piwik\Console(self::$fixture->piwikEnvironment);
         $checkDirectDependencyUse = new CheckDirectDependencyUse();
         $console->addCommands([$checkDirectDependencyUse]);
@@ -39,6 +39,6 @@ class CheckDirectDependencyUseCommandTest extends SystemTestCase
                 'LoginLdap/tests/Integration/Commands/SynchronizeUsersTest.php',
                 'LoginLdap/tests/System/CheckDirectDependencyUseCommandTest.php',
             ]
-        ], $checkDirectDependencyUse->usesFoundList[$pluginName]);
+        ], $checkDirectDependencyUse->usesFoundList);
     }
 }
