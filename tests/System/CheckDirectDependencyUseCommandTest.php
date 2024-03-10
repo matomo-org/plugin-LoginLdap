@@ -7,7 +7,7 @@
  */
 namespace Piwik\Plugins\LoginLdap\tests\System;
 
-use Piwik\Plugins\TestRunner\Commands\CheckDirectDependencyUse;
+use Piwik\Plugins\LoginLdap\Commands\CheckDirectDependencyUse;
 use Piwik\Tests\Framework\TestCase\SystemTestCase;
 use Piwik\Version;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -33,6 +33,13 @@ class CheckDirectDependencyUseCommandTest extends SystemTestCase
         $command->run($inputObject, new NullOutput());
 
         $this->assertEquals([
+            'DI\\' => [
+                'LoginLdap/tests/Integration/Commands/SynchronizeUsersTest.php'
+            ],
+            'Symfony\Component\Console\\' => [
+                'LoginLdap/tests/Integration/Commands/SynchronizeUsersTest.php',
+                'LoginLdap/tests/System/CheckDirectDependencyUseCommandTest.php',
+            ]
         ], $checkDirectDependencyUse->usesFoundList[$pluginName]);
     }
 }
