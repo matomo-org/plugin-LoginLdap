@@ -27,6 +27,7 @@ class CheckDirectDependencyUseCommandTest extends SystemTestCase
         $command = $console->find('tests:check-direct-dependency-use');
         $arguments = array(
             'command'    => 'tests:check-direct-dependency-use',
+            '--plugin' => $pluginName
         );
         $inputObject = new ArrayInput($arguments);
         $command->run($inputObject, new NullOutput());
