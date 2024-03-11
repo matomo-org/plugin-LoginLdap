@@ -98,7 +98,7 @@ class CheckDirectDependencyUse extends ConsoleCommand
             $regex = '\\b' . preg_quote($prefix) . '_';
         }
 
-        $command = 'rg \'' . $regex . '\' --glob=*.php ' . $vendorScan . ' --json --sort path ' . dirname(__FILE__, 4);
+        $command = 'rg \'' . $regex . '\' --glob=*.php ' . $vendorScan . ' --json --sort path ' . dirname(__FILE__, 5);
         echo PHP_EOL . $command . PHP_EOL;
         exec($command, $rgOutput, $returnCode);
 
