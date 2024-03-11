@@ -98,7 +98,7 @@ class CheckDirectDependencyUse extends ConsoleCommand
             $regex = '\\b' . preg_quote($prefix) . '_';
         }
 
-        $command = 'rg \'' . $regex . '\' --glob=*.php ' . $vendorScan . ' --json --sort path ' . dirname(__FILE__, 5);
+        $command = 'rg \'' . $regex . '\' --glob=*.php ' . $vendorScan . ' --json --sort path ' . PIWIK_INCLUDE_PATH;
         echo PHP_EOL . $command . PHP_EOL;
         exec($command, $rgOutput, $returnCode);
 
@@ -113,14 +113,14 @@ class CheckDirectDependencyUse extends ConsoleCommand
             }
 
             $path = $line['data']['path']['text'];
-            $path = str_replace(PIWIK_DOCUMENT_ROOT, '', $path);
+            $path = str_replace(PIWIK_INCLUDE_PATH, '', $path);
             $path = ltrim($path, '/');
 
             $parts = explode('/', $path);
             array_shift($parts);
             $pluginName = array_shift($parts);
 
-            if (file_exists(PIWIK_INCLUDE_PATH . '/plugins/' . $pluginName . '/.git')) {
+            if ($pluginName) {
                 $remainingPath = implode('/', $parts);
                 $uses[$pluginName][] = $remainingPath;
             }
