@@ -45,6 +45,8 @@ jobs:
           lfs: true
           persist-credentials: false
           submodules: true
+      - name: Install package ripgrep
+        run: sudo apt-get install ripgrep
       - name: Run tests
         uses: matomo-org/github-action-tests@main
         with:
