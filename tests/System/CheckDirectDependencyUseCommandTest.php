@@ -32,13 +32,13 @@ class CheckDirectDependencyUseCommandTest extends SystemTestCase
         $command->run($inputObject, new NullOutput());
 
         $this->assertEquals([
-            'DI\\' => [
+            'DI' => [
                 'LoginLdap/tests/Integration/Commands/SynchronizeUsersTest.php'
             ],
-            'Symfony\Component\Console\\' => [
+            'Symfony\Component\Console' => [
                 'LoginLdap/tests/Integration/Commands/SynchronizeUsersTest.php',
                 'LoginLdap/tests/System/CheckDirectDependencyUseCommandTest.php',
             ]
-        ], $checkDirectDependencyUse->usesFoundList);
+        ], $checkDirectDependencyUse->usesFoundList[$pluginName]);
     }
 }
