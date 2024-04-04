@@ -52,6 +52,8 @@ class SynchronizeUsers extends ConsoleCommand
         $this->addNoValueOption('skip-existing', null,
             "Skip users that have been synchronized at least once. Using this option will be much faster, but will not "
             . "update user info if it has changed in LDAP.");
+        $this->addNoValueOption('purge-non-existent-users', null,
+            "Purge old users from Matomo, which are removed in LDAP.");
     }
 
     /**
@@ -63,6 +65,7 @@ class SynchronizeUsers extends ConsoleCommand
         $output = $this->getOutput();
         $logins = $input->getOption('login');
         $skipExisting = $input->getOption('skip-existing');
+        $purgeNonExistentUsers = $input->getOption('purge-non-existent-users');
 
         if (empty($logins)) {
             $logins = $this->ldapUsers->getAllUserLogins();
@@ -95,6 +98,18 @@ class SynchronizeUsers extends ConsoleCommand
         }
 
         $this->writeSuccessMessage(array("Synchronized $count users!"));
+
+        if ($purgeNonExistentUsers) {
+            $ldapUsersInMatomo = $this->loginLdapAPI->getExistingLdapUsersFromDb();
+            if (!empty($ldapUsersInMatomo) && !empty($logins)) {
+                foreach ($ldapUsersInMatomo as $ldapUser) {
+                    if (!in_array($ldapUser, $logins)) {
+                        $output->writeln("Purging user $ldapUser from Matomo as the user is not found in LDAP anyomore.");
+                        $this->usersManagerAPI->deleteUser($ldapUser);
+                    }
+                }
+            }
+        }
 
         if (!empty($failed)) {
             $output->writeln("<info>Could not synchronize the following users in LDAP:</info>");

@@ -39,6 +39,8 @@ class CheckDirectDependencyUseCommandTest extends SystemTestCase
             'Symfony\Component\Console' => [
                 'LoginLdap/tests/Integration/Commands/SynchronizeUsersTest.php',
                 'LoginLdap/tests/System/CheckDirectDependencyUseCommandTest.php',
+                'LoginLdap/tests/System/Output/TestOutput.php',
+                'LoginLdap/tests/System/SynchronizeUsersCommandTest.php',
             ]
         ], $checkDirectDependencyUse->usesFoundList[$pluginName]);
     }
