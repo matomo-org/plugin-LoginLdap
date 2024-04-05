@@ -261,6 +261,11 @@ LoginLdap comes with the following console commands:
 * `loginldap:synchronize-users`: Can be used to synchronize one, multiple, or all users in LDAP at once. If you'd like to setup user access
   within Matomo before a user logs in, this command should be used.
 
+**Note:**  If a user is synced and later removed from the LDAP, Matomo will not, by default, delete the user on sync. To delete old users during synchronization, you can use the following console command: 
+```
+./console loginldap:synchronize-users --purge-non-existent-users
+```
+
 ### Changelog
 
 See [https://github.com/matomo-org/plugin-LoginLdap/blob/4.x-dev/CHANGELOG.md](https://github.com/matomo-org/plugin-LoginLdap/blob/4.x-dev/CHANGELOG.md).
