@@ -474,7 +474,7 @@ class LdapUsersTest extends TestCase
 
     public function test_getExistingLdapUsersFromDb_returns_empty()
     {
-        $this->assertEmpty($this->ldapUsers->getExistingLdapUsersFromDb());
+        $this->assertSame([] ,$this->ldapUsers->getExistingLdapUsersFromDb());
     }
 
     private function makeMockLdapClient($forSuccess = false)
