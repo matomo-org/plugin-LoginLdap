@@ -67,6 +67,7 @@ describe("LoginLdap_Admin", function () {
     it("should show the add new token screen", async function () {
         testEnvironment.configOverride.LoginLdap = { enable_password_confirmation: 0 };
         testEnvironment.save();
+        await page.waitForTimeout(30000);
         await page.goto(addNewTokenUrl);
         await page.waitForNetworkIdle();
         var elem = await page.jQuery('.page');
