@@ -250,4 +250,15 @@ class ApiTest extends LdapIntegrationTest
         $this->api->synchronizeUser(self::TEST_LOGIN);
         $this->assertStarkSynchronized();
     }
+
+    public function test_getExistingLdapUsersFromDb_should_return_empty_result()
+    {
+        $this->assertEmpty($this->api->getExistingLdapUsersFromDb());
+    }
+
+    public function test_getExistingLdapUsersFromDb_should_return_result()
+    {
+        $this->api->synchronizeUser(self::TEST_LOGIN);
+        $this->assertSame([self::TEST_LOGIN], $this->api->getExistingLdapUsersFromDb());
+    }
 }
