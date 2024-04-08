@@ -102,11 +102,14 @@ class SynchronizeUsers extends ConsoleCommand
         if ($purgeNonExistentUsers) {
             $ldapUsersInMatomo = $this->loginLdapAPI->getExistingLdapUsersFromDb();
             if (!empty($ldapUsersInMatomo) && !empty($logins)) {
-                foreach ($ldapUsersInMatomo as $ldapUser) {
-                    if (!in_array($ldapUser, $logins)) {
-                        $output->writeln("Purging user $ldapUser from Matomo as the user is not found in LDAP anyomore.");
-                        $this->usersManagerAPI->deleteUser($ldapUser);
+                $deletedUsers = array_diff($ldapUsersInMatomo, $logins);
+                if (!empty($deletedUsers)) {
+                    foreach ($deletedUsers as $deletedUser) {
+                        $output->writeln("Purging user $deletedUser from Matomo as the user is not found in LDAP anyomore.");
+                        $this->usersManagerAPI->deleteUser($deletedUser);
                     }
+                    $noOfUsersDeleted = count($deletedUsers);
+                    $this->writeSuccessMessage(array("Purged $noOfUsersDeleted users!"));
                 }
             }
         }
