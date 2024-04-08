@@ -53,7 +53,7 @@ class SynchronizeUsers extends ConsoleCommand
             "Skip users that have been synchronized at least once. Using this option will be much faster, but will not "
             . "update user info if it has changed in LDAP.");
         $this->addNoValueOption('purge-non-existent-users', null,
-            "Purge old users from Matomo, which are removed in LDAP.");
+            "Purge users from Matomo that no longer exist in LDAP.");
     }
 
     /**
