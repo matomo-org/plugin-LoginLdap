@@ -472,6 +472,11 @@ class LdapUsersTest extends TestCase
         $this->assertEquals(array(self::TEST_USER, self::TEST_ADMIN_USER), $logins);
     }
 
+    public function test_getExistingLdapUsersFromDb()
+    {
+        $this->assertSame(['ironman'] ,$this->ldapUsers->getExistingLdapUsersFromDb());
+    }
+
     private function makeMockLdapClient($forSuccess = false)
     {
         $methods = array('__construct', 'connect', 'close', 'bind', 'fetchAll', 'isOpen', 'count');

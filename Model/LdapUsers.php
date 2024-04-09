@@ -8,6 +8,7 @@
 namespace Piwik\Plugins\LoginLdap\Model;
 
 use Piwik\Container\StaticContainer;
+use Piwik\Option;
 use Piwik\Piwik;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
@@ -17,6 +18,7 @@ use Piwik\Plugins\LoginLdap\Ldap\Exceptions\ConnectionException;
 use InvalidArgumentException;
 use Exception;
 use Piwik\Log\LoggerInterface;
+use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 
 /**
  * DAO class for user related operations that use LDAP as a backend.
@@ -634,5 +636,19 @@ class LdapUsers
         $result->setLdapUserMapper(UserMapper::makeConfigured());
 
         return $result;
+    }
+
+    public function getExistingLdapUsersFromDb()
+    {
+        $searchPattern = UsersManagerAPI::OPTION_NAME_PREFERENCE_SEPARATOR . UserMapper::USER_PREFERENCE_NAME_IS_LDAP_USER;
+        $results = Option::getLike("%$searchPattern%");
+        $logins = [];
+        if (!empty($results)) {
+            foreach ($results as $key => $value) {
+                $logins[] = str_replace($searchPattern, '', $key);
+            }
+        }
+
+        return $logins;
     }
 }

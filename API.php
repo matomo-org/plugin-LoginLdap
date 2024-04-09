@@ -143,6 +143,20 @@ class API extends \Piwik\Plugin\API
         $this->userSynchronizer->synchronizePiwikAccessFromLdap($login, $ldapUser);
     }
 
+    /**
+     * Get all the existing LDAP users from DB
+     *
+     * @return []
+     */
+    public function getExistingLdapUsersFromDb()
+    {
+        Piwik::checkUserHasSuperUserAccess();
+
+        $ldapUsers = new LdapUsers();
+
+        return $ldapUsers->getExistingLdapUsersFromDb();
+    }
+
     private function checkHttpMethodIsPost()
     {
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
