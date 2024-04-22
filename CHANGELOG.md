@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 5.0.6
+* Added plugin category for Marketplace
+
 #### LoginLdap 5.0.5
 * Fixes for PHP 8.3 uri determination logic
 
