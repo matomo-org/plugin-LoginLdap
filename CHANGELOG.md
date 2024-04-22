@@ -1,6 +1,7 @@
 # LoginLdap Changelog
 
 #### LoginLdap 5.0.6
+* Added code to purge non existent LDAP users from DB
 * Added plugin category for Marketplace
 
 #### LoginLdap 5.0.5
