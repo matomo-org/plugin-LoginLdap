@@ -21,7 +21,7 @@ To start using LoginLdap, follow these steps:
    _Note: You can test your servers by entering something into the 'Required User Group' and clicking the test link that appears.
    An error message will display if LoginLdap cannot connect to the LDAP server._
 
-6. You can now login with LDAP cedentials.
+6. You can now login with LDAP credentials.
 
 _**Note:** LDAP users are not synchronized with Matomo until they are first logged in. This means you cannot access a token auth for an LDAP user until the user is synchronized.
 If you use the default LoginLdap configuration, you can synchronize all of your LDAP users at once using the `./console loginldap:synchronize-users` command._
