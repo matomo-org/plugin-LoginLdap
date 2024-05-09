@@ -34,7 +34,7 @@
         "LdapSuperUserAccessFieldDescription": "LDAP-attribut som anger om användaren är superuser eller ej.",
         "LdapUrlPortWarning": "Portalternativet ignoreras när servers värdnamn är satt till en LDAP URL (t.ex. ldap://localhost/ istället för localhost).",
         "LdapUserAccessAttributeServerSeparator": "Användaretillgångsattribut server & sajtlistan avgränsare",
-        "LdapUserAccessAttributeServerSeparatorDescription": "Stärngen som används för att separera Matomo serverns instans ID med listan över sajt-ID'n. Om det är satt till ':' så förväntas tillgångsattributet att se ut enligt följande '<server-id>:<site-list>;<server-id>:<site-list>'.",
+        "LdapUserAccessAttributeServerSeparatorDescription": "Stärngen som används för att separera Matomo serverns instans ID med listan över sajt-ID'n. Om det är satt till ':' så förväntas tillgångsattributet att se ut enligt följande '&lt;server-id&gt;:&lt;site-list&gt;;&lt;server-id&gt;:&lt;site-list&gt;'.",
         "LdapUserAccessAttributeServerSpecDelimiter": "Användartillståndsattribut serverspecifikationsavgränsare",
         "LdapUserAccessAttributeServerSpecDelimiterDescription": "Strängen som används för att avgränsa serverspecifikationerna i en användares tillgångsattribut. Om det är satt till ':' så förväntas tillgångsattributet se ut enligt följande '&lt;server-spec&gt;;&lt;server-spec&gt;;…'.",
         "LdapUserAdded": "LDAP-användare kunde läggas till!",
