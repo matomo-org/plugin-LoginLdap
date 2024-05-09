@@ -34,7 +34,7 @@
         "LdapSuperUserAccessFieldDescription": "Το οριζόμενο όρισμα στο LDAP που θα καθορίζει αν ένας χρήστης είναι υπερχρήστης ή όχι.",
         "LdapUrlPortWarning": "Η ρύθμιση θύρας αγνοείται όταν το όνομα διακομιστή ορίζεται σε LDAP URL (πχ. ldap://localhost/ αντί του localhost).",
         "LdapUserAccessAttributeServerSeparator": "Όρισμα Πρόσβασης Χρήστη Διακομιστή & Διαχωριστής Λίστας Ιστοτόπων",
-        "LdapUserAccessAttributeServerSeparatorDescription": "Το αλφαριθμητικό που χρησιμοποιείται για το διαχωρισμό των αναγνωριστικών στιγμιοτύπων του Matomo με τις λίστες αναγνωριστικών ιστοτόπων. Αν οριστεί σε ':', το όρισμα πρόσβασης πρέπει να έχει τη μορφή '<server-id>:<site-list>:<server-id>:<site-list>'.",
+        "LdapUserAccessAttributeServerSeparatorDescription": "Το αλφαριθμητικό που χρησιμοποιείται για το διαχωρισμό των αναγνωριστικών στιγμιοτύπων του Matomo με τις λίστες αναγνωριστικών ιστοτόπων. Αν οριστεί σε ':', το όρισμα πρόσβασης πρέπει να έχει τη μορφή '&lt;server-id&gt;:&lt;site-list&gt;;&lt;server-id&gt;:&lt;site-list&gt;'.",
         "LdapUserAccessAttributeServerSpecDelimiter": "Ορισμός Διαχωριστή Ορίσματος Πρόσβασης Χρήστη Διακομιστή",
         "LdapUserAccessAttributeServerSpecDelimiterDescription": "Το αλφαριθμητικό που χρησιμοποιείται για το διαχωρισμό των προδιαγραφών διακομιστών σε ένα όρισμα πρόσβασης χρήστη. Αν οριστεί σε ';', το όρισμα πρόσβασης πρέπει να έχει τη μορφή '&lt;προδιαγραφή-διακομιστή&gt;;προδιαγραφή-διακομιστή;…'.",
         "LdapUserAdded": "Η προσθήκη του χρήστη LDAP έγινε με επιτυχία!",
