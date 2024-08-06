@@ -36,7 +36,7 @@
         "LdapUserAccessAttributeServerSeparator": "Användaretillgångsattribut server & sajtlistan avgränsare",
         "LdapUserAccessAttributeServerSeparatorDescription": "Stärngen som används för att separera Matomo serverns instans ID med listan över sajt-ID'n. Om det är satt till ':' så förväntas tillgångsattributet att se ut enligt följande '&lt;server-id&gt;:&lt;site-list&gt;;&lt;server-id&gt;:&lt;site-list&gt;'.",
         "LdapUserAccessAttributeServerSpecDelimiter": "Användartillståndsattribut serverspecifikationsavgränsare",
-        "LdapUserAccessAttributeServerSpecDelimiterDescription": "Strängen som används för att avgränsa serverspecifikationerna i en användares tillgångsattribut. Om det är satt till ':' så förväntas tillgångsattributet se ut enligt följande '&lt;server-spec&gt;;&lt;server-spec&gt;;…'.",
+        "LdapUserAccessAttributeServerSpecDelimiterDescription": "Strängen som används för att avgränsa serverspecifikationerna i en användares tillgångsattribut. Om det är satt till ';' så förväntas åtkomstattributet se ut enligt följande '&lt;server-spec&gt;;&lt;server-spec&gt;;…'.",
         "LdapUserAdded": "LDAP-användare kunde läggas till!",
         "LdapUserCantChangePassword": "Ändring av ditt lösenord stöds inte för LDAP användare. Eftersom du använder LDAP så hanteras användarinställningarna direkt i LDAP. För mer information vänligen kontakta din LDAP serveradministratör eller din Matomo administratör.",
         "LdapViewAccessField": "LDAP-fält för visningsåtkomst",
