@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
@@ -33,7 +34,6 @@ class Updates_4_7_1 extends Updates
             try {
                 $loginLdapAPI->synchronizeUser($login['login']);
             } catch (\Exception $ex) {
-
             }
         }
 

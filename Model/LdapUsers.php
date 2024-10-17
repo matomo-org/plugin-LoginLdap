@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
  * @link    https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
+
 namespace Piwik\Plugins\LoginLdap\Model;
 
 use Piwik\Container\StaticContainer;
@@ -25,8 +27,8 @@ use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
  */
 class LdapUsers
 {
-    const FUNCTION_START_LOG_MESSAGE = "Model\\LdapUsers: start {function}() with {params}";
-    const FUNCTION_END_LOG_MESSAGE = "Model\\LdapUsers: end {function}() with {result}";
+    public const FUNCTION_START_LOG_MESSAGE = "Model\\LdapUsers: start {function}() with {params}";
+    public const FUNCTION_END_LOG_MESSAGE = "Model\\LdapUsers: end {function}() with {result}";
 
     /**
      * If set, the user must be a member of a specific LDAP groupOfNames in order
@@ -147,7 +149,8 @@ class LdapUsers
         }
 
         // if password is empty, avoid connecting to the LDAP server
-        if (empty($password)
+        if (
+            empty($password)
             && !$alreadyAuthenticated
         ) {
             $this->logger->debug("LdapUsers::{function}: empty password, skipping authentication", array(
@@ -161,7 +164,7 @@ class LdapUsers
             $authenticationRequiredMemberOf = $this->authenticationRequiredMemberOf;
             $logger = $this->logger;
             $result = $this->doWithClient(function (LdapUsers $self, LdapClient $ldapClient)
-                use ($username, $password, $alreadyAuthenticated, $authenticationRequiredMemberOf, $logger) {
+ use ($username, $password, $alreadyAuthenticated, $authenticationRequiredMemberOf, $logger) {
 
                 $user = $self->getUser($username);
 
@@ -230,7 +233,7 @@ class LdapUsers
         ));
 
         $result = $this->doWithClient(function (LdapUsers $self, LdapClient $ldapClient, ServerInfo $server)
-            use ($username) {
+ use ($username) {
             $self->bindAsAdmin($ldapClient, $server);
 
             // look for the user, applying extra filters
@@ -273,7 +276,7 @@ class LdapUsers
         ));
 
         $result = $this->doWithClient(function (LdapUsers $self, LdapClient $ldapClient, ServerInfo $server)
-            use ($filter, $filterBind) {
+ use ($filter, $filterBind) {
             $self->bindAsAdmin($ldapClient, $server);
 
             return $ldapClient->count($server->getBaseDn(), $filter, $filterBind);
@@ -440,16 +443,16 @@ class LdapUsers
     {
         $bind = array();
         $conditions = array();
-        
+
         if (!empty($this->authenticationLdapFilter)) {
             $conditions[] = $this->authenticationLdapFilter;
         }
 
         if (!empty($this->authenticationRequiredMemberOf)) {
-            $conditions[] = "(".$this->authenticationMemberOfField."=?)";
+            $conditions[] = "(" . $this->authenticationMemberOfField . "=?)";
             $bind[] = $this->authenticationRequiredMemberOf;
         }
-        
+
         if (!empty($username)) {
             $conditions[] = "(" . $this->ldapUserMapper->getLdapUserIdField() . "=?)";
             $bind[] = $this->addUsernameSuffix($username);
@@ -506,7 +509,8 @@ class LdapUsers
 
             $result = $function($this, $this->ldapClient, $this->currentServerInfo);
         } catch (Exception $ex) {
-            if ($closeClient
+            if (
+                $closeClient
                 && isset($this->ldapClient)
             ) {
                 try {

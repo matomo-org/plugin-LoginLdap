@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
@@ -6,6 +7,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
  */
+
 namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
 use Piwik\AuthResult;
@@ -28,7 +30,10 @@ class WebServerAuthTest extends LdapIntegrationTest
 
         $this->addPreexistingSuperUser();
         $this->testSuperUserTokenAuth = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth(
-            self::TEST_SUPERUSER_LOGIN, self::TEST_SUPERUSER_PASS, 'test');
+            self::TEST_SUPERUSER_LOGIN,
+            self::TEST_SUPERUSER_PASS,
+            'test'
+        );
     }
 
     public function test_WebServerAuth_Works_IfUserExists_RegardlessOfPassword()
@@ -112,7 +117,6 @@ class WebServerAuthTest extends LdapIntegrationTest
         $authResult = $ldapAuth->authenticate();
 
         $this->assertEquals(1, $authResult->getCode());
-
     }
 
     public function test_WebServerAuth_ReturnsCorrectCodeForSuperUsers()

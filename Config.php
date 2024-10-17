@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
  * @link https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
+
 namespace Piwik\Plugins\LoginLdap;
 
 use Exception;
@@ -71,7 +73,7 @@ class Config
     {
         if (isset($config[$optionName])) {
             return $config[$optionName];
-        } else if (isset(self::$alternateOptionNames[$optionName])) {
+        } elseif (isset(self::$alternateOptionNames[$optionName])) {
             foreach (self::$alternateOptionNames[$optionName] as $alternateName) {
                 if (isset($config[$alternateName])) {
                     return $config[$alternateName];
@@ -255,7 +257,8 @@ class Config
             $actualValue = Config::getConfigOption($name);
 
             // special check for useKerberos which can be a string
-            if ($name == 'use_webserver_auth'
+            if (
+                $name == 'use_webserver_auth'
                 && $actualValue === 'false'
             ) {
                 $actualValue = 0;
@@ -290,7 +293,7 @@ class Config
 
             $serverNames[] = $serverInfo['name'];
         }
-        PiwikConfig::getInstance()->LoginLdap['servers']= $serverNames;
+        PiwikConfig::getInstance()->LoginLdap['servers'] = $serverNames;
 
         PiwikConfig::getInstance()->forceSave();
     }

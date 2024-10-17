@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
@@ -6,6 +7,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
  */
+
 namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
 use Exception;
@@ -15,7 +17,6 @@ use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
 use PHPUnit\Framework\TestCase;
 
-
 /**
  * @group LoginLdap
  * @group LoginLdap_Unit
@@ -23,13 +24,13 @@ use PHPUnit\Framework\TestCase;
  */
 class LdapUsersTest extends TestCase
 {
-    const TEST_USER = "rose";
-    const PASSWORD = "bw";
-    const TEST_ADMIN_USER = "who?";
-    const TEST_BASE_DN = 'testbasedn';
-    const TEST_EXTRA_FILTER = '(testfilter)';
-    const TEST_MEMBER_OF = "member";
-    const TEST_MEMBER_OF_Field = "memberOf";
+    public const TEST_USER = "rose";
+    public const PASSWORD = "bw";
+    public const TEST_ADMIN_USER = "who?";
+    public const TEST_BASE_DN = 'testbasedn';
+    public const TEST_EXTRA_FILTER = '(testfilter)';
+    public const TEST_MEMBER_OF = "member";
+    public const TEST_MEMBER_OF_FIELD = "memberOf";
 
     /**
      * @var LdapUsers
@@ -268,12 +269,12 @@ class LdapUsersTest extends TestCase
         $this->setSingleLdapServer();
         $this->ldapUsers->setAuthenticationLdapFilter(self::TEST_EXTRA_FILTER);
         $this->ldapUsers->setAuthenticationRequiredMemberOf(self::TEST_MEMBER_OF);
-        $this->ldapUsers->setAuthenticationMemberOfField(self::TEST_MEMBER_OF_Field);
+        $this->ldapUsers->setAuthenticationMemberOfField(self::TEST_MEMBER_OF_FIELD);
         $this->ldapUsers->getUser(self::TEST_USER);
 
         $this->assertEquals(self::TEST_BASE_DN, $usedBaseDn);
         self::assertStringContainsString(self::TEST_EXTRA_FILTER, $usedFilter);
-        self::assertStringContainsString("(".self::TEST_MEMBER_OF_Field."=?)", $usedFilter);
+        self::assertStringContainsString("(" . self::TEST_MEMBER_OF_FIELD . "=?)", $usedFilter);
         self::assertTrue(in_array(self::TEST_MEMBER_OF, $filterBind));
     }
 
@@ -312,7 +313,7 @@ class LdapUsersTest extends TestCase
         $passedClient = null;
         $passedServerInfo = null;
         $result = $this->ldapUsers->doWithClient(function ($ldapUsers, $client, $serverInfo)
-            use (&$passedLdapUsers, &$passedClient, &$passedServerInfo) {
+ use (&$passedLdapUsers, &$passedClient, &$passedServerInfo) {
 
             $passedLdapUsers = $ldapUsers;
             $passedClient = $client;
@@ -354,7 +355,7 @@ class LdapUsersTest extends TestCase
         $passedClient = null;
         $passedServerInfo = null;
         $this->ldapUsers->doWithClient(function ($ldapUsers, $client, $serverInfo)
-            use (&$passedLdapUsers, &$passedClient, &$passedServerInfo) {
+ use (&$passedLdapUsers, &$passedClient, &$passedServerInfo) {
 
             $passedLdapUsers = $ldapUsers;
             $passedClient = $client;

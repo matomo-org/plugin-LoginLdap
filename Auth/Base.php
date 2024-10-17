@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
  * @link https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
+
 namespace Piwik\Plugins\LoginLdap\Auth;
 
 use Exception;
@@ -89,7 +91,7 @@ abstract class Base implements Auth
      *
      * @var string[]
      */
-    protected  $userForLogin = null;
+    protected $userForLogin = null;
 
     /**
      * @var LoggerInterface
@@ -279,7 +281,7 @@ abstract class Base implements Auth
         if (empty($this->userForLogin)) {
             if (!empty($this->login)) {
                 $this->userForLogin = $this->usersModel->getUser($this->login);
-            } else if (!empty($this->token_auth)) {
+            } elseif (!empty($this->token_auth)) {
                 $this->userForLogin = $this->usersModel->getUserByTokenAuth($this->token_auth);
             } else {
                 throw new Exception("Cannot get user details, neither login nor token auth are set.");
@@ -304,7 +306,7 @@ abstract class Base implements Auth
             $this->logger->debug("Auth\\Base::{func}: trying normal auth with user password", array('func' => __FUNCTION__));
 
             $auth->setPassword($this->password);
-        } else if (!empty($this->passwordHash)) {
+        } elseif (!empty($this->passwordHash)) {
             $this->logger->debug("Auth\\Base::{func}: trying normal auth with hashed password", array('func' => __FUNCTION__));
 
             $auth->setPasswordHash($this->passwordHash);
@@ -321,7 +323,8 @@ abstract class Base implements Auth
             'login' => $this->login
         ));
 
-        if (!$onlySuperUsers
+        if (
+            !$onlySuperUsers
             || $result->getCode() == AuthResult::SUCCESS_SUPERUSER_AUTH_CODE
         ) {
             return $result;
@@ -384,7 +387,7 @@ abstract class Base implements Auth
     {
         if (Config::shouldUseWebServerAuthentication()) {
             return WebServerAuth::makeConfigured();
-        } else if (Config::getUseLdapForAuthentication()) {
+        } elseif (Config::getUseLdapForAuthentication()) {
             return LdapAuth::makeConfigured();
         } else {
             return SynchronizedAuth::makeConfigured();

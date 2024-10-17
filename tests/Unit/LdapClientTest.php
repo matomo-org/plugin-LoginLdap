@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
@@ -6,6 +7,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
  */
+
 namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
 use Piwik\ErrorHandler;
@@ -22,14 +24,14 @@ require_once PIWIK_INCLUDE_PATH . '/plugins/LoginLdap/tests/Mocks/LdapFunctions.
  */
 class LdapClientTest extends TestCase
 {
-    const ERROR_MESSAGE = "triggered error";
+    public const ERROR_MESSAGE = "triggered error";
 
     public function setUp(): void
     {
         parent::setUp();
 
         LdapFunctions::$phpUnitMock = $this->getMockBuilder('stdClass')
-                                           ->addMethods( array('ldap_connect', 'ldap_close',
+                                           ->addMethods(array('ldap_connect', 'ldap_close',
                                              'ldap_bind', 'ldap_search', 'ldap_set_option',
                                              'ldap_get_entries', 'ldap_count_entries', 'ldap_error'))
                                            ->getMock();
@@ -165,8 +167,8 @@ class LdapClientTest extends TestCase
         LdapFunctions::$phpUnitMock->expects($this->any())->method('ldap_search')->will($this->returnCallback(
             function ($conn, $dn, $filter) use (&$escapedFilter) {
                 $escapedFilter = $filter;
-            })
-        );
+            }
+        ));
         LdapFunctions::$phpUnitMock->expects($this->any())->method('ldap_get_entries')->will($this->returnValue("result"));
 
         $ldapClient = new LdapClient();
@@ -306,7 +308,7 @@ class LdapClientTest extends TestCase
     {
         if (version_compare(PHP_VERSION, 8.3, '>=')) {
             $getConnectionResource = function ($hostname) {
-                $name = str_replace(array('ldap://', ':'), array('','_'),$hostname);
+                $name = str_replace(array('ldap://', ':'), array('','_'), $hostname);
                 return "connection_resource_$name";
             };
 
@@ -322,7 +324,6 @@ class LdapClientTest extends TestCase
             if (!empty($hostname) || !empty($port)) {
                 $method = $method->with($this->equalTo($hostname), $this->equalTo($port));
             }
-
         }
 
         $method->will($this->returnCallback($getConnectionResource));

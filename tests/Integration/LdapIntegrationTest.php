@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
@@ -6,6 +7,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
  */
+
 namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
 use Piwik\Log\Logger;
@@ -27,28 +29,28 @@ require_once PIWIK_INCLUDE_PATH . '/plugins/LoginLdap/tests/Mocks/LdapFunctions.
 
 abstract class LdapIntegrationTest extends IntegrationTestCase
 {
-    const SERVER_HOST_NAME = 'localhost';
-    const SERVER_PORT = 389;
-    const SERVER_BASE_DN = "dc=avengers,dc=shield,dc=org";
-    const GROUP_NAME = 'cn=avengers,dc=avengers,dc=shield,dc=org';
+    public const SERVER_HOST_NAME = 'localhost';
+    public const SERVER_PORT = 389;
+    public const SERVER_BASE_DN = "dc=avengers,dc=shield,dc=org";
+    public const GROUP_NAME = 'cn=avengers,dc=avengers,dc=shield,dc=org';
 
-    const TEST_LOGIN = 'ironman';
-    const TEST_PASS = 'piedpiper';
-    const TEST_PASS_LDAP = '{MD5}Dv6yiT/W4FvaM5gBdqHwlQ==';
+    public const TEST_LOGIN = 'ironman';
+    public const TEST_PASS = 'piedpiper';
+    public const TEST_PASS_LDAP = '{MD5}Dv6yiT/W4FvaM5gBdqHwlQ==';
 
-    const TEST_LOGIN2 = 'ironman2';
+    public const TEST_LOGIN2 = 'ironman2';
 
-    const OTHER_TEST_LOGIN = 'blackwidow';
-    const OTHER_TEST_PASS = 'redledger';
+    public const OTHER_TEST_LOGIN = 'blackwidow';
+    public const OTHER_TEST_PASS = 'redledger';
 
-    const TEST_SUPERUSER_LOGIN = 'captainamerica';
-    const TEST_SUPERUSER_PASS = 'thaifood';
+    public const TEST_SUPERUSER_LOGIN = 'captainamerica';
+    public const TEST_SUPERUSER_PASS = 'thaifood';
 
-    const NON_LDAP_USER = 'stan';
-    const NON_LDAP_PASS = 'whereisthefourthwall?';
+    public const NON_LDAP_USER = 'stan';
+    public const NON_LDAP_PASS = 'whereisthefourthwall?';
 
-    const NON_LDAP_NORMAL_USER = 'amber';
-    const NON_LDAP_NORMAL_PASS = 'crossingthefourthwall';
+    public const NON_LDAP_NORMAL_USER = 'amber';
+    public const NON_LDAP_NORMAL_PASS = 'crossingthefourthwall';
 
     public function setUp(): void
     {

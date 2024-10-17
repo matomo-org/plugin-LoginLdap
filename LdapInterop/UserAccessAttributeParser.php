@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
  * @link https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
+
 namespace Piwik\Plugins\LoginLdap\LdapInterop;
 
 use Piwik\Access;
@@ -145,7 +147,8 @@ class UserAccessAttributeParser
     {
         $attributeValue = trim($attributeValue ?? '');
 
-        if ($attributeValue == 1
+        if (
+            $attributeValue == 1
             || strtolower($attributeValue) == 'true'
             || empty($attributeValue)
         ) { // special case when not managing multiple Piwik instances
@@ -233,9 +236,11 @@ class UserAccessAttributeParser
 
         if (count($parts) == 1) { // there is no instanceId
             return array(null, trim($parts[0]));
-        } else if (count($parts) >= 2) { // malformed server access specification
-            $this->logger->debug("UserAccessAttributeParser::{func}: Improper server specification in LDAP access attribute: '{value}'",
-                array('func' => __FUNCTION__, 'value' => $spec));
+        } elseif (count($parts) >= 2) { // malformed server access specification
+            $this->logger->debug(
+                "UserAccessAttributeParser::{func}: Improper server specification in LDAP access attribute: '{value}'",
+                array('func' => __FUNCTION__, 'value' => $spec)
+            );
 
             $parts = array($parts[0], $parts[1]);
         }
@@ -266,8 +271,10 @@ class UserAccessAttributeParser
                 $result = false;
             } else {
                 if (strlen($matches[0]) != strlen($instanceId)) {
-                    $this->logger->debug("UserAccessAttributeParser::{func}: Found extra characters in Piwik instance ID. Whole ID entry = {id}.",
-                        array('func' => __FUNCTION__, 'id' => $instanceId));
+                    $this->logger->debug(
+                        "UserAccessAttributeParser::{func}: Found extra characters in Piwik instance ID. Whole ID entry = {id}.",
+                        array('func' => __FUNCTION__, 'id' => $instanceId)
+                    );
                 }
 
                 $result = true;
@@ -331,17 +338,22 @@ class UserAccessAttributeParser
         $parsed = @parse_url($url);
         if (empty($parsed)) {
             if ($isThisPiwikUrl) {
-                $this->logger->warning("UserAccessAttributeParser::{func}: Invalid Piwik URL found for this instance '{url}'.",
-                    array('func' => __FUNCTION__, 'url' => $url));
+                $this->logger->warning(
+                    "UserAccessAttributeParser::{func}: Invalid Piwik URL found for this instance '{url}'.",
+                    array('func' => __FUNCTION__, 'url' => $url)
+                );
             } else {
-                $this->logger->debug("UserAccessAttributeParser::{func}: Invalid instance ID URL found '{url}'.",
-                    array('func' => __FUNCTION__, 'url' => $url));
+                $this->logger->debug(
+                    "UserAccessAttributeParser::{func}: Invalid instance ID URL found '{url}'.",
+                    array('func' => __FUNCTION__, 'url' => $url)
+                );
             }
 
             return false;
         }
 
-        if (empty($parsed['scheme'])
+        if (
+            empty($parsed['scheme'])
             && empty($parsed['host'])
         ) { // parse_url will consider www.example.com the path if there is no protocol
             $url = 'http://' . $url;
@@ -393,10 +405,12 @@ class UserAccessAttributeParser
                 // TODO: remove this warning and move it to the settings page.
                 /** @var LoggerInterface $logger */
                 $logger = StaticContainer::get(LoggerInterface::class);
-                $logger->info("UserAttributesParser::{func}: Configured with no instance name so matching by URL, but server/site IDs"
+                $logger->info(
+                    "UserAttributesParser::{func}: Configured with no instance name so matching by URL, but server/site IDs"
                         . " separator set to special ':' character. This character may show up in URLs in LDAP, which will "
                         . "cause problems. We recommend you use a character not often found in URLs, such as '|'.",
-                    array('func' => __FUNCTION__));
+                    array('func' => __FUNCTION__)
+                );
             }
         }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
@@ -6,6 +7,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
  */
+
 namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
 use PHPUnit\Framework\TestCase;
@@ -14,7 +16,6 @@ use Piwik\Option;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserAccessAttributeParser;
 use Piwik\Plugins\SitesManager\API as SitesManagerAPI;
 use Piwik\SettingsPiwik;
-
 
 /**
  * @group LoginLdap
@@ -283,7 +284,7 @@ class UserAccessAttributeParserTest extends TestCase
     private function setSitesManagerApiMock()
     {
         $mock = $this->getMockBuilder('stdClass')
-                     ->addMethods( array('getSitesIdWithAtLeastViewAccess', 'getAllSitesId'))
+                     ->addMethods(array('getSitesIdWithAtLeastViewAccess', 'getAllSitesId'))
                      ->getMock();
         $mock->expects($this->any())->method('getSitesIdWithAtLeastViewAccess')->willReturn(array(1,2,3,4,5,6));
         $mock->expects($this->any())->method('getAllSitesId')->willReturn(array(1,2,3,4,5,6));
