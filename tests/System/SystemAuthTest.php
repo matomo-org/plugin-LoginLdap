@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
  * @link https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
+
 namespace Piwik\Plugins\LoginLdap\tests\System;
 
 use Piwik\Auth;
@@ -46,8 +48,11 @@ class SystemAuthTest extends LdapIntegrationTest
         parent::setUp();
 
         $this->addPreexistingSuperUser();
-        $this->superUserTokenAuth = API::getInstance()->createAppSpecificTokenAuth(self::TEST_SUPERUSER_LOGIN,
-            self::TEST_SUPERUSER_PASS, 'test');
+        $this->superUserTokenAuth = API::getInstance()->createAppSpecificTokenAuth(
+            self::TEST_SUPERUSER_LOGIN,
+            self::TEST_SUPERUSER_PASS,
+            'test'
+        );
     }
 
     public function tearDown(): void
@@ -135,10 +140,10 @@ class SystemAuthTest extends LdapIntegrationTest
         if ($authStrategy == 'ldap_only') {
             Config::getInstance()->LoginLdap['use_ldap_for_authentication'] = 1;
             $configOverride['LoginLdap']['use_ldap_for_authentication'] = 1;
-        } else if ($authStrategy == 'synchronized') {
+        } elseif ($authStrategy == 'synchronized') {
             Config::getInstance()->LoginLdap['use_ldap_for_authentication'] = 0;
             $configOverride['LoginLdap']['use_ldap_for_authentication'] = 0;
-        } else if ($authStrategy == 'web_server') {
+        } elseif ($authStrategy == 'web_server') {
             Config::getInstance()->LoginLdap['use_webserver_auth'] = 1;
             $configOverride['LoginLdap']['use_webserver_auth'] = 1;
         } else {
@@ -164,9 +169,9 @@ class SystemAuthTest extends LdapIntegrationTest
         $auth = null;
         if ($authStrategy == 'ldap_only') {
             $auth = LdapAuth::makeConfigured();
-        } else if ($authStrategy == 'synchronized') {
+        } elseif ($authStrategy == 'synchronized') {
             $auth = SynchronizedAuth::makeConfigured();
-        } else if ($authStrategy == 'web_server') {
+        } elseif ($authStrategy == 'web_server') {
             $auth = WebServerAuth::makeConfigured();
 
             $_SERVER['REMOTE_USER'] = self::TEST_SUPERUSER_LOGIN;

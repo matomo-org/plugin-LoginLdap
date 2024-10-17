@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
@@ -6,6 +7,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
  */
+
 namespace Piwik\Plugins\LoginLdap\Ldap;
 
 use Exception;
@@ -18,7 +20,7 @@ use Piwik\Log\LoggerInterface;
  */
 class Client
 {
-    const DEFAULT_TIMEOUT_SECS = 15;
+    public const DEFAULT_TIMEOUT_SECS = 15;
 
     private static $initialBindErrorCodesToIgnore = array(
         7, // LDAP_AUTH_METHOD_NOT_SUPPORTED
@@ -48,9 +50,12 @@ class Client
      * @param int $port The server port to use.
      * @throws Exception if a connection is attempted and it fails.
      */
-    public function __construct($serverHostName = null, $port = ServerInfo::DEFAULT_LDAP_PORT, $timeout = self::DEFAULT_TIMEOUT_SECS,
-                                LoggerInterface $logger = null)
-    {
+    public function __construct(
+        $serverHostName = null,
+        $port = ServerInfo::DEFAULT_LDAP_PORT,
+        $timeout = self::DEFAULT_TIMEOUT_SECS,
+        LoggerInterface $logger = null
+    ) {
         $this->logger = $logger ?: StaticContainer::get(LoggerInterface::class);
 
         if (!empty($serverHostName)) {
@@ -97,9 +102,9 @@ class Client
         // to test the connection
         try {
             if ($startTLS) {
-               if (!ldap_start_tls($this->connectionResource)) {
-                  throw new Exception("ldap_start_tls failed: " . ldap_error($this->connectionResource));
-               }
+                if (!ldap_start_tls($this->connectionResource)) {
+                    throw new Exception("ldap_start_tls failed: " . ldap_error($this->connectionResource));
+                }
             }
             ldap_bind($this->connectionResource);
 
@@ -339,7 +344,8 @@ class Client
 
             if (is_array($value)) { // index is for array, ie 0 => array(...)
                 $result[$i] = $this->transformLdapInfo($value);
-            } else if (!is_numeric($value)
+            } elseif (
+                !is_numeric($value)
                 && isset($ldapInfo[$value])
             ) { // index is for name of attribute, ie 0 => 'cn', 'cn' => array(...)
                 $key = strtolower($value);
@@ -408,7 +414,8 @@ class Client
         if (function_exists('ldap_escape')) { // available in PHP 5.6
             return ldap_escape($value, $ignoreChars = "", LDAP_ESCAPE_FILTER);
         } else {
-            return preg_replace_callback("/[*()\\\\]/", function ($matches) { // replace special filter characters
+            return preg_replace_callback("/[*()\\\\]/", function ($matches) {
+ // replace special filter characters
                 return "\\" . bin2hex($matches[0]);
             }, $value);
         }

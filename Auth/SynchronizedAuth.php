@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
  * @link https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
+
 namespace Piwik\Plugins\LoginLdap\Auth;
 
 use Exception;
@@ -64,15 +66,19 @@ class SynchronizedAuth extends Base
             }
 
             if (!$this->synchronizeUsersAfterSuccessfulLogin) {
-                $this->logger->debug("SynchronizedAuth::{func}: synchronizing users after login disabled, not attempting LDAP authenticate for '{login}'.",
-                    array('func' => __FUNCTION__, 'login' => $this->login));
+                $this->logger->debug(
+                    "SynchronizedAuth::{func}: synchronizing users after login disabled, not attempting LDAP authenticate for '{login}'.",
+                    array('func' => __FUNCTION__, 'login' => $this->login)
+                );
 
                 return $this->makeAuthFailure();
             }
 
             if (empty($this->password)) {
-                $this->logger->debug("SynchronizedAuth::{func}: cannot attempt fallback LDAP login for '{login}', password not set.",
-                    array('func' => __FUNCTION__, 'login' => $this->login));
+                $this->logger->debug(
+                    "SynchronizedAuth::{func}: cannot attempt fallback LDAP login for '{login}', password not set.",
+                    array('func' => __FUNCTION__, 'login' => $this->login)
+                );
 
                 return $this->makeAuthFailure();
             }

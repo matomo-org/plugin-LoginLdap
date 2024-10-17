@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
  * @link https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
+
 namespace Piwik\Plugins\LoginLdap;
 
 use Exception;
@@ -35,7 +37,7 @@ class LoginLdap extends \Piwik\Plugin
         $hooks = array(
             'Request.initAuthenticationObject'       => 'initAuthenticationObject',
             'User.isNotAuthorized'                   => 'noAccess',
-            'API.Request.authenticate'               => 'ApiRequestAuthenticate',
+            'API.Request.authenticate'               => 'apiRequestAuthenticate',
             'AssetManager.getJavaScriptFiles'        => 'getJsFiles',
             'AssetManager.getStylesheetFiles'        => 'getStylesheetFiles',
             'Translate.getClientSideTranslationKeys' => 'getClientSideTranslationKeys',
@@ -216,7 +218,7 @@ class LoginLdap extends \Piwik\Plugin
      * Initializes the authentication object.
      * Listens to Request.initAuthenticationObject hook.
      */
-    function initAuthenticationObject($activateCookieAuth = false)
+    public function initAuthenticationObject($activateCookieAuth = false)
     {
         $auth = AuthBase::factory();
         StaticContainer::getContainer()->set('Piwik\Auth', $auth);
@@ -226,7 +228,7 @@ class LoginLdap extends \Piwik\Plugin
      * Set login name and authentication token for authentication request.
      * Listens to API.Request.authenticate hook.
      */
-    public function ApiRequestAuthenticate($tokenAuth)
+    public function apiRequestAuthenticate($tokenAuth)
     {
         /** @var Auth $auth */
         $auth = StaticContainer::get('Piwik\Auth');

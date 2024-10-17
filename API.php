@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
  * @link https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
+
 namespace Piwik\Plugins\LoginLdap;
 
 use Piwik\Common;
@@ -95,9 +97,9 @@ class API extends \Piwik\Plugin\API
 
         $memberOfField = Config::getRequiredMemberOfField();
 
-        return $this->ldapUsers->getCountOfUsersMatchingFilter("(".$memberOfField."=?)", array($memberOf));
+        return $this->ldapUsers->getCountOfUsersMatchingFilter("(" . $memberOfField . "=?)", array($memberOf));
     }
-    
+
     /**
      * Returns count of users in LDAP that match an LDAP filter. If the filter is incorrect,
      * `null` is returned.

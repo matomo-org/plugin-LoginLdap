@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
  * @link https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
+
 namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
 use Piwik\Auth;
@@ -161,7 +163,10 @@ class SynchronizedAuthTest extends LdapIntegrationTest
         $userMapper->markUserAsLdapUser(self::TEST_LOGIN);
 
         $this->testUserTokenAuth = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth(
-            self::TEST_LOGIN, $pass, 'test');
+            self::TEST_LOGIN,
+            $pass,
+            'test'
+        );
     }
 
     private function addLdapUserWithWrongPassword()

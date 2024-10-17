@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
@@ -6,12 +7,12 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
  */
+
 namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
 use Piwik\Access;
 use Piwik\Auth\Password;
 use Piwik\Config;
-use Piwik\Date;
 use Piwik\Db;
 use Piwik\Common;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
@@ -150,7 +151,11 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
     {
         Access::doAsSuperUser(function () {
             UsersManagerAPI::getInstance()->addUser(
-                LdapUserSynchronizationTest::TEST_LOGIN, LdapUserSynchronizationTest::TEST_PASS_LDAP, 'something@domain.com', $isPasswordHashed = false);
+                LdapUserSynchronizationTest::TEST_LOGIN,
+                LdapUserSynchronizationTest::TEST_PASS_LDAP,
+                'something@domain.com',
+                $isPasswordHashed = false
+            );
         });
 
         $userMapper = new UserMapper();
@@ -186,7 +191,11 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
 
         Access::doAsSuperUser(function () {
             UsersManagerAPI::getInstance()->addUser(
-                LdapUserSynchronizationTest::TEST_LOGIN, md5('anypass'), 'something@domain.com', $isPasswordHashed = true);
+                LdapUserSynchronizationTest::TEST_LOGIN,
+                md5('anypass'),
+                'something@domain.com',
+                $isPasswordHashed = true
+            );
             UsersManagerAPI::getInstance()->setUserAccess(LdapUserSynchronizationTest::TEST_LOGIN, 'view', array(4,5));
             UsersManagerAPI::getInstance()->setUserAccess(LdapUserSynchronizationTest::TEST_LOGIN, 'admin', array(6));
         });

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
@@ -6,6 +7,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
  */
+
 namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
 use Exception;
@@ -188,7 +190,6 @@ class UserSynchronizerTest extends TestCase
         });
 
         $this->userSynchronizer->setUserUpdater($mock);
-
     }
 
     private function getPiwikUserData()
@@ -216,7 +217,7 @@ class UserSynchronizerTest extends TestCase
     private function setUserAccessMapperMock($value)
     {
         $mock = $this->getMockBuilder('Piwik\Plugins\LoginLdap\LdapInterop\UserAccessMapper')
-                     ->onlyMethods( array('getPiwikUserAccessForLdapUser'))
+                     ->onlyMethods(array('getPiwikUserAccessForLdapUser'))
                      ->getMock();
         $mock->expects($this->any())->method('getPiwikUserAccessForLdapUser')->will($this->returnValue($value));
         $this->userSynchronizer->setUserAccessMapper($mock);

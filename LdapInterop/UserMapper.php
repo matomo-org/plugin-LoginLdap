@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
  * @link https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
+
 namespace Piwik\Plugins\LoginLdap\LdapInterop;
 
 use Exception;
@@ -23,9 +25,9 @@ use Piwik\Log\LoggerInterface;
  */
 class UserMapper
 {
-    const DEFAULT_USER_EMAIL_SUFFIX = '@mydomain.com';
+    public const DEFAULT_USER_EMAIL_SUFFIX = '@mydomain.com';
 
-    const USER_PREFERENCE_NAME_IS_LDAP_USER = 'isLDAPUser';
+    public const USER_PREFERENCE_NAME_IS_LDAP_USER = 'isLDAPUser';
 
     /**
      * The LDAP resource field that holds a user's username.
@@ -110,7 +112,8 @@ class UserMapper
      */
     public function getExpectedLdapUsername($login)
     {
-        if (!empty($this->userEmailSuffix)
+        if (
+            !empty($this->userEmailSuffix)
             && $this->appendUserEmailSuffixToUsername
             && $this->userEmailSuffix != self::DEFAULT_USER_EMAIL_SUFFIX
         ) {
@@ -133,11 +136,13 @@ class UserMapper
         } elseif (!empty($ldapPassword)) {
             return $this->hashLdapPassword($ldapPassword);
         } else {
-            $this->logger->debug("UserMapper::{func}: Could not find LDAP password for user '{user}', generating random one.",
+            $this->logger->debug(
+                "UserMapper::{func}: Could not find LDAP password for user '{user}', generating random one.",
                 array(
                     'func' => __FUNCTION__,
                     'user' => @$ldapUser[$this->ldapUserIdField]
-                ));
+                )
+            );
 
             return $this->generateRandomPassword();
         }
@@ -177,7 +182,8 @@ class UserMapper
     private function getLdapUserField($ldapUser, $fieldName, $fetchSingleValue = true)
     {
         $result = @$ldapUser[$fieldName];
-        if ($fetchSingleValue
+        if (
+            $fetchSingleValue
             && is_array($result)
         ) {
             $result = reset($result);

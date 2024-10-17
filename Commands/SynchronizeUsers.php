@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
  * @link https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
+
 namespace Piwik\Plugins\LoginLdap\Commands;
 
 use Exception;
@@ -47,13 +49,24 @@ class SynchronizeUsers extends ConsoleCommand
     {
         $this->setName('loginldap:synchronize-users');
         $this->setDescription('Synchronizes one, multiple or all LDAP users that the current config has access to.');
-        $this->addRequiredValueOption('login', null,
-            'List of users to synchronize. If not specified, all users in LDAP are synchronized.', null, true);
-        $this->addNoValueOption('skip-existing', null,
+        $this->addRequiredValueOption(
+            'login',
+            null,
+            'List of users to synchronize. If not specified, all users in LDAP are synchronized.',
+            null,
+            true
+        );
+        $this->addNoValueOption(
+            'skip-existing',
+            null,
             "Skip users that have been synchronized at least once. Using this option will be much faster, but will not "
-            . "update user info if it has changed in LDAP.");
-        $this->addNoValueOption('purge-non-existent-users', null,
-            "Purge users from Matomo that no longer exist in LDAP.");
+            . "update user info if it has changed in LDAP."
+        );
+        $this->addNoValueOption(
+            'purge-non-existent-users',
+            null,
+            "Purge users from Matomo that no longer exist in LDAP."
+        );
     }
 
     /**
@@ -75,7 +88,8 @@ class SynchronizeUsers extends ConsoleCommand
         $failed = [];
 
         foreach ($logins as $login) {
-            if ($skipExisting
+            if (
+                $skipExisting
                 && $this->userExistsInPiwik($login)
             ) {
                 $output->write("Skipping '$login', already exists in Piwik...");

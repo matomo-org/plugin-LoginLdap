@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
  * @link https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
+
 namespace Piwik\Plugins\LoginLdap\LdapInterop;
 
 use Piwik\Access;
@@ -202,7 +204,7 @@ class UserSynchronizer
 
         // for the synchronization, need to reset all user accesses
         $this->userModel->deleteUserAccess($piwikLogin);
-        $this->userModel->setSuperUserAccess($piwikLogin,false);
+        $this->userModel->setSuperUserAccess($piwikLogin, false);
 
         $usersManagerApi = $this->usersManagerApi;
         foreach ($userAccess as $userAccessLevel => $sites) {
@@ -352,7 +354,7 @@ class UserSynchronizer
             if (PluginsArchiver::isArchivingProcessActive()) {
                 $logger->debug("UserSynchronizer::{func}(): Using UserAccessMapper when synchronizing users.", array('func' => __FUNCTION__));
             }
-        } else if (PluginsArchiver::isArchivingProcessActive())  {
+        } elseif (PluginsArchiver::isArchivingProcessActive()) {
             $logger->debug("UserSynchronizer::{func}(): LDAP access synchronization not enabled.", array('func' => __FUNCTION__));
         }
 

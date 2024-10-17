@@ -1,10 +1,12 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
  * @link https://matomo.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
+
 namespace Piwik\Plugins\LoginLdap\Ldap;
 
 use Exception;
@@ -15,7 +17,7 @@ use Piwik\Plugins\LoginLdap\Config;
  */
 class ServerInfo
 {
-    const DEFAULT_LDAP_PORT = 389;
+    public const DEFAULT_LDAP_PORT = 389;
 
     /**
      * The LDAP server hostname.
@@ -71,9 +73,14 @@ class ServerInfo
      * @param string|null $adminPassword See {@link $adminPassword}.
      * @param bool|null $startTLS See {@link $startTLS}.
      */
-    public function __construct($serverHostname, $baseDn, $serverPort = self::DEFAULT_LDAP_PORT, $adminUsername = null,
-                                $adminPassword = null, $startTLS = null)
-    {
+    public function __construct(
+        $serverHostname,
+        $baseDn,
+        $serverPort = self::DEFAULT_LDAP_PORT,
+        $adminUsername = null,
+        $adminPassword = null,
+        $startTLS = null
+    ) {
         $this->serverHostname = $serverHostname;
         $this->baseDn = $baseDn;
         $this->serverPort = $serverPort;
@@ -87,7 +94,8 @@ class ServerInfo
      *
      * @return string
      */
-    public function getServerHostname() {
+    public function getServerHostname()
+    {
         return $this->serverHostname;
     }
 
@@ -96,7 +104,8 @@ class ServerInfo
      *
      * @param string $serverHostname
      */
-    public function setServerHostname($serverHostname) {
+    public function setServerHostname($serverHostname)
+    {
         $this->serverHostname = $serverHostname;
     }
 
@@ -105,7 +114,8 @@ class ServerInfo
      *
      * @return int
      */
-    public function getServerPort() {
+    public function getServerPort()
+    {
         return $this->serverPort;
     }
 
@@ -114,7 +124,8 @@ class ServerInfo
      *
      * @param int $serverPort
      */
-    public function setServerPort($serverPort) {
+    public function setServerPort($serverPort)
+    {
         $this->serverPort = $serverPort;
     }
 
@@ -123,8 +134,9 @@ class ServerInfo
      *
      * @param bool $startTLS
      */
-    public function setStartTLS($startTLS) {
-       $this->startTLS = $startTLS;
+    public function setStartTLS($startTLS)
+    {
+        $this->startTLS = $startTLS;
     }
 
     /**
@@ -132,8 +144,9 @@ class ServerInfo
      *
      * @return bool
      */
-    public function getStartTLS() {
-       return $this->startTLS;
+    public function getStartTLS()
+    {
+        return $this->startTLS;
     }
 
     /**
@@ -141,7 +154,8 @@ class ServerInfo
      *
      * @return string
      */
-    public function getBaseDn() {
+    public function getBaseDn()
+    {
         return $this->baseDn;
     }
 
@@ -150,7 +164,8 @@ class ServerInfo
      *
      * @param string $baseDn
      */
-    public function setBaseDn($baseDn) {
+    public function setBaseDn($baseDn)
+    {
         $this->baseDn = $baseDn;
     }
 
@@ -159,7 +174,8 @@ class ServerInfo
      *
      * @return string
      */
-    public function getAdminUsername() {
+    public function getAdminUsername()
+    {
         return $this->adminUsername;
     }
 
@@ -168,7 +184,8 @@ class ServerInfo
      *
      * @param string $adminUsername
      */
-    public function setAdminUsername($adminUsername) {
+    public function setAdminUsername($adminUsername)
+    {
         $this->adminUsername = $adminUsername;
     }
 
@@ -177,7 +194,8 @@ class ServerInfo
      *
      * @return string
      */
-    public function getAdminPassword() {
+    public function getAdminPassword()
+    {
         return $this->adminPassword;
     }
 
@@ -186,7 +204,8 @@ class ServerInfo
      *
      * @param string $adminPassword
      */
-    public function setAdminPassword($adminPassword) {
+    public function setAdminPassword($adminPassword)
+    {
         $this->adminPassword = !empty($adminPassword) ? stripcslashes($adminPassword) : $adminPassword;
     }
 
@@ -290,7 +309,7 @@ class ServerInfo
         }
 
         if (!empty($config['start_tls'])) {
-           $result->setStartTLS((bool)$config['start_tls']);
+            $result->setStartTLS((bool)$config['start_tls']);
         }
 
         return $result;

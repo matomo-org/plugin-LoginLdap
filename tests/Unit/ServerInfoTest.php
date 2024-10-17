@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Matomo - free/libre analytics platform
  *
@@ -6,11 +7,11 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  *
  */
+
 namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Piwik\Plugins\LoginLdap\Ldap\ServerInfo;
-
 
 /**
  * @group LoginLdap
@@ -19,10 +20,10 @@ use Piwik\Plugins\LoginLdap\Ldap\ServerInfo;
  */
 class ServerInfoTest extends TestCase
 {
-    const TEST_HOST_NAME = 'some-host.com';
-    const TEST_ADMIN_USER = 'who?';
-    const TEST_ADMIN_PASS = 'pass123!';
-    const TEST_BASE_DN = 'testbasedn';
+    public const TEST_HOST_NAME = 'some-host.com';
+    public const TEST_ADMIN_USER = 'who?';
+    public const TEST_ADMIN_PASS = 'pass123!';
+    public const TEST_BASE_DN = 'testbasedn';
 
     public function testConstruct()
     {
