@@ -119,7 +119,7 @@ class LdapUsers
     /**
      * Constructor.
      */
-    public function __construct(LoggerInterface $logger = null)
+    public function __construct(?LoggerInterface $logger = null)
     {
         $this->logger = $logger ?: StaticContainer::get(LoggerInterface::class);
     }
