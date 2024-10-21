@@ -98,7 +98,7 @@ abstract class Base implements Auth
      */
     protected $logger;
 
-    public function __construct(LoggerInterface $logger = null)
+    public function __construct(?LoggerInterface $logger = null)
     {
         $this->logger = $logger ?: StaticContainer::get(LoggerInterface::class);
     }
@@ -290,7 +290,7 @@ abstract class Base implements Auth
         return $this->userForLogin;
     }
 
-    protected function tryFallbackAuth($onlySuperUsers = true, Auth $auth = null)
+    protected function tryFallbackAuth($onlySuperUsers = true, ?Auth $auth = null)
     {
         if (empty($auth)) {
             $auth = new \Piwik\Plugins\Login\Auth();
