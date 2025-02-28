@@ -907,37 +907,24 @@ function getSampleAccessAttribute(config, accessField, firstValue, secondValue) 
 Adminvue_type_script_lang_ts.render = Adminvue_type_template_id_1e910070_render
 
 /* harmony default export */ var Admin = (Adminvue_type_script_lang_ts);
-// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/LoginLdap/vue/src/Admin/AdminPage.vue?vue&type=template&id=30c5d858
+// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/LoginLdap/vue/src/Admin/AdminPage.vue?vue&type=template&id=64035228
 
-function AdminPagevue_type_template_id_30c5d858_render(_ctx, _cache, $props, $setup, $data, $options) {
-  var _component_Notification = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("Notification");
-
+function AdminPagevue_type_template_id_64035228_render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_Admin = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("Admin");
 
-  return Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("div", null, [_ctx.isLoginControllerActivated ? (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createBlock"])(_component_Notification, {
-    key: 0,
-    context: "warning",
-    noclear: true
-  }, {
-    default: Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withCtx"])(function () {
-      return [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("strong", null, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('General_Warning')), 1), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createTextVNode"])(": " + Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('LoginLdap_LoginPluginEnabledWarning', 'Login', 'LoginLdap')), 1)];
-    }),
-    _: 1
-  })) : Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createCommentVNode"])("", true), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Admin, {
+  return Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Admin, {
     servers: _ctx.servers,
     "ldap-config": _ctx.ldapConfig,
     "updated-from-pre30": _ctx.updatedFromPre30
   }, null, 8, ["servers", "ldap-config", "updated-from-pre30"])]);
 }
-// CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/Admin/AdminPage.vue?vue&type=template&id=30c5d858
+// CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/Admin/AdminPage.vue?vue&type=template&id=64035228
 
 // CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-typescript/node_modules/cache-loader/dist/cjs.js??ref--14-0!./node_modules/babel-loader/lib!./node_modules/@vue/cli-plugin-typescript/node_modules/ts-loader??ref--14-2!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/LoginLdap/vue/src/Admin/AdminPage.vue?vue&type=script&lang=ts
 
 
-
 /* harmony default export */ var AdminPagevue_type_script_lang_ts = (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["defineComponent"])({
   props: {
-    isLoginControllerActivated: Boolean,
     ldapConfig: {
       type: Object,
       required: true
@@ -949,7 +936,6 @@ function AdminPagevue_type_template_id_30c5d858_render(_ctx, _cache, $props, $se
     updatedFromPre30: Boolean
   },
   components: {
-    Notification: external_CoreHome_["Notification"],
     Admin: Admin
   }
 }));
@@ -959,7 +945,7 @@ function AdminPagevue_type_template_id_30c5d858_render(_ctx, _cache, $props, $se
 
 
 
-AdminPagevue_type_script_lang_ts.render = AdminPagevue_type_template_id_30c5d858_render
+AdminPagevue_type_script_lang_ts.render = AdminPagevue_type_template_id_64035228_render
 
 /* harmony default export */ var AdminPage = (AdminPagevue_type_script_lang_ts);
 // CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/index.ts

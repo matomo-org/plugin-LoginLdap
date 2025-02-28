@@ -73,8 +73,6 @@ class Controller extends \Piwik\Plugins\Login\Controller
 
         $view->ldapConfig = Config::getPluginOptionValuesWithDefaults();
 
-        $view->isLoginControllerActivated = PluginManager::getInstance()->isPluginActivated('Login');
-
         $view->updatedFromPre30 = Option::get('LoginLdap_updatedFromPre3_0');
 
         return $view->render();
