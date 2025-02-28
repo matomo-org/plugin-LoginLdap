@@ -14,7 +14,6 @@ describe("LoginLdap_Admin", function () {
 
     before(function () {
         testEnvironment.pluginsToLoad = ['LoginLdap'];
-        testEnvironment.pluginsToUnload = ['Login'];
         testEnvironment.configOverride = {
             LoginLdap: {
                 servers: ['testserver'],
