@@ -69,7 +69,7 @@ describe("LoginLdap_Admin", function () {
         await page.goto(addNewTokenUrl);
         await page.waitForNetworkIdle();
         await page.waitForTimeout(30000);
-        var elem = await page.jQuery('#loginPage');
+        var elem = await page.jQuery('.page');
         expect(await elem.screenshot()).to.matchImage('addNewToken_without_password');
     });
 });
