@@ -110,7 +110,7 @@ abstract class Base implements Auth
      */
     public function getName()
     {
-        return 'LoginLdap';
+        return 'Login';
     }
 
     /**
