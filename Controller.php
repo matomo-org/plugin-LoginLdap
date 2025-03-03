@@ -14,7 +14,6 @@ use Piwik\Notification;
 use Piwik\Option;
 use Piwik\Piwik;
 use Piwik\Plugin\ControllerAdmin;
-use Piwik\Plugin\Manager as PluginManager;
 use Piwik\Plugins\LoginLdap\Ldap\ServerInfo;
 use Piwik\View;
 
@@ -72,8 +71,6 @@ class Controller extends \Piwik\Plugins\Login\Controller
         }
 
         $view->ldapConfig = Config::getPluginOptionValuesWithDefaults();
-
-        $view->isLoginControllerActivated = PluginManager::getInstance()->isPluginActivated('Login');
 
         $view->updatedFromPre30 = Option::get('LoginLdap_updatedFromPre3_0');
 

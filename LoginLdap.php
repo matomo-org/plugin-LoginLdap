@@ -36,7 +36,6 @@ class LoginLdap extends \Piwik\Plugin
     {
         $hooks = array(
             'Request.initAuthenticationObject'       => 'initAuthenticationObject',
-            'User.isNotAuthorized'                   => 'noAccess',
             'API.Request.authenticate'               => 'apiRequestAuthenticate',
             'AssetManager.getJavaScriptFiles'        => 'getJsFiles',
             'AssetManager.getStylesheetFiles'        => 'getStylesheetFiles',
@@ -44,6 +43,7 @@ class LoginLdap extends \Piwik\Plugin
             'Controller.Login.resetPassword'         => 'disablePasswordResetForLdapUsers',
             'Controller.LoginLdap.resetPassword'     => 'disablePasswordResetForLdapUsers',
             'Controller.Login.confirmResetPassword'  => 'disableConfirmResetPasswordForLdapUsers',
+            'Controller.Login.confirmPassword'       => 'checkIfPasswordConfirmationCanBeSkipped',
             'UsersManager.checkPassword'             => 'checkPassword',
             'UsersManager.deleteUser'                => 'onUserDeleted',
             'Login.userRequiresPasswordConfirmation' => 'skipPasswordConfirmation',
@@ -152,8 +152,8 @@ class LoginLdap extends \Piwik\Plugin
      */
     public function activate()
     {
-        if (Manager::getInstance()->isPluginActivated("Login") == true) {
-            Manager::getInstance()->deactivatePlugin("Login");
+        if (Manager::getInstance()->isPluginActivated("Login") == false) {
+            Manager::getInstance()->activatePlugin("Login");
         }
     }
 
@@ -201,17 +201,6 @@ class LoginLdap extends \Piwik\Plugin
 
             exit;
         }
-    }
-
-    /**
-     * Redirects to Login form with error message.
-     * Listens to User.isNotAuthorized hook.
-     */
-    public function noAccess(Exception $exception)
-    {
-        $exceptionMessage = $exception->getMessage();
-
-        echo FrontController::getInstance()->dispatch('LoginLdap', 'login', array($exceptionMessage));
     }
 
     /**
@@ -301,6 +290,15 @@ class LoginLdap extends \Piwik\Plugin
         if ($this->isUserLdapUser($userLogin)) {
             $key = $userLogin . UsersManagerAPI::OPTION_NAME_PREFERENCE_SEPARATOR . UserMapper::USER_PREFERENCE_NAME_IS_LDAP_USER;
             Option::delete($key);
+        }
+    }
+
+    public function checkIfPasswordConfirmationCanBeSkipped()
+    {
+        $enablePasswordConfirmation = \Piwik\Plugins\LoginLdap\Config::getConfigOption('enable_password_confirmation');
+        if (!$enablePasswordConfirmation) {
+            $passwordVerify = StaticContainer::get('Piwik\Plugins\Login\PasswordVerifier');
+            $passwordVerify->setPasswordVerifiedCorrectly();
         }
     }
 }

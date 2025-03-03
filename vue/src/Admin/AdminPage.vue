@@ -6,10 +6,6 @@
 
 <template>
   <div>
-    <Notification v-if="isLoginControllerActivated" context="warning" :noclear="true">
-      <strong>{{ translate('General_Warning') }}</strong>:
-      {{ translate('LoginLdap_LoginPluginEnabledWarning', 'Login', 'LoginLdap') }}
-    </Notification>
 
     <Admin
       :servers="servers"
@@ -21,12 +17,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { Notification } from 'CoreHome';
 import Admin from './Admin.vue';
 
 export default defineComponent({
   props: {
-    isLoginControllerActivated: Boolean,
     ldapConfig: {
       type: Object,
       required: true,
@@ -38,7 +32,6 @@ export default defineComponent({
     updatedFromPre30: Boolean,
   },
   components: {
-    Notification,
     Admin,
   },
 });

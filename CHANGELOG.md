@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 5.1.0 - 2025-03-03
+* Corrects compatibility issue with Login plugin
+
 #### LoginLdap 5.0.7
 * Fixes for PHP 8.4
 
