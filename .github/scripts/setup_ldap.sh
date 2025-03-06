@@ -51,7 +51,7 @@ dn: cn=module,cn=config
 objectClass: olcModuleList
 cn: module
 olcModulePath: /usr/lib/ldap
-olcModuleLoad: {0}back_hdb
+olcModuleLoad: back_hdb
 
 
 # database
@@ -81,6 +81,7 @@ cn: module
 objectClass: olcModuleList
 objectClass: top
 olcModulePath: /usr/lib/ldap
+olcModuleLoad: syncprov.la
 olcModuleLoad: memberof.la
 
 dn: olcOverlay={0}memberof,olcDatabase={2}hdb,cn=config
