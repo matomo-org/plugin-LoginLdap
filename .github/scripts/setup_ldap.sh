@@ -24,6 +24,11 @@ VIEW_OID="2.16.840.1.113730.3.1.1.1"
 ADMIN_OID="2.16.840.1.113730.3.1.1.2"
 SUPERUSER_OID="2.16.840.1.113730.3.1.1.3"
 
+echo "Getting details.."
+sudo ldapsearch -Y EXTERNAL -H ldapi:/// -b "cn=config" | grep olcOverlay
+sudo ldapsearch -Y EXTERNAL -H ldapi:/// -b "cn=config" | grep olcModuleLoad
+echo "..fetched details"
+
 sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
 
 dn: cn=config
@@ -51,7 +56,7 @@ dn: cn=module,cn=config
 objectClass: olcModuleList
 cn: module
 olcModulePath: /usr/lib/ldap
-olcModuleLoad: back_hdb
+olcModuleLoad: back_hdb.la
 
 
 # database
@@ -81,7 +86,6 @@ cn: module
 objectClass: olcModuleList
 objectClass: top
 olcModulePath: /usr/lib/ldap
-olcModuleLoad: syncprov.la
 olcModuleLoad: memberof.la
 
 dn: olcOverlay={0}memberof,olcDatabase={2}hdb,cn=config
