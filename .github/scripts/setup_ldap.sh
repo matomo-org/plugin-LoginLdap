@@ -45,19 +45,13 @@ if [ "$?" -ne "0" ]; then
     exit 1
 fi
 
-sudo ldapsearch -Y EXTERNAL -H ldapi:/// -b "cn=config" | grep olcOverlay
-sudo ldapsearch -Y EXTERNAL -H ldapi:/// -b "cn=config" | grep olcDatabase
-
 sudo ldapadd -Y EXTERNAL -H ldapi:/// <<EOF
 
 dn: cn=module,cn=config
 objectClass: olcModuleList
 cn: module
 olcModulePath: /usr/lib/ldap
-olcModuleLoad: back_hdb
-olcModuleLoad: syncprov.la
-olcModuleLoad: memberof.la
-olcModuleLoad: refint.la
+olcModuleLoad: {0}back_hdb
 
 
 # database
