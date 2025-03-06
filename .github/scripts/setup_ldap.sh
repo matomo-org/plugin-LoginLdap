@@ -83,7 +83,7 @@ objectClass: top
 olcModulePath: /usr/lib/ldap
 olcModuleLoad: memberof.la
 
-dn: olcOverlay={0}memberof,olcDatabase={2}hdb,cn=config
+dn: cn=config,olcOverlay={0}memberof,olcDatabase={2}hdb
 objectClass: olcConfig
 objectClass: olcMemberOf
 objectClass: olcOverlayConfig
@@ -97,7 +97,7 @@ objectClass: top
 olcModuleLoad: refint.la
 olcModulePath: /usr/lib/ldap
 
-dn: olcOverlay={1}refint,olcDatabase={2}hdb,cn=config
+dn: cn=config,olcOverlay={1}refint,olcDatabase={2}hdb
 objectClass: olcConfig
 objectClass: olcOverlayConfig
 objectClass: olcRefintConfig
