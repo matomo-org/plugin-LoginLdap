@@ -47,13 +47,6 @@ fi
 
 sudo ldapadd -Y EXTERNAL -H ldapi:/// <<EOF
 
-dn: cn=module,cn=config
-objectClass: olcModuleList
-cn: module
-olcModulePath: /usr/lib/ldap
-olcModuleLoad: back_mdb
-
-
 # database
 dn: olcDatabase={1}mdb,cn=config
 objectClass: olcDatabaseConfig
