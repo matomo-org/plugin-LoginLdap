@@ -24,11 +24,6 @@ VIEW_OID="2.16.840.1.113730.3.1.1.1"
 ADMIN_OID="2.16.840.1.113730.3.1.1.2"
 SUPERUSER_OID="2.16.840.1.113730.3.1.1.3"
 
-echo "Getting details.."
-sudo ldapsearch -Y EXTERNAL -H ldapi:/// -b "cn=config" | grep olcOverlay
-sudo ldapsearch -Y EXTERNAL -H ldapi:/// -b "cn=config" | grep olcModuleLoad
-echo "..fetched details"
-
 sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
 
 dn: cn=config
@@ -56,14 +51,14 @@ dn: cn=module,cn=config
 objectClass: olcModuleList
 cn: module
 olcModulePath: /usr/lib/ldap
-olcModuleLoad: back_hdb.la
+olcModuleLoad: back_mdb
 
 
 # database
-dn: olcDatabase={2}hdb,cn=config
+dn: olcDatabase={1}mdb,cn=config
 objectClass: olcDatabaseConfig
-objectClass: olcHdbConfig
-olcDatabase: {2}hdb
+objectClass: olcMdbConfig
+olcDatabase: {1}mdb
 olcRootDN: cn=$ADMIN_USER,$BASE_DN
 olcRootPW: $ADMIN_PASS_HASH
 olcDbDirectory: /var/lib/ldap
@@ -74,10 +69,6 @@ olcAccess: {2}to * by self write by dn="cn=$ADMIN_USER,$BASE_DN" write by * read
 olcRequires: authc
 olcLastMod: TRUE
 olcDbCheckpoint: 512 30
-olcDbConfig: {0}set_cachesize 0 2097152 0
-olcDbConfig: {1}set_lk_max_objects 1500
-olcDbConfig: {2}set_lk_max_locks 1500
-olcDbConfig: {3}set_lk_max_lockers 1500
 olcDbIndex: objectClass eq
 
 # modules
@@ -88,7 +79,7 @@ objectClass: top
 olcModulePath: /usr/lib/ldap
 olcModuleLoad: memberof.la
 
-dn: olcOverlay={0}memberof,olcDatabase={2}hdb,cn=config
+dn: olcOverlay={0}memberof,olcDatabase={1}mdb,cn=config
 objectClass: olcConfig
 objectClass: olcMemberOf
 objectClass: olcOverlayConfig
@@ -102,7 +93,7 @@ objectClass: top
 olcModuleLoad: refint.la
 olcModulePath: /usr/lib/ldap
 
-dn: olcOverlay={1}refint,olcDatabase={2}hdb,cn=config
+dn: olcOverlay={1}refint,olcDatabase={1}mdb,cn=config
 objectClass: olcConfig
 objectClass: olcOverlayConfig
 objectClass: olcRefintConfig
