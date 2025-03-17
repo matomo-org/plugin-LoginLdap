@@ -18,6 +18,7 @@ use Piwik\Plugins\LoginLdap\Config;
 class ServerInfo
 {
     public const DEFAULT_LDAP_PORT = 389;
+    public const DEFAULT_LDAPS_PORT = 636;
 
     /**
      * The LDAP server hostname.
@@ -76,14 +77,16 @@ class ServerInfo
     public function __construct(
         $serverHostname,
         $baseDn,
-        $serverPort = self::DEFAULT_LDAP_PORT,
+        $serverPort = 0,
         $adminUsername = null,
         $adminPassword = null,
         $startTLS = null
     ) {
+        // Check if the default port should be different due to protocol in the host name
+        $defaultPort = stripos($serverHostname, 'ldaps:') === 0 ? ServerInfo::DEFAULT_LDAPS_PORT : ServerInfo::DEFAULT_LDAP_PORT;
         $this->serverHostname = $serverHostname;
         $this->baseDn = $baseDn;
-        $this->serverPort = $serverPort;
+        $this->serverPort = $serverPort ?: $defaultPort;
         $this->adminUsername = $adminUsername;
         $this->setAdminPassword($adminPassword);
         $this->startTLS = $startTLS;

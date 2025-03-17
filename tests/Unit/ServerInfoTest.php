@@ -42,6 +42,60 @@ class ServerInfoTest extends TestCase
         $this->assertSame(self::TEST_ADMIN_PASS, $serverInfo->getAdminPassword());
     }
 
+    public function testConstructNoPort()
+    {
+        $serverInfo = new ServerInfo(
+            self::TEST_HOST_NAME,
+            self::TEST_BASE_DN
+        );
+
+        $this->assertSame(self::TEST_HOST_NAME, $serverInfo->getServerHostname());
+        $this->assertSame(self::TEST_BASE_DN, $serverInfo->getBaseDn());
+        $this->assertSame(ServerInfo::DEFAULT_LDAP_PORT, $serverInfo->getServerPort());
+    }
+
+    public function testConstructNoPortLdaps()
+    {
+        $ldapsHostName = 'ldaps://' . self::TEST_HOST_NAME;
+        $serverInfo = new ServerInfo(
+            $ldapsHostName,
+            self::TEST_BASE_DN
+        );
+
+        $this->assertSame($ldapsHostName, $serverInfo->getServerHostname());
+        $this->assertSame(self::TEST_BASE_DN, $serverInfo->getBaseDn());
+        $this->assertSame(ServerInfo::DEFAULT_LDAPS_PORT, $serverInfo->getServerPort());
+    }
+
+    public function testConstructSpecificPort()
+    {
+        $port = 1234;
+        $serverInfo = new ServerInfo(
+            self::TEST_HOST_NAME,
+            self::TEST_BASE_DN,
+            $port
+        );
+
+        $this->assertSame(self::TEST_HOST_NAME, $serverInfo->getServerHostname());
+        $this->assertSame(self::TEST_BASE_DN, $serverInfo->getBaseDn());
+        $this->assertSame($port, $serverInfo->getServerPort());
+    }
+
+    public function testConstructSpecificPortLdaps()
+    {
+        $ldapsHostName = 'ldaps://' . self::TEST_HOST_NAME;
+        $port = 1234;
+        $serverInfo = new ServerInfo(
+            $ldapsHostName,
+            self::TEST_BASE_DN,
+            $port
+        );
+
+        $this->assertSame($ldapsHostName, $serverInfo->getServerHostname());
+        $this->assertSame(self::TEST_BASE_DN, $serverInfo->getBaseDn());
+        $this->assertSame($port, $serverInfo->getServerPort());
+    }
+
     public function testConstructWithQuoteInPassword()
     {
         $serverInfo = new ServerInfo(
