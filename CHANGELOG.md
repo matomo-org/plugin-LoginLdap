@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 5.1.1 - 2025-03-17
+* Adjust default port for ldaps protocol
+
 #### LoginLdap 5.1.0 - 2025-03-03
 * Corrects compatibility issue with Login plugin
 
