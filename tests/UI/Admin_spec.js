@@ -60,6 +60,14 @@ describe("LoginLdap_Admin", function () {
         await page.goto(addNewTokenUrl);
         await page.waitForNetworkIdle();
         var elem = await page.jQuery('#loginPage');
+
+        // Assert that the button starts off disabled.
+        await page.waitForSelector('#login_form_submit[disabled]');
+
+        // Button enabled with password entered.
+        await page.type('#login_form_password', 'p');
+        await page.waitForSelector('#login_form_submit:not([disabled])');
+
         expect(await elem.screenshot()).to.matchImage('addNewToken_with_password');
     });
 
