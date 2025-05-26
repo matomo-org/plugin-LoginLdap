@@ -75,15 +75,15 @@ class ServerInfo
      * @param bool|null $startTLS See {@link $startTLS}.
      */
     public function __construct(
-        $serverHostname,
-        $baseDn,
+        string $serverHostname,
+        string $baseDn,
         $serverPort = 0,
         $adminUsername = null,
         $adminPassword = null,
         $startTLS = null
     ) {
         // Check if the default port should be different due to protocol in the host name
-        $defaultPort = ($serverHostname && stripos($serverHostname, 'ldaps:') === 0) ? ServerInfo::DEFAULT_LDAPS_PORT : ServerInfo::DEFAULT_LDAP_PORT;
+        $defaultPort = stripos($serverHostname, 'ldaps:') === 0 ? ServerInfo::DEFAULT_LDAPS_PORT : ServerInfo::DEFAULT_LDAP_PORT;
         $this->serverHostname = $serverHostname;
         $this->baseDn = $baseDn;
         $this->serverPort = $serverPort ?: $defaultPort;
