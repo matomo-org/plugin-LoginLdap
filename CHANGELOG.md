@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 5.1.2 - 2025-05-26
+* Fixed deprecation warning
+
 #### LoginLdap 5.1.1 - 2025-03-17
 * Adjust default port for ldaps protocol
 

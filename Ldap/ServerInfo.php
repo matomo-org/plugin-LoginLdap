@@ -83,7 +83,7 @@ class ServerInfo
         $startTLS = null
     ) {
         // Check if the default port should be different due to protocol in the host name
-        $defaultPort = stripos($serverHostname, 'ldaps:') === 0 ? ServerInfo::DEFAULT_LDAPS_PORT : ServerInfo::DEFAULT_LDAP_PORT;
+        $defaultPort = ($serverHostname && stripos($serverHostname, 'ldaps:') === 0) ? ServerInfo::DEFAULT_LDAPS_PORT : ServerInfo::DEFAULT_LDAP_PORT;
         $this->serverHostname = $serverHostname;
         $this->baseDn = $baseDn;
         $this->serverPort = $serverPort ?: $defaultPort;
