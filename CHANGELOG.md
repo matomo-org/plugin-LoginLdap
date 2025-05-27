@@ -1,6 +1,6 @@
 # LoginLdap Changelog
 
-#### LoginLdap 5.1.2 - 2025-06-10
+#### LoginLdap 5.1.2 - 2025-06-09
 * Fixed deprecation warning
 
 #### LoginLdap 5.1.1 - 2025-03-17
