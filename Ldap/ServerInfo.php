@@ -75,8 +75,8 @@ class ServerInfo
      * @param bool|null $startTLS See {@link $startTLS}.
      */
     public function __construct(
-        $serverHostname,
-        $baseDn,
+        string $serverHostname,
+        string $baseDn,
         $serverPort = 0,
         $adminUsername = null,
         $adminPassword = null,

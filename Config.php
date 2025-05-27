@@ -43,7 +43,9 @@ class Config
         'user_access_attribute_server_separator' => ':',
         'instance_name' => '',
         'ldap_network_timeout' => Client::DEFAULT_TIMEOUT_SECS,
-        'enable_password_confirmation' => 0
+        'enable_password_confirmation' => 0,
+        'serverUrl' => '',
+        'baseDn' => ''
     );
 
     // for backwards compatibility
