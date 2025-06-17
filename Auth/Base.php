@@ -118,8 +118,10 @@ abstract class Base implements Auth
      *
      * @param string $password password
      */
-    public function setPassword($password)
-    {
+    public function setPassword(
+        #[\SensitiveParameter]
+        $password
+    ) {
         $this->password = $password;
     }
 
@@ -128,8 +130,10 @@ abstract class Base implements Auth
      *
      * @param string $token_auth authentication token
      */
-    public function setTokenAuth($token_auth)
-    {
+    public function setTokenAuth(
+        #[\SensitiveParameter]
+        $token_auth
+    ) {
         $this->token_auth = $token_auth;
     }
 
@@ -139,8 +143,10 @@ abstract class Base implements Auth
      * @param string $passwordHash The hashed password.
      * @throws Exception if authentication by hashed password is not supported.
      */
-    public function setPasswordHash($passwordHash)
-    {
+    public function setPasswordHash(
+        #[\SensitiveParameter]
+        $passwordHash
+    ) {
         $this->passwordHash = $passwordHash;
     }
 

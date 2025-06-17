@@ -137,8 +137,12 @@ class LdapUsers
      * @return array|null On success, returns user info stored in the LDAP database. On failure returns `null`.
      * @throws ConnectionException if we connect to any configured LDAP server.
      */
-    public function authenticate($username, $password, $alreadyAuthenticated = false)
-    {
+    public function authenticate(
+        $username,
+        #[\SensitiveParameter]
+        $password,
+        $alreadyAuthenticated = false
+    ) {
         $this->logger->debug(self::FUNCTION_START_LOG_MESSAGE, array(
             'function' => __FUNCTION__,
             'params' => array($username, "<password[length=" . strlen($password ?? '') . "]>", $alreadyAuthenticated)

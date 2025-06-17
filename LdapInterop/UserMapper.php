@@ -291,8 +291,10 @@ class UserMapper
      * Hashes the LDAP password so no part the real LDAP password (or the hash stored in
      * LDAP) will be stored in Piwik's DB.
      */
-    protected function hashLdapPassword($password)
-    {
+    protected function hashLdapPassword(
+        #[\SensitiveParameter]
+        $password
+    ) {
         return md5($password);
     }
 

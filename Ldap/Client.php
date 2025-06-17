@@ -153,8 +153,11 @@ class Client
      * @throws Exception If an error occurs during the `ldap_bind` call.
      * @return bool
      */
-    public function bind($resourceDn, $password)
-    {
+    public function bind(
+        $resourceDn,
+        #[\SensitiveParameter]
+        $password
+    ) {
         $connectionResource = $this->connectionResource;
 
         $this->logger->debug("Calling ldap_bind({conn}, '{dn}', <password[length={passlen}]>)", array(
