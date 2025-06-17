@@ -76,7 +76,13 @@ describe("LoginLdap_Admin", function () {
         testEnvironment.save();
         await page.goto(addNewTokenUrl);
         await page.waitForNetworkIdle();
-        await page.waitForTimeout(30000);
+        //await page.waitForTimeout(30000);
+        await page.waitForSelector('#token_expire_date');
+        await page.evaluate(() => {
+          // This textbox is set to 6 months in the future.
+          // Clearing the textbox so that screenshot tests don't fail.
+          document.querySelector('#token_expire_date').value = '';
+        });
         var elem = await page.jQuery('.page');
         expect(await elem.screenshot()).to.matchImage('addNewToken_without_password');
     });
