@@ -218,7 +218,8 @@ class LoginLdap extends \Piwik\Plugin
      * Listens to API.Request.authenticate hook.
      */
     public function apiRequestAuthenticate(
-        #[\SensitiveParameter] $tokenAuth
+        #[\SensitiveParameter]
+        $tokenAuth
     ) {
         /** @var Auth $auth */
         $auth = StaticContainer::get('Piwik\Auth');
