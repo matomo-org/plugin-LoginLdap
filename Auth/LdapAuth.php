@@ -70,8 +70,10 @@ class LdapAuth extends Base
      * @param string $passwordHash The hashed password.
      * @throws Exception if authentication by hashed password is not supported.
      */
-    public function setPasswordHash($passwordHash)
-    {
+    public function setPasswordHash(
+        #[\SensitiveParameter]
+        $passwordHash
+    ) {
         if ($passwordHash !== null) {
             throw new Exception("Authentication by password hash is not supported when authenticating by LDAP.");
         }
