@@ -107,7 +107,7 @@ fi
 
 sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
 
-# first define custom LDAP attributes for Piwik access
+# first define custom LDAP attributes for Matomo access
 dn: cn=schema,cn=config
 changetype: modify
 add: olcAttributeTypes
