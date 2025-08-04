@@ -77,7 +77,7 @@ class UserSynchronizerTest extends TestCase
     public function test_synchronizeLdapUser_ReturnsUserManagerApiResultWithoutPassword()
     {
         $this->setUserManagerApiMock($throws = false);
-        $this->setUserModelMock(null);
+        $this->setUserModelMock([]);
 
         $result = $this->userSynchronizer->synchronizeLdapUser('piwikuser', array());
 
@@ -92,7 +92,7 @@ class UserSynchronizerTest extends TestCase
         $this->expectException(Exception::class);
 
         $this->setUserManagerApiMock($throwsInAddUser = true, $throwsInUpdateUser = true);
-        $this->setUserModelMock(null);
+        $this->setUserModelMock([]);
 
         $this->userSynchronizer->synchronizeLdapUser('piwikuser', array());
     }
@@ -100,7 +100,7 @@ class UserSynchronizerTest extends TestCase
     public function test_synchronizeLdapUser_Succeeds_IfUserDoesNotExistInDb()
     {
         $this->setUserManagerApiMock($throws = false);
-        $this->setUserModelMock(null);
+        $this->setUserModelMock([]);
 
         $this->userSynchronizer->synchronizeLdapUser('piwikuser', array());
 
