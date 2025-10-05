@@ -1,1 +1,6 @@
-{}
+{
+    "LoginLdap": {
+        "Test": "Test",
+        "UserIdField": "Polje za korisnički ID"
+    }
+}
