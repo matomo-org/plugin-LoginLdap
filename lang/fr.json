@@ -10,12 +10,12 @@
         "CannotConnectToServer": "Connexion au serveur LDAP impossible.",
         "CannotConnectToServers": "Aucune connexion à l'un des %s serveurs LDAP n'est possible.",
         "EnableLdapAccessSynchronization": "Activer la synchronisation des droits d'accès utilisateurs depuis le LDAP",
-        "EnableLdapAccessSynchronizationDescription": "Si cette option est activée, les droits d'accès utilisateurs sont déterminés par des attributs spécifiques du LDAP. NB : Pour utiliser cette fonction vous devez étendre préalablement votre schéma LDAP avec ces attributs spécifiques.",
+        "EnableLdapAccessSynchronizationDescription": "Si cette option est activée, les droits d'accès utilisateurs sont déterminés par des attributs spécifiques du LDAP. NB : Pour utiliser cette fonction vous devez étendre préalablement votre schéma LDAP avec ces attributs spécifiques.",
         "ExpectedLdapAttributes": "Attributs LDAP attendus",
         "ExpectedLdapAttributesPrelude": "Avec cette configuration, le composant LoginLdap attend des attributs LDAP qui ressemblent à ...",
         "Filter": "Filtre de recherche LDAP avancé",
         "FilterCount": "%s entrée correspondent au filtre.",
-        "FilterDescription": "Filtre LDAP utilisé pour déterminer quelles entrées de l'annuaire sont autorisées à s'authentifier pour l'accès à Matomo. Par exemple : \"(objectClass=person)\".",
+        "FilterDescription": "Filtre LDAP utilisé pour déterminer quelles entrées de l'annuaire sont autorisées à s'authentifier pour l'accès à Matomo. Par exemple : \"(objectClass=person)\".",
         "FirstLastNameForAlias": "Le prénom et le nom sont utilisés pour générer un nom complet si aucun nom complet n'est renseigné dans l'annuaire LDAP.",
         "FirstNameField": "Champ Prénom",
         "FirstNameFieldDescription": "Attribut LDAP contenant le prénom.",
@@ -49,12 +49,12 @@
         "MailFieldDescription": "Attribut LDAP contenant l'adresse e-mail, par exemple \"mail\".",
         "MemberOf": "Groupe utilisateur requis",
         "MemberOfCount": "%s entrées dans le groupe.",
-        "MemberOfDescription": "Nom du groupe dont l'utilisateur doit être membre pour pouvoir se connecter, par exemple : \"cn=Matomo User,cn=Users,dc=organization,dc=com\".",
-        "MemberOfDescription2": "NB : Ce paramètre utilise le filtre LDAP standard \"memberOf=?\". Certains serveurs LDAP nécessitent une configuration avancée pour cela.",
+        "MemberOfDescription": "Nom du groupe dont l'utilisateur doit être membre pour pouvoir se connecter, par exemple : \"cn=Matomo User,cn=Users,dc=organization,dc=com\".",
+        "MemberOfDescription2": "NB : Ce paramètre utilise le filtre LDAP standard \"memberOf=?\". Certains serveurs LDAP nécessitent une configuration avancée pour cela.",
         "MemberOfField": "Champ LDAP memberOf",
         "MemberOfFieldDescription": "Champs utilisé par votre LDAP pour indiquer l'appartenance, par défaut \"memberOf\"",
         "MenuLdap": "Utilisateurs LDAP",
-        "MobileAppIntegrationNote": "Note : si vous planifiez d'utiliser LDAP avec l'application mobile officielle, vous devez garder cette option décochée. Actuellement l'application mobile ne peut pas authentifier des utilisateurs si leur mot de passe n'est pas stocké dans la BDD Matomo.",
+        "MobileAppIntegrationNote": "Note : si vous planifiez d'utiliser LDAP avec l'application mobile officielle, vous devez garder cette option décochée. Actuellement l'application mobile ne peut pas authentifier des utilisateurs si leur mot de passe n'est pas stocké dans la BDD Matomo.",
         "NetworkTimeout": "Délai d'attente LDAP (en secs)",
         "NetworkTimeoutDescription": "Durée maximale d'attente en secondes pour une réponse à une requête LDAP.",
         "NetworkTimeoutDescription2": "Supérieur au délai d'attente LDAP, temps maximum que vos utilisateurs peuvent avoir à attendre pour se connecter à Matomo via LDAP, si un ou plusieurs de vos serveurs LDAP ne répondent plus.",
@@ -92,6 +92,6 @@
         "UserNotFound": "Utilisateur \"%s\" introuvable !",
         "UserSyncSettings": "Paramètres de synchronisation des utilisateurs",
         "UsernameSuffix": "Suffixe d'adresse e-mail",
-        "UsernameSuffixDescription": "Ajouté à l'alias pour générer l'adresse email si l'utilisateur n'en a aucun d'enregistrée dans le LDAP, par exemple : \"@localhost.com\"."
+        "UsernameSuffixDescription": "Ajouté à l'alias pour générer l'adresse email si l'utilisateur n'en a aucun d'enregistrée dans le LDAP, par exemple : \"@localhost.com\"."
     }
 }
