@@ -1,6 +1,20 @@
 {
     "LoginLdap": {
+        "AdminPass": "LDAP lozinka",
+        "BaseDn": "Osnovni DN",
+        "LdapPort": "Port servera",
+        "LoadUser": "Učitaj korisnika iz LDAP-a",
+        "LoadUserCommandDesc": "Za sinkroniziranje više korisnika koristi naredbu %s.",
+        "MailField": "Polje za e-mail adresu",
+        "MemberOf": "Potrebna korisnička grupa",
+        "MenuLdap": "LDAP korisnici",
+        "NoUserName": "Korisničko ime nije zadano!",
+        "PluginDescription": "Dodatak za prijavu s LDAP autentifikacijom. Pruža alternativu standardnom Matomo dodatku za prijavu.",
+        "ServerUrl": "URL servera",
+        "Settings": "LDAP postavke",
         "Test": "Test",
-        "UserIdField": "Polje za korisnički ID"
+        "UserIdField": "Polje za korisnički ID",
+        "UserNotFound": "Korisnik „%s” nije pronađen!",
+        "UsernameSuffix": "Sufiks e-mail adrese"
     }
 }
