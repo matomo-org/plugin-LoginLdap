@@ -21,6 +21,7 @@ use Piwik\Plugins\UsersManager\Model as UserModel;
 use Piwik\Plugins\UsersManager\UserUpdater;
 use Piwik\Site;
 use Piwik\Log\LoggerInterface;
+use Piwik\Tracker\Cache;
 
 /**
  * Synchronizes LDAP user information with the Piwik database.
@@ -194,10 +195,18 @@ class UserSynchronizer
 
         $userAccess = $this->userAccessMapper->getPiwikUserAccessForLdapUser($ldapUser);
         if (empty($userAccess)) {
-            $this->logger->warning("UserSynchronizer::{func}: User '{user}' has no access in LDAP, but access synchronization is enabled.", array(
-                'func' => __FUNCTION__,
-                'user' => $piwikLogin
-            ));
+            if (Config::isAccessSynchronizationEnabled()) {
+                // Delete the access if isAccessSynchronizationEnabled and no userAccess is mapped
+                $this->userModel->deleteUserAccess($piwikLogin);
+                $this->userModel->setSuperUserAccess($piwikLogin, false);
+                Cache::deleteTrackerCache();
+                $this->logger->log('warning', 'Deleting all the access since access synchronization is enabled, but no access mapped.');
+            } else {
+                $this->logger->log('warning',"UserSynchronizer::{func}: User '{user}' has no access in LDAP, but access synchronization is enabled.", array(
+                    'func' => __FUNCTION__,
+                    'user' => $piwikLogin
+                ));
+            }
 
             return;
         }
