@@ -202,7 +202,7 @@ class UserSynchronizer
                 Cache::deleteTrackerCache();
                 $this->logger->log('warning', 'Deleting all the access since access synchronization is enabled, but no access mapped.');
             } else {
-                $this->logger->log('warning',"UserSynchronizer::{func}: User '{user}' has no access in LDAP, but access synchronization is enabled.", array(
+                $this->logger->log('warning', "UserSynchronizer::{func}: User '{user}' has no access in LDAP, but access synchronization is enabled.", array(
                     'func' => __FUNCTION__,
                     'user' => $piwikLogin
                 ));

@@ -166,7 +166,7 @@ class UserSynchronizerTest extends TestCase
         $config = Config::getInstance()->LoginLdap;
         $config['enable_synchronize_access_from_ldap'] = 0;
         Config::getInstance()->LoginLdap = $config;
-        $this->setUserAccessMapperMock([],$userSynchronizer);
+        $this->setUserAccessMapperMock([], $userSynchronizer);
         $userSynchronizer->synchronizePiwikAccessFromLdap('piwikuser', array());
         $this->assertStringContainsString("UserSynchronizer::synchronizePiwikAccessFromLdap: User 'piwikuser' has no access in LDAP, but access synchronization is enabled.", $logger->output);
     }
@@ -199,7 +199,7 @@ class UserSynchronizerTest extends TestCase
         $config = Config::getInstance()->LoginLdap;
         $config['enable_synchronize_access_from_ldap'] = 1;
         Config::getInstance()->LoginLdap = $config;
-        $this->setUserAccessMapperMock([],$userSynchronizer);
+        $this->setUserAccessMapperMock([], $userSynchronizer);
         $userSynchronizer->synchronizePiwikAccessFromLdap('piwikuser', array());
         $this->assertStringContainsString("Deleting all the access since access synchronization is enabled, but no access mapped.", $logger->output);
     }
