@@ -189,20 +189,22 @@ class UserSynchronizer
      */
     public function synchronizePiwikAccessFromLdap($piwikLogin, $ldapUser)
     {
-        if (empty($this->userAccessMapper) || !Config::isAccessSynchronizationEnabled()) {
+        if (empty($this->userAccessMapper)) {
             return;
         }
 
         $userAccess = $this->userAccessMapper->getPiwikUserAccessForLdapUser($ldapUser);
         if (empty($userAccess)) {
-            $this->logger->log('warning', "UserSynchronizer::{func}: User '{user}' has no access in LDAP, but access synchronization is enabled. Deleting access if any present.", array(
-                'func' => __FUNCTION__,
-                'user' => $piwikLogin
-            ));
-            // Delete the access if isAccessSynchronizationEnabled and no userAccess is mapped
-            $this->userModel->deleteUserAccess($piwikLogin);
-            $this->userModel->setSuperUserAccess($piwikLogin, false);
-            Cache::deleteTrackerCache();
+            if (Config::isAccessSynchronizationEnabled()) {
+                $this->logger->log('warning', "UserSynchronizer::{func}: User '{user}' has no access in LDAP, but access synchronization is enabled. Deleting access if any present.", array(
+                    'func' => __FUNCTION__,
+                    'user' => $piwikLogin
+                ));
+                // Delete the access if isAccessSynchronizationEnabled and no userAccess is mapped
+                $this->userModel->deleteUserAccess($piwikLogin);
+                $this->userModel->setSuperUserAccess($piwikLogin, false);
+                Cache::deleteTrackerCache();
+            }
 
             return;
         }
