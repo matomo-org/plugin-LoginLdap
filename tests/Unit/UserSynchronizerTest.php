@@ -164,7 +164,7 @@ class UserSynchronizerTest extends TestCase
 
         // Second iteration returns no mapping for the user and since enable_synchronize_access_from_ldap=0, it should do nothing
         $config = Config::getInstance()->LoginLdap;
-        $oldValue = $config['enable_synchronize_access_from_ldap'];
+        $oldValue = $config['enable_synchronize_access_from_ldap'] ?? 0;
         $config['enable_synchronize_access_from_ldap'] = 0;
         Config::getInstance()->LoginLdap = $config;
         $this->setUserAccessMapperMock([], $userSynchronizer);
@@ -200,7 +200,7 @@ class UserSynchronizerTest extends TestCase
 
         // Second iteration returns no mapping for the user and since enable_synchronize_access_from_ldap=1, it should delete access
         $config = Config::getInstance()->LoginLdap;
-        $oldValue = $config['enable_synchronize_access_from_ldap'];
+        $oldValue = $config['enable_synchronize_access_from_ldap'] ?? 0;
         $config['enable_synchronize_access_from_ldap'] = 1;
         Config::getInstance()->LoginLdap = $config;
         $this->setUserAccessMapperMock([], $userSynchronizer);
