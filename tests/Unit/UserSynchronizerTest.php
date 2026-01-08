@@ -205,7 +205,6 @@ class UserSynchronizerTest extends TestCase
         Config::getInstance()->LoginLdap = $config;
         $this->setUserAccessMapperMock([], $userSynchronizer);
         $userSynchronizer->synchronizePiwikAccessFromLdap('piwikuser', array());
-        $this->assertStringContainsString("UserSynchronizer::synchronizePiwikAccessFromLdap: User 'piwikuser' has no access in LDAP, but access synchronization is enabled. Deleting access if any present.", $logger->output);
         $config['enable_synchronize_access_from_ldap'] = $oldValue;
         Config::getInstance()->LoginLdap = $config;
     }
