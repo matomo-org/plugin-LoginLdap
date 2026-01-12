@@ -201,18 +201,20 @@ class UserSynchronizer
         $this->userModel->setSuperUserAccess($piwikLogin, false);
 
         $usersManagerApi = $this->usersManagerApi;
-        foreach ($userAccess as $userAccessLevel => $sites) {
-            Access::doAsSuperUser(function () use ($usersManagerApi, $userAccessLevel, $sites, $piwikLogin) {
-                if ($userAccessLevel == 'superuser') {
-                    if (method_exists('Piwik\Plugins\UsersManager\UserUpdater', 'setSuperUserAccessWithoutCurrentPassword')) {
-                        $this->userUpdater->setSuperUserAccessWithoutCurrentPassword($piwikLogin, true);
+        if (!empty($userAccess)) {
+            foreach ($userAccess as $userAccessLevel => $sites) {
+                Access::doAsSuperUser(function () use ($usersManagerApi, $userAccessLevel, $sites, $piwikLogin) {
+                    if ($userAccessLevel == 'superuser') {
+                        if (method_exists('Piwik\Plugins\UsersManager\UserUpdater', 'setSuperUserAccessWithoutCurrentPassword')) {
+                            $this->userUpdater->setSuperUserAccessWithoutCurrentPassword($piwikLogin, true);
+                        } else {
+                            $usersManagerApi->setSuperUserAccess($piwikLogin, true);
+                        }
                     } else {
-                        $usersManagerApi->setSuperUserAccess($piwikLogin, true);
+                        $usersManagerApi->setUserAccess($piwikLogin, $userAccessLevel, $sites);
                     }
-                } else {
-                    $usersManagerApi->setUserAccess($piwikLogin, $userAccessLevel, $sites);
-                }
-            });
+                });
+            }
         }
     }
 
