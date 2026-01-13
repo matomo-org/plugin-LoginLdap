@@ -188,37 +188,33 @@ class UserSynchronizer
      */
     public function synchronizePiwikAccessFromLdap($piwikLogin, $ldapUser)
     {
-        if (empty($this->userAccessMapper)) {
+        // UserSynchronizer::makeConfigured() only sets a UserAccessMapper when Config::isAccessSynchronizationEnabled()
+        // is true, so return early in this case.
+        if (empty($this->userAccessMapper) || !Config::isAccessSynchronizationEnabled()) {
             return;
         }
 
         $userAccess = $this->userAccessMapper->getPiwikUserAccessForLdapUser($ldapUser);
-        if (empty($userAccess)) {
-            $this->logger->warning("UserSynchronizer::{func}: User '{user}' has no access in LDAP, but access synchronization is enabled.", array(
-                'func' => __FUNCTION__,
-                'user' => $piwikLogin
-            ));
-
-            return;
-        }
 
         // for the synchronization, need to reset all user accesses
         $this->userModel->deleteUserAccess($piwikLogin);
         $this->userModel->setSuperUserAccess($piwikLogin, false);
 
         $usersManagerApi = $this->usersManagerApi;
-        foreach ($userAccess as $userAccessLevel => $sites) {
-            Access::doAsSuperUser(function () use ($usersManagerApi, $userAccessLevel, $sites, $piwikLogin) {
-                if ($userAccessLevel == 'superuser') {
-                    if (method_exists('Piwik\Plugins\UsersManager\UserUpdater', 'setSuperUserAccessWithoutCurrentPassword')) {
-                        $this->userUpdater->setSuperUserAccessWithoutCurrentPassword($piwikLogin, true);
+        if (!empty($userAccess)) {
+            foreach ($userAccess as $userAccessLevel => $sites) {
+                Access::doAsSuperUser(function () use ($usersManagerApi, $userAccessLevel, $sites, $piwikLogin) {
+                    if ($userAccessLevel == 'superuser') {
+                        if (method_exists('Piwik\Plugins\UsersManager\UserUpdater', 'setSuperUserAccessWithoutCurrentPassword')) {
+                            $this->userUpdater->setSuperUserAccessWithoutCurrentPassword($piwikLogin, true);
+                        } else {
+                            $usersManagerApi->setSuperUserAccess($piwikLogin, true);
+                        }
                     } else {
-                        $usersManagerApi->setSuperUserAccess($piwikLogin, true);
+                        $usersManagerApi->setUserAccess($piwikLogin, $userAccessLevel, $sites);
                     }
-                } else {
-                    $usersManagerApi->setUserAccess($piwikLogin, $userAccessLevel, $sites);
-                }
-            });
+                });
+            }
         }
     }
 

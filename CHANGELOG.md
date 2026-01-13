@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 5.1.4 - 2025-01-12
+* Added code to delete all the access if no access returned from Ldap and enable_synchronize_access_from_ldap=1
+
 #### LoginLdap 5.1.3 - 2025-07-07
 * Textual changes
 
