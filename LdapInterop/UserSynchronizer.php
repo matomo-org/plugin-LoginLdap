@@ -107,6 +107,7 @@ class UserSynchronizer
      * @var bool
      */
     public static $skipPasswordConfirmation = false;
+    public static $allowUpdateUser = false;
 
     public function __construct(?LoggerInterface $logger = null)
     {
@@ -159,8 +160,10 @@ class UserSynchronizer
                 } else {
                     if (Config::getShouldSynchronizeUsersAfterLogin()) {
                         $usersManagerApi::$UPDATE_USER_REQUIRE_PASSWORD_CONFIRMATION = false;
+                        self::$allowUpdateUser = true;
                         $usersManagerApi->updateUser($user['login'], $user['password'], $user['email'], $isPasswordHashed = true, true);
                         $usersManagerApi::$UPDATE_USER_REQUIRE_PASSWORD_CONFIRMATION = true;
+                        self::$allowUpdateUser = false;
                     } else {
                         $userUpdater->updateUserWithoutCurrentPassword($user['login'], $user['password'], $user['email'], $isPasswordHashed = true);
                     }

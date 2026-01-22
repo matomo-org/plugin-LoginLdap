@@ -47,6 +47,7 @@ class LoginLdap extends \Piwik\Plugin
             'UsersManager.checkPassword'             => 'checkPassword',
             'UsersManager.deleteUser'                => 'onUserDeleted',
             'API.UsersManager.setUserPreference'     => 'checkIfUserPreferenceChangeIsAllowed',
+            'API.UsersManager.updateUser'            => 'disablePasswordUpdate',
             'Login.userRequiresPasswordConfirmation' => 'skipPasswordConfirmation',
         );
         return $hooks;
@@ -317,5 +318,12 @@ class LoginLdap extends \Piwik\Plugin
             $passwordVerify = StaticContainer::get('Piwik\Plugins\Login\PasswordVerifier');
             $passwordVerify->setPasswordVerifiedCorrectly();
         }
+    }
+
+    public function disablePasswordUpdate($values)
+    {
+       if (!UserSynchronizer::$allowUpdateUser &&!empty($values['userLogin']) && !empty($values['password']) && $this->isUserLdapUser($values['userLogin'])) {
+           throw new Exception(Piwik::translate('LoginLdap_LdapUserCantChangePassword'));
+       }
     }
 }
