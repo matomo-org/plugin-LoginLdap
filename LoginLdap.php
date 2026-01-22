@@ -322,8 +322,8 @@ class LoginLdap extends \Piwik\Plugin
 
     public function disablePasswordUpdate($values)
     {
-       if (!UserSynchronizer::$allowUpdateUser &&!empty($values['userLogin']) && !empty($values['password']) && $this->isUserLdapUser($values['userLogin'])) {
-           throw new Exception(Piwik::translate('LoginLdap_LdapUserCantChangePassword'));
-       }
+        if (!UserSynchronizer::$allowUpdateUser && !empty($values['userLogin']) && !empty($values['password']) && $this->isUserLdapUser($values['userLogin'])) {
+            throw new Exception(Piwik::translate('LoginLdap_LdapUserCantChangePassword'));
+        }
     }
 }
