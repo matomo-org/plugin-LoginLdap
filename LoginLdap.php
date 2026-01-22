@@ -311,19 +311,25 @@ class LoginLdap extends \Piwik\Plugin
         }
     }
 
+    /**
+     * Throws exception if trying to change password of LDAP user
+     * @param $values
+     * @return void
+     * @throws Exception
+     */
+    public function disablePasswordUpdate($values)
+    {
+        if (!UserSynchronizer::$allowUpdateUser && !empty($values['userLogin']) && !empty($values['password']) && $this->isUserLdapUser($values['userLogin'])) {
+            throw new Exception(Piwik::translate('LoginLdap_LdapUserCantChangePassword'));
+        }
+    }
+
     public function checkIfPasswordConfirmationCanBeSkipped()
     {
         $enablePasswordConfirmation = \Piwik\Plugins\LoginLdap\Config::getConfigOption('enable_password_confirmation');
         if (!$enablePasswordConfirmation) {
             $passwordVerify = StaticContainer::get('Piwik\Plugins\Login\PasswordVerifier');
             $passwordVerify->setPasswordVerifiedCorrectly();
-        }
-    }
-
-    public function disablePasswordUpdate($values)
-    {
-        if (!UserSynchronizer::$allowUpdateUser && !empty($values['userLogin']) && !empty($values['password']) && $this->isUserLdapUser($values['userLogin'])) {
-            throw new Exception(Piwik::translate('LoginLdap_LdapUserCantChangePassword'));
         }
     }
 }
