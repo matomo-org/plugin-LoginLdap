@@ -46,6 +46,7 @@ class LoginLdap extends \Piwik\Plugin
             'Controller.Login.confirmPassword'       => 'checkIfPasswordConfirmationCanBeSkipped',
             'UsersManager.checkPassword'             => 'checkPassword',
             'UsersManager.deleteUser'                => 'onUserDeleted',
+            'API.UsersManager.setUserPreference'     => 'checkIfUserPreferenceChangeIsAllowed',
             'Login.userRequiresPasswordConfirmation' => 'skipPasswordConfirmation',
         );
         return $hooks;
@@ -292,6 +293,20 @@ class LoginLdap extends \Piwik\Plugin
         if ($this->isUserLdapUser($userLogin)) {
             $key = $userLogin . UsersManagerAPI::OPTION_NAME_PREFERENCE_SEPARATOR . UserMapper::USER_PREFERENCE_NAME_IS_LDAP_USER;
             Option::delete($key);
+        }
+    }
+
+    /**
+     * Throws exception if trying to change isLDAPUser preference, which is not allowed via API
+     *
+     * @param $preferenceInfo
+     * @return void
+     * @throws Exception
+     */
+    public function checkIfUserPreferenceChangeIsAllowed($preferenceInfo)
+    {
+        if (isset($preferenceInfo['preferenceName']) && $preferenceInfo['preferenceName'] === UserMapper::USER_PREFERENCE_NAME_IS_LDAP_USER && !UserMapper::$isLdapPreferenceSetAllowed) {
+            throw new Exception(Piwik::translate('LoginLdap_LdapUserCantChangeIsLdapUserPreference'));
         }
     }
 

@@ -29,6 +29,8 @@ class UserMapper
 
     public const USER_PREFERENCE_NAME_IS_LDAP_USER = 'isLDAPUser';
 
+    public static $isLdapPreferenceSetAllowed = false;
+
     /**
      * The LDAP resource field that holds a user's username.
      *
@@ -327,6 +329,7 @@ class UserMapper
     public function markUserAsLdapUser($userLogin)
     {
         Access::doAsSuperUser(function () use ($userLogin) {
+            UserMapper::$isLdapPreferenceSetAllowed = true;
             $class     = Request::getClassNameAPI('UsersManager');
             $parameters = array(
                 'userLogin'       => $userLogin,
@@ -335,6 +338,7 @@ class UserMapper
 
             );
             Proxy::getInstance()->call($class, 'setUserPreference', $parameters);
+            UserMapper::$isLdapPreferenceSetAllowed = false;
         });
     }
 

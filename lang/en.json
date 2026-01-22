@@ -89,6 +89,7 @@
         "MobileAppIntegrationNote": "Note: If you plan on using LDAP with the official mobile app, you must keep this option unchecked. Currently, the mobile app cannot authenticate users if user passwords are not stored in Matomo's DB.",
         "PasswordFieldHelp": "Enter a password to overwrite the existing password or leave blank to make no change.",
         "LdapUserCantChangePassword": "Changing your password is not supported for LDAP users. As you use LDAP, your user settings are managed in LDAP directly. For more information, please contact your LDAP server administrator or your Matomo administrator.",
+        "LdapUserCantChangeIsLdapUserPreference": "Changing isLDAPUser preference is not allowed.",
         "StartTLS": "Enable TLS",
         "StartTLSFieldHelp": "To activate TLS for this server",
         "OptionsPWCONFIRMATION": "Enable password confirmation",
