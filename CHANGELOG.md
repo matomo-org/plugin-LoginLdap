@@ -1,5 +1,9 @@
 # LoginLdap Changelog
 
+#### LoginLdap 5.1.5 - 2025-01-27
+* Restrict isLDAPUser preference set only via internal methods and not via API
+* Set random token value on successful authenticate
+
 #### LoginLdap 5.1.4 - 2025-01-12
 * Added code to delete all the access if no access returned from Ldap and enable_synchronize_access_from_ldap=1
 
