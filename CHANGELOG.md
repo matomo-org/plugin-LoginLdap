@@ -1,6 +1,6 @@
 # LoginLdap Changelog
 
-#### LoginLdap 5.1.5 - 2025-01-26
+#### LoginLdap 5.1.5 - 2025-01-27
 * Restrict isLDAPUser preference set only via internal methods and not via API
 * Set random token value on successful authenticate
 
