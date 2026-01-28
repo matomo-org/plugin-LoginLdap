@@ -38,6 +38,7 @@
         "LdapUserAccessAttributeServerSpecDelimiter": "Teormharcóir Sonraíocht Freastalaí Tréithe Rochtana Úsáideora",
         "LdapUserAccessAttributeServerSpecDelimiterDescription": "An teaghrán a úsáidtear chun sonraíochtaí freastalaí a theorannú i tréith rochtana úsáideora. Má shocraítear ';', beifear ag súil go mbeidh cuma ';;&lt;server-spec&gt;&lt;server-spec&gt; …'.",
         "LdapUserAdded": "Chuir úsáideoir LDAP leis go rathúil!",
+        "LdapUserCantChangeIsLdapUserPreference": "Ní cheadaítear rogha isLDAPUser a athrú.",
         "LdapUserCantChangePassword": "Ní thacaítear le d'úsáideoirí LDAP do phasfhocal a athrú. De réir mar a úsáideann tú LDAP, déantar do shocruithe úsáideora a bhainistiú go díreach i LDAP. Le haghaidh tuilleadh eolais, téigh i dteagmháil le do riarthóir freastalaí LDAP nó le do riarthóir Matomo.",
         "LdapViewAccessField": "Réimse Rochtana Amharc LDAP",
         "LdapViewAccessFieldDescription": "An tréith saincheaptha LDAP a chinneann cé na suíomhanna a bhfuil rochtain amhairc ag úsáideoir orthu.",
