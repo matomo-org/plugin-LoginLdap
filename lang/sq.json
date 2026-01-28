@@ -38,6 +38,7 @@
         "LdapUserAccessAttributeServerSpecDelimiter": "Kufizues Specifikimesh Shërbyesi në Atribut Hyrjesh Përdoruesi",
         "LdapUserAccessAttributeServerSpecDelimiterDescription": "Vargu i përdorur për të kufizuar specifikime shërbyesi brenda një atributi hyrjesh përdoruesi. Nëse vihet “;”, atributi i hyrjeve duhet pritur të duket si '&lt;server-spec&gt;;&lt;server-spec&gt;;…'.",
         "LdapUserAdded": "Përdoruesi LDAP u shtua me sukses!",
+        "LdapUserCantChangeIsLdapUserPreference": "Nuk lejohet ndryshimi i parapëlqimit isLDAPUser.",
         "LdapUserCantChangePassword": "Ndryshimi i fjalëkalimit nuk mbulohet për përdorues LDAP. Kur përdorni LDAP, rregullimet tuaja të përdoruesit administrohen drejtpërsëdrejti nga LDAP-ja. Për më tepër hollësi, ju lutemi, lidhuni me përgjegjësin e shërbyesit tuaj LDAP ose përgjegjësin e instalimit tuaj Matomo.",
         "LdapViewAccessField": "Fusha LDAP për Hyrje Parjesh",
         "LdapViewAccessFieldDescription": "Atributi vetjak LDAP që përcakton se te cilët sajte mund të hyjë një përdorues për t’i parë.",
