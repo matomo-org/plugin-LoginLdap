@@ -1,6 +1,6 @@
 # LoginLdap Changelog
 
-#### LoginLdap 5.1.7 - 2026-01-30
+#### LoginLdap 5.1.7 - 2026-02-02   
 * Use new session method to destroy all sessions on plugin deactivation
 
 #### LoginLdap 5.1.6 - 2026-02-02
