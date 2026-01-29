@@ -22,6 +22,7 @@ use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 use Piwik\View;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
+use Piwik\Session;
 
 /**
  *
@@ -166,6 +167,9 @@ class LoginLdap extends \Piwik\Plugin
     {
         if (Manager::getInstance()->isPluginActivated("Login") == false) {
             Manager::getInstance()->activatePlugin("Login");
+        }
+        if (method_exists(Session::class, 'destroyAllSessions')) {
+            Session::destroyAllSessions();
         }
     }
 
