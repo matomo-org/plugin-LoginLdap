@@ -1,10 +1,8 @@
 # LoginLdap Changelog
 
-#### LoginLdap 5.1.7 - 2026-02-02   
-* Use new session method to destroy all sessions on plugin deactivation
-
 #### LoginLdap 5.1.6 - 2026-02-02
 * Fixes regression introduced in version 5.1.5 due to restrict actions
+* Use new session method to destroy all sessions on plugin deactivation
 
 #### LoginLdap 5.1.5 - 2026-01-27
 * Restrict isLDAPUser preference set only via internal methods and not via API
