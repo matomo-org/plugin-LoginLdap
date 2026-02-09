@@ -64,12 +64,39 @@ olcModuleLoad: refint.so
 EOF
 
 if [ "$?" -ne "0" ]; then
-    echo "Failed to change config modules!"
-    echo ""
-    echo "slapd log:"
-    sudo grep slapd /var/log/syslog
+    # 2.6.x may not have cn=module,cn=config; detect or create it
+    MODULE_DN=$(sudo ldapsearch -Y EXTERNAL -H ldapi:/// -b cn=config '(objectClass=olcModuleList)' dn | awk '/^dn: /{print $2}' | head -n 1)
+    if [ -z "$MODULE_DN" ]; then
+        MODULE_DN="cn=module,cn=config"
+        sudo ldapadd -Y EXTERNAL -H ldapi:/// <<EOF
+dn: $MODULE_DN
+objectClass: olcModuleList
+cn: module
+olcModulePath: $MODULE_PATH
+olcModuleLoad: memberof.so
+olcModuleLoad: refint.so
+EOF
+    else
+        sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
+dn: $MODULE_DN
+changetype: modify
+replace: olcModulePath
+olcModulePath: $MODULE_PATH
+-
+replace: olcModuleLoad
+olcModuleLoad: memberof.so
+olcModuleLoad: refint.so
+EOF
+    fi
 
-    exit 1
+    if [ "$?" -ne "0" ]; then
+        echo "Failed to change config modules!"
+        echo ""
+        echo "slapd log:"
+        sudo grep slapd /var/log/syslog
+
+        exit 1
+    fi
 fi
 
 DB_DN=$(sudo ldapsearch -Y EXTERNAL -H ldapi:/// -b cn=config '(olcDatabase=*)' dn olcDatabase | awk '/^dn: /{dn=$2} /^olcDatabase: .*mdb/{print dn}' | head -n 1)
