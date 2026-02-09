@@ -27,6 +27,8 @@ STR_OID="1.3.6.1.4.1.1466.115.121.1.15"
 VIEW_OID="2.16.840.1.113730.3.1.1.1"
 ADMIN_OID="2.16.840.1.113730.3.1.1.2"
 SUPERUSER_OID="2.16.840.1.113730.3.1.1.3"
+DB_DN="olcDatabase={1}mdb,cn=config"
+MODULE_DN="cn=module{0},cn=config"
 
 sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
 
@@ -52,56 +54,23 @@ fi
 sudo ldapadd -Y EXTERNAL -H ldapi:/// <<EOF
 
 # modules
-dn: cn=module,cn=config
+dn: $MODULE_DN
 changetype: modify
-replace: olcModulePath
-olcModulePath: $MODULE_PATH
--
-replace: olcModuleLoad
+add: olcModuleLoad
 olcModuleLoad: memberof.so
+-
+add: olcModuleLoad
 olcModuleLoad: refint.so
 
 EOF
 
 if [ "$?" -ne "0" ]; then
-    # 2.6.x may not have cn=module,cn=config; detect or create it
-    MODULE_DN=$(sudo ldapsearch -Y EXTERNAL -H ldapi:/// -b cn=config '(objectClass=olcModuleList)' dn | awk '/^dn: /{print $2}' | head -n 1)
-    if [ -z "$MODULE_DN" ]; then
-        MODULE_DN="cn=module,cn=config"
-        sudo ldapadd -Y EXTERNAL -H ldapi:/// <<EOF
-dn: $MODULE_DN
-objectClass: olcModuleList
-cn: module
-olcModulePath: $MODULE_PATH
-olcModuleLoad: memberof.so
-olcModuleLoad: refint.so
-EOF
-    else
-        sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
-dn: $MODULE_DN
-changetype: modify
-replace: olcModulePath
-olcModulePath: $MODULE_PATH
--
-replace: olcModuleLoad
-olcModuleLoad: memberof.so
-olcModuleLoad: refint.so
-EOF
-    fi
+    echo "Failed to change config modules!"
+    echo ""
+    echo "slapd log:"
+    sudo grep slapd /var/log/syslog
 
-    if [ "$?" -ne "0" ]; then
-        echo "Failed to change config modules!"
-        echo ""
-        echo "slapd log:"
-        sudo grep slapd /var/log/syslog
-
-        exit 1
-    fi
-fi
-
-DB_DN=$(sudo ldapsearch -Y EXTERNAL -H ldapi:/// -b cn=config '(olcDatabase=*)' dn olcDatabase | awk '/^dn: /{dn=$2} /^olcDatabase: .*mdb/{print dn}' | head -n 1)
-if [ -z "$DB_DN" ]; then
-    DB_DN="olcDatabase={1}mdb,cn=config"
+    exit 1
 fi
 
 sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
@@ -150,8 +119,7 @@ if [ "$?" -ne "0" ]; then
 fi
 
 MEMBEROF_DN="olcOverlay={0}memberof,$DB_DN"
-if ! sudo ldapsearch -Y EXTERNAL -H ldapi:/// -b "$MEMBEROF_DN" -s base dn > /dev/null 2>&1; then
-    sudo ldapadd -Y EXTERNAL -H ldapi:/// <<EOF
+sudo ldapadd -Y EXTERNAL -H ldapi:/// <<EOF
 dn: $MEMBEROF_DN
 objectClass: olcConfig
 objectClass: olcMemberOf
@@ -159,11 +127,9 @@ objectClass: olcOverlayConfig
 objectClass: top
 olcOverlay: memberof
 EOF
-fi
 
 REFINT_DN="olcOverlay={1}refint,$DB_DN"
-if ! sudo ldapsearch -Y EXTERNAL -H ldapi:/// -b "$REFINT_DN" -s base dn > /dev/null 2>&1; then
-    sudo ldapadd -Y EXTERNAL -H ldapi:/// <<EOF
+sudo ldapadd -Y EXTERNAL -H ldapi:/// <<EOF
 dn: $REFINT_DN
 objectClass: olcConfig
 objectClass: olcOverlayConfig
@@ -172,7 +138,6 @@ objectClass: top
 olcOverlay: {1}refint
 olcRefintAttribute: memberof member manager owner
 EOF
-fi
 
 sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
 
