@@ -105,10 +105,17 @@ if [ "$?" -ne "0" ]; then
     exit 1
 fi
 
+# Create a dedicated schema entry first, then add attributes/objectClass to THAT entry.
+sudo ldapadd -Y EXTERNAL -H ldapi:/// <<EOF
+dn: cn=matomo,cn=schema,cn=config
+objectClass: olcSchemaConfig
+cn: matomo
+EOF
+
 sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
 
 # first define custom LDAP attributes for Matomo access
-dn: cn=schema,cn=config
+dn: cn=matomo,cn=schema,cn=config
 changetype: modify
 add: olcAttributeTypes
 olcAttributeTypes: ( $VIEW_OID
@@ -147,7 +154,7 @@ fi
 
 sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
 
-dn: cn=schema,cn=config
+dn: cn=matomo,cn=schema,cn=config
 changetype: modify
 add: olcObjectClasses
 olcObjectClasses: ( 2.16.840.1.113730.3.2.3
