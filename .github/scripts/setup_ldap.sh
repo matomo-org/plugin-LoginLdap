@@ -105,58 +105,16 @@ if [ "$?" -ne "0" ]; then
     exit 1
 fi
 
-# Create a dedicated schema entry first, then add attributes/objectClass to THAT entry.
+# --- FIX: add schema as a NEW schema entry (ldapadd) instead of modifying cn=schema ---
 sudo ldapadd -Y EXTERNAL -H ldapi:/// <<EOF
 dn: cn=matomo,cn=schema,cn=config
 objectClass: olcSchemaConfig
 cn: matomo
-EOF
 
-sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
+olcAttributeTypes: ( $VIEW_OID NAME 'view' DESC 'Describes site IDs user has view access to.' EQUALITY caseIgnoreMatch ORDERING caseIgnoreOrderingMatch SYNTAX $STR_OID )
+olcAttributeTypes: ( $ADMIN_OID NAME 'admin' DESC 'Describes site IDs user has admin access to.' EQUALITY caseIgnoreMatch ORDERING caseIgnoreOrderingMatch SYNTAX $STR_OID )
+olcAttributeTypes: ( $SUPERUSER_OID NAME 'superuser' DESC 'Marks user as superuser if present.' EQUALITY caseIgnoreMatch ORDERING caseIgnoreOrderingMatch SYNTAX $STR_OID )
 
-# first define custom LDAP attributes for Matomo access
-dn: cn=matomo,cn=schema,cn=config
-changetype: modify
-add: olcAttributeTypes
-olcAttributeTypes: ( $VIEW_OID
-  NAME 'view'
-  DESC 'Describes site IDs user has view access to.'
-  EQUALITY caseIgnoreMatch
-  ORDERING caseIgnoreOrderingMatch
-  SYNTAX $STR_OID )
--
-add: olcAttributeTypes
-olcAttributeTypes: ( $ADMIN_OID
-  NAME 'admin'
-  DESC 'Describes site IDs user has admin access to.'
-  EQUALITY caseIgnoreMatch
-  ORDERING caseIgnoreOrderingMatch
-  SYNTAX $STR_OID )
--
-add: olcAttributeTypes
-olcAttributeTypes: ( $SUPERUSER_OID
-  NAME 'superuser'
-  DESC 'Marks user as superuser if present.'
-  EQUALITY caseIgnoreMatch
-  ORDERING caseIgnoreOrderingMatch
-  SYNTAX $STR_OID )
-
-EOF
-
-if [ "$?" -ne "0" ]; then
-    echo "Failed to add custom attributes!"
-    echo ""
-    echo "slapd log:"
-    sudo grep slapd /var/log/syslog
-
-    exit 1
-fi
-
-sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
-
-dn: cn=matomo,cn=schema,cn=config
-changetype: modify
-add: olcObjectClasses
 olcObjectClasses: ( 2.16.840.1.113730.3.2.3
    NAME 'piwikPerson'
    DESC 'Piwik User'
@@ -168,7 +126,7 @@ olcObjectClasses: ( 2.16.840.1.113730.3.2.3
 EOF
 
 if [ "$?" -ne "0" ]; then
-    echo "Failed to add piwikPerson class!"
+    echo "Failed to add custom schema!"
     echo ""
     echo "slapd log:"
     sudo grep slapd /var/log/syslog
