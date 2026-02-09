@@ -155,51 +155,30 @@ olcOverlay: {1}refint
 olcRefintAttribute: memberof member manager owner
 EOF
 
-sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
+sudo ldapadd -Y EXTERNAL -H ldapi:/// <<EOF
 
-# first define custom LDAP attributes for Matomo access
-dn: cn=schema,cn=config
-changetype: modify
-add: olcAttributeTypes
+# custom LDAP schema for Matomo access
+dn: cn=matomo,cn=schema,cn=config
+objectClass: olcSchemaConfig
+cn: matomo
 olcAttributeTypes: ( $VIEW_OID
   NAME 'view'
   DESC 'Describes site IDs user has view access to.'
   EQUALITY caseIgnoreMatch
   ORDERING caseIgnoreOrderingMatch
   SYNTAX $STR_OID )
--
-add: olcAttributeTypes
 olcAttributeTypes: ( $ADMIN_OID
   NAME 'admin'
   DESC 'Describes site IDs user has admin access to.'
   EQUALITY caseIgnoreMatch
   ORDERING caseIgnoreOrderingMatch
   SYNTAX $STR_OID )
--
-add: olcAttributeTypes
 olcAttributeTypes: ( $SUPERUSER_OID
   NAME 'superuser'
   DESC 'Marks user as superuser if present.'
   EQUALITY caseIgnoreMatch
   ORDERING caseIgnoreOrderingMatch
   SYNTAX $STR_OID )
-
-EOF
-
-if [ "$?" -ne "0" ]; then
-    echo "Failed to add custom attributes!"
-    echo ""
-    echo "slapd log:"
-    sudo grep slapd /var/log/syslog
-
-    exit 1
-fi
-
-sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
-
-dn: cn=schema,cn=config
-changetype: modify
-add: olcObjectClasses
 olcObjectClasses: ( 2.16.840.1.113730.3.2.3
    NAME 'piwikPerson'
    DESC 'Piwik User'
@@ -211,7 +190,7 @@ olcObjectClasses: ( 2.16.840.1.113730.3.2.3
 EOF
 
 if [ "$?" -ne "0" ]; then
-    echo "Failed to add piwikPerson class!"
+    echo "Failed to add custom attributes!"
     echo ""
     echo "slapd log:"
     sudo grep slapd /var/log/syslog
