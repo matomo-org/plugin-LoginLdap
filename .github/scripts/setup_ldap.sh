@@ -75,6 +75,25 @@ fi
 
 sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
 
+# database (suffix first to allow rootdn/rootpw)
+dn: $DB_DN
+changetype: modify
+replace: olcSuffix
+olcSuffix: $BASE_DN
+
+EOF
+
+if [ "$?" -ne "0" ]; then
+    echo "Failed to change config database suffix!"
+    echo ""
+    echo "slapd log:"
+    sudo grep slapd /var/log/syslog
+
+    exit 1
+fi
+
+sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
+
 # database
 dn: $DB_DN
 changetype: modify
@@ -86,9 +105,6 @@ olcRootPW: $ADMIN_PASS_HASH
 -
 replace: olcDbDirectory
 olcDbDirectory: /var/lib/ldap
--
-replace: olcSuffix
-olcSuffix: $BASE_DN
 -
 replace: olcAccess
 olcAccess: {0}to attrs=userPassword,shadowLastChange by self write by dn="cn=$ADMIN_USER,$BASE_DN" write by * auth
