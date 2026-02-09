@@ -18,11 +18,17 @@ ADMIN_USER=fury
 ADMIN_PASS=secrets
 ADMIN_PASS_HASH=`slappasswd -h {md5} -s $ADMIN_PASS`
 BASE_DN="dc=avengers,dc=shield,dc=org"
+MODULE_PATH="/usr/lib/ldap"
+if [ -d "/usr/lib/ldap/modules" ]; then
+    MODULE_PATH="/usr/lib/ldap/modules"
+fi
 
 STR_OID="1.3.6.1.4.1.1466.115.121.1.15"
 VIEW_OID="2.16.840.1.113730.3.1.1.1"
 ADMIN_OID="2.16.840.1.113730.3.1.1.2"
 SUPERUSER_OID="2.16.840.1.113730.3.1.1.3"
+DB_DN="olcDatabase={1}mdb,cn=config"
+MODULE_DN="cn=module{0},cn=config"
 
 sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
 
@@ -47,109 +53,132 @@ fi
 
 sudo ldapadd -Y EXTERNAL -H ldapi:/// <<EOF
 
-# database
-dn: olcDatabase={1}mdb,cn=config
-objectClass: olcDatabaseConfig
-objectClass: olcMdbConfig
-olcDatabase: {1}mdb
-olcRootDN: cn=$ADMIN_USER,$BASE_DN
-olcRootPW: $ADMIN_PASS_HASH
-olcDbDirectory: /var/lib/ldap
+# modules
+dn: $MODULE_DN
+changetype: modify
+add: olcModuleLoad
+olcModuleLoad: memberof.so
+-
+add: olcModuleLoad
+olcModuleLoad: refint.so
+
+EOF
+
+if [ "$?" -ne "0" ]; then
+    echo "Failed to change config modules!"
+    echo ""
+    echo "slapd log:"
+    sudo grep slapd /var/log/syslog
+
+    exit 1
+fi
+
+sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
+
+# database (suffix first to allow rootdn/rootpw)
+dn: $DB_DN
+changetype: modify
+replace: olcSuffix
 olcSuffix: $BASE_DN
+
+EOF
+
+if [ "$?" -ne "0" ]; then
+    echo "Failed to change config database suffix!"
+    echo ""
+    echo "slapd log:"
+    sudo grep slapd /var/log/syslog
+
+    exit 1
+fi
+
+sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
+
+# database
+dn: $DB_DN
+changetype: modify
+replace: olcRootDN
+olcRootDN: cn=$ADMIN_USER,$BASE_DN
+-
+replace: olcRootPW
+olcRootPW: $ADMIN_PASS_HASH
+-
+replace: olcDbDirectory
+olcDbDirectory: /var/lib/ldap
+-
+replace: olcAccess
 olcAccess: {0}to attrs=userPassword,shadowLastChange by self write by dn="cn=$ADMIN_USER,$BASE_DN" write by * auth
 olcAccess: {1}to dn.base="" by dn="cn=$ADMIN_USER,$BASE_DN" write by * read
 olcAccess: {2}to * by self write by dn="cn=$ADMIN_USER,$BASE_DN" write by * read
+-
+replace: olcRequires
 olcRequires: authc
+-
+replace: olcLastMod
 olcLastMod: TRUE
+-
+replace: olcDbCheckpoint
 olcDbCheckpoint: 512 30
+-
+replace: olcDbIndex
 olcDbIndex: objectClass eq
 
-# modules
-dn: cn=module,cn=config
-cn: module
-objectClass: olcModuleList
-objectClass: top
-olcModulePath: /usr/lib/ldap
-olcModuleLoad: memberof.la
+EOF
 
-dn: olcOverlay={0}memberof,olcDatabase={1}mdb,cn=config
+if [ "$?" -ne "0" ]; then
+    echo "Failed to change config database!"
+    echo ""
+    echo "slapd log:"
+    sudo grep slapd /var/log/syslog
+
+    exit 1
+fi
+
+MEMBEROF_DN="olcOverlay={0}memberof,$DB_DN"
+sudo ldapadd -Y EXTERNAL -H ldapi:/// <<EOF
+dn: $MEMBEROF_DN
 objectClass: olcConfig
 objectClass: olcMemberOf
 objectClass: olcOverlayConfig
 objectClass: top
 olcOverlay: memberof
+EOF
 
-dn: cn=module,cn=config
-cn: module
-objectclass: olcModuleList
-objectClass: top
-olcModuleLoad: refint.la
-olcModulePath: /usr/lib/ldap
-
-dn: olcOverlay={1}refint,olcDatabase={1}mdb,cn=config
+REFINT_DN="olcOverlay={1}refint,$DB_DN"
+sudo ldapadd -Y EXTERNAL -H ldapi:/// <<EOF
+dn: $REFINT_DN
 objectClass: olcConfig
 objectClass: olcOverlayConfig
 objectClass: olcRefintConfig
 objectClass: top
 olcOverlay: {1}refint
 olcRefintAttribute: memberof member manager owner
-
 EOF
 
-if [ "$?" -ne "0" ]; then
-    echo "Failed to change config database or modules!"
-    echo ""
-    echo "slapd log:"
-    sudo grep slapd /var/log/syslog
+sudo ldapadd -Y EXTERNAL -H ldapi:/// <<EOF
 
-    exit 1
-fi
-
-sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
-
-# first define custom LDAP attributes for Matomo access
-dn: cn=schema,cn=config
-changetype: modify
-add: olcAttributeTypes
+# custom LDAP schema for Matomo access
+dn: cn=matomo,cn=schema,cn=config
+objectClass: olcSchemaConfig
+cn: matomo
 olcAttributeTypes: ( $VIEW_OID
   NAME 'view'
   DESC 'Describes site IDs user has view access to.'
   EQUALITY caseIgnoreMatch
   ORDERING caseIgnoreOrderingMatch
   SYNTAX $STR_OID )
--
-add: olcAttributeTypes
 olcAttributeTypes: ( $ADMIN_OID
   NAME 'admin'
   DESC 'Describes site IDs user has admin access to.'
   EQUALITY caseIgnoreMatch
   ORDERING caseIgnoreOrderingMatch
   SYNTAX $STR_OID )
--
-add: olcAttributeTypes
 olcAttributeTypes: ( $SUPERUSER_OID
   NAME 'superuser'
   DESC 'Marks user as superuser if present.'
   EQUALITY caseIgnoreMatch
   ORDERING caseIgnoreOrderingMatch
   SYNTAX $STR_OID )
-
-EOF
-
-if [ "$?" -ne "0" ]; then
-    echo "Failed to add custom attributes!"
-    echo ""
-    echo "slapd log:"
-    sudo grep slapd /var/log/syslog
-
-    exit 1
-fi
-
-sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
-
-dn: cn=schema,cn=config
-changetype: modify
-add: olcObjectClasses
 olcObjectClasses: ( 2.16.840.1.113730.3.2.3
    NAME 'piwikPerson'
    DESC 'Piwik User'
@@ -161,7 +190,7 @@ olcObjectClasses: ( 2.16.840.1.113730.3.2.3
 EOF
 
 if [ "$?" -ne "0" ]; then
-    echo "Failed to add piwikPerson class!"
+    echo "Failed to add custom attributes!"
     echo ""
     echo "slapd log:"
     sudo grep slapd /var/log/syslog
