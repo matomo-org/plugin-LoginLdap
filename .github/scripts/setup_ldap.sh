@@ -51,23 +51,6 @@ fi
 
 sudo ldapadd -Y EXTERNAL -H ldapi:/// <<EOF
 
-# database
-dn: olcDatabase={1}mdb,cn=config
-objectClass: olcDatabaseConfig
-objectClass: olcMdbConfig
-olcDatabase: {1}mdb
-olcRootDN: cn=$ADMIN_USER,$BASE_DN
-olcRootPW: $ADMIN_PASS_HASH
-olcDbDirectory: /var/lib/ldap
-olcSuffix: $BASE_DN
-olcAccess: {0}to attrs=userPassword,shadowLastChange by self write by dn="cn=$ADMIN_USER,$BASE_DN" write by * auth
-olcAccess: {1}to dn.base="" by dn="cn=$ADMIN_USER,$BASE_DN" write by * read
-olcAccess: {2}to * by self write by dn="cn=$ADMIN_USER,$BASE_DN" write by * read
-olcRequires: authc
-olcLastMod: TRUE
-olcDbCheckpoint: 512 30
-olcDbIndex: objectClass eq
-
 # modules
 dn: cn=module,cn=config
 changetype: modify
@@ -78,30 +61,90 @@ replace: olcModuleLoad
 olcModuleLoad: memberof.so
 olcModuleLoad: refint.so
 
-dn: olcOverlay={0}memberof,olcDatabase={1}mdb,cn=config
+EOF
+
+if [ "$?" -ne "0" ]; then
+    echo "Failed to change config modules!"
+    echo ""
+    echo "slapd log:"
+    sudo grep slapd /var/log/syslog
+
+    exit 1
+fi
+
+DB_DN=$(sudo ldapsearch -Y EXTERNAL -H ldapi:/// -b cn=config '(olcDatabase=*)' dn olcDatabase | awk '/^dn: /{dn=$2} /^olcDatabase: .*mdb/{print dn}' | head -n 1)
+if [ -z "$DB_DN" ]; then
+    DB_DN="olcDatabase={1}mdb,cn=config"
+fi
+
+sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
+
+# database
+dn: $DB_DN
+changetype: modify
+replace: olcRootDN
+olcRootDN: cn=$ADMIN_USER,$BASE_DN
+-
+replace: olcRootPW
+olcRootPW: $ADMIN_PASS_HASH
+-
+replace: olcDbDirectory
+olcDbDirectory: /var/lib/ldap
+-
+replace: olcSuffix
+olcSuffix: $BASE_DN
+-
+replace: olcAccess
+olcAccess: {0}to attrs=userPassword,shadowLastChange by self write by dn="cn=$ADMIN_USER,$BASE_DN" write by * auth
+olcAccess: {1}to dn.base="" by dn="cn=$ADMIN_USER,$BASE_DN" write by * read
+olcAccess: {2}to * by self write by dn="cn=$ADMIN_USER,$BASE_DN" write by * read
+-
+replace: olcRequires
+olcRequires: authc
+-
+replace: olcLastMod
+olcLastMod: TRUE
+-
+replace: olcDbCheckpoint
+olcDbCheckpoint: 512 30
+-
+replace: olcDbIndex
+olcDbIndex: objectClass eq
+
+EOF
+
+if [ "$?" -ne "0" ]; then
+    echo "Failed to change config database!"
+    echo ""
+    echo "slapd log:"
+    sudo grep slapd /var/log/syslog
+
+    exit 1
+fi
+
+MEMBEROF_DN="olcOverlay={0}memberof,$DB_DN"
+if ! sudo ldapsearch -Y EXTERNAL -H ldapi:/// -b "$MEMBEROF_DN" -s base dn > /dev/null 2>&1; then
+    sudo ldapadd -Y EXTERNAL -H ldapi:/// <<EOF
+dn: $MEMBEROF_DN
 objectClass: olcConfig
 objectClass: olcMemberOf
 objectClass: olcOverlayConfig
 objectClass: top
 olcOverlay: memberof
+EOF
+fi
 
-dn: olcOverlay={1}refint,olcDatabase={1}mdb,cn=config
+REFINT_DN="olcOverlay={1}refint,$DB_DN"
+if ! sudo ldapsearch -Y EXTERNAL -H ldapi:/// -b "$REFINT_DN" -s base dn > /dev/null 2>&1; then
+    sudo ldapadd -Y EXTERNAL -H ldapi:/// <<EOF
+dn: $REFINT_DN
 objectClass: olcConfig
 objectClass: olcOverlayConfig
 objectClass: olcRefintConfig
 objectClass: top
 olcOverlay: {1}refint
 olcRefintAttribute: memberof member manager owner
-
 EOF
-
-if [ "$?" -ne "0" ]; then
-    echo "Failed to change config database or modules!"
-    echo ""
-    echo "slapd log:"
-    sudo grep slapd /var/log/syslog
-
-    exit 1
 fi
 
 sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
