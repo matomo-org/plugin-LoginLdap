@@ -18,6 +18,10 @@ ADMIN_USER=fury
 ADMIN_PASS=secrets
 ADMIN_PASS_HASH=`slappasswd -h {md5} -s $ADMIN_PASS`
 BASE_DN="dc=avengers,dc=shield,dc=org"
+MODULE_PATH="/usr/lib/ldap"
+if [ -d "/usr/lib/ldap/modules" ]; then
+    MODULE_PATH="/usr/lib/ldap/modules"
+fi
 
 STR_OID="1.3.6.1.4.1.1466.115.121.1.15"
 VIEW_OID="2.16.840.1.113730.3.1.1.1"
@@ -66,11 +70,13 @@ olcDbIndex: objectClass eq
 
 # modules
 dn: cn=module,cn=config
-cn: module
-objectClass: olcModuleList
-objectClass: top
-olcModulePath: /usr/lib/ldap
-olcModuleLoad: memberof.la
+changetype: modify
+replace: olcModulePath
+olcModulePath: $MODULE_PATH
+-
+replace: olcModuleLoad
+olcModuleLoad: memberof.so
+olcModuleLoad: refint.so
 
 dn: olcOverlay={0}memberof,olcDatabase={1}mdb,cn=config
 objectClass: olcConfig
@@ -78,13 +84,6 @@ objectClass: olcMemberOf
 objectClass: olcOverlayConfig
 objectClass: top
 olcOverlay: memberof
-
-dn: cn=module,cn=config
-cn: module
-objectclass: olcModuleList
-objectClass: top
-olcModuleLoad: refint.la
-olcModulePath: /usr/lib/ldap
 
 dn: olcOverlay={1}refint,olcDatabase={1}mdb,cn=config
 objectClass: olcConfig
@@ -105,16 +104,51 @@ if [ "$?" -ne "0" ]; then
     exit 1
 fi
 
-# --- FIX: add schema as a NEW schema entry (ldapadd) instead of modifying cn=schema ---
-sudo ldapadd -Y EXTERNAL -H ldapi:/// <<EOF
-dn: cn=matomo,cn=schema,cn=config
-objectClass: olcSchemaConfig
-cn: matomo
+sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
 
-olcAttributeTypes: ( $VIEW_OID NAME 'view' DESC 'Describes site IDs user has view access to.' EQUALITY caseIgnoreMatch ORDERING caseIgnoreOrderingMatch SYNTAX $STR_OID )
-olcAttributeTypes: ( $ADMIN_OID NAME 'admin' DESC 'Describes site IDs user has admin access to.' EQUALITY caseIgnoreMatch ORDERING caseIgnoreOrderingMatch SYNTAX $STR_OID )
-olcAttributeTypes: ( $SUPERUSER_OID NAME 'superuser' DESC 'Marks user as superuser if present.' EQUALITY caseIgnoreMatch ORDERING caseIgnoreOrderingMatch SYNTAX $STR_OID )
+# first define custom LDAP attributes for Matomo access
+dn: cn=schema,cn=config
+changetype: modify
+add: olcAttributeTypes
+olcAttributeTypes: ( $VIEW_OID
+  NAME 'view'
+  DESC 'Describes site IDs user has view access to.'
+  EQUALITY caseIgnoreMatch
+  ORDERING caseIgnoreOrderingMatch
+  SYNTAX $STR_OID )
+-
+add: olcAttributeTypes
+olcAttributeTypes: ( $ADMIN_OID
+  NAME 'admin'
+  DESC 'Describes site IDs user has admin access to.'
+  EQUALITY caseIgnoreMatch
+  ORDERING caseIgnoreOrderingMatch
+  SYNTAX $STR_OID )
+-
+add: olcAttributeTypes
+olcAttributeTypes: ( $SUPERUSER_OID
+  NAME 'superuser'
+  DESC 'Marks user as superuser if present.'
+  EQUALITY caseIgnoreMatch
+  ORDERING caseIgnoreOrderingMatch
+  SYNTAX $STR_OID )
 
+EOF
+
+if [ "$?" -ne "0" ]; then
+    echo "Failed to add custom attributes!"
+    echo ""
+    echo "slapd log:"
+    sudo grep slapd /var/log/syslog
+
+    exit 1
+fi
+
+sudo ldapmodify -Y EXTERNAL -H ldapi:/// <<EOF
+
+dn: cn=schema,cn=config
+changetype: modify
+add: olcObjectClasses
 olcObjectClasses: ( 2.16.840.1.113730.3.2.3
    NAME 'piwikPerson'
    DESC 'Piwik User'
@@ -126,7 +160,7 @@ olcObjectClasses: ( 2.16.840.1.113730.3.2.3
 EOF
 
 if [ "$?" -ne "0" ]; then
-    echo "Failed to add custom schema!"
+    echo "Failed to add piwikPerson class!"
     echo ""
     echo "slapd log:"
     sudo grep slapd /var/log/syslog
@@ -145,6 +179,7 @@ sudo ldapadd -xv -w $ADMIN_PASS -D cn=$ADMIN_USER,$BASE_DN <<EOF
 # base dn
 dn: $BASE_DN
 objectClass: domain
+objectClass: top
 dc: avengers
 
 # ou entry
@@ -159,6 +194,7 @@ cn: Tony Stark
 sn: Stark
 givenName: Tony
 objectClass: piwikPerson
+objectClass: top
 uid: ironman
 userPassword: `slappasswd -h {md5} -s piedpiper`
 mobile: 555-555-5555
@@ -173,6 +209,7 @@ cn: Tony Stark1
 sn: Stark1
 givenName: Tony1
 objectClass: piwikPerson
+objectClass: top
 uid: ironman2
 userPassword: `slappasswd -h {md5} -s piedpiper`
 mobile: 555-555-5556
@@ -184,6 +221,7 @@ admin: 3
 # USER ENTRY (pwd: redledger)
 dn: cn=Natalia Romanova,$BASE_DN
 cn: Natalia Romanova
+objectClass: top
 objectClass: piwikPerson
 sn: Romanova
 givenName: Natalia
@@ -197,6 +235,7 @@ admin: anotherPiwik:5,6
 # USER ENTRY (pwd: thaifood)
 dn: cn=Steve Rodgers,$BASE_DN
 cn: Steve Rodgers
+objectClass: top
 objectClass: piwikPerson
 sn: Rodgers
 givenName: Steve
@@ -210,6 +249,7 @@ superuser: anotherPiwik
 # USER ENTRY (pwd: bilgesnipe)
 dn: cn=Thor,$BASE_DN
 cn: Thor
+objectClass: top
 objectClass: piwikPerson
 sn: Odinson
 givenName: Thor
@@ -222,6 +262,7 @@ superuser: myPiwik:myOtherPiwik;localhost
 
 # USER ENTRY (pwd: enrogue)
 dn: cn=Ms Marvel,$BASE_DN
+objectClass: top
 objectClass: piwikPerson
 cn: Ms Marvel
 uid: msmarvel
@@ -232,6 +273,7 @@ sn: Danvers
 dn: cn=avengers,$BASE_DN
 cn: avengers
 objectClass: groupOfNames
+objectClass: top
 member: cn=Tony Stark,$BASE_DN
 member: cn=Natalia Romanova,$BASE_DN
 member: cn=Steve Rodgers,$BASE_DN
@@ -241,10 +283,12 @@ member: cn=Thor,$BASE_DN
 dn: cn=S.H.I.E.L.D.,$BASE_DN
 cn: S.H.I.E.L.D.
 objectClass: groupOfNames
+objectClass: top
 member: cn=Natalia Romanova,$BASE_DN
 
 # USER ENTRY (pwd: cherry)
 dn: cn=Rogue,$BASE_DN
+objectClass: top
 objectClass: piwikPerson
 cn: Rogue
 uid: rogue@xmansion.org
