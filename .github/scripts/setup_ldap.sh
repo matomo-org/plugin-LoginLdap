@@ -145,7 +145,6 @@ sudo ldapadd -xv -w $ADMIN_PASS -D cn=$ADMIN_USER,$BASE_DN <<EOF
 # base dn
 dn: $BASE_DN
 objectClass: domain
-objectClass: top
 dc: avengers
 
 # ou entry
@@ -160,7 +159,6 @@ cn: Tony Stark
 sn: Stark
 givenName: Tony
 objectClass: piwikPerson
-objectClass: top
 uid: ironman
 userPassword: `slappasswd -h {md5} -s piedpiper`
 mobile: 555-555-5555
@@ -175,7 +173,6 @@ cn: Tony Stark1
 sn: Stark1
 givenName: Tony1
 objectClass: piwikPerson
-objectClass: top
 uid: ironman2
 userPassword: `slappasswd -h {md5} -s piedpiper`
 mobile: 555-555-5556
@@ -187,7 +184,6 @@ admin: 3
 # USER ENTRY (pwd: redledger)
 dn: cn=Natalia Romanova,$BASE_DN
 cn: Natalia Romanova
-objectClass: top
 objectClass: piwikPerson
 sn: Romanova
 givenName: Natalia
@@ -201,7 +197,6 @@ admin: anotherPiwik:5,6
 # USER ENTRY (pwd: thaifood)
 dn: cn=Steve Rodgers,$BASE_DN
 cn: Steve Rodgers
-objectClass: top
 objectClass: piwikPerson
 sn: Rodgers
 givenName: Steve
@@ -215,7 +210,6 @@ superuser: anotherPiwik
 # USER ENTRY (pwd: bilgesnipe)
 dn: cn=Thor,$BASE_DN
 cn: Thor
-objectClass: top
 objectClass: piwikPerson
 sn: Odinson
 givenName: Thor
@@ -228,7 +222,6 @@ superuser: myPiwik:myOtherPiwik;localhost
 
 # USER ENTRY (pwd: enrogue)
 dn: cn=Ms Marvel,$BASE_DN
-objectClass: top
 objectClass: piwikPerson
 cn: Ms Marvel
 uid: msmarvel
@@ -239,7 +232,6 @@ sn: Danvers
 dn: cn=avengers,$BASE_DN
 cn: avengers
 objectClass: groupOfNames
-objectClass: top
 member: cn=Tony Stark,$BASE_DN
 member: cn=Natalia Romanova,$BASE_DN
 member: cn=Steve Rodgers,$BASE_DN
@@ -249,12 +241,10 @@ member: cn=Thor,$BASE_DN
 dn: cn=S.H.I.E.L.D.,$BASE_DN
 cn: S.H.I.E.L.D.
 objectClass: groupOfNames
-objectClass: top
 member: cn=Natalia Romanova,$BASE_DN
 
 # USER ENTRY (pwd: cherry)
 dn: cn=Rogue,$BASE_DN
-objectClass: top
 objectClass: piwikPerson
 cn: Rogue
 uid: rogue@xmansion.org
