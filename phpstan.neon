@@ -1,0 +1,18 @@
+parameters:
+    level: 5
+    phpVersion: 70200
+    tmpDir: /tmp/phpstan/LoginLdap/main
+    paths:
+        - .
+    excludePaths:
+        - tests/*
+        - vendor/
+        - github-action-tests/
+    bootstrapFiles:
+        - ../../bootstrap-phpstan.php
+    universalObjectCratesClasses:
+        - Piwik\Config
+        - Piwik\View
+        - Piwik\ViewDataTable\Config
+    scanDirectories:
+        - ../../

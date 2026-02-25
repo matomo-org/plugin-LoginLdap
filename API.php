@@ -16,6 +16,9 @@ use Piwik\Plugins\LoginLdap\Model\LdapUsers;
 use Exception;
 
 /**
+ * API endpoints for configuring LDAP authentication and synchronizing LDAP users.
+ *
+ * @method static \Piwik\Plugins\LoginLdap\API getInstance()
  */
 class API extends \Piwik\Plugin\API
 {
@@ -46,7 +49,7 @@ class API extends \Piwik\Plugin\API
      * Saves LoginLdap config.
      *
      * @param string $data JSON encoded config array.
-     * @return array
+     * @return array{result: string, message: string} Save status payload.
      * @throws Exception if user does not have super access, if this is not a POST method or
      *                   if JSON is not supplied.
      */
@@ -66,8 +69,8 @@ class API extends \Piwik\Plugin\API
      * Saves LDAP server config.
      *
      * @param string $data JSON encoded array w/ server info.
-     * @return array
-     * @throws Exception
+     * @return array{result: string, message: string} Save status payload.
+     * @throws Exception if user does not have super access or if this is not a POST request.
      */
     public function saveServersInfo($data)
     {
@@ -101,12 +104,12 @@ class API extends \Piwik\Plugin\API
     }
 
     /**
-     * Returns count of users in LDAP that match an LDAP filter. If the filter is incorrect,
-     * `null` is returned.
+     * Returns count of users in LDAP that match an LDAP filter.
      *
      * @param string $filter The filter to match.
      * @return int|null
-     * @throws Exception if the current user is not a Super User or something goes wrong with LDAP.
+     * @throws Exception if the current user is not a Super User, if the filter is invalid, or if
+     *                   something goes wrong with LDAP.
      */
     public function getCountOfUsersMatchingFilter($filter)
     {
@@ -130,6 +133,7 @@ class API extends \Piwik\Plugin\API
      * a user before (s)he logs in.
      *
      * @param string $login The login of the user.
+     * @return void
      * @throws Exception if the user cannot be found or a problem occurs during synchronization.
      */
     public function synchronizeUser($login)
@@ -146,9 +150,9 @@ class API extends \Piwik\Plugin\API
     }
 
     /**
-     * Get all the existing LDAP users from DB
+     * Get all existing LDAP user logins from the database.
      *
-     * @return []
+     * @return string[] List of Matomo login names that are marked as LDAP users.
      */
     public function getExistingLdapUsersFromDb()
     {
