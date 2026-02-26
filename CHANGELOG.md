@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 5.1.7 - 2026-03-02
+* Updated API documentation
+
 #### LoginLdap 5.1.6 - 2026-02-02
 * Fixes regression introduced in version 5.1.5 due to restrict actions
 * Use new session method to destroy all sessions on plugin deactivation
