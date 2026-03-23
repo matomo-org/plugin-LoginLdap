@@ -352,8 +352,12 @@ abstract class Base implements Auth
         if (empty($userInfo['login'])) {
             throw new Exception('User couldn\'t be found');
         }
-        $tokenAuth = $this->usersModel->generateRandomTokenAuth();
+        $tokenAuth = $this->getToken();
         return new AuthResult($successCode, $userInfo['login'], $tokenAuth);
+    }
+
+    protected function getToken() {
+        return $this->usersModel->generateRandomTokenAuth();
     }
 
     protected function makeAuthFailure()

@@ -100,6 +100,11 @@ class WebServerAuth extends Base
         return $this->makeAuthFailure();
     }
 
+    protected function getToken(): ?string
+    {
+        return $this->getTokenAuth();
+    }
+
     /**
      * Gets the {@link $synchronizeUsersAfterSuccessfulLogin} property.
      *
