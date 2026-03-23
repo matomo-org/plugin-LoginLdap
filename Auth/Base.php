@@ -356,7 +356,8 @@ abstract class Base implements Auth
         return new AuthResult($successCode, $userInfo['login'], $tokenAuth);
     }
 
-    protected function getToken() {
+    protected function getToken()
+    {
         return $this->usersModel->generateRandomTokenAuth();
     }
 
