@@ -18,6 +18,8 @@ use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Plugins\UsersManager\Model as UserModel;
+use Piwik\Session;
+use Piwik\Session\SessionFingerprint;
 
 /**
  * Auth implementation that assumes the web server that hosts Piwik has authenticated
@@ -85,7 +87,10 @@ class WebServerAuth extends Base
                     ));
                 }
 
-                return $this->makeSuccessLogin($this->getUserForLogin());
+                $result = $this->makeSuccessLogin($this->getUserForLogin());
+                $this->initializeSessionFingerprint($result);
+
+                return $result;
             }
         } catch (ConnectionException $ex) {
             throw $ex;
@@ -155,6 +160,16 @@ class WebServerAuth extends Base
         }
 
         $this->synchronizeLdapUser($ldapUser);
+    }
+
+    private function initializeSessionFingerprint(AuthResult $authResult): void
+    {
+        if (!Session::isSessionStarted() || !Session::isWritable()) {
+            return;
+        }
+
+        $sessionFingerprint = new SessionFingerprint();
+        $sessionFingerprint->initialize($authResult->getIdentity(), $authResult->getTokenAuth());
     }
 
     /**
