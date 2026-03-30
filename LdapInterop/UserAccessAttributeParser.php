@@ -150,7 +150,8 @@ class UserAccessAttributeParser
         if (
             $attributeValue == 1
             || strtolower($attributeValue) == 'true'
-            || empty($attributeValue)
+            || $attributeValue === ''
+            || $attributeValue === null
         ) { // special case when not managing multiple Piwik instances
             return true;
         }

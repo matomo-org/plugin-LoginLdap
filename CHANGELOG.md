@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 5.1.9 - 2026-04-13
+* Added more restrictive check in getSuperUserAccessFromSuperUserAttribute to determine superuser access 
+
 #### LoginLdap 5.1.8 - 2026-03-30
 * Fixes no session fingerprint on successful web server authentication
 
