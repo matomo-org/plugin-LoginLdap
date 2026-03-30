@@ -169,7 +169,19 @@ class WebServerAuth extends Base
         }
 
         $sessionFingerprint = new SessionFingerprint();
-        $sessionFingerprint->initialize($authResult->getIdentity(), $authResult->getTokenAuth());
+        $isSameUser = $sessionFingerprint->getUser() === $authResult->getIdentity();
+        $hasVerifiedTwoFactor = $isSameUser && $sessionFingerprint->hasVerifiedTwoFactor();
+
+        Session::regenerateId();
+
+        $sessionFingerprint->initialize(
+            $authResult->getIdentity(),
+            $authResult->getTokenAuth()
+        );
+
+        if ($hasVerifiedTwoFactor) {
+            $sessionFingerprint->setTwoFactorAuthenticationVerified();
+        }
     }
 
     /**

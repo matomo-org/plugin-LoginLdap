@@ -14,6 +14,9 @@ use Piwik\AuthResult;
 use Piwik\Config;
 use Piwik\Plugins\LoginLdap\Auth\WebServerAuth;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
+use Piwik\Session;
+use Piwik\Session\SessionAuth;
+use Piwik\Session\SessionFingerprint;
 
 /**
  * @group LoginLdap
@@ -165,5 +168,34 @@ class WebServerAuthTest extends LdapIntegrationTest
         $ldapAuth = WebServerAuth::makeConfigured();
         $authResult = $ldapAuth->authenticate();
         $this->assertEquals(AuthResult::FAILURE, $authResult->getCode());
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function test_WebServerAuth_CreatesReusableAuthenticatedSession()
+    {
+        Config::getInstance()->LoginLdap['use_webserver_auth'] = 1;
+
+        Session::start();
+        $originalSessionId = session_id();
+
+        $_SERVER['REMOTE_USER'] = self::TEST_LOGIN;
+
+        $ldapAuth = WebServerAuth::makeConfigured();
+        $authResult = $ldapAuth->authenticate();
+
+        $this->assertEquals(AuthResult::SUCCESS, $authResult->getCode());
+        $this->assertNotSame($originalSessionId, session_id());
+
+        $sessionFingerprint = new SessionFingerprint();
+        $this->assertEquals(self::TEST_LOGIN, $sessionFingerprint->getUser());
+        $this->assertSame($authResult->getTokenAuth(), $sessionFingerprint->getSessionTokenAuth());
+
+        $sessionAuth = new SessionAuth(null, false);
+        $sessionAuthResult = $sessionAuth->authenticate();
+
+        $this->assertEquals(AuthResult::SUCCESS, $sessionAuthResult->getCode());
+        $this->assertSame(self::TEST_LOGIN, $sessionAuthResult->getIdentity());
     }
 }
