@@ -1,7 +1,7 @@
 # LoginLdap Changelog
 
 #### LoginLdap 5.1.8 - 2026-03-30
-* Updated API documentation
+* Fixes no session fingerprint on successful web server authentication
 
 #### LoginLdap 5.1.7 - 2026-03-02
 * Updated API documentation
