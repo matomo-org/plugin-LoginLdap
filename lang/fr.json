@@ -38,6 +38,7 @@
         "LdapUserAccessAttributeServerSpecDelimiter": "Séparateur entre les serveurs dans l'attribut accès utilisateur",
         "LdapUserAccessAttributeServerSpecDelimiterDescription": "La chaîne utilisée pour délimiter les spécifications de serveur dans un attribut d'accès utilisateur/utilisatrice. Si défini sur ';', l'attribut d'accès devra se présenter sous la forme ''&lt;server-spec&gt;;&lt;server-spec&gt;;…'.",
         "LdapUserAdded": "Utilisateur LDAP ajouté avec succès !",
+        "LdapUserCantChangeIsLdapUserPreference": "La modification de la préférence isLDAPUser n'est pas autorisée.",
         "LdapUserCantChangePassword": "La modification du mot de passe n'est pas disponible pour les utilisateurs authentifiés par LDAP. Utilisant LDAP, vous informations d'authentification sont gérées directement dans l'annuaire. Pour plus d'informations, contactez votre administrateur LDAP ou Matomo.",
         "LdapViewAccessField": "Champ LDAP accès en consultation",
         "LdapViewAccessFieldDescription": "Attribut LDAP qui détermine à quels sites l'utilisateur a un accès en consultation.",
