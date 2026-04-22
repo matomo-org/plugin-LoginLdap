@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 5.1.10 - 2026-04-27
+* Updated API documentation
+
 #### LoginLdap 5.1.9 - 2026-04-13
 * Added more restrictive check in getSuperUserAccessFromSuperUserAttribute to determine superuser access 
 

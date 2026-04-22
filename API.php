@@ -16,7 +16,7 @@ use Piwik\Plugins\LoginLdap\Model\LdapUsers;
 use Exception;
 
 /**
- * API endpoints for configuring LDAP authentication and synchronizing LDAP users.
+ * Exposes administrative endpoints for LoginLdap configuration and LDAP user synchronization.
  *
  * @method static \Piwik\Plugins\LoginLdap\API getInstance()
  */
@@ -46,12 +46,10 @@ class API extends \Piwik\Plugin\API
     }
 
     /**
-     * Saves LoginLdap config.
+     * Saves the LoginLdap plugin configuration.
      *
-     * @param string $data JSON encoded config array.
-     * @return array{result: string, message: string} Save status payload.
-     * @throws Exception if user does not have super access, if this is not a POST method or
-     *                   if JSON is not supplied.
+     * @param string $data JSON-encoded LoginLdap configuration values.
+     * @return array{result: string, message: string} The save status payload.
      */
     public function saveLdapConfig($data)
     {
@@ -66,11 +64,10 @@ class API extends \Piwik\Plugin\API
     }
 
     /**
-     * Saves LDAP server config.
+     * Saves the configured LDAP server definitions.
      *
-     * @param string $data JSON encoded array w/ server info.
-     * @return array{result: string, message: string} Save status payload.
-     * @throws Exception if user does not have super access or if this is not a POST request.
+     * @param string $data JSON-encoded LDAP server configuration entries.
+     * @return array{result: string, message: string} The save status payload.
      */
     public function saveServersInfo($data)
     {
@@ -85,12 +82,10 @@ class API extends \Piwik\Plugin\API
     }
 
     /**
-     * Returns count of users in LDAP that are member of a specific group of names. Uses a search
-     * filter with memberof=?.
+     * Returns how many LDAP users belong to a specific group.
      *
-     * @param string $memberOf The group to check.
-     * @return int
-     * @throws Exception if the current user is not a Super User or something goes wrong with LDAP.
+     * @param string $memberOf The LDAP group value to match against the configured membership field.
+     * @return int The number of matching LDAP users.
      */
     public function getCountOfUsersMemberOf($memberOf)
     {
@@ -106,10 +101,8 @@ class API extends \Piwik\Plugin\API
     /**
      * Returns count of users in LDAP that match an LDAP filter.
      *
-     * @param string $filter The filter to match.
-     * @return int|null
-     * @throws Exception if the current user is not a Super User, if the filter is invalid, or if
-     *                   something goes wrong with LDAP.
+     * @param string $filter The LDAP search filter to evaluate.
+     * @return int The number of matching LDAP users.
      */
     public function getCountOfUsersMatchingFilter($filter)
     {
@@ -129,12 +122,10 @@ class API extends \Piwik\Plugin\API
     }
 
     /**
-     * Synchronizes a single user in LDAP. This method can be used by superusers to synchronize
-     * a user before (s)he logs in.
+     * Synchronizes one LDAP user into Matomo before that user logs in.
      *
-     * @param string $login The login of the user.
+     * @param string $login The Matomo login to synchronize from LDAP.
      * @return void
-     * @throws Exception if the user cannot be found or a problem occurs during synchronization.
      */
     public function synchronizeUser($login)
     {
@@ -150,9 +141,9 @@ class API extends \Piwik\Plugin\API
     }
 
     /**
-     * Get all existing LDAP user logins from the database.
+     * Returns the LDAP-backed Matomo logins already stored in the database.
      *
-     * @return string[] List of Matomo login names that are marked as LDAP users.
+     * @return string[] The Matomo login names marked as LDAP users.
      */
     public function getExistingLdapUsersFromDb()
     {
