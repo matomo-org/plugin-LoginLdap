@@ -17,9 +17,12 @@
 return [
     'observers.global' => \Piwik\DI::add([
         ['Login.userRequiresPasswordConfirmation', \Piwik\DI::value(function (&$requiresPasswordConfirmation, $login) {
-            $enablePasswordConfirmation = \Piwik\Plugins\LoginLdap\Config::getConfigOption('enable_password_confirmation');
-            if (!$enablePasswordConfirmation) {
-                $requiresPasswordConfirmation = false;
+            $userMapper = new \Piwik\Plugins\LoginLdap\LdapInterop\UserMapper();
+            if ($userMapper->isUserLdapUser($login)) {
+                $enablePasswordConfirmation = \Piwik\Plugins\LoginLdap\Config::getConfigOption('enable_password_confirmation');
+                if (!$enablePasswordConfirmation) {
+                    $requiresPasswordConfirmation = false;
+                }
             }
         })],
     ]),
