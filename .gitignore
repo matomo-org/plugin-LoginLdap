@@ -4,3 +4,4 @@ tests/System/processed/*xml
 /vue/dist/*.common.js
 /vue/dist/*.map
 /vue/dist/*.development.*
+.codex

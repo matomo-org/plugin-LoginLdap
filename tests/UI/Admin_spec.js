@@ -71,19 +71,13 @@ describe("LoginLdap_Admin", function () {
         expect(await elem.screenshot()).to.matchImage('addNewToken_with_password');
     });
 
-    it("should show the add new token screen", async function () {
+    it("should still show the password confirmation screen for non-LDAP users when password confirmation is disabled", async function () {
         testEnvironment.configOverride.LoginLdap = { enable_password_confirmation: 0 };
         testEnvironment.save();
         await page.goto(addNewTokenUrl);
         await page.waitForNetworkIdle();
-        //await page.waitForTimeout(30000);
-        await page.waitForSelector('#token_expire_date');
-        await page.evaluate(() => {
-          // This textbox is set to 6 months in the future.
-          // Clearing the textbox so that screenshot tests don't fail.
-          document.querySelector('#token_expire_date').value = '';
-        });
-        var elem = await page.jQuery('.page');
-        expect(await elem.screenshot()).to.matchImage('addNewToken_without_password');
+        var elem = await page.jQuery('#loginPage');
+        await page.waitForSelector('#login_form_submit[disabled]');
+        expect(await elem.screenshot()).to.matchImage('addNewToken_with_password_non_ldap_user');
     });
 });
