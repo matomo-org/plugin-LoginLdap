@@ -1,7 +1,7 @@
 # LoginLdap Changelog
 
 #### LoginLdap 5.1.11 - 2026-05-11
-* Skip setting password confirmation requirement for non-ldap user
+* Added code to not skip password confirmation check, if user is a non-ldap user and skip password confirmation is enabled.
 
 #### LoginLdap 5.1.10 - 2026-04-27
 * Updated API documentation

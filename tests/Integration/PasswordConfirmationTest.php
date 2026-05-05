@@ -94,6 +94,10 @@ class PasswordConfirmationTest extends LdapIntegrationTest
 
         $userMapper = new UserMapper();
         $userMapper->markUserAsLdapUser($login);
+
+        \Piwik\Access::doAsSuperUser(function () use ($login) {
+            \Piwik\Plugins\UsersManager\API::getInstance()->setUserAccess($login, 'view', [1]);
+        });
     }
 
     private function setCurrentUser(string $login, string $password): void
