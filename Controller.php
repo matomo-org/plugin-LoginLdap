@@ -15,6 +15,7 @@ use Piwik\Option;
 use Piwik\Piwik;
 use Piwik\Plugin\ControllerAdmin;
 use Piwik\Plugins\LoginLdap\Ldap\ServerInfo;
+use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\View;
 
 /**
@@ -80,12 +81,23 @@ class Controller extends \Piwik\Plugins\Login\Controller
     public function confirmPassword()
     {
         $enablePasswordConfirmation = \Piwik\Plugins\LoginLdap\Config::getConfigOption('enable_password_confirmation');
-        if ($enablePasswordConfirmation) {
+        if ($enablePasswordConfirmation || !$this->isCurrentUserLdapUser()) {
             return parent::confirmPassword();
         }
         Piwik::checkUserIsNotAnonymous();
         Piwik::checkUserHasSomeViewAccess();
 
         $this->passwordVerify->setPasswordVerifiedCorrectly();
+    }
+
+    private function isCurrentUserLdapUser(): bool
+    {
+        $currentUserLogin = Piwik::getCurrentUserLogin();
+        if (empty($currentUserLogin)) {
+            return false;
+        }
+
+        $userMapper = new UserMapper();
+        return $userMapper->isUserLdapUser($currentUserLogin);
     }
 }
