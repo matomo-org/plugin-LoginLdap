@@ -12,7 +12,7 @@
         "EnableLdapAccessSynchronization": "Activer la synchronisation des droits d'accès utilisateurs depuis le LDAP",
         "EnableLdapAccessSynchronizationDescription": "Si cette option est activée, les droits d'accès utilisateurs sont déterminés par des attributs spécifiques du LDAP. NB : Pour utiliser cette fonction vous devez étendre préalablement votre schéma LDAP avec ces attributs spécifiques.",
         "ExpectedLdapAttributes": "Attributs LDAP attendus",
-        "ExpectedLdapAttributesPrelude": "Avec cette configuration, le composant LoginLdap attend des attributs LDAP qui ressemblent à ...",
+        "ExpectedLdapAttributesPrelude": "Avec cette configuration, LoginLdap s'attendra à ce que les attributs LDAP ressemblent à ceci",
         "Filter": "Filtre de recherche LDAP avancé",
         "FilterCount": "%s entrée correspondent au filtre.",
         "FilterDescription": "Filtre LDAP utilisé pour déterminer quelles entrées de l'annuaire sont autorisées à s'authentifier pour l'accès à Matomo. Par exemple : \"(objectClass=person)\".",
