@@ -239,6 +239,15 @@ class ApiTest extends LdapIntegrationTest
         ), Config::getInstance()->LoginLdap_server2);
     }
 
+    public function test_getPluginOptionValuesWithDefaults_UsesDisabledPasswordConfirmationByDefault()
+    {
+        unset(Config::getInstance()->LoginLdap['enable_password_confirmation']);
+
+        $ldapConfig = \Piwik\Plugins\LoginLdap\Config::getPluginOptionValuesWithDefaults();
+
+        $this->assertSame(0, $ldapConfig['enable_password_confirmation']);
+    }
+
     public function test_synchronizeUser_Throws_WhenLdapUserDoesNotExist()
     {
         $this->expectException(\Exception::class);

@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 5.2.0 - 2026-06-22
+* Added code to enable password confirmation before any LDAP config save
+
 #### LoginLdap 5.1.11 - 2026-05-11
 * Added code to not skip password confirmation check, if user is a non-ldap user and skip password confirmation is enabled.
 

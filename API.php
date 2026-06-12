@@ -57,6 +57,10 @@ class API extends \Piwik\Plugin\API
         Piwik::checkUserHasSuperUserAccess();
 
         $data = json_decode(Common::unsanitizeInputValue($data), true);
+        $this->confirmCurrentUserPasswordIfRequired(
+            (bool) ($data['enable_password_confirmation'] ?? false),
+            $data['password_confirmation'] ?? null
+        );
 
         Config::savePluginOptions($data);
 
@@ -69,10 +73,14 @@ class API extends \Piwik\Plugin\API
      * @param string $data JSON-encoded LDAP server configuration entries.
      * @return array{result: string, message: string} The save status payload.
      */
-    public function saveServersInfo($data)
-    {
+    public function saveServersInfo(
+        $data,
+        #[\SensitiveParameter]
+        ?string $passwordConfirmation = null
+    ){
         $this->checkHttpMethodIsPost();
         Piwik::checkUserHasSuperUserAccess();
+        $this->confirmCurrentUserPasswordIfRequired(false, $passwordConfirmation);
 
         $servers = json_decode(Common::unsanitizeInputValue($data), true);
 
@@ -159,5 +167,17 @@ class API extends \Piwik\Plugin\API
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
             throw new Exception("Invalid HTTP method.");
         }
+    }
+
+    private function confirmCurrentUserPasswordIfRequired(
+        bool $configBeingEnabled,
+        #[\SensitiveParameter]
+        ?string $passwordConfirmation
+    ): void {
+        if (!Config::getConfigOption('enable_password_confirmation') && !$configBeingEnabled) {
+            return;
+        }
+
+        $this->confirmCurrentUserPassword($passwordConfirmation);
     }
 }

@@ -80,4 +80,42 @@ describe("LoginLdap_Admin", function () {
         await page.waitForSelector('#login_form_submit[disabled]');
         expect(await elem.screenshot()).to.matchImage('addNewToken_with_password_non_ldap_user');
     });
+
+    it("should require password confirmation when saving LDAP settings from the admin page", async function () {
+        testEnvironment.configOverride.LoginLdap = {
+            servers: ['testserver'],
+            new_user_default_sites_view_access: '1,2',
+            enable_synchronize_access_from_ldap: 1,
+            enable_password_confirmation: 1,
+        };
+        testEnvironment.save();
+
+        await page.goto(ldapAdminUrl);
+        await page.waitForFunction("$('input[name=required_member_of]').length > 0");
+
+        await page.evaluate(function () {
+            $('.matomo-save-button input').eq(0).click();
+        });
+
+        await page.waitForSelector('.confirm-password-modal.modal.open', { visible: true });
+    });
+
+    it("should require password confirmation when saving LDAP servers from the admin page", async function () {
+        testEnvironment.configOverride.LoginLdap = {
+            servers: ['testserver'],
+            new_user_default_sites_view_access: '1,2',
+            enable_synchronize_access_from_ldap: 1,
+            enable_password_confirmation: 1,
+        };
+        testEnvironment.save();
+
+        await page.goto(ldapAdminUrl);
+        await page.waitForFunction("$('input[name=required_member_of]').length > 0");
+
+        await page.evaluate(function () {
+            $('.matomo-save-button input').last().click();
+        });
+
+        await page.waitForSelector('.confirm-password-modal.modal.open', { visible: true });
+    });
 });
