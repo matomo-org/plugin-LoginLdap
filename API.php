@@ -77,7 +77,7 @@ class API extends \Piwik\Plugin\API
         $data,
         #[\SensitiveParameter]
         ?string $passwordConfirmation = null
-    ){
+    ) {
         $this->checkHttpMethodIsPost();
         Piwik::checkUserHasSuperUserAccess();
         $this->confirmCurrentUserPasswordIfRequired(false, $passwordConfirmation);
