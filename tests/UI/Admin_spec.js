@@ -94,7 +94,12 @@ describe("LoginLdap_Admin", function () {
         await page.waitForFunction("$('input[name=required_member_of]').length > 0");
 
         await page.evaluate(function () {
-            $('.matomo-save-button input').eq(0).click();
+            // Exclude the TestableField save buttons (filter/group "test" buttons) so we click the
+            // actual "Save LDAP config" button, which is what triggers the password confirmation.
+            $('.matomo-save-button input')
+                .not('.loginLdapTestableField .matomo-save-button input')
+                .eq(0)
+                .click();
         });
 
         await page.waitForSelector('.confirm-password-modal.modal.open', { visible: true });
