@@ -120,6 +120,7 @@ class PasswordConfirmationTest extends LdapIntegrationTest
         $_SERVER['REQUEST_METHOD'] = 'POST';
         \Piwik\Config::getInstance()->LoginLdap['enable_password_confirmation'] = 0;
         $this->addLdapUser(self::TEST_LOGIN, self::TEST_PASS);
+        $this->setSuperUserAccess(self::TEST_LOGIN, true);
         $this->setCurrentUser(self::TEST_LOGIN, self::TEST_PASS);
 
         $result = $this->api->saveLdapConfig(json_encode(array(
@@ -181,6 +182,7 @@ class PasswordConfirmationTest extends LdapIntegrationTest
         $_SERVER['REQUEST_METHOD'] = 'POST';
         \Piwik\Config::getInstance()->LoginLdap['enable_password_confirmation'] = 0;
         $this->addLdapUser(self::TEST_LOGIN, self::TEST_PASS);
+        $this->setSuperUserAccess(self::TEST_LOGIN, true);
         $this->setCurrentUser(self::TEST_LOGIN, self::TEST_PASS);
 
         $result = $this->api->saveServersInfo(json_encode($this->getServerPayload()));
