@@ -103,11 +103,24 @@ class PasswordConfirmationTest extends LdapIntegrationTest
         )));
     }
 
-    public function testSaveLdapConfigSucceedsWithoutPasswordConfirmationWhenDisabled()
+    public function testSaveLdapConfigRequiresPasswordConfirmationWhenDisabledForNonLdapUsers()
     {
         $_SERVER['REQUEST_METHOD'] = 'POST';
         \Piwik\Config::getInstance()->LoginLdap['enable_password_confirmation'] = 0;
         $this->setCurrentUser(self::NON_LDAP_USER, self::NON_LDAP_PASS);
+
+        $this->expectException(\Exception::class);
+        $this->api->saveLdapConfig(json_encode(array(
+            'use_ldap_for_authentication' => 0,
+        )));
+    }
+
+    public function testSaveLdapConfigSucceedsWithoutPasswordConfirmationWhenDisabledForLdapUsers()
+    {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        \Piwik\Config::getInstance()->LoginLdap['enable_password_confirmation'] = 0;
+        $this->addLdapUser(self::TEST_LOGIN, self::TEST_PASS);
+        $this->setCurrentUser(self::TEST_LOGIN, self::TEST_PASS);
 
         $result = $this->api->saveLdapConfig(json_encode(array(
             'use_ldap_for_authentication' => 0,
@@ -153,11 +166,22 @@ class PasswordConfirmationTest extends LdapIntegrationTest
         $this->assertSame('success', $result['result']);
     }
 
-    public function testSaveServersInfoSucceedsWithoutPasswordConfirmationWhenDisabled()
+    public function testSaveServersInfoRequiresPasswordConfirmationWhenDisabledForNonLdapUsers()
     {
         $_SERVER['REQUEST_METHOD'] = 'POST';
         \Piwik\Config::getInstance()->LoginLdap['enable_password_confirmation'] = 0;
         $this->setCurrentUser(self::NON_LDAP_USER, self::NON_LDAP_PASS);
+
+        $this->expectException(\Exception::class);
+        $this->api->saveServersInfo(json_encode($this->getServerPayload()));
+    }
+
+    public function testSaveServersInfoSucceedsWithoutPasswordConfirmationWhenDisabledForLdapUsers()
+    {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        \Piwik\Config::getInstance()->LoginLdap['enable_password_confirmation'] = 0;
+        $this->addLdapUser(self::TEST_LOGIN, self::TEST_PASS);
+        $this->setCurrentUser(self::TEST_LOGIN, self::TEST_PASS);
 
         $result = $this->api->saveServersInfo(json_encode($this->getServerPayload()));
 

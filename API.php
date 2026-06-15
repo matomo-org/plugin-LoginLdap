@@ -57,8 +57,7 @@ class API extends \Piwik\Plugin\API
         Piwik::checkUserHasSuperUserAccess();
 
         $data = json_decode(Common::unsanitizeInputValue($data), true);
-        $this->confirmCurrentUserPasswordIfRequired(
-            (bool) ($data['enable_password_confirmation'] ?? false),
+        $this->confirmCurrentUserPassword(
             $data['password_confirmation'] ?? null
         );
 
@@ -80,7 +79,7 @@ class API extends \Piwik\Plugin\API
     ) {
         $this->checkHttpMethodIsPost();
         Piwik::checkUserHasSuperUserAccess();
-        $this->confirmCurrentUserPasswordIfRequired(false, $passwordConfirmation);
+        $this->confirmCurrentUserPassword($passwordConfirmation);
 
         $servers = json_decode(Common::unsanitizeInputValue($data), true);
 
@@ -167,17 +166,5 @@ class API extends \Piwik\Plugin\API
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
             throw new Exception("Invalid HTTP method.");
         }
-    }
-
-    private function confirmCurrentUserPasswordIfRequired(
-        bool $configBeingEnabled,
-        #[\SensitiveParameter]
-        ?string $passwordConfirmation
-    ): void {
-        if (!Config::getConfigOption('enable_password_confirmation') && !$configBeingEnabled) {
-            return;
-        }
-
-        $this->confirmCurrentUserPassword($passwordConfirmation);
     }
 }
