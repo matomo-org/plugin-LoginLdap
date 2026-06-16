@@ -13,7 +13,7 @@
         :send-json-payload="true"
         :form-data="actualLdapConfig"
       >
-        <template #default="ajaxForm">
+        <template #default>
           <ContentBlock
             id="ldapSettings"
             :content-title="translate('LoginLdap_Settings')"
@@ -118,8 +118,8 @@
             </div>
             <hr />
             <SaveButton
-              :saving="ajaxForm.isSubmitting"
-              @confirm="ajaxForm.submitForm()"
+              :saving="isSavingConfig"
+              @confirm="requestSaveLdapConfig()"
             />
           </ContentBlock>
           <ContentBlock
@@ -178,8 +178,8 @@
             </div>
             <hr />
             <SaveButton
-              :saving="ajaxForm.isSubmitting"
-              @confirm="ajaxForm.submitForm()"
+              :saving="isSavingConfig"
+              @confirm="requestSaveLdapConfig()"
             />
           </ContentBlock>
           <ContentBlock
@@ -276,8 +276,8 @@
               </div>
               <hr />
               <SaveButton
-                :saving="ajaxForm.isSubmitting"
-                @confirm="ajaxForm.submitForm()"
+                :saving="isSavingConfig"
+                @confirm="requestSaveLdapConfig()"
               />
             </div>
           </ContentBlock>
@@ -324,7 +324,7 @@
           :use-custom-data-binding="true"
           :form-data="actualServers"
         >
-          <template v-slot:default="ajaxForm">
+          <template v-slot:default>
             <div
               id="ldapServersTable"
               v-for="(serverInfo, index) in actualServers"
@@ -406,13 +406,18 @@
               style="margin-right:3.5px"
             />
             <SaveButton
-              :saving="ajaxForm.isSubmitting"
-              @confirm="ajaxForm.submitForm()"
+              :saving="isSavingServers"
+              @confirm="requestSaveServers()"
             />
           </template>
         </AjaxForm>
       </div>
     </ContentBlock>
+    <PasswordConfirmation
+      v-model="showPasswordConfirmation"
+      @confirmed="confirmSaveAction"
+      @aborted="pendingSaveTarget = null"
+    />
   </div>
 </template>
 
@@ -424,11 +429,13 @@ import {
   AjaxForm,
   ContentBlock,
   Notification,
+  NotificationsStore,
 } from 'CoreHome';
-import { Field, SaveButton } from 'CorePluginsAdmin';
+import { Field, PasswordConfirmation, SaveButton } from 'CorePluginsAdmin';
 import TestableField from '../TestableField/TestableField.vue';
 
 interface LoginLdapConfig {
+  password_confirmation?: string;
   use_ldap_for_authentication: string|number;
   use_webserver_auth: string|number;
   enable_password_confirmation: number;
@@ -468,6 +475,10 @@ interface AdminState {
   synchronizeUserError: null|string;
   synchronizeUserDone: null|boolean;
   isSynchronizing: boolean;
+  isSavingConfig: boolean;
+  isSavingServers: boolean;
+  showPasswordConfirmation: boolean;
+  pendingSaveTarget: null|'config'|'servers';
 }
 
 function getSampleAccessAttribute(
@@ -519,6 +530,7 @@ export default defineComponent({
     AjaxForm,
     ContentBlock,
     Notification,
+    PasswordConfirmation,
     Field,
     TestableField,
     SaveButton,
@@ -531,6 +543,10 @@ export default defineComponent({
       synchronizeUserError: null,
       synchronizeUserDone: null,
       isSynchronizing: false,
+      isSavingConfig: false,
+      isSavingServers: false,
+      showPasswordConfirmation: false,
+      pendingSaveTarget: null,
     };
   },
   methods: {
@@ -565,6 +581,76 @@ export default defineComponent({
       }).finally(() => {
         this.isSynchronizing = false;
       });
+    },
+    requestSaveLdapConfig() {
+      this.pendingSaveTarget = 'config';
+      this.showPasswordConfirmation = true;
+    },
+    requestSaveServers() {
+      this.pendingSaveTarget = 'servers';
+      this.showPasswordConfirmation = true;
+    },
+    confirmSaveAction(passwordConfirmation?: string) {
+      const { pendingSaveTarget } = this;
+      this.showPasswordConfirmation = false;
+      this.pendingSaveTarget = null;
+
+      if (pendingSaveTarget === 'config') {
+        this.saveLdapConfig(passwordConfirmation);
+      } else if (pendingSaveTarget === 'servers') {
+        this.saveServers(passwordConfirmation);
+      }
+    },
+    saveLdapConfig(passwordConfirmation?: string) {
+      this.isSavingConfig = true;
+      this.actualLdapConfig.password_confirmation = passwordConfirmation || '';
+      const payload: Record<string, string> = {
+        data: JSON.stringify(this.actualLdapConfig),
+      };
+
+      AjaxHelper.post(
+        {
+          module: 'API',
+          method: 'LoginLdap.saveLdapConfig',
+        },
+        payload,
+      ).then(() => {
+        this.showSaveSuccessNotification();
+      }).finally(() => {
+        this.actualLdapConfig.password_confirmation = '';
+        this.isSavingConfig = false;
+      });
+    },
+    saveServers(passwordConfirmation?: string) {
+      this.isSavingServers = true;
+      const payload: Record<string, string> = {
+        data: JSON.stringify(this.actualServers),
+      };
+
+      if (passwordConfirmation) {
+        payload.passwordConfirmation = passwordConfirmation;
+      }
+
+      AjaxHelper.post(
+        {
+          module: 'API',
+          method: 'LoginLdap.saveServersInfo',
+        },
+        payload,
+      ).then(() => {
+        this.showSaveSuccessNotification();
+      }).finally(() => {
+        this.isSavingServers = false;
+      });
+    },
+    showSaveSuccessNotification() {
+      const notificationInstanceId = NotificationsStore.show({
+        message: translate('General_YourChangesHaveBeenSaved'),
+        context: 'success',
+        type: 'toast',
+        id: 'ajaxHelper',
+      });
+      NotificationsStore.scrollToNotification(notificationInstanceId);
     },
   },
   computed: {

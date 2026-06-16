@@ -57,6 +57,9 @@ class API extends \Piwik\Plugin\API
         Piwik::checkUserHasSuperUserAccess();
 
         $data = json_decode(Common::unsanitizeInputValue($data), true);
+        $this->confirmCurrentUserPassword(
+            $data['password_confirmation'] ?? null
+        );
 
         Config::savePluginOptions($data);
 
@@ -69,10 +72,14 @@ class API extends \Piwik\Plugin\API
      * @param string $data JSON-encoded LDAP server configuration entries.
      * @return array{result: string, message: string} The save status payload.
      */
-    public function saveServersInfo($data)
-    {
+    public function saveServersInfo(
+        $data,
+        #[\SensitiveParameter]
+        ?string $passwordConfirmation = null
+    ) {
         $this->checkHttpMethodIsPost();
         Piwik::checkUserHasSuperUserAccess();
+        $this->confirmCurrentUserPassword($passwordConfirmation);
 
         $servers = json_decode(Common::unsanitizeInputValue($data), true);
 

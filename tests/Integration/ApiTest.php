@@ -12,6 +12,7 @@ namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
 use Piwik\Config;
 use Piwik\Plugins\LoginLdap\API;
+use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 
 /**
  * @group LoginLdap
@@ -29,7 +30,19 @@ class ApiTest extends LdapIntegrationTest
     {
         parent::setUp();
 
+        // ApiTest only verifies config/server persistence, not the password confirmation flow
+        // (that is covered by PasswordConfirmationTest). Skip the confirmation so saving a config
+        // that enables password confirmation does not require re-authentication here.
+        UserSynchronizer::$skipPasswordConfirmation = true;
+
         $this->api = new API();
+    }
+
+    public function tearDown(): void
+    {
+        UserSynchronizer::$skipPasswordConfirmation = false;
+
+        parent::tearDown();
     }
 
     public function test_getCountOfUsersMemberOf_ReturnsZero_WhenNoUsersAreMemberOfGroup()
@@ -237,6 +250,15 @@ class ApiTest extends LdapIntegrationTest
             'admin_pass' => 'pass',
             'start_tls' => null
         ), Config::getInstance()->LoginLdap_server2);
+    }
+
+    public function test_getPluginOptionValuesWithDefaults_UsesDisabledPasswordConfirmationByDefault()
+    {
+        unset(Config::getInstance()->LoginLdap['enable_password_confirmation']);
+
+        $ldapConfig = \Piwik\Plugins\LoginLdap\Config::getPluginOptionValuesWithDefaults();
+
+        $this->assertSame(0, $ldapConfig['enable_password_confirmation']);
     }
 
     public function test_synchronizeUser_Throws_WhenLdapUserDoesNotExist()

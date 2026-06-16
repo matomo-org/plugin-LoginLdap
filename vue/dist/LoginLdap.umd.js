@@ -148,27 +148,22 @@ if (typeof window !== 'undefined') {
 // EXTERNAL MODULE: external {"commonjs":"vue","commonjs2":"vue","root":"Vue"}
 var external_commonjs_vue_commonjs2_vue_root_Vue_ = __webpack_require__("8bbf");
 
-// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/LoginLdap/vue/src/TestableField/TestableField.vue?vue&type=template&id=74c2fd9c
+// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--1-1!./plugins/LoginLdap/vue/src/TestableField/TestableField.vue?vue&type=template&id=74c2fd9c
 
-var _hoisted_1 = {
+const _hoisted_1 = {
   class: "loginLdapTestableField"
 };
-var _hoisted_2 = ["innerHTML"];
+const _hoisted_2 = ["innerHTML"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  var _component_Field = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("Field");
-
-  var _component_SaveButton = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("SaveButton");
-
+  const _component_Field = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("Field");
+  const _component_SaveButton = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("SaveButton");
   return Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("div", _hoisted_1, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
     uicontrol: "text",
-    onKeydown: _cache[0] || (_cache[0] = function ($event) {
-      return _ctx.onKeydown($event);
-    }),
+    onKeydown: _cache[0] || (_cache[0] = $event => _ctx.onKeydown($event)),
     "model-value": _ctx.actualInputValue,
-    "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
+    "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => {
       _ctx.actualInputValue = $event;
       _ctx.testResult = _ctx.testError = null;
-
       _ctx.$emit('update:modelValue', $event);
     }),
     name: _ctx.name,
@@ -176,9 +171,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "inline-help": _ctx.inlineHelp
   }, null, 8, ["model-value", "name", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
     saving: _ctx.isChecking,
-    onConfirm: _cache[2] || (_cache[2] = function ($event) {
-      return _ctx.testInputValue();
-    }),
+    onConfirm: _cache[2] || (_cache[2] = $event => _ctx.testInputValue()),
     value: _ctx.translate('LoginLdap_Test')
   }, null, 8, ["saving", "value"]), [[external_commonjs_vue_commonjs2_vue_root_Vue_["vShow"], _ctx.actualInputValue]]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", {
     class: "test-config-option-success",
@@ -195,9 +188,7 @@ var external_CoreHome_ = __webpack_require__("19dc");
 // EXTERNAL MODULE: external "CorePluginsAdmin"
 var external_CorePluginsAdmin_ = __webpack_require__("a5a2");
 
-// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-typescript/node_modules/cache-loader/dist/cjs.js??ref--14-0!./node_modules/babel-loader/lib!./node_modules/@vue/cli-plugin-typescript/node_modules/ts-loader??ref--14-2!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/LoginLdap/vue/src/TestableField/TestableField.vue?vue&type=script&lang=ts
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
+// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-typescript/node_modules/cache-loader/dist/cjs.js??ref--15-0!./node_modules/babel-loader/lib!./node_modules/@vue/cli-plugin-typescript/node_modules/ts-loader??ref--15-2!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--1-1!./plugins/LoginLdap/vue/src/TestableField/TestableField.vue?vue&type=script&lang=ts
 
 
 
@@ -225,31 +216,29 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     SaveButton: external_CorePluginsAdmin_["SaveButton"]
   },
   emits: ['update:modelValue'],
-  setup: function setup(props) {
-    var abortController = null;
-
-    var sendRequestToTestValue = function sendRequestToTestValue(actualInputValue) {
+  setup(props) {
+    let abortController = null;
+    const sendRequestToTestValue = actualInputValue => {
       if (abortController) {
         abortController.abort();
         abortController = null;
       }
-
       abortController = new AbortController();
-      return external_CoreHome_["AjaxHelper"].fetch(_defineProperty({
-        method: props.testApiMethod
-      }, props.testApiMethodArg, actualInputValue), {
-        abortController: abortController,
+      return external_CoreHome_["AjaxHelper"].fetch({
+        method: props.testApiMethod,
+        [props.testApiMethodArg]: actualInputValue
+      }, {
+        abortController,
         createErrorNotification: false
-      }).finally(function () {
+      }).finally(() => {
         abortController = null;
       });
     };
-
     return {
-      sendRequestToTestValue: sendRequestToTestValue
+      sendRequestToTestValue
     };
   },
-  data: function data() {
+  data() {
     return {
       actualInputValue: this.modelValue,
       testError: null,
@@ -259,39 +248,33 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     };
   },
   methods: {
-    testInputValue: function testInputValue() {
-      var _this = this;
-
+    testInputValue() {
       this.testError = null;
       this.testResult = null;
-
       if (!this.actualInputValue) {
         return;
       }
-
-      this.sendRequestToTestValue(this.actualInputValue).then(function (response) {
-        _this.testResult = response.value === null ? null : parseInt(response.value, 10);
-      }).catch(function (error) {
-        _this.testError = error.message || error;
-        _this.testResult = null;
+      this.sendRequestToTestValue(this.actualInputValue).then(response => {
+        this.testResult = response.value === null ? null : parseInt(response.value, 10);
+      }).catch(error => {
+        this.testError = error.message || error;
+        this.testResult = null;
       });
     },
-    onKeydown: function onKeydown(event) {
+    onKeydown(event) {
       if (event.key !== 'Enter') {
         return;
       }
-
       this.testInputValue();
     }
   },
   computed: {
-    successMessage: function successMessage() {
+    successMessage() {
       if (this.testResult === null) {
         return '';
       }
-
-      var usersTranslation = this.testResult === 1 ? Object(external_CoreHome_["translate"])('LoginLdap_OneUser') : Object(external_CoreHome_["translate"])('General_NUsers', "".concat(this.testResult));
-      return Object(external_CoreHome_["translate"])(this.successTranslation, "<strong>".concat(usersTranslation, "</strong>"));
+      const usersTranslation = this.testResult === 1 ? Object(external_CoreHome_["translate"])('LoginLdap_OneUser') : Object(external_CoreHome_["translate"])('General_NUsers', `${this.testResult}`);
+      return Object(external_CoreHome_["translate"])(this.successTranslation, `<strong>${usersTranslation}</strong>`);
     }
   }
 }));
@@ -304,499 +287,374 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 TestableFieldvue_type_script_lang_ts.render = render
 
 /* harmony default export */ var TestableField = (TestableFieldvue_type_script_lang_ts);
-// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/LoginLdap/vue/src/Admin/Admin.vue?vue&type=template&id=1e910070
+// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--1-1!./plugins/LoginLdap/vue/src/Admin/Admin.vue?vue&type=template&id=700f87d5
 
-var Adminvue_type_template_id_1e910070_hoisted_1 = {
+const Adminvue_type_template_id_700f87d5_hoisted_1 = {
   key: 0
 };
-
-var Adminvue_type_template_id_1e910070_hoisted_2 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("hr", null, null, -1);
-
-var _hoisted_3 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("hr", null, null, -1);
-
-var _hoisted_4 = ["innerHTML"];
-
-var _hoisted_5 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("br", null, null, -1);
-
-var _hoisted_6 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("br", null, null, -1);
-
-var _hoisted_7 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("br", null, null, -1);
-
-var _hoisted_8 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("br", null, null, -1);
-
-var _hoisted_9 = ["innerHTML"];
-var _hoisted_10 = ["innerHTML"];
-var _hoisted_11 = ["innerHTML"];
-
-var _hoisted_12 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("hr", null, null, -1);
-
-var _hoisted_13 = {
+const Adminvue_type_template_id_700f87d5_hoisted_2 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("hr", null, null, -1);
+const _hoisted_3 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("hr", null, null, -1);
+const _hoisted_4 = ["innerHTML"];
+const _hoisted_5 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("br", null, null, -1);
+const _hoisted_6 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("br", null, null, -1);
+const _hoisted_7 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("br", null, null, -1);
+const _hoisted_8 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("br", null, null, -1);
+const _hoisted_9 = ["innerHTML"];
+const _hoisted_10 = ["innerHTML"];
+const _hoisted_11 = ["innerHTML"];
+const _hoisted_12 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("hr", null, null, -1);
+const _hoisted_13 = {
   src: "plugins/Morpheus/images/loading-blue.gif"
 };
-
-var _hoisted_14 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("br", null, null, -1);
-
-var _hoisted_15 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("br", null, null, -1);
-
-var _hoisted_16 = ["innerHTML"];
-var _hoisted_17 = {
+const _hoisted_14 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("br", null, null, -1);
+const _hoisted_15 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("br", null, null, -1);
+const _hoisted_16 = ["innerHTML"];
+const _hoisted_17 = {
   key: 1
 };
-
-var _hoisted_18 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("br", null, null, -1);
-
-var _hoisted_19 = ["innerHTML"];
-
-var _hoisted_20 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("hr", null, null, -1);
-
-function Adminvue_type_template_id_1e910070_render(_ctx, _cache, $props, $setup, $data, $options) {
-  var _component_Notification = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("Notification");
-
-  var _component_Field = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("Field");
-
-  var _component_TestableField = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("TestableField");
-
-  var _component_SaveButton = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("SaveButton");
-
-  var _component_ContentBlock = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("ContentBlock");
-
-  var _component_AjaxForm = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("AjaxForm");
-
+const _hoisted_18 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("br", null, null, -1);
+const _hoisted_19 = ["innerHTML"];
+const _hoisted_20 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("hr", null, null, -1);
+function Adminvue_type_template_id_700f87d5_render(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_Notification = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("Notification");
+  const _component_Field = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("Field");
+  const _component_TestableField = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("TestableField");
+  const _component_SaveButton = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("SaveButton");
+  const _component_ContentBlock = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("ContentBlock");
+  const _component_AjaxForm = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("AjaxForm");
+  const _component_PasswordConfirmation = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("PasswordConfirmation");
   return Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_AjaxForm, {
     "submit-api-method": "LoginLdap.saveLdapConfig",
     "use-custom-data-binding": true,
     "send-json-payload": true,
     "form-data": _ctx.actualLdapConfig
   }, {
-    default: Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withCtx"])(function (ajaxForm) {
-      return [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_ContentBlock, {
-        id: "ldapSettings",
-        "content-title": _ctx.translate('LoginLdap_Settings')
+    default: Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withCtx"])(() => [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_ContentBlock, {
+      id: "ldapSettings",
+      "content-title": _ctx.translate('LoginLdap_Settings')
+    }, {
+      default: Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withCtx"])(() => [_ctx.updatedFromPre30 ? (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("div", Adminvue_type_template_id_700f87d5_hoisted_1, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Notification, {
+        id: "pre300AlwaysUseLdapWarning",
+        context: "warning",
+        noclear: true
       }, {
-        default: Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withCtx"])(function () {
-          return [_ctx.updatedFromPre30 ? (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("div", Adminvue_type_template_id_1e910070_hoisted_1, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Notification, {
-            id: "pre300AlwaysUseLdapWarning",
-            context: "warning",
-            noclear: true
-          }, {
-            default: Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withCtx"])(function () {
-              return [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("strong", null, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('General_Note')), 1), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createTextVNode"])(": " + Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('LoginLdap_UpdateFromPre300Warning')), 1)];
-            }),
-            _: 1
-          })])) : Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createCommentVNode"])("", true), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
-            uicontrol: "checkbox",
-            name: "synchronize_users_after_login",
-            modelValue: _ctx.actualLdapConfig.use_ldap_for_authentication,
-            "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
-              return _ctx.actualLdapConfig.use_ldap_for_authentication = $event;
-            }),
-            title: _ctx.translate('LoginLdap_UseLdapForAuthentication'),
-            "inline-help": _ctx.useLdapForAuthHelp
-          }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
-            uicontrol: "checkbox",
-            name: "use_webserver_auth",
-            modelValue: _ctx.actualLdapConfig.use_webserver_auth,
-            "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
-              return _ctx.actualLdapConfig.use_webserver_auth = $event;
-            }),
-            title: _ctx.translate('LoginLdap_Kerberos'),
-            "inline-help": _ctx.translate('LoginLdap_KerberosDescription')
-          }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
-            uicontrol: "checkbox",
-            name: "enable_password_confirmation",
-            modelValue: _ctx.actualLdapConfig.enable_password_confirmation,
-            "onUpdate:modelValue": _cache[2] || (_cache[2] = function ($event) {
-              return _ctx.actualLdapConfig.enable_password_confirmation = $event;
-            }),
-            title: _ctx.translate('LoginLdap_OptionsPWCONFIRMATION'),
-            "inline-help": _ctx.translate('LoginLdap_OptionsPWCONFIRMATIONDescription')
-          }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
-            uicontrol: "checkbox",
-            name: "strip_domain_from_web_auth",
-            modelValue: _ctx.actualLdapConfig.strip_domain_from_web_auth,
-            "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
-              return _ctx.actualLdapConfig.strip_domain_from_web_auth = $event;
-            }),
-            title: _ctx.translate('LoginLdap_StripDomainFromWebAuth'),
-            "inline-help": _ctx.translate('LoginLdap_StripDomainFromWebAuthDescription')
-          }, null, 8, ["modelValue", "title", "inline-help"])])], 512), [[external_commonjs_vue_commonjs2_vue_root_Vue_["vShow"], _ctx.actualLdapConfig.use_webserver_auth]]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
-            uicontrol: "text",
-            name: "ldap_network_timeout",
-            modelValue: _ctx.actualLdapConfig.ldap_network_timeout,
-            "onUpdate:modelValue": _cache[4] || (_cache[4] = function ($event) {
-              return _ctx.actualLdapConfig.ldap_network_timeout = $event;
-            }),
-            title: _ctx.translate('LoginLdap_NetworkTimeout'),
-            "inline-help": _ctx.ldapNetworkTimeoutHelp
-          }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
-            uicontrol: "text",
-            name: "required_member_of_field",
-            modelValue: _ctx.actualLdapConfig.required_member_of_field,
-            "onUpdate:modelValue": _cache[5] || (_cache[5] = function ($event) {
-              return _ctx.actualLdapConfig.required_member_of_field = $event;
-            }),
-            title: _ctx.translate('LoginLdap_MemberOfField'),
-            "inline-help": _ctx.translate('LoginLdap_MemberOfFieldDescription')
-          }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_TestableField, {
-            uicontrol: "text",
-            modelValue: _ctx.actualLdapConfig.required_member_of,
-            "onUpdate:modelValue": _cache[6] || (_cache[6] = function ($event) {
-              return _ctx.actualLdapConfig.required_member_of = $event;
-            }),
-            name: "required_member_of",
-            "test-api-method": "LoginLdap.getCountOfUsersMemberOf",
-            "test-api-method-arg": "memberOf",
-            "success-translation": "LoginLdap_MemberOfCount",
-            title: _ctx.translate('LoginLdap_MemberOf'),
-            "inline-help": _ctx.memberOfCountHelp
-          }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_TestableField, {
-            uicontrol: "text",
-            modelValue: _ctx.actualLdapConfig.ldap_user_filter,
-            "onUpdate:modelValue": _cache[7] || (_cache[7] = function ($event) {
-              return _ctx.actualLdapConfig.ldap_user_filter = $event;
-            }),
-            name: "ldap_user_filter",
-            "test-api-method": "LoginLdap.getCountOfUsersMatchingFilter",
-            "test-api-method-arg": "filter",
-            "success-translation": "LoginLdap_FilterCount",
-            title: _ctx.translate('LoginLdap_Filter'),
-            "inline-help": _ctx.translate('LoginLdap_FilterDescription')
-          }, null, 8, ["modelValue", "title", "inline-help"])]), Adminvue_type_template_id_1e910070_hoisted_2, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
-            saving: ajaxForm.isSubmitting,
-            onConfirm: function onConfirm($event) {
-              return ajaxForm.submitForm();
-            }
-          }, null, 8, ["saving", "onConfirm"])];
-        }),
-        _: 2
-      }, 1032, ["content-title"]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_ContentBlock, {
-        id: "ldapUserMappingSettings",
-        "content-title": _ctx.translate('LoginLdap_UserSyncSettings')
+        default: Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withCtx"])(() => [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("strong", null, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('General_Note')), 1), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createTextVNode"])(": " + Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('LoginLdap_UpdateFromPre300Warning')), 1)]),
+        _: 1
+      })])) : Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createCommentVNode"])("", true), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+        uicontrol: "checkbox",
+        name: "synchronize_users_after_login",
+        modelValue: _ctx.actualLdapConfig.use_ldap_for_authentication,
+        "onUpdate:modelValue": _cache[0] || (_cache[0] = $event => _ctx.actualLdapConfig.use_ldap_for_authentication = $event),
+        title: _ctx.translate('LoginLdap_UseLdapForAuthentication'),
+        "inline-help": _ctx.useLdapForAuthHelp
+      }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+        uicontrol: "checkbox",
+        name: "use_webserver_auth",
+        modelValue: _ctx.actualLdapConfig.use_webserver_auth,
+        "onUpdate:modelValue": _cache[1] || (_cache[1] = $event => _ctx.actualLdapConfig.use_webserver_auth = $event),
+        title: _ctx.translate('LoginLdap_Kerberos'),
+        "inline-help": _ctx.translate('LoginLdap_KerberosDescription')
+      }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+        uicontrol: "checkbox",
+        name: "enable_password_confirmation",
+        modelValue: _ctx.actualLdapConfig.enable_password_confirmation,
+        "onUpdate:modelValue": _cache[2] || (_cache[2] = $event => _ctx.actualLdapConfig.enable_password_confirmation = $event),
+        title: _ctx.translate('LoginLdap_OptionsPWCONFIRMATION'),
+        "inline-help": _ctx.translate('LoginLdap_OptionsPWCONFIRMATIONDescription')
+      }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+        uicontrol: "checkbox",
+        name: "strip_domain_from_web_auth",
+        modelValue: _ctx.actualLdapConfig.strip_domain_from_web_auth,
+        "onUpdate:modelValue": _cache[3] || (_cache[3] = $event => _ctx.actualLdapConfig.strip_domain_from_web_auth = $event),
+        title: _ctx.translate('LoginLdap_StripDomainFromWebAuth'),
+        "inline-help": _ctx.translate('LoginLdap_StripDomainFromWebAuthDescription')
+      }, null, 8, ["modelValue", "title", "inline-help"])])], 512), [[external_commonjs_vue_commonjs2_vue_root_Vue_["vShow"], _ctx.actualLdapConfig.use_webserver_auth]]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+        uicontrol: "text",
+        name: "ldap_network_timeout",
+        modelValue: _ctx.actualLdapConfig.ldap_network_timeout,
+        "onUpdate:modelValue": _cache[4] || (_cache[4] = $event => _ctx.actualLdapConfig.ldap_network_timeout = $event),
+        title: _ctx.translate('LoginLdap_NetworkTimeout'),
+        "inline-help": _ctx.ldapNetworkTimeoutHelp
+      }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+        uicontrol: "text",
+        name: "required_member_of_field",
+        modelValue: _ctx.actualLdapConfig.required_member_of_field,
+        "onUpdate:modelValue": _cache[5] || (_cache[5] = $event => _ctx.actualLdapConfig.required_member_of_field = $event),
+        title: _ctx.translate('LoginLdap_MemberOfField'),
+        "inline-help": _ctx.translate('LoginLdap_MemberOfFieldDescription')
+      }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_TestableField, {
+        uicontrol: "text",
+        modelValue: _ctx.actualLdapConfig.required_member_of,
+        "onUpdate:modelValue": _cache[6] || (_cache[6] = $event => _ctx.actualLdapConfig.required_member_of = $event),
+        name: "required_member_of",
+        "test-api-method": "LoginLdap.getCountOfUsersMemberOf",
+        "test-api-method-arg": "memberOf",
+        "success-translation": "LoginLdap_MemberOfCount",
+        title: _ctx.translate('LoginLdap_MemberOf'),
+        "inline-help": _ctx.memberOfCountHelp
+      }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_TestableField, {
+        uicontrol: "text",
+        modelValue: _ctx.actualLdapConfig.ldap_user_filter,
+        "onUpdate:modelValue": _cache[7] || (_cache[7] = $event => _ctx.actualLdapConfig.ldap_user_filter = $event),
+        name: "ldap_user_filter",
+        "test-api-method": "LoginLdap.getCountOfUsersMatchingFilter",
+        "test-api-method-arg": "filter",
+        "success-translation": "LoginLdap_FilterCount",
+        title: _ctx.translate('LoginLdap_Filter'),
+        "inline-help": _ctx.translate('LoginLdap_FilterDescription')
+      }, null, 8, ["modelValue", "title", "inline-help"])]), Adminvue_type_template_id_700f87d5_hoisted_2, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
+        saving: _ctx.isSavingConfig,
+        onConfirm: _cache[8] || (_cache[8] = $event => _ctx.requestSaveLdapConfig())
+      }, null, 8, ["saving"])]),
+      _: 1
+    }, 8, ["content-title"]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_ContentBlock, {
+      id: "ldapUserMappingSettings",
+      "content-title": _ctx.translate('LoginLdap_UserSyncSettings')
+    }, {
+      default: Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withCtx"])(() => [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+        uicontrol: "text",
+        name: "ldap_user_id_field",
+        modelValue: _ctx.actualLdapConfig.ldap_user_id_field,
+        "onUpdate:modelValue": _cache[9] || (_cache[9] = $event => _ctx.actualLdapConfig.ldap_user_id_field = $event),
+        title: _ctx.translate('LoginLdap_UserIdField'),
+        "inline-help": _ctx.translate('LoginLdap_UserIdFieldDescription')
+      }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+        uicontrol: "text",
+        name: "ldap_password_field",
+        modelValue: _ctx.actualLdapConfig.ldap_password_field,
+        "onUpdate:modelValue": _cache[10] || (_cache[10] = $event => _ctx.actualLdapConfig.ldap_password_field = $event),
+        title: _ctx.translate('LoginLdap_PasswordField'),
+        "inline-help": _ctx.ldapPasswordFieldHelp
+      }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+        uicontrol: "text",
+        name: "ldap_mail_field",
+        modelValue: _ctx.actualLdapConfig.ldap_mail_field,
+        "onUpdate:modelValue": _cache[11] || (_cache[11] = $event => _ctx.actualLdapConfig.ldap_mail_field = $event),
+        title: _ctx.translate('LoginLdap_MailField'),
+        "inline-help": _ctx.translate('LoginLdap_MailFieldDescription')
+      }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+        uicontrol: "text",
+        name: "user_email_suffix",
+        modelValue: _ctx.actualLdapConfig.user_email_suffix,
+        "onUpdate:modelValue": _cache[12] || (_cache[12] = $event => _ctx.actualLdapConfig.user_email_suffix = $event),
+        title: _ctx.translate('LoginLdap_UsernameSuffix'),
+        "inline-help": _ctx.translate('LoginLdap_UsernameSuffixDescription')
+      }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+        uicontrol: "text",
+        name: "new_user_default_sites_view_access",
+        modelValue: _ctx.actualLdapConfig.new_user_default_sites_view_access,
+        "onUpdate:modelValue": _cache[13] || (_cache[13] = $event => _ctx.actualLdapConfig.new_user_default_sites_view_access = $event),
+        title: _ctx.translate('LoginLdap_NewUserDefaultSitesViewAccess'),
+        "inline-help": _ctx.translate('LoginLdap_NewUserDefaultSitesViewAccessDescription')
+      }, null, 8, ["modelValue", "title", "inline-help"])]), _hoisted_3, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
+        saving: _ctx.isSavingConfig,
+        onConfirm: _cache[14] || (_cache[14] = $event => _ctx.requestSaveLdapConfig())
+      }, null, 8, ["saving"])]),
+      _: 1
+    }, 8, ["content-title"]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_ContentBlock, {
+      id: "ldapUserAccessMappingSettings",
+      "content-title": _ctx.translate('LoginLdap_AccessSyncSettings')
+    }, {
+      default: Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withCtx"])(() => [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("p", {
+        innerHTML: _ctx.$sanitize(_ctx.readMoreAboutAccessSynchronization)
+      }, null, 8, _hoisted_4), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+        uicontrol: "checkbox",
+        name: "enable_synchronize_access_from_ldap",
+        modelValue: _ctx.actualLdapConfig.enable_synchronize_access_from_ldap,
+        "onUpdate:modelValue": _cache[15] || (_cache[15] = $event => _ctx.actualLdapConfig.enable_synchronize_access_from_ldap = $event),
+        title: _ctx.translate('LoginLdap_EnableLdapAccessSynchronization'),
+        "inline-help": _ctx.translate('LoginLdap_EnableLdapAccessSynchronizationDescription')
+      }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Notification, {
+        context: "info",
+        noclear: true
       }, {
-        default: Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withCtx"])(function () {
-          return [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
-            uicontrol: "text",
-            name: "ldap_user_id_field",
-            modelValue: _ctx.actualLdapConfig.ldap_user_id_field,
-            "onUpdate:modelValue": _cache[8] || (_cache[8] = function ($event) {
-              return _ctx.actualLdapConfig.ldap_user_id_field = $event;
-            }),
-            title: _ctx.translate('LoginLdap_UserIdField'),
-            "inline-help": _ctx.translate('LoginLdap_UserIdFieldDescription')
-          }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
-            uicontrol: "text",
-            name: "ldap_password_field",
-            modelValue: _ctx.actualLdapConfig.ldap_password_field,
-            "onUpdate:modelValue": _cache[9] || (_cache[9] = function ($event) {
-              return _ctx.actualLdapConfig.ldap_password_field = $event;
-            }),
-            title: _ctx.translate('LoginLdap_PasswordField'),
-            "inline-help": _ctx.ldapPasswordFieldHelp
-          }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
-            uicontrol: "text",
-            name: "ldap_mail_field",
-            modelValue: _ctx.actualLdapConfig.ldap_mail_field,
-            "onUpdate:modelValue": _cache[10] || (_cache[10] = function ($event) {
-              return _ctx.actualLdapConfig.ldap_mail_field = $event;
-            }),
-            title: _ctx.translate('LoginLdap_MailField'),
-            "inline-help": _ctx.translate('LoginLdap_MailFieldDescription')
-          }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
-            uicontrol: "text",
-            name: "user_email_suffix",
-            modelValue: _ctx.actualLdapConfig.user_email_suffix,
-            "onUpdate:modelValue": _cache[11] || (_cache[11] = function ($event) {
-              return _ctx.actualLdapConfig.user_email_suffix = $event;
-            }),
-            title: _ctx.translate('LoginLdap_UsernameSuffix'),
-            "inline-help": _ctx.translate('LoginLdap_UsernameSuffixDescription')
-          }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
-            uicontrol: "text",
-            name: "new_user_default_sites_view_access",
-            modelValue: _ctx.actualLdapConfig.new_user_default_sites_view_access,
-            "onUpdate:modelValue": _cache[12] || (_cache[12] = function ($event) {
-              return _ctx.actualLdapConfig.new_user_default_sites_view_access = $event;
-            }),
-            title: _ctx.translate('LoginLdap_NewUserDefaultSitesViewAccess'),
-            "inline-help": _ctx.translate('LoginLdap_NewUserDefaultSitesViewAccessDescription')
-          }, null, 8, ["modelValue", "title", "inline-help"])]), _hoisted_3, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
-            saving: ajaxForm.isSubmitting,
-            onConfirm: function onConfirm($event) {
-              return ajaxForm.submitForm();
-            }
-          }, null, 8, ["saving", "onConfirm"])];
-        }),
-        _: 2
-      }, 1032, ["content-title"]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_ContentBlock, {
-        id: "ldapUserAccessMappingSettings",
-        "content-title": _ctx.translate('LoginLdap_AccessSyncSettings')
-      }, {
-        default: Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withCtx"])(function () {
-          return [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("p", {
-            innerHTML: _ctx.$sanitize(_ctx.readMoreAboutAccessSynchronization)
-          }, null, 8, _hoisted_4), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
-            uicontrol: "checkbox",
-            name: "enable_synchronize_access_from_ldap",
-            modelValue: _ctx.actualLdapConfig.enable_synchronize_access_from_ldap,
-            "onUpdate:modelValue": _cache[13] || (_cache[13] = function ($event) {
-              return _ctx.actualLdapConfig.enable_synchronize_access_from_ldap = $event;
-            }),
-            title: _ctx.translate('LoginLdap_EnableLdapAccessSynchronization'),
-            "inline-help": _ctx.translate('LoginLdap_EnableLdapAccessSynchronizationDescription')
-          }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Notification, {
-            context: "info",
-            noclear: true
-          }, {
-            default: Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withCtx"])(function () {
-              return [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("strong", null, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('LoginLdap_ExpectedLdapAttributes')), 1), _hoisted_5, _hoisted_6, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createTextVNode"])(" " + Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('LoginLdap_ExpectedLdapAttributesPrelude')) + ":", 1), _hoisted_7, _hoisted_8, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("ul", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("li", {
-                innerHTML: _ctx.$sanitize(_ctx.sampleViewAttribute)
-              }, null, 8, _hoisted_9), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("li", {
-                innerHTML: _ctx.$sanitize(_ctx.sampleAdminAttribute)
-              }, null, 8, _hoisted_10), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("li", {
-                innerHTML: _ctx.$sanitize(_ctx.sampleSuperuserAttribute)
-              }, null, 8, _hoisted_11)])];
-            }),
-            _: 1
-          })]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
-            uicontrol: "text",
-            name: "ldap_view_access_field",
-            modelValue: _ctx.actualLdapConfig.ldap_view_access_field,
-            "onUpdate:modelValue": _cache[14] || (_cache[14] = function ($event) {
-              return _ctx.actualLdapConfig.ldap_view_access_field = $event;
-            }),
-            title: _ctx.translate('LoginLdap_LdapViewAccessField'),
-            "inline-help": _ctx.translate('LoginLdap_LdapViewAccessFieldDescription')
-          }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
-            uicontrol: "text",
-            name: "ldap_admin_access_field",
-            modelValue: _ctx.actualLdapConfig.ldap_admin_access_field,
-            "onUpdate:modelValue": _cache[15] || (_cache[15] = function ($event) {
-              return _ctx.actualLdapConfig.ldap_admin_access_field = $event;
-            }),
-            title: _ctx.translate('LoginLdap_LdapAdminAccessField'),
-            "inline-help": _ctx.translate('LoginLdap_LdapAdminAccessFieldDescription')
-          }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
-            uicontrol: "text",
-            name: "ldap_superuser_access_field",
-            modelValue: _ctx.actualLdapConfig.ldap_superuser_access_field,
-            "onUpdate:modelValue": _cache[16] || (_cache[16] = function ($event) {
-              return _ctx.actualLdapConfig.ldap_superuser_access_field = $event;
-            }),
-            title: _ctx.translate('LoginLdap_LdapSuperUserAccessField'),
-            "inline-help": _ctx.translate('LoginLdap_LdapSuperUserAccessFieldDescription')
-          }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
-            uicontrol: "text",
-            name: "user_access_attribute_server_specification_delimiter",
-            modelValue: _ctx.actualLdapConfig.user_access_attribute_server_specification_delimiter,
-            "onUpdate:modelValue": _cache[17] || (_cache[17] = function ($event) {
-              return _ctx.actualLdapConfig.user_access_attribute_server_specification_delimiter = $event;
-            }),
-            title: _ctx.translate('LoginLdap_LdapUserAccessAttributeServerSpecDelimiter'),
-            "inline-help": _ctx.translate('LoginLdap_LdapUserAccessAttributeServerSpecDelimiterDescription')
-          }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
-            uicontrol: "text",
-            name: "user_access_attribute_server_separator",
-            modelValue: _ctx.actualLdapConfig.user_access_attribute_server_separator,
-            "onUpdate:modelValue": _cache[18] || (_cache[18] = function ($event) {
-              return _ctx.actualLdapConfig.user_access_attribute_server_separator = $event;
-            }),
-            title: _ctx.translate('LoginLdap_LdapUserAccessAttributeServerSeparator'),
-            "inline-help": _ctx.translate('LoginLdap_LdapUserAccessAttributeServerSeparatorDescription')
-          }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
-            uicontrol: "text",
-            name: "instance_name",
-            modelValue: _ctx.actualLdapConfig.instance_name,
-            "onUpdate:modelValue": _cache[19] || (_cache[19] = function ($event) {
-              return _ctx.actualLdapConfig.instance_name = $event;
-            }),
-            title: _ctx.translate('LoginLdap_ThisMatomoInstanceName'),
-            "inline-help": _ctx.translate('LoginLdap_ThisMatomoInstanceNameDescription')
-          }, null, 8, ["modelValue", "title", "inline-help"])]), _hoisted_12, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
-            saving: ajaxForm.isSubmitting,
-            onConfirm: function onConfirm($event) {
-              return ajaxForm.submitForm();
-            }
-          }, null, 8, ["saving", "onConfirm"])], 512), [[external_commonjs_vue_commonjs2_vue_root_Vue_["vShow"], _ctx.actualLdapConfig.enable_synchronize_access_from_ldap]])];
-        }),
-        _: 2
-      }, 1032, ["content-title"])];
-    }),
+        default: Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withCtx"])(() => [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("strong", null, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('LoginLdap_ExpectedLdapAttributes')), 1), _hoisted_5, _hoisted_6, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createTextVNode"])(" " + Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('LoginLdap_ExpectedLdapAttributesPrelude')) + ":", 1), _hoisted_7, _hoisted_8, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("ul", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("li", {
+          innerHTML: _ctx.$sanitize(_ctx.sampleViewAttribute)
+        }, null, 8, _hoisted_9), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("li", {
+          innerHTML: _ctx.$sanitize(_ctx.sampleAdminAttribute)
+        }, null, 8, _hoisted_10), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("li", {
+          innerHTML: _ctx.$sanitize(_ctx.sampleSuperuserAttribute)
+        }, null, 8, _hoisted_11)])]),
+        _: 1
+      })]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+        uicontrol: "text",
+        name: "ldap_view_access_field",
+        modelValue: _ctx.actualLdapConfig.ldap_view_access_field,
+        "onUpdate:modelValue": _cache[16] || (_cache[16] = $event => _ctx.actualLdapConfig.ldap_view_access_field = $event),
+        title: _ctx.translate('LoginLdap_LdapViewAccessField'),
+        "inline-help": _ctx.translate('LoginLdap_LdapViewAccessFieldDescription')
+      }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+        uicontrol: "text",
+        name: "ldap_admin_access_field",
+        modelValue: _ctx.actualLdapConfig.ldap_admin_access_field,
+        "onUpdate:modelValue": _cache[17] || (_cache[17] = $event => _ctx.actualLdapConfig.ldap_admin_access_field = $event),
+        title: _ctx.translate('LoginLdap_LdapAdminAccessField'),
+        "inline-help": _ctx.translate('LoginLdap_LdapAdminAccessFieldDescription')
+      }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+        uicontrol: "text",
+        name: "ldap_superuser_access_field",
+        modelValue: _ctx.actualLdapConfig.ldap_superuser_access_field,
+        "onUpdate:modelValue": _cache[18] || (_cache[18] = $event => _ctx.actualLdapConfig.ldap_superuser_access_field = $event),
+        title: _ctx.translate('LoginLdap_LdapSuperUserAccessField'),
+        "inline-help": _ctx.translate('LoginLdap_LdapSuperUserAccessFieldDescription')
+      }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+        uicontrol: "text",
+        name: "user_access_attribute_server_specification_delimiter",
+        modelValue: _ctx.actualLdapConfig.user_access_attribute_server_specification_delimiter,
+        "onUpdate:modelValue": _cache[19] || (_cache[19] = $event => _ctx.actualLdapConfig.user_access_attribute_server_specification_delimiter = $event),
+        title: _ctx.translate('LoginLdap_LdapUserAccessAttributeServerSpecDelimiter'),
+        "inline-help": _ctx.translate('LoginLdap_LdapUserAccessAttributeServerSpecDelimiterDescription')
+      }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+        uicontrol: "text",
+        name: "user_access_attribute_server_separator",
+        modelValue: _ctx.actualLdapConfig.user_access_attribute_server_separator,
+        "onUpdate:modelValue": _cache[20] || (_cache[20] = $event => _ctx.actualLdapConfig.user_access_attribute_server_separator = $event),
+        title: _ctx.translate('LoginLdap_LdapUserAccessAttributeServerSeparator'),
+        "inline-help": _ctx.translate('LoginLdap_LdapUserAccessAttributeServerSeparatorDescription')
+      }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+        uicontrol: "text",
+        name: "instance_name",
+        modelValue: _ctx.actualLdapConfig.instance_name,
+        "onUpdate:modelValue": _cache[21] || (_cache[21] = $event => _ctx.actualLdapConfig.instance_name = $event),
+        title: _ctx.translate('LoginLdap_ThisMatomoInstanceName'),
+        "inline-help": _ctx.translate('LoginLdap_ThisMatomoInstanceNameDescription')
+      }, null, 8, ["modelValue", "title", "inline-help"])]), _hoisted_12, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
+        saving: _ctx.isSavingConfig,
+        onConfirm: _cache[22] || (_cache[22] = $event => _ctx.requestSaveLdapConfig())
+      }, null, 8, ["saving"])], 512), [[external_commonjs_vue_commonjs2_vue_root_Vue_["vShow"], _ctx.actualLdapConfig.enable_synchronize_access_from_ldap]])]),
+      _: 1
+    }, 8, ["content-title"])]),
     _: 1
   }, 8, ["form-data"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_ContentBlock, {
     id: "ldapManualSynchronizeUser",
     "content-title": _ctx.translate('LoginLdap_LoadUser')
   }, {
-    default: Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withCtx"])(function () {
-      return [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("p", null, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('LoginLdap_LoadUserDescription')), 1), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
-        uicontrol: "text",
-        placeholder: "Enter a username...",
-        modelValue: _ctx.userToSynchronize,
-        "onUpdate:modelValue": _cache[20] || (_cache[20] = function ($event) {
-          return _ctx.userToSynchronize = $event;
-        })
-      }, null, 8, ["modelValue"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
-        onConfirm: _cache[21] || (_cache[21] = function ($event) {
-          return _ctx.synchronizeUser(_ctx.userToSynchronize);
-        }),
-        value: _ctx.translate('LoginLdap_Go'),
-        style: {
-          "margin-right": "7px"
-        }
-      }, null, 8, ["value"]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("img", _hoisted_13, null, 512), [[external_commonjs_vue_commonjs2_vue_root_Vue_["vShow"], _ctx.isSynchronizing]]), _hoisted_14, _hoisted_15, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [_ctx.synchronizeUserError ? (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("div", {
-        key: 0,
-        innerHTML: _ctx.$sanitize(_ctx.synchronizeUserError)
-      }, null, 8, _hoisted_16)) : Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createCommentVNode"])("", true), _ctx.synchronizeUserDone ? (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("div", _hoisted_17, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("strong", null, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('General_Done')) + "!", 1)])) : Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createCommentVNode"])("", true), _hoisted_18], 512), [[external_commonjs_vue_commonjs2_vue_root_Vue_["vShow"], _ctx.synchronizeUserError || _ctx.synchronizeUserDone]]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("span", {
-        innerHTML: _ctx.$sanitize(_ctx.loadUserCommandDesc)
-      }, null, 8, _hoisted_19)];
-    }),
+    default: Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withCtx"])(() => [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("p", null, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('LoginLdap_LoadUserDescription')), 1), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+      uicontrol: "text",
+      placeholder: "Enter a username...",
+      modelValue: _ctx.userToSynchronize,
+      "onUpdate:modelValue": _cache[23] || (_cache[23] = $event => _ctx.userToSynchronize = $event)
+    }, null, 8, ["modelValue"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
+      onConfirm: _cache[24] || (_cache[24] = $event => _ctx.synchronizeUser(_ctx.userToSynchronize)),
+      value: _ctx.translate('LoginLdap_Go'),
+      style: {
+        "margin-right": "7px"
+      }
+    }, null, 8, ["value"]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("img", _hoisted_13, null, 512), [[external_commonjs_vue_commonjs2_vue_root_Vue_["vShow"], _ctx.isSynchronizing]]), _hoisted_14, _hoisted_15, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withDirectives"])(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [_ctx.synchronizeUserError ? (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("div", {
+      key: 0,
+      innerHTML: _ctx.$sanitize(_ctx.synchronizeUserError)
+    }, null, 8, _hoisted_16)) : Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createCommentVNode"])("", true), _ctx.synchronizeUserDone ? (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("div", _hoisted_17, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("strong", null, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["toDisplayString"])(_ctx.translate('General_Done')) + "!", 1)])) : Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createCommentVNode"])("", true), _hoisted_18], 512), [[external_commonjs_vue_commonjs2_vue_root_Vue_["vShow"], _ctx.synchronizeUserError || _ctx.synchronizeUserDone]]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("span", {
+      innerHTML: _ctx.$sanitize(_ctx.loadUserCommandDesc)
+    }, null, 8, _hoisted_19)]),
     _: 1
   }, 8, ["content-title"]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_ContentBlock, {
     "content-title": _ctx.translate('LoginLdap_LDAPServers')
   }, {
-    default: Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withCtx"])(function () {
-      return [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_AjaxForm, {
-        "submit-api-method": "LoginLdap.saveServersInfo",
-        "send-json-payload": true,
-        "use-custom-data-binding": true,
-        "form-data": _ctx.actualServers
-      }, {
-        default: Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withCtx"])(function (ajaxForm) {
-          return [(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(true), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])(external_commonjs_vue_commonjs2_vue_root_Vue_["Fragment"], null, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["renderList"])(_ctx.actualServers, function (serverInfo, index) {
-            return Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("div", {
-              id: "ldapServersTable",
-              key: index
-            }, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
-              uicontrol: "text",
-              modelValue: serverInfo.name,
-              "onUpdate:modelValue": function onUpdateModelValue($event) {
-                return serverInfo.name = $event;
-              },
-              title: _ctx.translate('LoginLdap_ServerName')
-            }, null, 8, ["modelValue", "onUpdate:modelValue", "title"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
-              uicontrol: "text",
-              modelValue: serverInfo.hostname,
-              "onUpdate:modelValue": function onUpdateModelValue($event) {
-                return serverInfo.hostname = $event;
-              },
-              placeholder: "localhost",
-              title: _ctx.translate('LoginLdap_ServerUrl')
-            }, null, 8, ["modelValue", "onUpdate:modelValue", "title"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
-              uicontrol: "text",
-              modelValue: serverInfo.port,
-              "onUpdate:modelValue": function onUpdateModelValue($event) {
-                return serverInfo.port = $event;
-              },
-              placeholder: "389",
-              title: _ctx.translate('LoginLdap_LdapPort'),
-              "inline-help": _ctx.translate('LoginLdap_LdapUrlPortWarning')
-            }, null, 8, ["modelValue", "onUpdate:modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
-              uicontrol: "checkbox",
-              modelValue: serverInfo.start_tls,
-              "onUpdate:modelValue": function onUpdateModelValue($event) {
-                return serverInfo.start_tls = $event;
-              },
-              title: _ctx.translate('LoginLdap_StartTLS'),
-              "inline-help": _ctx.translate('LoginLdap_StartTLSFieldHelp')
-            }, null, 8, ["modelValue", "onUpdate:modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
-              uicontrol: "text",
-              placeholder: "dc=example,dc=site,dc=org",
-              modelValue: serverInfo.base_dn,
-              "onUpdate:modelValue": function onUpdateModelValue($event) {
-                return serverInfo.base_dn = $event;
-              },
-              title: _ctx.translate('LoginLdap_BaseDn')
-            }, null, 8, ["modelValue", "onUpdate:modelValue", "title"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
-              uicontrol: "text",
-              placeholder: "cn=admin,dc=example,dc=site,dc=org",
-              modelValue: serverInfo.admin_user,
-              "onUpdate:modelValue": function onUpdateModelValue($event) {
-                return serverInfo.admin_user = $event;
-              },
-              title: _ctx.translate('LoginLdap_AdminUser'),
-              "inline-help": _ctx.translate('LoginLdap_AdminUserDescription')
-            }, null, 8, ["modelValue", "onUpdate:modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
-              modelValue: serverInfo.admin_pass,
-              "onUpdate:modelValue": function onUpdateModelValue($event) {
-                return serverInfo.admin_pass = $event;
-              },
-              uicontrol: "password",
-              title: _ctx.translate('LoginLdap_AdminPass'),
-              "inline-help": _ctx.translate('LoginLdap_PasswordFieldHelp')
-            }, null, 8, ["modelValue", "onUpdate:modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
-              onConfirm: function onConfirm($event) {
-                return _ctx.actualServers.splice(index, 1);
-              },
-              value: _ctx.translate('General_Delete')
-            }, null, 8, ["onConfirm", "value"])]);
-          }), 128)), _hoisted_20, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
-            onConfirm: _cache[22] || (_cache[22] = function ($event) {
-              return _ctx.addServer();
-            }),
-            value: _ctx.translate('General_Add'),
-            style: {
-              "margin-right": "3.5px"
-            }
-          }, null, 8, ["value"]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
-            saving: ajaxForm.isSubmitting,
-            onConfirm: function onConfirm($event) {
-              return ajaxForm.submitForm();
-            }
-          }, null, 8, ["saving", "onConfirm"])];
-        }),
-        _: 1
-      }, 8, ["form-data"])])];
-    }),
+    default: Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withCtx"])(() => [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_AjaxForm, {
+      "submit-api-method": "LoginLdap.saveServersInfo",
+      "send-json-payload": true,
+      "use-custom-data-binding": true,
+      "form-data": _ctx.actualServers
+    }, {
+      default: Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withCtx"])(() => [(Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(true), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])(external_commonjs_vue_commonjs2_vue_root_Vue_["Fragment"], null, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["renderList"])(_ctx.actualServers, (serverInfo, index) => {
+        return Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("div", {
+          id: "ldapServersTable",
+          key: index
+        }, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+          uicontrol: "text",
+          modelValue: serverInfo.name,
+          "onUpdate:modelValue": $event => serverInfo.name = $event,
+          title: _ctx.translate('LoginLdap_ServerName')
+        }, null, 8, ["modelValue", "onUpdate:modelValue", "title"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+          uicontrol: "text",
+          modelValue: serverInfo.hostname,
+          "onUpdate:modelValue": $event => serverInfo.hostname = $event,
+          placeholder: "localhost",
+          title: _ctx.translate('LoginLdap_ServerUrl')
+        }, null, 8, ["modelValue", "onUpdate:modelValue", "title"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+          uicontrol: "text",
+          modelValue: serverInfo.port,
+          "onUpdate:modelValue": $event => serverInfo.port = $event,
+          placeholder: "389",
+          title: _ctx.translate('LoginLdap_LdapPort'),
+          "inline-help": _ctx.translate('LoginLdap_LdapUrlPortWarning')
+        }, null, 8, ["modelValue", "onUpdate:modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+          uicontrol: "checkbox",
+          modelValue: serverInfo.start_tls,
+          "onUpdate:modelValue": $event => serverInfo.start_tls = $event,
+          title: _ctx.translate('LoginLdap_StartTLS'),
+          "inline-help": _ctx.translate('LoginLdap_StartTLSFieldHelp')
+        }, null, 8, ["modelValue", "onUpdate:modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+          uicontrol: "text",
+          placeholder: "dc=example,dc=site,dc=org",
+          modelValue: serverInfo.base_dn,
+          "onUpdate:modelValue": $event => serverInfo.base_dn = $event,
+          title: _ctx.translate('LoginLdap_BaseDn')
+        }, null, 8, ["modelValue", "onUpdate:modelValue", "title"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+          uicontrol: "text",
+          placeholder: "cn=admin,dc=example,dc=site,dc=org",
+          modelValue: serverInfo.admin_user,
+          "onUpdate:modelValue": $event => serverInfo.admin_user = $event,
+          title: _ctx.translate('LoginLdap_AdminUser'),
+          "inline-help": _ctx.translate('LoginLdap_AdminUserDescription')
+        }, null, 8, ["modelValue", "onUpdate:modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
+          modelValue: serverInfo.admin_pass,
+          "onUpdate:modelValue": $event => serverInfo.admin_pass = $event,
+          uicontrol: "password",
+          title: _ctx.translate('LoginLdap_AdminPass'),
+          "inline-help": _ctx.translate('LoginLdap_PasswordFieldHelp')
+        }, null, 8, ["modelValue", "onUpdate:modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
+          onConfirm: $event => _ctx.actualServers.splice(index, 1),
+          value: _ctx.translate('General_Delete')
+        }, null, 8, ["onConfirm", "value"])]);
+      }), 128)), _hoisted_20, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
+        onConfirm: _cache[25] || (_cache[25] = $event => _ctx.addServer()),
+        value: _ctx.translate('General_Add'),
+        style: {
+          "margin-right": "3.5px"
+        }
+      }, null, 8, ["value"]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
+        saving: _ctx.isSavingServers,
+        onConfirm: _cache[26] || (_cache[26] = $event => _ctx.requestSaveServers())
+      }, null, 8, ["saving"])]),
+      _: 1
+    }, 8, ["form-data"])])]),
     _: 1
-  }, 8, ["content-title"])]);
+  }, 8, ["content-title"]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_PasswordConfirmation, {
+    modelValue: _ctx.showPasswordConfirmation,
+    "onUpdate:modelValue": _cache[27] || (_cache[27] = $event => _ctx.showPasswordConfirmation = $event),
+    onConfirmed: _ctx.confirmSaveAction,
+    onAborted: _cache[28] || (_cache[28] = $event => _ctx.pendingSaveTarget = null)
+  }, null, 8, ["modelValue", "onConfirmed"])]);
 }
-// CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/Admin/Admin.vue?vue&type=template&id=1e910070
+// CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/Admin/Admin.vue?vue&type=template&id=700f87d5
 
-// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-typescript/node_modules/cache-loader/dist/cjs.js??ref--14-0!./node_modules/babel-loader/lib!./node_modules/@vue/cli-plugin-typescript/node_modules/ts-loader??ref--14-2!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/LoginLdap/vue/src/Admin/Admin.vue?vue&type=script&lang=ts
-function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
-
-function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
-
-function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-
+// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-typescript/node_modules/cache-loader/dist/cjs.js??ref--15-0!./node_modules/babel-loader/lib!./node_modules/@vue/cli-plugin-typescript/node_modules/ts-loader??ref--15-2!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--1-1!./plugins/LoginLdap/vue/src/Admin/Admin.vue?vue&type=script&lang=ts
 
 
 
 
 function getSampleAccessAttribute(config, accessField, firstValue, secondValue) {
-  var result = "".concat(accessField, ": ");
-
+  let result = `${accessField}: `;
   if (config.instance_name) {
     result += config.instance_name;
   } else {
     result += window.location.hostname;
   }
-
   if (firstValue) {
-    result += "".concat(config.user_access_attribute_server_separator).concat(firstValue);
+    result += `${config.user_access_attribute_server_separator}${firstValue}`;
   }
-
   result += config.user_access_attribute_server_specification_delimiter;
-
   if (config.instance_name) {
     result += 'piwikB';
   } else {
     result += 'anotherhost.com';
   }
-
   if (secondValue) {
-    result += "".concat(config.user_access_attribute_server_separator).concat(secondValue);
+    result += `${config.user_access_attribute_server_separator}${secondValue}`;
   }
-
   return result;
 }
-
 /* harmony default export */ var Adminvue_type_script_lang_ts = (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["defineComponent"])({
   props: {
     ldapConfig: {
@@ -813,24 +671,29 @@ function getSampleAccessAttribute(config, accessField, firstValue, secondValue) 
     AjaxForm: external_CoreHome_["AjaxForm"],
     ContentBlock: external_CoreHome_["ContentBlock"],
     Notification: external_CoreHome_["Notification"],
+    PasswordConfirmation: external_CorePluginsAdmin_["PasswordConfirmation"],
     Field: external_CorePluginsAdmin_["Field"],
     TestableField: TestableField,
     SaveButton: external_CorePluginsAdmin_["SaveButton"]
   },
-  data: function data() {
+  data() {
     return {
       actualLdapConfig: Object.assign({}, this.ldapConfig),
       userToSynchronize: '',
-      actualServers: _toConsumableArray(this.servers),
+      actualServers: [...this.servers],
       synchronizeUserError: null,
       synchronizeUserDone: null,
-      isSynchronizing: false
+      isSynchronizing: false,
+      isSavingConfig: false,
+      isSavingServers: false,
+      showPasswordConfirmation: false,
+      pendingSaveTarget: null
     };
   },
   methods: {
-    addServer: function addServer() {
+    addServer() {
       this.actualServers.push({
-        name: "server".concat(this.actualServers.length + 1),
+        name: `server${this.actualServers.length + 1}`,
         hostname: '',
         port: 389,
         base_dn: '',
@@ -838,9 +701,7 @@ function getSampleAccessAttribute(config, accessField, firstValue, secondValue) 
         admin_pass: ''
       });
     },
-    synchronizeUser: function synchronizeUser(userLogin) {
-      var _this = this;
-
+    synchronizeUser(userLogin) {
       this.synchronizeUserError = null;
       this.synchronizeUserDone = null;
       this.isSynchronizing = true;
@@ -850,51 +711,113 @@ function getSampleAccessAttribute(config, accessField, firstValue, secondValue) 
         login: userLogin
       }, {
         createErrorNotification: false
-      }).then(function () {
-        _this.synchronizeUserDone = true;
-      }).catch(function (error) {
-        _this.synchronizeUserError = error.message || error;
-      }).finally(function () {
-        _this.isSynchronizing = false;
+      }).then(() => {
+        this.synchronizeUserDone = true;
+      }).catch(error => {
+        this.synchronizeUserError = error.message || error;
+      }).finally(() => {
+        this.isSynchronizing = false;
       });
+    },
+    requestSaveLdapConfig() {
+      this.pendingSaveTarget = 'config';
+      this.showPasswordConfirmation = true;
+    },
+    requestSaveServers() {
+      this.pendingSaveTarget = 'servers';
+      this.showPasswordConfirmation = true;
+    },
+    confirmSaveAction(passwordConfirmation) {
+      const {
+        pendingSaveTarget
+      } = this;
+      this.showPasswordConfirmation = false;
+      this.pendingSaveTarget = null;
+      if (pendingSaveTarget === 'config') {
+        this.saveLdapConfig(passwordConfirmation);
+      } else if (pendingSaveTarget === 'servers') {
+        this.saveServers(passwordConfirmation);
+      }
+    },
+    saveLdapConfig(passwordConfirmation) {
+      this.isSavingConfig = true;
+      this.actualLdapConfig.password_confirmation = passwordConfirmation || '';
+      const payload = {
+        data: JSON.stringify(this.actualLdapConfig)
+      };
+      external_CoreHome_["AjaxHelper"].post({
+        module: 'API',
+        method: 'LoginLdap.saveLdapConfig'
+      }, payload).then(() => {
+        this.showSaveSuccessNotification();
+      }).finally(() => {
+        this.actualLdapConfig.password_confirmation = '';
+        this.isSavingConfig = false;
+      });
+    },
+    saveServers(passwordConfirmation) {
+      this.isSavingServers = true;
+      const payload = {
+        data: JSON.stringify(this.actualServers)
+      };
+      if (passwordConfirmation) {
+        payload.passwordConfirmation = passwordConfirmation;
+      }
+      external_CoreHome_["AjaxHelper"].post({
+        module: 'API',
+        method: 'LoginLdap.saveServersInfo'
+      }, payload).then(() => {
+        this.showSaveSuccessNotification();
+      }).finally(() => {
+        this.isSavingServers = false;
+      });
+    },
+    showSaveSuccessNotification() {
+      const notificationInstanceId = external_CoreHome_["NotificationsStore"].show({
+        message: Object(external_CoreHome_["translate"])('General_YourChangesHaveBeenSaved'),
+        context: 'success',
+        type: 'toast',
+        id: 'ajaxHelper'
+      });
+      external_CoreHome_["NotificationsStore"].scrollToNotification(notificationInstanceId);
     }
   },
   computed: {
-    sampleViewAttribute: function sampleViewAttribute() {
-      var config = this.actualLdapConfig;
+    sampleViewAttribute() {
+      const config = this.actualLdapConfig;
       return getSampleAccessAttribute(config, config.ldap_view_access_field, '1,2', '3,4');
     },
-    sampleAdminAttribute: function sampleAdminAttribute() {
-      var config = this.actualLdapConfig;
+    sampleAdminAttribute() {
+      const config = this.actualLdapConfig;
       return getSampleAccessAttribute(config, config.ldap_admin_access_field, 'all', 'all');
     },
-    sampleSuperuserAttribute: function sampleSuperuserAttribute() {
-      var config = this.actualLdapConfig;
+    sampleSuperuserAttribute() {
+      const config = this.actualLdapConfig;
       return getSampleAccessAttribute(config, config.ldap_superuser_access_field);
     },
-    readMoreAboutAccessSynchronization: function readMoreAboutAccessSynchronization() {
-      var link = 'https://github.com/matomo-org/plugin-LoginLdap#matomo-access-synchronization';
-      return Object(external_CoreHome_["translate"])('LoginLdap_ReadMoreAboutAccessSynchronization', "<a target=\"_blank\" href=\"".concat(link, "\" rel=\"noreferrer noopener\">"), '</a>');
+    readMoreAboutAccessSynchronization() {
+      const link = 'https://github.com/matomo-org/plugin-LoginLdap#matomo-access-synchronization';
+      return Object(external_CoreHome_["translate"])('LoginLdap_ReadMoreAboutAccessSynchronization', `<a target="_blank" href="${link}" rel="noreferrer noopener">`, '</a>');
     },
-    loadUserCommandDesc: function loadUserCommandDesc() {
-      var link = 'https://github.com/matomo-org/plugin-LoginLdap#commands';
-      return Object(external_CoreHome_["translate"])('LoginLdap_LoadUserCommandDesc', "<a target=\"_blank\" href=\"".concat(link, "\" rel=\"noreferrer noopener\">loginldap:synchronize-users</a>"));
+    loadUserCommandDesc() {
+      const link = 'https://github.com/matomo-org/plugin-LoginLdap#commands';
+      return Object(external_CoreHome_["translate"])('LoginLdap_LoadUserCommandDesc', `<a target="_blank" href="${link}" rel="noreferrer noopener">loginldap:synchronize-users</a>`);
     },
-    useLdapForAuthHelp: function useLdapForAuthHelp() {
-      var start = Object(external_CoreHome_["translate"])('LoginLdap_UseLdapForAuthenticationDescription');
-      return "".concat(start, "<br /><br />").concat(Object(external_CoreHome_["translate"])('LoginLdap_MobileAppIntegrationNote'));
+    useLdapForAuthHelp() {
+      const start = Object(external_CoreHome_["translate"])('LoginLdap_UseLdapForAuthenticationDescription');
+      return `${start}<br /><br />${Object(external_CoreHome_["translate"])('LoginLdap_MobileAppIntegrationNote')}`;
     },
-    ldapNetworkTimeoutHelp: function ldapNetworkTimeoutHelp() {
-      var start = Object(external_CoreHome_["translate"])('LoginLdap_NetworkTimeoutDescription');
-      return "".concat(start, "<br />").concat(Object(external_CoreHome_["translate"])('LoginLdap_NetworkTimeoutDescription2'));
+    ldapNetworkTimeoutHelp() {
+      const start = Object(external_CoreHome_["translate"])('LoginLdap_NetworkTimeoutDescription');
+      return `${start}<br />${Object(external_CoreHome_["translate"])('LoginLdap_NetworkTimeoutDescription2')}`;
     },
-    memberOfCountHelp: function memberOfCountHelp() {
-      var start = Object(external_CoreHome_["translate"])('LoginLdap_MemberOfDescription');
-      return "".concat(start, "<br />").concat(Object(external_CoreHome_["translate"])('LoginLdap_MemberOfDescription2'));
+    memberOfCountHelp() {
+      const start = Object(external_CoreHome_["translate"])('LoginLdap_MemberOfDescription');
+      return `${start}<br />${Object(external_CoreHome_["translate"])('LoginLdap_MemberOfDescription2')}`;
     },
-    ldapPasswordFieldHelp: function ldapPasswordFieldHelp() {
-      var start = Object(external_CoreHome_["translate"])('LoginLdap_PasswordFieldDescription');
-      return "".concat(start, "<br /><br />").concat(Object(external_CoreHome_["translate"])('LoginLdap_PasswordFieldDescription2'));
+    ldapPasswordFieldHelp() {
+      const start = Object(external_CoreHome_["translate"])('LoginLdap_PasswordFieldDescription');
+      return `${start}<br /><br />${Object(external_CoreHome_["translate"])('LoginLdap_PasswordFieldDescription2')}`;
     }
   }
 }));
@@ -904,14 +827,13 @@ function getSampleAccessAttribute(config, accessField, firstValue, secondValue) 
 
 
 
-Adminvue_type_script_lang_ts.render = Adminvue_type_template_id_1e910070_render
+Adminvue_type_script_lang_ts.render = Adminvue_type_template_id_700f87d5_render
 
 /* harmony default export */ var Admin = (Adminvue_type_script_lang_ts);
-// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/LoginLdap/vue/src/Admin/AdminPage.vue?vue&type=template&id=64035228
+// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--1-1!./plugins/LoginLdap/vue/src/Admin/AdminPage.vue?vue&type=template&id=64035228
 
 function AdminPagevue_type_template_id_64035228_render(_ctx, _cache, $props, $setup, $data, $options) {
-  var _component_Admin = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("Admin");
-
+  const _component_Admin = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("Admin");
   return Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Admin, {
     servers: _ctx.servers,
     "ldap-config": _ctx.ldapConfig,
@@ -920,7 +842,7 @@ function AdminPagevue_type_template_id_64035228_render(_ctx, _cache, $props, $se
 }
 // CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/Admin/AdminPage.vue?vue&type=template&id=64035228
 
-// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-typescript/node_modules/cache-loader/dist/cjs.js??ref--14-0!./node_modules/babel-loader/lib!./node_modules/@vue/cli-plugin-typescript/node_modules/ts-loader??ref--14-2!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--0-1!./plugins/LoginLdap/vue/src/Admin/AdminPage.vue?vue&type=script&lang=ts
+// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-typescript/node_modules/cache-loader/dist/cjs.js??ref--15-0!./node_modules/babel-loader/lib!./node_modules/@vue/cli-plugin-typescript/node_modules/ts-loader??ref--15-2!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--1-1!./plugins/LoginLdap/vue/src/Admin/AdminPage.vue?vue&type=script&lang=ts
 
 
 /* harmony default export */ var AdminPagevue_type_script_lang_ts = (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["defineComponent"])({
