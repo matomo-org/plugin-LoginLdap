@@ -357,25 +357,14 @@ var __spreadValues = (a, b) => {
     }
   });
   const _hoisted_1 = { key: 0 };
-  const _hoisted_2 = /* @__PURE__ */ vue.createElementVNode("hr", null, null, -1);
-  const _hoisted_3 = /* @__PURE__ */ vue.createElementVNode("hr", null, null, -1);
+  const _hoisted_2 = ["innerHTML"];
+  const _hoisted_3 = ["innerHTML"];
   const _hoisted_4 = ["innerHTML"];
-  const _hoisted_5 = /* @__PURE__ */ vue.createElementVNode("br", null, null, -1);
-  const _hoisted_6 = /* @__PURE__ */ vue.createElementVNode("br", null, null, -1);
-  const _hoisted_7 = /* @__PURE__ */ vue.createElementVNode("br", null, null, -1);
-  const _hoisted_8 = /* @__PURE__ */ vue.createElementVNode("br", null, null, -1);
+  const _hoisted_5 = ["innerHTML"];
+  const _hoisted_6 = { src: "plugins/Morpheus/images/loading-blue.gif" };
+  const _hoisted_7 = ["innerHTML"];
+  const _hoisted_8 = { key: 1 };
   const _hoisted_9 = ["innerHTML"];
-  const _hoisted_10 = ["innerHTML"];
-  const _hoisted_11 = ["innerHTML"];
-  const _hoisted_12 = /* @__PURE__ */ vue.createElementVNode("hr", null, null, -1);
-  const _hoisted_13 = { src: "plugins/Morpheus/images/loading-blue.gif" };
-  const _hoisted_14 = /* @__PURE__ */ vue.createElementVNode("br", null, null, -1);
-  const _hoisted_15 = /* @__PURE__ */ vue.createElementVNode("br", null, null, -1);
-  const _hoisted_16 = ["innerHTML"];
-  const _hoisted_17 = { key: 1 };
-  const _hoisted_18 = /* @__PURE__ */ vue.createElementVNode("br", null, null, -1);
-  const _hoisted_19 = ["innerHTML"];
-  const _hoisted_20 = /* @__PURE__ */ vue.createElementVNode("hr", null, null, -1);
   function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     const _component_Notification = vue.resolveComponent("Notification");
     const _component_Field = vue.resolveComponent("Field");
@@ -501,7 +490,7 @@ var __spreadValues = (a, b) => {
                     "inline-help": _ctx.translate("LoginLdap_FilterDescription")
                   }, null, 8, ["modelValue", "title", "inline-help"])
                 ]),
-                _hoisted_2,
+                _cache[29] || (_cache[29] = vue.createElementVNode("hr", null, null, -1)),
                 vue.createVNode(_component_SaveButton, {
                   saving: _ctx.isSavingConfig,
                   onConfirm: _cache[8] || (_cache[8] = ($event) => _ctx.requestSaveLdapConfig())
@@ -564,7 +553,7 @@ var __spreadValues = (a, b) => {
                     "inline-help": _ctx.translate("LoginLdap_NewUserDefaultSitesViewAccessDescription")
                   }, null, 8, ["modelValue", "title", "inline-help"])
                 ]),
-                _hoisted_3,
+                _cache[30] || (_cache[30] = vue.createElementVNode("hr", null, null, -1)),
                 vue.createVNode(_component_SaveButton, {
                   saving: _ctx.isSavingConfig,
                   onConfirm: _cache[14] || (_cache[14] = ($event) => _ctx.requestSaveLdapConfig())
@@ -579,7 +568,7 @@ var __spreadValues = (a, b) => {
               default: vue.withCtx(() => [
                 vue.createElementVNode("p", {
                   innerHTML: _ctx.$sanitize(_ctx.readMoreAboutAccessSynchronization)
-                }, null, 8, _hoisted_4),
+                }, null, 8, _hoisted_2),
                 vue.createElementVNode("div", null, [
                   vue.createVNode(_component_Field, {
                     uicontrol: "checkbox",
@@ -598,21 +587,21 @@ var __spreadValues = (a, b) => {
                     }, {
                       default: vue.withCtx(() => [
                         vue.createElementVNode("strong", null, vue.toDisplayString(_ctx.translate("LoginLdap_ExpectedLdapAttributes")), 1),
-                        _hoisted_5,
-                        _hoisted_6,
+                        _cache[31] || (_cache[31] = vue.createElementVNode("br", null, null, -1)),
+                        _cache[32] || (_cache[32] = vue.createElementVNode("br", null, null, -1)),
                         vue.createTextVNode(" " + vue.toDisplayString(_ctx.translate("LoginLdap_ExpectedLdapAttributesPrelude")) + ":", 1),
-                        _hoisted_7,
-                        _hoisted_8,
+                        _cache[33] || (_cache[33] = vue.createElementVNode("br", null, null, -1)),
+                        _cache[34] || (_cache[34] = vue.createElementVNode("br", null, null, -1)),
                         vue.createElementVNode("ul", null, [
                           vue.createElementVNode("li", {
                             innerHTML: _ctx.$sanitize(_ctx.sampleViewAttribute)
-                          }, null, 8, _hoisted_9),
+                          }, null, 8, _hoisted_3),
                           vue.createElementVNode("li", {
                             innerHTML: _ctx.$sanitize(_ctx.sampleAdminAttribute)
-                          }, null, 8, _hoisted_10),
+                          }, null, 8, _hoisted_4),
                           vue.createElementVNode("li", {
                             innerHTML: _ctx.$sanitize(_ctx.sampleSuperuserAttribute)
-                          }, null, 8, _hoisted_11)
+                          }, null, 8, _hoisted_5)
                         ])
                       ]),
                       _: 1
@@ -682,7 +671,7 @@ var __spreadValues = (a, b) => {
                       "inline-help": _ctx.translate("LoginLdap_ThisMatomoInstanceNameDescription")
                     }, null, 8, ["modelValue", "title", "inline-help"])
                   ]),
-                  _hoisted_12,
+                  _cache[35] || (_cache[35] = vue.createElementVNode("hr", null, null, -1)),
                   vue.createVNode(_component_SaveButton, {
                     saving: _ctx.isSavingConfig,
                     onConfirm: _cache[22] || (_cache[22] = ($event) => _ctx.requestSaveLdapConfig())
@@ -716,26 +705,26 @@ var __spreadValues = (a, b) => {
             value: _ctx.translate("LoginLdap_Go"),
             style: { "margin-right": "7px" }
           }, null, 8, ["value"]),
-          vue.withDirectives(vue.createElementVNode("img", _hoisted_13, null, 512), [
+          vue.withDirectives(vue.createElementVNode("img", _hoisted_6, null, 512), [
             [vue.vShow, _ctx.isSynchronizing]
           ]),
-          _hoisted_14,
-          _hoisted_15,
+          _cache[37] || (_cache[37] = vue.createElementVNode("br", null, null, -1)),
+          _cache[38] || (_cache[38] = vue.createElementVNode("br", null, null, -1)),
           vue.withDirectives(vue.createElementVNode("div", null, [
             _ctx.synchronizeUserError ? (vue.openBlock(), vue.createElementBlock("div", {
               key: 0,
               innerHTML: _ctx.$sanitize(_ctx.synchronizeUserError)
-            }, null, 8, _hoisted_16)) : vue.createCommentVNode("", true),
-            _ctx.synchronizeUserDone ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_17, [
+            }, null, 8, _hoisted_7)) : vue.createCommentVNode("", true),
+            _ctx.synchronizeUserDone ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_8, [
               vue.createElementVNode("strong", null, vue.toDisplayString(_ctx.translate("General_Done")) + "!", 1)
             ])) : vue.createCommentVNode("", true),
-            _hoisted_18
+            _cache[36] || (_cache[36] = vue.createElementVNode("br", null, null, -1))
           ], 512), [
             [vue.vShow, _ctx.synchronizeUserError || _ctx.synchronizeUserDone]
           ]),
           vue.createElementVNode("span", {
             innerHTML: _ctx.$sanitize(_ctx.loadUserCommandDesc)
-          }, null, 8, _hoisted_19)
+          }, null, 8, _hoisted_9)
         ]),
         _: 1
       }, 8, ["content-title"]),
@@ -826,7 +815,7 @@ var __spreadValues = (a, b) => {
                     }, null, 8, ["onConfirm", "value"])
                   ]);
                 }), 128)),
-                _hoisted_20,
+                _cache[39] || (_cache[39] = vue.createElementVNode("hr", null, null, -1)),
                 vue.createVNode(_component_SaveButton, {
                   onConfirm: _cache[25] || (_cache[25] = ($event) => _ctx.addServer()),
                   value: _ctx.translate("General_Add"),
