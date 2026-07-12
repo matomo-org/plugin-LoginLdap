@@ -43,7 +43,7 @@ import { defineComponent } from 'vue';
 import { translate, AjaxHelper } from 'CoreHome';
 import { Field, SaveButton } from 'CorePluginsAdmin';
 
-interface LoginLdapTestableFieldState {
+export interface LoginLdapTestableFieldState {
   actualInputValue?: null|string;
   testError: null|string;
   testResult: null|number;
