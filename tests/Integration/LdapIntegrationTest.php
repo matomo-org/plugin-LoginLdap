@@ -104,6 +104,31 @@ abstract class LdapIntegrationTest extends IntegrationTestCase
         parent::tearDown();
     }
 
+    /**
+     * Creates an app specific token as an unauthenticated request (providing the user's
+     * credentials). The configured global authentication object is left untouched so it can
+     * still verify those credentials, only the current access identity is reset.
+     */
+    protected function createAppSpecificTokenAuthAsAnonymous(string $login, string $password, string $description): string
+    {
+        // Create the token as if from an unauthenticated request: only the current access
+        // identity is switched to anonymous for the call and restored afterwards. The
+        // configured global authentication object is left untouched so it can still verify
+        // the given credentials.
+        $access = Access::getInstance();
+        $loginProperty = new \ReflectionProperty(Access::class, 'login');
+        $loginProperty->setAccessible(true);
+        $previousLogin = $loginProperty->getValue($access);
+
+        $loginProperty->setValue($access, 'anonymous');
+
+        try {
+            return UsersManagerAPI::getInstance()->createAppSpecificTokenAuth($login, $password, $description);
+        } finally {
+            $loginProperty->setValue($access, $previousLogin);
+        }
+    }
+
     protected function addPreexistingSuperUser()
     {
         UsersManagerAPI::getInstance()->addUser(self::TEST_SUPERUSER_LOGIN, self::TEST_SUPERUSER_PASS, 'srodgers@aol.com');
