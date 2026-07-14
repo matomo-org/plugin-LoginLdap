@@ -93,6 +93,7 @@
         "StartTLS": "Enable TLS",
         "StartTLSFieldHelp": "To activate TLS for this server",
         "OptionsPWCONFIRMATION": "Enable password confirmation",
-        "OptionsPWCONFIRMATIONDescription": "If enabled, the requirement of a password challenge to validate admin actions will be shown and you need to enter a valid password to continue further."
+        "OptionsPWCONFIRMATIONDescription": "If enabled, the requirement of a password challenge to validate admin actions will be shown and you need to enter a valid password to continue further.",
+        "CreateAppSpecificTokenAuthBlocked": "Creating an app-specific token is not allowed when authenticating through the web server. Please contact your Matomo administrator."
     }
 }
