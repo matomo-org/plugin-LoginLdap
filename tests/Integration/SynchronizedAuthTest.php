@@ -162,7 +162,7 @@ class SynchronizedAuthTest extends LdapIntegrationTest
         $userMapper = new UserMapper();
         $userMapper->markUserAsLdapUser(self::TEST_LOGIN);
 
-        $this->testUserTokenAuth = UsersManagerAPI::getInstance()->createAppSpecificTokenAuth(
+        $this->testUserTokenAuth = $this->createAppSpecificTokenAuthAsAnonymous(
             self::TEST_LOGIN,
             $pass,
             'test'
@@ -196,7 +196,7 @@ class SynchronizedAuthTest extends LdapIntegrationTest
         $auth = SynchronizedAuth::makeConfigured();
         StaticContainer::getContainer()->set(Auth::class, $auth);
 
-        $tokenAuth = $tokenAuth ?: UsersManagerAPI::getInstance()->createAppSpecificTokenAuth($login, $pass, 'test');
+        $tokenAuth = $tokenAuth ?: $this->createAppSpecificTokenAuthAsAnonymous($login, $pass, 'test');
 
         $auth->setLogin($login);
         $auth->setTokenAuth($tokenAuth);
