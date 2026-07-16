@@ -18,6 +18,7 @@ use Piwik\Option;
 use Piwik\Piwik;
 use Piwik\Plugin\Manager;
 use Piwik\Plugins\LoginLdap\Auth\Base as AuthBase;
+use Piwik\Plugins\LoginLdap\Auth\WebServerAuth;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 use Piwik\View;
@@ -38,6 +39,7 @@ class LoginLdap extends \Piwik\Plugin
         $hooks = array(
             'Request.initAuthenticationObject'       => 'initAuthenticationObject',
             'API.Request.authenticate'               => 'apiRequestAuthenticate',
+            'API.Request.dispatch'                   => 'onApiRequestDispatch',
             'AssetManager.getJavaScriptFiles'        => 'getJsFiles',
             'AssetManager.getStylesheetFiles'        => 'getStylesheetFiles',
             'Translate.getClientSideTranslationKeys' => 'getClientSideTranslationKeys',
@@ -231,6 +233,31 @@ class LoginLdap extends \Piwik\Plugin
         $auth = StaticContainer::get('Piwik\Auth');
         $auth->setLogin($login = null);
         $auth->setTokenAuth($tokenAuth);
+    }
+
+    /**
+     * Listens to API.Request.dispatch.
+     *
+     * When the request is authenticated by the web server (WebServerAuth with REMOTE_USER set),
+     * WebServerAuth::authenticate() ignores the supplied password and succeeds off REMOTE_USER.
+     * UsersManager.createAppSpecificTokenAuth uses password confirmation as its ONLY
+     * authorization gate (no Access check) and accepts an arbitrary target userLogin, so under
+     * web server auth it would mint a full token_auth for any account. Block it in that context.
+     * This mirrors the dispatch guard LoginSaml installs for the same method.
+     */
+    public function onApiRequestDispatch(&$parameters, $pluginName, $methodName)
+    {
+        if ($pluginName !== 'UsersManager' || $methodName !== 'createAppSpecificTokenAuth') {
+            return;
+        }
+
+        // Only a web-server-authenticated request bypasses the password. When REMOTE_USER is
+        // absent, WebServerAuth delegates to its password-validating fallback, so token
+        // creation stays safe and must remain allowed.
+        $auth = StaticContainer::get('Piwik\Auth');
+        if ($auth instanceof WebServerAuth && !empty($_SERVER['REMOTE_USER'])) {
+            throw new Exception(Piwik::translate('LoginLdap_CreateAppSpecificTokenAuthBlocked'));
+        }
     }
 
     private function isUserLdapUser($login)
