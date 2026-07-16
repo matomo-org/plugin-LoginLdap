@@ -467,7 +467,7 @@ interface ServerInfo {
   admin_pass: string;
 }
 
-interface AdminState {
+export interface AdminState {
   actualLdapConfig: LoginLdapConfig;
   userToSynchronize: string;
   actualServers: ServerInfo[];
