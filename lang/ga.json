@@ -9,6 +9,7 @@
         "BaseDn": "Bonn DN",
         "CannotConnectToServer": "Níorbh fhéidir ceangal leis an bhfreastalaí LDAP.",
         "CannotConnectToServers": "Níorbh fhéidir ceangal le haon cheann de na freastalaithe LDAP %s.",
+        "CreateAppSpecificTokenAuthBlocked": "Ní cheadaítear comhartha aip-shonrach a chruthú agus fíordheimhniú á dhéanamh tríd an bhfreastalaí gréasáin. Téigh i dteagmháil le riarthóir do Matomo.",
         "EnableLdapAccessSynchronization": "Cumasaigh Sioncrónú Rochtana Úsáideora ó LDAP",
         "EnableLdapAccessSynchronizationDescription": "Má chumasaítear iad, cinntear leibhéil rochtana úsáideora de réir tréithe saincheaptha LDAP. Nóta: Chun an ghné seo a úsáid beidh ort scéimre do fhreastalaí LDAP a mhodhnú.",
         "ExpectedLdapAttributes": "Tréithe LDAP a bhfuiltear ag súil leo",
