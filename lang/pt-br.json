@@ -9,6 +9,7 @@
         "BaseDn": "DN Base",
         "CannotConnectToServer": "Não foi possível conectar com o servidor LDAP.",
         "CannotConnectToServers": "Não foi possível conectar-se a nenhum dos %s servidores LDAP.",
+        "CreateAppSpecificTokenAuthBlocked": "Não é permitido criar um token específico para o aplicativo ao autenticar via servidor web. Entre em contato com o administrador do Matomo.",
         "EnableLdapAccessSynchronization": "Permitir Sincronização de Acesso do Usuário a partir do LDAP",
         "EnableLdapAccessSynchronizationDescription": "Se ativado, os níveis de acesso do usuário são determinadas por atributos LDAP personalizados. Nota: Para utilizar esta função, você terá de modificar o esquema do servidor LDAP.",
         "ExpectedLdapAttributes": "Atributos LDAP esperados",
