@@ -1,6 +1,7 @@
 # LoginLdap Changelog
 
-#### LoginLdap 5.2.2 - 2026-07-24
+#### LoginLdap 5.2.2 - 2026-07-27
+* Added code to harden the check for anonymous user on sync
 * Enabled password confirmation by default on the LoginLdap settings page
 
 #### LoginLdap 5.2.1 - 2026-07-20
