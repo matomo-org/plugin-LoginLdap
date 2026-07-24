@@ -14,6 +14,7 @@ use Piwik\Notification;
 use Piwik\Option;
 use Piwik\Piwik;
 use Piwik\Plugin\ControllerAdmin;
+use Piwik\Plugins\LoginLdap\Auth\WebServerAuth;
 use Piwik\Plugins\LoginLdap\Ldap\ServerInfo;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\View;
@@ -75,14 +76,19 @@ class Controller extends \Piwik\Plugins\Login\Controller
 
         $view->updatedFromPre30 = Option::get('LoginLdap_updatedFromPre3_0');
 
+        $view->requirePasswordConfirmation =
+            Piwik::doesUserRequirePasswordConfirmation(Piwik::getCurrentUserLogin());
+
         return $view->render();
     }
 
     public function confirmPassword()
     {
-        $enablePasswordConfirmation = \Piwik\Plugins\LoginLdap\Config::getConfigOption('enable_password_confirmation');
-        if ($enablePasswordConfirmation || !$this->isCurrentUserLdapUser()) {
-            return parent::confirmPassword();
+        if (!WebServerAuth::isCurrentRequestWebServerAuthenticated()) {
+            $enablePasswordConfirmation = \Piwik\Plugins\LoginLdap\Config::getConfigOption('enable_password_confirmation');
+            if ($enablePasswordConfirmation || !$this->isCurrentUserLdapUser()) {
+                return parent::confirmPassword();
+            }
         }
         Piwik::checkUserIsNotAnonymous();
         Piwik::checkUserHasSomeViewAccess();

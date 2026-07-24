@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 5.2.2 - 2026-07-24
+* Enabled password confirmation by default on the LoginLdap settings page
+
 #### LoginLdap 5.2.1 - 2026-07-20
 * Added code to disallow createAppSpecificTokenAuth endpoint for WebServerAuth
 

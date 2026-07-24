@@ -11,6 +11,7 @@
       :servers="servers"
       :ldap-config="ldapConfig"
       :updated-from-pre30="updatedFromPre30"
+      :require-password-confirmation="requirePasswordConfirmation"
     />
   </div>
 </template>
@@ -30,6 +31,7 @@ export default defineComponent({
       required: true,
     },
     updatedFromPre30: Boolean,
+    requirePasswordConfirmation: Boolean,
   },
   components: {
     Admin,
