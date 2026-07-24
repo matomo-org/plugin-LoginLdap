@@ -199,6 +199,14 @@ class UserSynchronizer
             return;
         }
 
+        if (strtolower($piwikLogin) === 'anonymous') {
+            $this->logger->warning("UserSynchronizer::{func}: refusing to synchronize access for reserved 'anonymous' login (got '{login}').", array(
+                'func' => __FUNCTION__,
+                'login' => $piwikLogin,
+            ));
+            return;
+        }
+
         $userAccess = $this->userAccessMapper->getPiwikUserAccessForLdapUser($ldapUser);
 
         // for the synchronization, need to reset all user accesses
