@@ -83,11 +83,9 @@ class Controller extends \Piwik\Plugins\Login\Controller
 
     public function confirmPassword()
     {
-        if (!WebServerAuth::isCurrentRequestWebServerAuthenticated()) {
-            $enablePasswordConfirmation = \Piwik\Plugins\LoginLdap\Config::getConfigOption('enable_password_confirmation');
-            if ($enablePasswordConfirmation || !$this->isCurrentUserLdapUser()) {
-                return parent::confirmPassword();
-            }
+        $enablePasswordConfirmation = \Piwik\Plugins\LoginLdap\Config::getConfigOption('enable_password_confirmation');
+        if ($enablePasswordConfirmation || !$this->isCurrentUserLdapUser()) {
+            return parent::confirmPassword();
         }
         Piwik::checkUserIsNotAnonymous();
         Piwik::checkUserHasSomeViewAccess();

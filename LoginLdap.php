@@ -358,11 +358,7 @@ class LoginLdap extends \Piwik\Plugin
     public function checkIfPasswordConfirmationCanBeSkipped()
     {
         $enablePasswordConfirmation = \Piwik\Plugins\LoginLdap\Config::getConfigOption('enable_password_confirmation');
-
-        $canSkip = WebServerAuth::isCurrentRequestWebServerAuthenticated()
-            || (!$enablePasswordConfirmation && $this->isCurrentUserLdapUser(StaticContainer::get('Piwik\Auth')));
-
-        if ($canSkip) {
+        if (!$enablePasswordConfirmation && $this->isCurrentUserLdapUser(StaticContainer::get('Piwik\Auth'))) {
             $passwordVerify = StaticContainer::get('Piwik\Plugins\Login\PasswordVerifier');
             $passwordVerify->setPasswordVerifiedCorrectly();
         }
