@@ -76,8 +76,7 @@ class Controller extends \Piwik\Plugins\Login\Controller
 
         $view->updatedFromPre30 = Option::get('LoginLdap_updatedFromPre3_0');
 
-        $view->requirePasswordConfirmation =
-            Piwik::doesUserRequirePasswordConfirmation(Piwik::getCurrentUserLogin());
+        $view->requirePasswordConfirmation = !WebServerAuth::isCurrentRequestWebServerAuthenticated();
 
         return $view->render();
     }

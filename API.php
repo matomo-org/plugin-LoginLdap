@@ -10,7 +10,10 @@
 namespace Piwik\Plugins\LoginLdap;
 
 use Piwik\Common;
+use Piwik\Container\StaticContainer;
 use Piwik\Piwik;
+use Piwik\Plugins\Login\PasswordVerifier;
+use Piwik\Plugins\LoginLdap\Auth\WebServerAuth;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
 use Exception;
@@ -165,6 +168,32 @@ class API extends \Piwik\Plugin\API
     {
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
             throw new Exception("Invalid HTTP method.");
+        }
+    }
+
+    protected function confirmCurrentUserPassword(
+        #[\SensitiveParameter]
+        $passwordConfirmation
+    ) {
+        if (WebServerAuth::isCurrentRequestWebServerAuthenticated()) {
+            return;
+        }
+
+        $loginCurrentUser = Piwik::getCurrentUserLogin();
+
+        if (empty($passwordConfirmation)) {
+            throw new Exception(Piwik::translate('UsersManager_ConfirmWithReAuthentication'));
+        }
+
+        try {
+            $passwordCorrect = StaticContainer::get(PasswordVerifier::class)
+                ->isPasswordCorrect($loginCurrentUser, $passwordConfirmation);
+        } catch (Exception $e) {
+            throw new Exception(Piwik::translate('UsersManager_CurrentPasswordNotCorrect'));
+        }
+
+        if (!$passwordCorrect) {
+            throw new Exception(Piwik::translate('UsersManager_CurrentPasswordNotCorrect'));
         }
     }
 }
