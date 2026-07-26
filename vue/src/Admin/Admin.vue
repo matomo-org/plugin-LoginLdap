@@ -525,7 +525,6 @@ export default defineComponent({
       required: true,
     },
     updatedFromPre30: Boolean,
-    requirePasswordConfirmation: Boolean,
   },
   components: {
     AjaxForm,
@@ -585,18 +584,10 @@ export default defineComponent({
     },
     requestSaveLdapConfig() {
       this.pendingSaveTarget = 'config';
-      if (!this.requirePasswordConfirmation) {
-        this.confirmSaveAction();
-        return;
-      }
       this.showPasswordConfirmation = true;
     },
     requestSaveServers() {
       this.pendingSaveTarget = 'servers';
-      if (!this.requirePasswordConfirmation) {
-        this.confirmSaveAction();
-        return;
-      }
       this.showPasswordConfirmation = true;
     },
     confirmSaveAction(passwordConfirmation?: string) {
