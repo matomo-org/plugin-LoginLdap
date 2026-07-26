@@ -12,7 +12,6 @@ namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
 use Piwik\Config;
 use Piwik\Plugins\LoginLdap\API;
-use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 
 /**
  * @group LoginLdap
@@ -30,19 +29,9 @@ class ApiTest extends LdapIntegrationTest
     {
         parent::setUp();
 
-        // ApiTest only verifies config/server persistence, not the password confirmation flow
-        // (that is covered by PasswordConfirmationTest). Skip the confirmation so saving a config
-        // that enables password confirmation does not require re-authentication here.
-        UserSynchronizer::$skipPasswordConfirmation = true;
+        $this->addPreexistingSuperUser();
 
         $this->api = new API();
-    }
-
-    public function tearDown(): void
-    {
-        UserSynchronizer::$skipPasswordConfirmation = false;
-
-        parent::tearDown();
     }
 
     public function test_getCountOfUsersMemberOf_ReturnsZero_WhenNoUsersAreMemberOfGroup()
@@ -90,7 +79,8 @@ class ApiTest extends LdapIntegrationTest
             'enable_password_confirmation' => 0,
             'new_user_default_sites_view_access' => '10,11,13',
             'servers' => 'abc',
-            'nonconfigoption' => 'def'
+            'nonconfigoption' => 'def',
+            'password_confirmation' => self::TEST_SUPERUSER_PASS
         );
 
         $this->api->saveLdapConfig(json_encode($configToSave));
@@ -118,7 +108,8 @@ class ApiTest extends LdapIntegrationTest
             'enable_password_confirmation' => 1,
             'new_user_default_sites_view_access' => '10,11,13',
             'servers' => 'abc',
-            'nonconfigoption' => 'def'
+            'nonconfigoption' => 'def',
+            'password_confirmation' => self::TEST_SUPERUSER_PASS
         );
 
         $this->api->saveLdapConfig(json_encode($configToSave));
@@ -157,7 +148,7 @@ class ApiTest extends LdapIntegrationTest
             ),
         );
 
-        $this->api->saveServersInfo(json_encode($serverInfos));
+        $this->api->saveServersInfo(json_encode($serverInfos), self::TEST_SUPERUSER_PASS);
 
         $this->assertEquals(array(
             'hostname' => 'ahost.com',
@@ -203,7 +194,7 @@ class ApiTest extends LdapIntegrationTest
             ),
         );
 
-        $this->api->saveServersInfo(json_encode($serverInfos));
+        $this->api->saveServersInfo(json_encode($serverInfos), self::TEST_SUPERUSER_PASS);
 
         $this->assertEquals(array(
             'hostname' => 'thehost.com',
@@ -240,7 +231,7 @@ class ApiTest extends LdapIntegrationTest
             ),
         );
 
-        $this->api->saveServersInfo(json_encode($serverInfos));
+        $this->api->saveServersInfo(json_encode($serverInfos), self::TEST_SUPERUSER_PASS);
 
         $this->assertEquals(array(
             'hostname' => 'thehost.com',

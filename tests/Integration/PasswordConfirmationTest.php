@@ -115,7 +115,23 @@ class PasswordConfirmationTest extends LdapIntegrationTest
         )));
     }
 
-    public function testSaveLdapConfigSucceedsWithoutPasswordConfirmationWhenDisabledForLdapUsers()
+    public function testSaveLdapConfigStillRequiresPasswordConfirmationForLdapUsersWhenDisabled()
+    {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        \Piwik\Config::getInstance()->LoginLdap['enable_password_confirmation'] = 0;
+        $this->addLdapUser(self::TEST_LOGIN, self::TEST_PASS);
+        $this->setSuperUserAccess(self::TEST_LOGIN, true);
+        $this->setCurrentUser(self::TEST_LOGIN, self::TEST_PASS);
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage(Piwik::translate('UsersManager_ConfirmWithReAuthentication'));
+
+        $this->api->saveLdapConfig(json_encode(array(
+            'use_ldap_for_authentication' => 0,
+        )));
+    }
+
+    public function testSaveLdapConfigSucceedsForLdapUserWithPasswordConfirmation()
     {
         $_SERVER['REQUEST_METHOD'] = 'POST';
         \Piwik\Config::getInstance()->LoginLdap['enable_password_confirmation'] = 0;
@@ -125,6 +141,7 @@ class PasswordConfirmationTest extends LdapIntegrationTest
 
         $result = $this->api->saveLdapConfig(json_encode(array(
             'use_ldap_for_authentication' => 0,
+            'password_confirmation' => self::TEST_PASS,
         )));
 
         $this->assertSame('success', $result['result']);
@@ -177,7 +194,7 @@ class PasswordConfirmationTest extends LdapIntegrationTest
         $this->api->saveServersInfo(json_encode($this->getServerPayload()));
     }
 
-    public function testSaveServersInfoSucceedsWithoutPasswordConfirmationWhenDisabledForLdapUsers()
+    public function testSaveServersInfoStillRequiresPasswordConfirmationForLdapUsersWhenDisabled()
     {
         $_SERVER['REQUEST_METHOD'] = 'POST';
         \Piwik\Config::getInstance()->LoginLdap['enable_password_confirmation'] = 0;
@@ -185,7 +202,21 @@ class PasswordConfirmationTest extends LdapIntegrationTest
         $this->setSuperUserAccess(self::TEST_LOGIN, true);
         $this->setCurrentUser(self::TEST_LOGIN, self::TEST_PASS);
 
-        $result = $this->api->saveServersInfo(json_encode($this->getServerPayload()));
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage(Piwik::translate('UsersManager_ConfirmWithReAuthentication'));
+
+        $this->api->saveServersInfo(json_encode($this->getServerPayload()));
+    }
+
+    public function testSaveServersInfoSucceedsForLdapUserWithPasswordConfirmation()
+    {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        \Piwik\Config::getInstance()->LoginLdap['enable_password_confirmation'] = 0;
+        $this->addLdapUser(self::TEST_LOGIN, self::TEST_PASS);
+        $this->setSuperUserAccess(self::TEST_LOGIN, true);
+        $this->setCurrentUser(self::TEST_LOGIN, self::TEST_PASS);
+
+        $result = $this->api->saveServersInfo(json_encode($this->getServerPayload()), self::TEST_PASS);
 
         $this->assertSame('success', $result['result']);
     }
