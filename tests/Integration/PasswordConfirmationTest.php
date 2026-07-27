@@ -10,9 +10,11 @@
 namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
 use Piwik\Access;
+use Piwik\AuthResult;
 use Piwik\Container\StaticContainer;
 use Piwik\Piwik;
 use Piwik\Plugins\LoginLdap\API;
+use Piwik\Plugins\LoginLdap\Auth\LdapAuth;
 use Piwik\Plugins\LoginLdap\Auth\WebServerAuth;
 use Piwik\Plugins\LoginLdap\Controller;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
@@ -139,9 +141,7 @@ class PasswordConfirmationTest extends LdapIntegrationTest
     {
         $_SERVER['REQUEST_METHOD'] = 'POST';
         \Piwik\Config::getInstance()->LoginLdap['enable_password_confirmation'] = 0;
-        $this->addLdapUser(self::TEST_LOGIN, self::TEST_PASS);
-        $this->setSuperUserAccess(self::TEST_LOGIN, true);
-        $this->setCurrentUser(self::TEST_LOGIN, self::TEST_PASS);
+        $this->useRealLdapUser();
 
         $result = $this->api->saveLdapConfig(json_encode(array(
             'use_ldap_for_authentication' => 0,
@@ -149,6 +149,42 @@ class PasswordConfirmationTest extends LdapIntegrationTest
         )));
 
         $this->assertSame('success', $result['result']);
+    }
+
+    public function testSaveLdapConfigRejectsWrongPasswordForLdapUser()
+    {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        \Piwik\Config::getInstance()->LoginLdap['enable_password_confirmation'] = 0;
+        $this->useRealLdapUser();
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage(Piwik::translate('UsersManager_CurrentPasswordNotCorrect'));
+
+        $this->api->saveLdapConfig(json_encode(array(
+            'use_ldap_for_authentication' => 0,
+            'password_confirmation' => 'not-' . self::TEST_PASS,
+        )));
+    }
+
+    /**
+     * A synchronized LDAP user's Matomo password column holds md5() of the LDAP password
+     * *hash* (see UserMapper::getPiwikPasswordForLdapUser), never the plaintext LDAP
+     * password, so confirming with TEST_PASS can only succeed by binding to LDAP.
+     */
+    public function testLdapUserPasswordConfirmationIsCheckedAgainstLdapNotTheMatomoDatabase()
+    {
+        $ldapAuth = $this->useRealLdapUser();
+
+        $user = $this->getUser(self::TEST_LOGIN);
+        $passwordHelper = new \Piwik\Auth\Password();
+        $this->assertFalse($passwordHelper->verify(md5(self::TEST_PASS), $user['password']));
+        $this->assertTrue($passwordHelper->verify(md5(self::TEST_PASS_LDAP), $user['password']));
+
+        StaticContainer::getContainer()->set('Piwik\Auth', new \Piwik\Plugins\Login\Auth());
+        $this->assertFalse($this->passwordVerifier->isPasswordCorrect(self::TEST_LOGIN, self::TEST_PASS));
+
+        StaticContainer::getContainer()->set('Piwik\Auth', $ldapAuth);
+        $this->assertTrue($this->passwordVerifier->isPasswordCorrect(self::TEST_LOGIN, self::TEST_PASS));
     }
 
     public function testSaveLdapConfigSucceedsWithPasswordConfirmationWhenEnabled()
@@ -262,15 +298,51 @@ class PasswordConfirmationTest extends LdapIntegrationTest
     {
         $_SERVER['REQUEST_METHOD'] = 'POST';
         \Piwik\Config::getInstance()->LoginLdap['enable_password_confirmation'] = 0;
-        $this->addLdapUser(self::TEST_LOGIN, self::TEST_PASS);
-        $this->setSuperUserAccess(self::TEST_LOGIN, true);
-        $this->setCurrentUser(self::TEST_LOGIN, self::TEST_PASS);
+        $this->useRealLdapUser();
 
         $result = $this->api->saveServersInfo(json_encode($this->getServerPayload()), self::TEST_PASS);
 
         $this->assertSame('success', $result['result']);
     }
 
+    public function testSaveServersInfoRejectsWrongPasswordForLdapUser()
+    {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        \Piwik\Config::getInstance()->LoginLdap['enable_password_confirmation'] = 0;
+        $this->useRealLdapUser();
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage(Piwik::translate('UsersManager_CurrentPasswordNotCorrect'));
+
+        $this->api->saveServersInfo(json_encode($this->getServerPayload()), 'not-' . self::TEST_PASS);
+    }
+
+    /**
+     * Synchronizes TEST_LOGIN from the real LDAP server and binds LdapAuth as the request's
+     * auth adapter. Required by any test that actually verifies a password.
+     */
+    private function useRealLdapUser(): LdapAuth
+    {
+        $ldapAuth = LdapAuth::makeConfigured();
+        $ldapAuth->setLogin(self::TEST_LOGIN);
+        $ldapAuth->setPassword(self::TEST_PASS);
+        $this->assertSame(AuthResult::SUCCESS, $ldapAuth->authenticate()->getCode());
+
+        StaticContainer::getContainer()->set('Piwik\Auth', $ldapAuth);
+
+        $userMapper = new UserMapper();
+        $this->assertTrue($userMapper->isUserLdapUser(self::TEST_LOGIN));
+
+        $this->setSuperUserAccess(self::TEST_LOGIN, true);
+        $this->setCurrentUser(self::TEST_LOGIN, self::TEST_PASS);
+
+        return $ldapAuth;
+    }
+
+    /**
+     * Creates a Matomo user merely *marked* as an LDAP user; its password lives in Matomo's
+     * user table, so this cannot exercise LDAP re-authentication.
+     */
     private function addLdapUser(string $login, string $password): void
     {
         \Piwik\Plugins\UsersManager\API::getInstance()->addUser(
