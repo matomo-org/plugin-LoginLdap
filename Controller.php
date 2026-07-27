@@ -14,6 +14,7 @@ use Piwik\Notification;
 use Piwik\Option;
 use Piwik\Piwik;
 use Piwik\Plugin\ControllerAdmin;
+use Piwik\Plugins\LoginLdap\Auth\WebServerAuth;
 use Piwik\Plugins\LoginLdap\Ldap\ServerInfo;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\View;
@@ -74,6 +75,8 @@ class Controller extends \Piwik\Plugins\Login\Controller
         $view->ldapConfig = Config::getPluginOptionValuesWithDefaults();
 
         $view->updatedFromPre30 = Option::get('LoginLdap_updatedFromPre3_0');
+
+        $view->userRequiresPasswordConfirmation = !WebServerAuth::isCurrentRequestWebServerAuthenticated();
 
         return $view->render();
     }
