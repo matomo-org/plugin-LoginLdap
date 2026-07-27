@@ -13,6 +13,7 @@ use Piwik\Access;
 use Piwik\Container\StaticContainer;
 use Piwik\Piwik;
 use Piwik\Plugins\LoginLdap\API;
+use Piwik\Plugins\LoginLdap\Auth\WebServerAuth;
 use Piwik\Plugins\LoginLdap\Controller;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\Plugins\Login\PasswordVerifier;
@@ -39,6 +40,9 @@ class PasswordConfirmationTest extends LdapIntegrationTest
         parent::setUp();
 
         \Zend_Session::$_unitTestEnabled = true;
+
+        // ensure a leftover REMOTE_USER from another test doesn't make us look web-server authenticated
+        unset($_SERVER['REMOTE_USER']);
 
         \Piwik\Config::getInstance()->LoginLdap['enable_password_confirmation'] = 0;
         $this->addNonLdapUsers();
@@ -161,6 +165,52 @@ class PasswordConfirmationTest extends LdapIntegrationTest
         );
 
         $this->assertSame('success', $result['result']);
+    }
+
+    public function testSaveLdapConfigSkipsPasswordConfirmationForWebServerAuthUser()
+    {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        \Piwik\Config::getInstance()->LoginLdap['enable_password_confirmation'] = 1;
+
+        $this->addLdapUser(self::TEST_LOGIN, self::TEST_PASS);
+        $this->setSuperUserAccess(self::TEST_LOGIN, true);
+        $this->setCurrentUser(self::TEST_LOGIN, self::TEST_PASS);
+
+        // simulate a web-server-authenticated request: there is no password to confirm
+        $_SERVER['REMOTE_USER'] = self::TEST_LOGIN;
+        StaticContainer::getContainer()->set('Piwik\Auth', new WebServerAuth());
+
+        $result = $this->api->saveLdapConfig(json_encode(array(
+            'use_ldap_for_authentication' => 0,
+        )));
+
+        $this->assertSame('success', $result['result']);
+    }
+
+    public function testSaveLdapConfigTreatsZeroStringAsAProvidedPassword()
+    {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        \Piwik\Config::getInstance()->LoginLdap['enable_password_confirmation'] = 1;
+        $this->setCurrentUser(self::NON_LDAP_USER, self::NON_LDAP_PASS);
+
+        // "0" is a provided (wrong) password, not a missing one: it must reach verification and
+        // fail with "current password not correct", not the "re-authentication required" path.
+        try {
+            $this->api->saveLdapConfig(json_encode(array(
+                'use_ldap_for_authentication' => 0,
+                'password_confirmation' => '0',
+            )));
+            $this->fail('Expected an exception to be thrown');
+        } catch (\Exception $e) {
+            $this->assertStringContainsString(
+                Piwik::translate('UsersManager_CurrentPasswordNotCorrect'),
+                $e->getMessage()
+            );
+            $this->assertStringNotContainsString(
+                Piwik::translate('UsersManager_ConfirmWithReAuthentication'),
+                $e->getMessage()
+            );
+        }
     }
 
     public function testSaveServersInfoRequiresPasswordConfirmationWhenEnabled()

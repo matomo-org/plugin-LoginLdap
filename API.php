@@ -181,7 +181,7 @@ class API extends \Piwik\Plugin\API
 
         $loginCurrentUser = Piwik::getCurrentUserLogin();
 
-        if (empty($passwordConfirmation)) {
+        if ($passwordConfirmation === null || $passwordConfirmation === '') {
             throw new Exception(Piwik::translate('UsersManager_ConfirmWithReAuthentication'));
         }
 
