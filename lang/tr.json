@@ -9,6 +9,7 @@
         "BaseDn": "Base DN",
         "CannotConnectToServer": "LDAP sunucusu ile bağlantı kurulamadı.",
         "CannotConnectToServers": "%s LDAP sunucularınızdan hiç biri ile bağlantı kurulamadı.",
+        "CreateAppSpecificTokenAuthBlocked": "Web sunucusu üzerinden kimlik doğrulaması yapılırken uygulamaya özgü kod oluşturulmasına izin verilmez. Lütfen Matomo yöneticinizle iletişime geçin.",
         "EnableLdapAccessSynchronization": "Kullanıcı izinleri LDAP üzerinden eşitlensin",
         "EnableLdapAccessSynchronizationDescription": "Bu seçenek açıldığında, kullanıcı izinleri özel LDAP öznitelikleri tarafından belirlenir. Not: Bu özelliği kullanabilmek için LDAP sunucunuzun şemasını değiştirmeniz gerekir.",
         "ExpectedLdapAttributes": "Beklenen LDAP öznitelikleri",
