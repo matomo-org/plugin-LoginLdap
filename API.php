@@ -146,8 +146,11 @@ class API extends \Piwik\Plugin\API
             throw new Exception(Piwik::translate('LoginLdap_UserNotFound', $login));
         }
 
-        $this->userSynchronizer->synchronizeLdapUser($login, $ldapUser);
-        $this->userSynchronizer->synchronizePiwikAccessFromLdap($login, $ldapUser);
+        $synchronizedUser = $this->userSynchronizer->synchronizeLdapUser($login, $ldapUser);
+
+        $syncedLogin = !empty($synchronizedUser['login']) ? $synchronizedUser['login'] : $login;
+
+        $this->userSynchronizer->synchronizePiwikAccessFromLdap($syncedLogin, $ldapUser);
     }
 
     /**
