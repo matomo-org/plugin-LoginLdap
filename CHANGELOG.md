@@ -1,7 +1,10 @@
 # LoginLdap Changelog
 
+#### LoginLdap 5.2.3 - 2026-08-03
+* Enabled password confirmation by default on the LoginLdap settings page
+
 #### LoginLdap 5.2.2 - 2026-07-27
-- Added code to harden the check for anonymous user on sync
+* Added code to harden the check for anonymous user on sync
 
 #### LoginLdap 5.2.1 - 2026-07-20
 * Added code to disallow createAppSpecificTokenAuth endpoint for WebServerAuth

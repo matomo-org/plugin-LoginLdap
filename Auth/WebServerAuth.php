@@ -12,6 +12,7 @@ namespace Piwik\Plugins\LoginLdap\Auth;
 use Exception;
 use Piwik\Auth;
 use Piwik\AuthResult;
+use Piwik\Container\StaticContainer;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\LoginLdap\Ldap\Exceptions\ConnectionException;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
@@ -148,6 +149,12 @@ class WebServerAuth extends Base
     private function getAlreadyAuthenticatedLogin()
     {
         return @$_SERVER['REMOTE_USER'];
+    }
+
+    public static function isCurrentRequestWebServerAuthenticated(): bool
+    {
+        $auth = StaticContainer::get('Piwik\Auth');
+        return $auth instanceof WebServerAuth && !empty($_SERVER['REMOTE_USER']);
     }
 
     private function synchronizeLoggedInUser()
