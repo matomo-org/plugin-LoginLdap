@@ -342,7 +342,10 @@ abstract class Base implements Auth
     protected function synchronizeLdapUser($ldapUser)
     {
         $this->userForLogin = $this->userSynchronizer->synchronizeLdapUser($this->login, $ldapUser);
-        $this->userSynchronizer->synchronizePiwikAccessFromLdap($this->login, $ldapUser);
+
+        $syncedLogin = !empty($this->userForLogin['login']) ? $this->userForLogin['login'] : $this->login;
+
+        $this->userSynchronizer->synchronizePiwikAccessFromLdap($syncedLogin, $ldapUser);
     }
 
     protected function makeSuccessLogin($userInfo)

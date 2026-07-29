@@ -112,6 +112,18 @@ class UserSynchronizerTest extends TestCase
         $this->userSynchronizer->synchronizeLdapUser('piwikuser', array());
     }
 
+    public function test_synchronizeLdapUser_Throws_IfLdapUserResolvesToDifferentExistingMatomoLogin()
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("Cannot synchronize LDAP user 'josé': it resolves to a different existing Matomo login.");
+
+        $this->setUserManagerApiMock($throws = false);
+        $this->setUserModelMock(array('login' => 'jose', 'password' => 'password', 'email' => 'email'));
+        $this->setUserMapperMock(array('login' => 'josé', 'password' => 'password', 'email' => 'email'));
+
+        $this->userSynchronizer->synchronizeLdapUser('josé', array());
+    }
+
     public function test_synchronizeLdapUser_Succeeds_IfUserDoesNotExistInDb()
     {
         $this->setUserManagerApiMock($throws = false);
