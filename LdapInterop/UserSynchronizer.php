@@ -147,8 +147,11 @@ class UserSynchronizer
             if (empty($existingUser)) {
                 //Need to set this to ensure we can add a new user without any password confirmation, refer skipPasswordConfirmation() in LoginLdap.php for further usage
                 self::$skipPasswordConfirmation = true;
-                $usersManagerApi->addUser($user['login'], $user['password'], $user['email'], $isPasswordHashed = true);
-                self::$skipPasswordConfirmation = false;
+                try {
+                    $usersManagerApi->addUser($user['login'], $user['password'], $user['email'], $isPasswordHashed = true);
+                } finally {
+                    self::$skipPasswordConfirmation = false;
+                }
 
                 // set new user view access
                 if (!empty($newUserDefaultSitesWithViewAccess)) {
