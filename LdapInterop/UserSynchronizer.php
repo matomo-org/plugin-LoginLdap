@@ -164,13 +164,19 @@ class UserSynchronizer
                     if (Config::getShouldSynchronizeUsersAfterLogin()) {
                         $usersManagerApi::$UPDATE_USER_REQUIRE_PASSWORD_CONFIRMATION = false;
                         self::$allowUpdateUser = true;
-                        $usersManagerApi->updateUser($user['login'], $user['password'], $user['email'], $isPasswordHashed = true, true);
-                        $usersManagerApi::$UPDATE_USER_REQUIRE_PASSWORD_CONFIRMATION = true;
-                        self::$allowUpdateUser = false;
+                        try {
+                            $usersManagerApi->updateUser($user['login'], $user['password'], $user['email'], $isPasswordHashed = true, true);
+                        } finally {
+                            $usersManagerApi::$UPDATE_USER_REQUIRE_PASSWORD_CONFIRMATION = true;
+                            self::$allowUpdateUser = false;
+                        }
                     } else {
                         self::$allowUpdateUser = true;
-                        $userUpdater->updateUserWithoutCurrentPassword($user['login'], $user['password'], $user['email'], $isPasswordHashed = true);
-                        self::$allowUpdateUser = false;
+                        try {
+                            $userUpdater->updateUserWithoutCurrentPassword($user['login'], $user['password'], $user['email'], $isPasswordHashed = true);
+                        } finally {
+                            self::$allowUpdateUser = false;
+                        }
                     }
 
                     // manually reset ts_password_modified to user creation date since it will just cause sessions to prematurely expire
