@@ -64,7 +64,6 @@ class LoginLdap extends \Piwik\Plugin
     public function getStylesheetFiles(&$stylesheetFiles)
     {
         $stylesheetFiles[] = "plugins/Login/stylesheets/login.less";
-        $stylesheetFiles[] = "plugins/Login/stylesheets/variables.less";
         $stylesheetFiles[] = "plugins/LoginLdap/vue/src/Admin/Admin.less";
         $stylesheetFiles[] = "plugins/LoginLdap/vue/src/TestableField/TestableField.less";
     }
