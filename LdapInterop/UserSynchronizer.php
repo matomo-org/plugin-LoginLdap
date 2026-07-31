@@ -165,8 +165,11 @@ class UserSynchronizer
             if (empty($existingUser)) {
                 //Need to set this to ensure we can add a new user without any password confirmation, refer skipPasswordConfirmation() in LoginLdap.php for further usage
                 self::$skipPasswordConfirmation = true;
-                $usersManagerApi->addUser($syncLogin, $user['password'], $user['email'], $isPasswordHashed = true);
-                self::$skipPasswordConfirmation = false;
+                try {
+                    $usersManagerApi->addUser($syncLogin, $user['password'], $user['email'], $isPasswordHashed = true);
+                } finally {
+                    self::$skipPasswordConfirmation = false;
+                }
 
                 // set new user view access
                 if (!empty($newUserDefaultSitesWithViewAccess)) {
@@ -179,13 +182,19 @@ class UserSynchronizer
                     if (Config::getShouldSynchronizeUsersAfterLogin()) {
                         $usersManagerApi::$UPDATE_USER_REQUIRE_PASSWORD_CONFIRMATION = false;
                         self::$allowUpdateUser = true;
-                        $usersManagerApi->updateUser($syncLogin, $user['password'], $user['email'], $isPasswordHashed = true, true);
-                        $usersManagerApi::$UPDATE_USER_REQUIRE_PASSWORD_CONFIRMATION = true;
-                        self::$allowUpdateUser = false;
+                        try {
+                            $usersManagerApi->updateUser($syncLogin, $user['password'], $user['email'], $isPasswordHashed = true, true);
+                        } finally {
+                            $usersManagerApi::$UPDATE_USER_REQUIRE_PASSWORD_CONFIRMATION = true;
+                            self::$allowUpdateUser = false;
+                        }
                     } else {
                         self::$allowUpdateUser = true;
-                        $userUpdater->updateUserWithoutCurrentPassword($syncLogin, $user['password'], $user['email'], $isPasswordHashed = true);
-                        self::$allowUpdateUser = false;
+                        try {
+                            $userUpdater->updateUserWithoutCurrentPassword($syncLogin, $user['password'], $user['email'], $isPasswordHashed = true);
+                        } finally {
+                            self::$allowUpdateUser = false;
+                        }
                     }
 
                     // manually reset ts_password_modified to user creation date since it will just cause sessions to prematurely expire
