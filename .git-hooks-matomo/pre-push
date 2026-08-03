@@ -60,12 +60,25 @@ STATUS=0
 
 
 
+### Resolve the base to diff against. ###
+
+# Use the merge base with the remote main branch: the local branch can be stale
+# or missing, which silently widens the diff to files the push doesn't touch.
+MAIN_BRANCH='5.x-dev'
+DIFF_BASE=$(git merge-base HEAD "origin/${MAIN_BRANCH}" 2>/dev/null)
+if [[ -z "$DIFF_BASE" ]]; then
+  echo "Could not resolve the merge base between HEAD and origin/${MAIN_BRANCH}."
+  echo "Run 'git fetch origin ${MAIN_BRANCH}' and push again."
+  exit 1
+fi
+
+
+
 ### Run PHPStan on newly created files. ###
 
 PHPSTAN_CREATED_CONFIG=phpstan/phpstan.created.neon
-MAIN_BRANCH='5.x-dev'
 if [[ -f "$PHPSTAN_CREATED_CONFIG" ]]; then
-  CHANGED_FILES=$(git diff --name-only ${MAIN_BRANCH} --diff-filter=A | grep '\.php$' || true)
+  CHANGED_FILES=$(git diff --name-only ${DIFF_BASE} --diff-filter=A | grep '\.php$' || true)
   if [ -z "$CHANGED_FILES" ]; then
     echo "No created PHP files"
   else
@@ -80,7 +93,7 @@ fi
 ### Run PHPStan on modified files. ###
 PHPSTAN_MODIFIED_CONFIG=phpstan/phpstan.modified.neon
 if [[ -f "$PHPSTAN_MODIFIED_CONFIG" ]]; then
-  CHANGED_FILES=$(git diff --name-only ${MAIN_BRANCH} --diff-filter=CM | grep '\.php$' || true)
+  CHANGED_FILES=$(git diff --name-only ${DIFF_BASE} --diff-filter=CM | grep '\.php$' || true)
   if [ -z "$CHANGED_FILES" ]; then
     echo "No changed PHP files"
   else
