@@ -3,7 +3,6 @@
 #### LoginLdap 5.2.3 - 2026-08-03
 * Enabled password confirmation by default on the LoginLdap settings page
 * Added code to synchronize LDAP users using the resolved Matomo login instead of the supplied identifier
-* Added PHPStan static analysis (CI check and pre-push hook) with minor type and PHPDoc fixes
 
 #### LoginLdap 5.2.2 - 2026-07-27
 * Added code to harden the check for anonymous user on sync
