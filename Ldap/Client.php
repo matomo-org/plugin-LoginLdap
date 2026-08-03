@@ -33,7 +33,7 @@ class Client
     /**
      * The LDAP connection resource. Set to the result of `ldap_connect`.
      *
-     * @var resource
+     * @var resource|null
      */
     private $connectionResource;
 
@@ -82,7 +82,7 @@ class Client
 
         $this->logger->debug("Calling ldap_connect('{host}', {port})", array('host' => $serverHostName, 'port' => $port));
 
-        if (version_compare(PHP_VERSION, 8.3, '>=')) {
+        if (version_compare(PHP_VERSION, '8.3', '>=')) {
             $uri = 'ldap://' . $serverHostName . ':' . $port;
             if (stripos($serverHostName, 'ldap:') !== false || stripos($serverHostName, 'ldaps:') !== false) {
                 $uri = $serverHostName . ':' . $port;
@@ -113,7 +113,7 @@ class Client
             // if the error was due to a connection error, rethrow, otherwise ignore it
             $errno = ldap_errno($this->connectionResource);
 
-            $fct = ($startTLS ? "ldap_start_tls" : "ldap_bind");
+            $fct = ($startTLS ? "ldap_start_tls" : "ldap_bind"); // @phpstan-ignore ternary.alwaysTrue (ldap_bind() warnings become exceptions via Matomo's error handler, so $startTLS can be false here)
 
             $this->logger->debug("anonymous {fct} returned error '{err}'", array('err' => $errno, 'fct' => $fct));
 
@@ -203,7 +203,7 @@ class Client
 
             $ldapInfo = ldap_get_entries($connectionResource, $searchResultResource);
 
-            $this->logger->debug("ldap_get_entries result is {result}", array('result' => $ldapInfo === null ? 'null' : 'not null'));
+            $this->logger->debug("ldap_get_entries result is {result}", array('result' => $ldapInfo === false ? 'false' : 'not false'));
 
             return $this->transformLdapInfo($ldapInfo);
         } else {

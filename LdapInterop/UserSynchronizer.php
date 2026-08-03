@@ -66,7 +66,7 @@ class UserSynchronizer
     /**
      * UserAccessMapper instance used to determine Piwik user access using LDAP user entities.
      *
-     * @var UserAccessMapper
+     * @var UserAccessMapper|null
      */
     private $userAccessMapper;
 
@@ -183,7 +183,7 @@ class UserSynchronizer
                         $usersManagerApi::$UPDATE_USER_REQUIRE_PASSWORD_CONFIRMATION = false;
                         self::$allowUpdateUser = true;
                         try {
-                            $usersManagerApi->updateUser($syncLogin, $user['password'], $user['email'], $isPasswordHashed = true, true);
+                            $usersManagerApi->updateUser($syncLogin, $user['password'], $user['email'], $isPasswordHashed = true, false);
                         } finally {
                             $usersManagerApi::$UPDATE_USER_REQUIRE_PASSWORD_CONFIRMATION = true;
                             self::$allowUpdateUser = false;
@@ -191,6 +191,7 @@ class UserSynchronizer
                     } else {
                         self::$allowUpdateUser = true;
                         try {
+                            // @phpstan-ignore argument.type, argument.type (the UserUpdater @param bool docblocks are too narrow; it forwards strings to API::updateUser)
                             $userUpdater->updateUserWithoutCurrentPassword($syncLogin, $user['password'], $user['email'], $isPasswordHashed = true);
                         } finally {
                             self::$allowUpdateUser = false;

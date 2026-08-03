@@ -24,6 +24,6 @@ class Updates_3_0_0 extends Updates
         \Piwik\Config::getInstance()->LoginLdap['use_ldap_for_authentication'] = 0;
         \Piwik\Config::getInstance()->forceSave();
 
-        Option::set('LoginLdap_updatedFromPre3_0', 1);
+        Option::set('LoginLdap_updatedFromPre3_0', '1');
     }
 }

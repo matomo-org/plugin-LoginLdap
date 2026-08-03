@@ -1,0 +1,85 @@
+name: PHPStan check
+
+on: pull_request
+
+permissions:
+  actions: read
+  checks: read
+  contents: read
+  deployments: none
+  issues: read
+  packages: none
+  pull-requests: read
+  repository-projects: none
+  security-events: none
+  statuses: read
+
+env:
+  PLUGIN_NAME: LoginLdap
+
+jobs:
+  phpstan:
+    name: PHPStan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+          persist-credentials: false
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.2'
+
+      - name: Check out github-action-tests repository
+        uses: actions/checkout@v4
+        with:
+          repository: matomo-org/github-action-tests
+          ref: main
+          path: github-action-tests
+          persist-credentials: false
+
+      - name: checkout matomo for plugin builds
+        shell: bash
+        run: ${{ github.workspace }}/github-action-tests/scripts/bash/checkout_matomo.sh
+        env:
+          PLUGIN_NAME: ${{ env.PLUGIN_NAME }}
+          WORKSPACE: ${{ github.workspace }}
+          ACTION_PATH: ${{ github.workspace }}/github-action-tests
+          MATOMO_TEST_TARGET: maximum_supported_matomo
+
+      - name: prepare setup
+        shell: bash
+        run: |
+          cd ${{ github.workspace }}/matomo
+          echo -e "composer install"
+          composer install --ignore-platform-reqs
+
+      - name: checkout additional plugins
+        if: ${{ env.DEPENDENT_PLUGINS != '' }}
+        shell: bash
+        working-directory: ${{ github.workspace }}/matomo
+        run: ${{ github.workspace }}/github-action-tests/scripts/bash/checkout_dependent_plugins.sh
+
+        env:
+          DEPENDENT_PLUGINS: ${{ env.DEPENDENT_PLUGINS }}
+          GITHUB_USER_TOKEN: ${{ secrets.TESTS_ACCESS_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: "Restore result cache"
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/phpstan # same as in phpstan.neon
+          key: "phpstan-result-cache-${{ github.run_id }}"
+          restore-keys: |
+            phpstan-result-cache-
+
+      - name: PHPStan whole repo
+        id: phpstan-all
+        run: cd ${{ github.workspace }}/matomo && composer run phpstan -- -vvv -c plugins/${{ env.PLUGIN_NAME }}/phpstan.neon
+
+      - name: "Save result cache"
+        uses: actions/cache/save@v4
+        if: ${{ !cancelled() }}
+        with:
+          path: /tmp/phpstan # same as in phpstan.neon
+          key: "phpstan-result-cache-${{ github.run_id }}"

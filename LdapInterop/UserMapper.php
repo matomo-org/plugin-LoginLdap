@@ -90,7 +90,7 @@ class UserMapper
      * This method is used in syncing LDAP user information with Piwik user info.
      *
      * @param string[] $ldapUser Associative array containing LDAP field data, eg, `array('dn' => '...')`
-     * @param string[]|null $piwikUser The existing Piwik user or null if none exists yet.
+     * @param string[]|null $user The existing Piwik user or null if none exists yet.
      * @return string[]
      */
     public function createPiwikUserFromLdapUser($ldapUser, $user = null)
