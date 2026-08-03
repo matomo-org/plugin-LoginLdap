@@ -8,6 +8,12 @@ parameters:
         - tests/*
         - vendor/
         - github-action-tests/
+    ignoreErrors:
+        # released update files are immutable history and must not be edited for analysis findings
+        - message: '#^Parameter \#2 \$value of static method Piwik\\Option::set\(\) expects string, int given\.$#'
+          path: Updates/3.0.0.php
+        - message: '#^Property Piwik\\Plugins\\LoginLdap\\Updates_4_7_3::\$migration is never read, only written\.$#'
+          path: Updates/4.7.3.php
     bootstrapFiles:
         - ../../bootstrap-phpstan.php
     universalObjectCratesClasses:

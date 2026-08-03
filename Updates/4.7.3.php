@@ -13,6 +13,7 @@ use Piwik\Common;
 use Piwik\Db;
 use Piwik\Option;
 use Piwik\Updater;
+use Piwik\Updater\Migration\Factory as MigrationFactory;
 use Piwik\Updates;
 use Piwik\Plugins\UsersManager\Model as UsersModel;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
@@ -22,6 +23,16 @@ use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
  */
 class Updates_4_7_3 extends Updates
 {
+    /**
+     * @var MigrationFactory
+     */
+    private $migration;
+
+    public function __construct(MigrationFactory $factory)
+    {
+        $this->migration = $factory;
+    }
+
     public function doUpdate(Updater $updater)
     {
 
