@@ -31,10 +31,10 @@ class Client
     );
 
     /**
-     * The LDAP connection resource. Set to the result of `ldap_connect` (`false` on
-     * connection failure, an \LDAP\Connection object instead of a resource on PHP 8.1+).
+     * The LDAP connection resource. Set to the result of `ldap_connect`: `false` on
+     * connection failure, and an \LDAP\Connection object instead of a resource on PHP 8.1+.
      *
-     * @var resource|false|null
+     * @var resource|\LDAP\Connection|false|null
      */
     private $connectionResource;
 

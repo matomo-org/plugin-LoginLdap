@@ -16,6 +16,8 @@ parameters:
           path: Updates/4.7.3.php
     bootstrapFiles:
         - ../../bootstrap-phpstan.php
+    scanFiles:
+        - phpstan/stubs/LDAPConnection.php
     universalObjectCratesClasses:
         - Piwik\Config
         - Piwik\View
