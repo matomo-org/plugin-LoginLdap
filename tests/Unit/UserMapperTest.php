@@ -84,9 +84,11 @@ class UserMapperTest extends TestCase
             'other' => 'sfdklsdjf'
         ));
 
+        $this->assertPasswordIsRandomPlaceholder($result);
+        unset($result['password']);
+
         $this->assertEquals(array(
             'login' => 'martha',
-            'password' => md5('pass'),
             'email' => 'martha@unit.co.uk',
         ), $result);
     }
@@ -107,9 +109,11 @@ class UserMapperTest extends TestCase
             'other3' => 'sdlfdsf'
         ));
 
+        $this->assertPasswordIsRandomPlaceholder($result);
+        unset($result['password']);
+
         $this->assertEquals(array(
             'login' => 'donna',
-            'password' => md5('pass'),
             'email' => 'donna@rstad.com'
         ), $result);
 
@@ -122,9 +126,11 @@ class UserMapperTest extends TestCase
             'other3' => 'sdlfdsf'
         ));
 
+        $this->assertPasswordIsRandomPlaceholder($result);
+        unset($result['password']);
+
         $this->assertEquals(array(
             'login' => 'donna',
-            'password' => md5('pass'),
             'email' => 'donna@rstad.com'
         ), $result);
     }
@@ -151,7 +157,28 @@ class UserMapperTest extends TestCase
             'mail' => 'clara@coalhill.co.uk'
         ));
 
-        $this->assertNotEmpty($result['password']);
+        $this->assertPasswordIsRandomPlaceholder($result);
+    }
+
+    /**
+     * The stored password must not be derivable from the LDAP userPassword attribute, otherwise
+     * anyone holding that attribute value could use it to log in as the user.
+     */
+    public function test_createPiwikUserFromLdapUser_DoesNotDerivePasswordFromLdapPassword()
+    {
+        $ldapUser = array(
+            'uid' => 'alice',
+            'mail' => 'alice@unit.co.uk',
+            'userpassword' => '{SSHA}f5k9BA2C5L7VKqARAYvBCHBkPC3oTqaw'
+        );
+
+        $result = $this->userMapper->createPiwikUserFromLdapUser($ldapUser);
+
+        $this->assertPasswordIsRandomPlaceholder($result, '{SSHA}f5k9BA2C5L7VKqARAYvBCHBkPC3oTqaw');
+
+        $again = $this->userMapper->createPiwikUserFromLdapUser($ldapUser);
+
+        $this->assertNotEquals($result['password'], $again['password']);
     }
 
     public function test_createPiwikUserFromLdapUser_SetsCorrectEmail_WhenUserHasNone()
@@ -162,9 +189,11 @@ class UserMapperTest extends TestCase
             'userpassword' => 'pass'
         ));
 
+        $this->assertPasswordIsRandomPlaceholder($result);
+        unset($result['password']);
+
         $this->assertEquals(array(
             'login' => 'pond',
-            'password' => md5('pass'),
             'email' => 'pond@mydomain.com'
         ), $result);
 
@@ -175,9 +204,11 @@ class UserMapperTest extends TestCase
             'userpassword' => 'pass'
         ));
 
+        $this->assertPasswordIsRandomPlaceholder($result);
+        unset($result['password']);
+
         $this->assertEquals(array(
             'login' => 'mrpond',
-            'password' => md5('pass'),
             'email' => 'mrpond@royalleadworthhospital.co.uk'
         ), $result);
     }
@@ -192,9 +223,11 @@ class UserMapperTest extends TestCase
             'other' => 'sfdklsdjf'
         ));
 
+        $this->assertPasswordIsRandomPlaceholder($result);
+        unset($result['password']);
+
         $this->assertEquals(array(
             'login' => 'harkness',
-            'password' => md5('pass'),
             'email' => 'harkness@mydomain.com'
         ), $result);
     }
@@ -211,9 +244,11 @@ class UserMapperTest extends TestCase
             'other' => array('sfdklsdjf)')
         ));
 
+        $this->assertPasswordIsRandomPlaceholder($result);
+        unset($result['password']);
+
         $this->assertEquals(array(
             'login' => 'rose',
-            'password' => md5('pass'),
             'email' => 'rose@linda.com'
         ), $result);
     }
@@ -257,12 +292,28 @@ class UserMapperTest extends TestCase
             'userpassword' => 'pass'
         ), $existingUser);
 
+        $this->assertPasswordIsRandomPlaceholder($result);
+        $this->assertNotEquals('existingpass', $result['password']);
+        unset($result['password']);
+
         $this->assertEquals(array(
             'login' => 'leela',
-            'password' => '1a1dc91c907325c69271ddf0c944bc72',
             'email' => 'leela@gallifrey.???'
         ), $result);
         Config::getInstance()->LoginLdap['synchronize_users_after_login'] = 0;
+    }
+
+    /**
+     * Asserts the generated password is an unguessable placeholder of the shape Matomo expects,
+     * and not derived from the LDAP password attribute.
+     */
+    private function assertPasswordIsRandomPlaceholder(array $result, $ldapPassword = 'pass')
+    {
+        // UsersManager::checkPasswordHash() requires an MD5 shaped hash
+        $this->assertSame(32, strlen($result['password']));
+        $this->assertTrue(ctype_xdigit($result['password']));
+
+        $this->assertNotEquals(md5($ldapPassword), $result['password']);
     }
 
     private function assertUserMapperIsCorrectlyConfigured(UserMapper $userMapper)
