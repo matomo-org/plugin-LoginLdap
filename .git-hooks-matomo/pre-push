@@ -17,7 +17,7 @@
 ### Check we're running in the context of a plugin and get helpful dir variables ###
 
 REPO_DIR="$(git rev-parse --show-toplevel)"
-echo "Running pre-commit hook in repo: $REPO_DIR"
+echo "Running pre-push hook in repo: $REPO_DIR"
 
 if [[ "$REPO_DIR" =~ /plugins/(.*) ]]; then
     PLUGIN_PATH="plugins/${BASH_REMATCH[1]}/"
@@ -78,7 +78,7 @@ fi
 
 PHPSTAN_CREATED_CONFIG=phpstan/phpstan.created.neon
 if [[ -f "$PHPSTAN_CREATED_CONFIG" ]]; then
-  CHANGED_FILES=$(git diff --name-only ${DIFF_BASE} --diff-filter=A | grep '\.php$' || true)
+  CHANGED_FILES=$(git diff --name-only ${DIFF_BASE} HEAD --diff-filter=A | grep '\.php$' || true)
   if [ -z "$CHANGED_FILES" ]; then
     echo "No created PHP files"
   else
@@ -93,7 +93,7 @@ fi
 ### Run PHPStan on modified files. ###
 PHPSTAN_MODIFIED_CONFIG=phpstan/phpstan.modified.neon
 if [[ -f "$PHPSTAN_MODIFIED_CONFIG" ]]; then
-  CHANGED_FILES=$(git diff --name-only ${DIFF_BASE} --diff-filter=CM | grep '\.php$' || true)
+  CHANGED_FILES=$(git diff --name-only ${DIFF_BASE} HEAD --diff-filter=CM | grep '\.php$' || true)
   if [ -z "$CHANGED_FILES" ]; then
     echo "No changed PHP files"
   else
