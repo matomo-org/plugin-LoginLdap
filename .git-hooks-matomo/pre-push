@@ -56,52 +56,59 @@ fi
 # Basic setup
 cd "$REPO_DIR"
 STATUS=0
-
-
-
-
-### Resolve the base to diff against. ###
-
-# Use the merge base with the remote main branch: the local branch can be stale
-# or missing, which silently widens the diff to files the push doesn't touch.
 MAIN_BRANCH='5.x-dev'
-DIFF_BASE=$(git merge-base HEAD "origin/${MAIN_BRANCH}" 2>/dev/null)
-if [[ -z "$DIFF_BASE" ]]; then
-  echo "Could not resolve the merge base between HEAD and origin/${MAIN_BRANCH}."
-  echo "Run 'git fetch origin ${MAIN_BRANCH}' and push again."
-  exit 1
-fi
-
-
-
-### Run PHPStan on newly created files. ###
-
+ZERO_OID='0000000000000000000000000000000000000000'
 PHPSTAN_CREATED_CONFIG=phpstan/phpstan.created.neon
-if [[ -f "$PHPSTAN_CREATED_CONFIG" ]]; then
-  CHANGED_FILES=$(git diff --name-only ${DIFF_BASE} HEAD --diff-filter=A | grep '\.php$' || true)
-  if [ -z "$CHANGED_FILES" ]; then
-    echo "No created PHP files"
-  else
-    echo "Running PHPstan at a very high level on new files"
-    CHANGED_FILES=`echo "$CHANGED_FILES" | sed -e 's/^\(.*\)$/"\1"/' | xargs -I{} echo "${PLUGIN_PATH}{}"`
-    echo "$CHANGED_FILES" | xargs $COMMAND analyse -c ${PLUGIN_PATH}${PHPSTAN_CREATED_CONFIG} || STATUS=1
-  fi
-fi
-
-
-
-### Run PHPStan on modified files. ###
 PHPSTAN_MODIFIED_CONFIG=phpstan/phpstan.modified.neon
-if [[ -f "$PHPSTAN_MODIFIED_CONFIG" ]]; then
-  CHANGED_FILES=$(git diff --name-only ${DIFF_BASE} HEAD --diff-filter=CM | grep '\.php$' || true)
-  if [ -z "$CHANGED_FILES" ]; then
-    echo "No changed PHP files"
-  else
-    echo "Running PHPstan on modified files"
-    CHANGED_FILES=`echo "$CHANGED_FILES" | sed -e 's/^\(.*\)$/"\1"/' | xargs -I{} echo "${PLUGIN_PATH}{}"`
-    echo "$CHANGED_FILES" | xargs $COMMAND analyse -c ${PLUGIN_PATH}${PHPSTAN_MODIFIED_CONFIG} || STATUS=1
+
+
+
+### Run PHPStan on the files a pushed commit adds or changes. ###
+
+# $1 -- the pushed commit
+# $2 -- git diff filter (A for created files, CM for modified files)
+# $3 -- the phpstan config to use
+# $4 -- log label for the file kind
+check_pushed_commit() {
+  local commit="$1" filter="$2" config="$3" label="$4"
+
+  if [[ ! -f "$config" ]]; then
+    return 0
   fi
-fi
+
+  # Use the merge base with the remote main branch: the local branch can be stale
+  # or missing, which silently widens the diff to files the push doesn't touch.
+  local diff_base
+  diff_base=$(git merge-base "$commit" "origin/${MAIN_BRANCH}" 2>/dev/null)
+  if [[ -z "$diff_base" ]]; then
+    echo "Could not resolve the merge base between ${commit} and origin/${MAIN_BRANCH}."
+    echo "Run 'git fetch origin ${MAIN_BRANCH}' and push again."
+    return 1
+  fi
+
+  local changed_files
+  changed_files=$(git diff --name-only "$diff_base" "$commit" --diff-filter="$filter" | grep '\.php$' || true)
+  if [ -z "$changed_files" ]; then
+    echo "No ${label} PHP files"
+    return 0
+  fi
+
+  echo "Running PHPstan on ${label} files"
+  changed_files=`echo "$changed_files" | sed -e 's/^\(.*\)$/"\1"/' | xargs -I{} echo "${PLUGIN_PATH}{}"`
+  echo "$changed_files" | xargs $COMMAND analyse -c ${PLUGIN_PATH}${config} || return 1
+}
+
+# Check the commits actually being pushed, as supplied on stdin: HEAD is wrong
+# when pushing another local branch or several refs at once. The inner commands
+# read /dev/null so they cannot consume the remaining stdin lines.
+while read -r local_ref local_oid remote_ref remote_oid; do
+  if [[ "$local_oid" == "$ZERO_OID" ]]; then
+    continue # deleting the remote ref, nothing is pushed
+  fi
+  echo "Checking ${local_ref} (${local_oid})"
+  check_pushed_commit "$local_oid" A "$PHPSTAN_CREATED_CONFIG" "created" < /dev/null || STATUS=1
+  check_pushed_commit "$local_oid" CM "$PHPSTAN_MODIFIED_CONFIG" "modified" < /dev/null || STATUS=1
+done
 
 # Don't bother running the full check, as we check changes files already, and
 # can assume that the unchanged files don't need rechecking.
