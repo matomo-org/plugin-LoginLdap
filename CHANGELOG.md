@@ -1,8 +1,5 @@
 # LoginLdap Changelog
 
-#### LoginLdap 5.2.4 - 2026-08-04
-* Fixed an incorrect proprietary license header on one file; all plugin code is licensed GPL v3 or later
-
 #### LoginLdap 5.2.3 - 2026-08-03
 * Enabled password confirmation by default on the LoginLdap settings page
 * Added code to synchronize LDAP users using the resolved Matomo login instead of the supplied identifier
