@@ -287,12 +287,12 @@ var external_CorePluginsAdmin_ = __webpack_require__("a5a2");
 TestableFieldvue_type_script_lang_ts.render = render
 
 /* harmony default export */ var TestableField = (TestableFieldvue_type_script_lang_ts);
-// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--1-1!./plugins/LoginLdap/vue/src/Admin/Admin.vue?vue&type=template&id=700f87d5
+// CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--1-1!./plugins/LoginLdap/vue/src/Admin/Admin.vue?vue&type=template&id=47158c76
 
-const Adminvue_type_template_id_700f87d5_hoisted_1 = {
+const Adminvue_type_template_id_47158c76_hoisted_1 = {
   key: 0
 };
-const Adminvue_type_template_id_700f87d5_hoisted_2 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("hr", null, null, -1);
+const Adminvue_type_template_id_47158c76_hoisted_2 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("hr", null, null, -1);
 const _hoisted_3 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("hr", null, null, -1);
 const _hoisted_4 = ["innerHTML"];
 const _hoisted_5 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("br", null, null, -1);
@@ -315,7 +315,7 @@ const _hoisted_17 = {
 const _hoisted_18 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("br", null, null, -1);
 const _hoisted_19 = ["innerHTML"];
 const _hoisted_20 = /*#__PURE__*/Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("hr", null, null, -1);
-function Adminvue_type_template_id_700f87d5_render(_ctx, _cache, $props, $setup, $data, $options) {
+function Adminvue_type_template_id_47158c76_render(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_Notification = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("Notification");
   const _component_Field = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("Field");
   const _component_TestableField = Object(external_commonjs_vue_commonjs2_vue_root_Vue_["resolveComponent"])("TestableField");
@@ -333,7 +333,7 @@ function Adminvue_type_template_id_700f87d5_render(_ctx, _cache, $props, $setup,
       id: "ldapSettings",
       "content-title": _ctx.translate('LoginLdap_Settings')
     }, {
-      default: Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withCtx"])(() => [_ctx.updatedFromPre30 ? (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("div", Adminvue_type_template_id_700f87d5_hoisted_1, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Notification, {
+      default: Object(external_commonjs_vue_commonjs2_vue_root_Vue_["withCtx"])(() => [_ctx.updatedFromPre30 ? (Object(external_commonjs_vue_commonjs2_vue_root_Vue_["openBlock"])(), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementBlock"])("div", Adminvue_type_template_id_47158c76_hoisted_1, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Notification, {
         id: "pre300AlwaysUseLdapWarning",
         context: "warning",
         noclear: true
@@ -402,7 +402,7 @@ function Adminvue_type_template_id_700f87d5_render(_ctx, _cache, $props, $setup,
         "success-translation": "LoginLdap_FilterCount",
         title: _ctx.translate('LoginLdap_Filter'),
         "inline-help": _ctx.translate('LoginLdap_FilterDescription')
-      }, null, 8, ["modelValue", "title", "inline-help"])]), Adminvue_type_template_id_700f87d5_hoisted_2, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
+      }, null, 8, ["modelValue", "title", "inline-help"])]), Adminvue_type_template_id_47158c76_hoisted_2, Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
         saving: _ctx.isSavingConfig,
         onConfirm: _cache[8] || (_cache[8] = $event => _ctx.requestSaveLdapConfig())
       }, null, 8, ["saving"])]),
@@ -423,7 +423,7 @@ function Adminvue_type_template_id_700f87d5_render(_ctx, _cache, $props, $setup,
         name: "ldap_password_field",
         modelValue: _ctx.actualLdapConfig.ldap_password_field,
         "onUpdate:modelValue": _cache[10] || (_cache[10] = $event => _ctx.actualLdapConfig.ldap_password_field = $event),
-        title: _ctx.translate('LoginLdap_PasswordField'),
+        title: _ctx.ldapPasswordFieldTitle,
         "inline-help": _ctx.ldapPasswordFieldHelp
       }, null, 8, ["modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createElementVNode"])("div", null, [Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_Field, {
         uicontrol: "text",
@@ -601,9 +601,8 @@ function Adminvue_type_template_id_700f87d5_render(_ctx, _cache, $props, $setup,
           modelValue: serverInfo.admin_pass,
           "onUpdate:modelValue": $event => serverInfo.admin_pass = $event,
           uicontrol: "password",
-          title: _ctx.translate('LoginLdap_AdminPass'),
-          "inline-help": _ctx.translate('LoginLdap_PasswordFieldHelp')
-        }, null, 8, ["modelValue", "onUpdate:modelValue", "title", "inline-help"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
+          title: _ctx.translate('LoginLdap_AdminPass')
+        }, null, 8, ["modelValue", "onUpdate:modelValue", "title"])]), Object(external_commonjs_vue_commonjs2_vue_root_Vue_["createVNode"])(_component_SaveButton, {
           onConfirm: $event => _ctx.actualServers.splice(index, 1),
           value: _ctx.translate('General_Delete')
         }, null, 8, ["onConfirm", "value"])]);
@@ -627,7 +626,7 @@ function Adminvue_type_template_id_700f87d5_render(_ctx, _cache, $props, $setup,
     onAborted: _cache[28] || (_cache[28] = $event => _ctx.pendingSaveTarget = null)
   }, null, 8, ["modelValue", "onConfirmed"])]);
 }
-// CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/Admin/Admin.vue?vue&type=template&id=700f87d5
+// CONCATENATED MODULE: ./plugins/LoginLdap/vue/src/Admin/Admin.vue?vue&type=template&id=47158c76
 
 // CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-typescript/node_modules/cache-loader/dist/cjs.js??ref--15-0!./node_modules/babel-loader/lib!./node_modules/@vue/cli-plugin-typescript/node_modules/ts-loader??ref--15-2!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--1-1!./plugins/LoginLdap/vue/src/Admin/Admin.vue?vue&type=script&lang=ts
 
@@ -815,7 +814,14 @@ function getSampleAccessAttribute(config, accessField, firstValue, secondValue) 
       const start = Object(external_CoreHome_["translate"])('LoginLdap_MemberOfDescription');
       return `${start}<br />${Object(external_CoreHome_["translate"])('LoginLdap_MemberOfDescription2')}`;
     },
+    ldapPasswordFieldTitle() {
+      return this.actualLdapConfig.use_ldap_for_authentication ? Object(external_CoreHome_["translate"])('LoginLdap_PasswordFieldLegacy') : Object(external_CoreHome_["translate"])('LoginLdap_PasswordField');
+    },
     ldapPasswordFieldHelp() {
+      if (this.actualLdapConfig.use_ldap_for_authentication) {
+        const start = Object(external_CoreHome_["translate"])('LoginLdap_PasswordFieldLdapAuthDescription');
+        return `${start}<br /><br />${Object(external_CoreHome_["translate"])('LoginLdap_PasswordFieldLdapAuthDescription2')}`;
+      }
       const start = Object(external_CoreHome_["translate"])('LoginLdap_PasswordFieldDescription');
       return `${start}<br /><br />${Object(external_CoreHome_["translate"])('LoginLdap_PasswordFieldDescription2')}`;
     }
@@ -827,7 +833,7 @@ function getSampleAccessAttribute(config, accessField, firstValue, secondValue) 
 
 
 
-Adminvue_type_script_lang_ts.render = Adminvue_type_template_id_700f87d5_render
+Adminvue_type_script_lang_ts.render = Adminvue_type_template_id_47158c76_render
 
 /* harmony default export */ var Admin = (Adminvue_type_script_lang_ts);
 // CONCATENATED MODULE: ./node_modules/@vue/cli-plugin-babel/node_modules/cache-loader/dist/cjs.js??ref--13-0!./node_modules/@vue/cli-plugin-babel/node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist/templateLoader.js??ref--6!./node_modules/@vue/cli-service/node_modules/cache-loader/dist/cjs.js??ref--1-0!./node_modules/@vue/cli-service/node_modules/vue-loader-v16/dist??ref--1-1!./plugins/LoginLdap/vue/src/Admin/AdminPage.vue?vue&type=template&id=64035228

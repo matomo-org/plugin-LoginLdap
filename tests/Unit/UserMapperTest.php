@@ -253,8 +253,37 @@ class UserMapperTest extends TestCase
         ), $result);
     }
 
-    public function test_createPiwikUserEntryForLdapUser_UsesExistingPassword()
+    public function test_createPiwikUserEntryForLdapUser_ReplacesExistingPasswordInLdapAuthModeWhenSynchronizationAfterLoginDisabled()
     {
+        Config::getInstance()->LoginLdap['use_ldap_for_authentication'] = 1;
+        Config::getInstance()->LoginLdap['synchronize_users_after_login'] = 0;
+        $existingUser = array(
+            'login' => 'broken',
+            'email' => 'wrongmail',
+            'password' => 'existingpass'
+        );
+
+        $result = $this->userMapper->createPiwikUserFromLdapUser(array(
+            'uid' => 'leela',
+            'cn' => 'Leela of the Sevateem',
+            'mail' => 'leela@gallifrey.???',
+            'userpassword' => 'pass'
+        ), $existingUser);
+
+        $this->assertPasswordIsRandomPlaceholder($result);
+        $this->assertNotEquals('existingpass', $result['password']);
+        unset($result['password']);
+
+        $this->assertEquals(array(
+            'login' => 'leela',
+            'email' => 'leela@gallifrey.???'
+        ), $result);
+        Config::getInstance()->LoginLdap['use_ldap_for_authentication'] = 0;
+    }
+
+    public function test_createPiwikUserEntryForLdapUser_UsesExistingPasswordInSynchronizedAuthModeWhenSynchronizationAfterLoginDisabled()
+    {
+        Config::getInstance()->LoginLdap['use_ldap_for_authentication'] = 0;
         Config::getInstance()->LoginLdap['synchronize_users_after_login'] = 0;
         $existingUser = array(
             'login' => 'broken',
@@ -278,6 +307,7 @@ class UserMapperTest extends TestCase
 
     public function test_createPiwikUserEntryForLdapUser_UpdatesExistingPassword()
     {
+        Config::getInstance()->LoginLdap['use_ldap_for_authentication'] = 1;
         Config::getInstance()->LoginLdap['synchronize_users_after_login'] = 1;
         $existingUser = array(
             'login' => 'broken',
@@ -300,6 +330,7 @@ class UserMapperTest extends TestCase
             'login' => 'leela',
             'email' => 'leela@gallifrey.???'
         ), $result);
+        Config::getInstance()->LoginLdap['use_ldap_for_authentication'] = 0;
         Config::getInstance()->LoginLdap['synchronize_users_after_login'] = 0;
     }
 

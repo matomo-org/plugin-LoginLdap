@@ -141,7 +141,7 @@
                 uicontrol="text"
                 name="ldap_password_field"
                 v-model="actualLdapConfig.ldap_password_field"
-                :title="translate('LoginLdap_PasswordField')"
+                :title="ldapPasswordFieldTitle"
                 :inline-help="ldapPasswordFieldHelp"
               >
               </Field>
@@ -390,7 +390,6 @@
                   v-model="serverInfo.admin_pass"
                   uicontrol="password"
                   :title="translate('LoginLdap_AdminPass')"
-                  :inline-help="translate('LoginLdap_PasswordFieldHelp')"
                 >
                 </Field>
               </div>
@@ -693,7 +692,17 @@ export default defineComponent({
       const start = translate('LoginLdap_MemberOfDescription');
       return `${start}<br />${translate('LoginLdap_MemberOfDescription2')}`;
     },
+    ldapPasswordFieldTitle() {
+      return this.actualLdapConfig.use_ldap_for_authentication
+        ? translate('LoginLdap_PasswordFieldLegacy')
+        : translate('LoginLdap_PasswordField');
+    },
     ldapPasswordFieldHelp() {
+      if (this.actualLdapConfig.use_ldap_for_authentication) {
+        const start = translate('LoginLdap_PasswordFieldLdapAuthDescription');
+        return `${start}<br /><br />${translate('LoginLdap_PasswordFieldLdapAuthDescription2')}`;
+      }
+
       const start = translate('LoginLdap_PasswordFieldDescription');
       return `${start}<br /><br />${translate('LoginLdap_PasswordFieldDescription2')}`;
     },
