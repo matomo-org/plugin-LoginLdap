@@ -58,8 +58,8 @@ Each strategy has advantages and disadvantages. What you should use depends on y
 This strategy is more secure than the one below, but it requires connecting to the LDAP server on each login attempt.
 
 With this strategy, every time a user logs in, LoginLdap will connect to LDAP to authenticate. On successful login, the user can
-be synchronised, but the user's password is never stored in Matomo's DB, just in the LDAP server. Additionally, the token auth is generated using
-a hash of a hash of the password, or is generated randomly.
+be synchronised, but the user's LDAP password is never stored in Matomo's DB. Instead, Matomo stores a random placeholder value for
+LDAP-authenticated users so database-only authentication cannot bypass LDAP-side checks.
 
 This means that if the Matomo DB is ever compromised, your LDAP users' passwords will still be safe.
 
@@ -238,8 +238,8 @@ If you set the **User Access Attribute Server & Site List Separator** option to 
 
 **User passwords**
 
-For added security, LoginLdap's default configuration will not store user passwords or a hash of a user password within Matomo's DB. So if the Matomo DB is compromised
-for whatever reason, user passwords will not be compromised.
+For added security, LoginLdap's default configuration will not store user passwords or a value derived from an LDAP password attribute within Matomo's DB. LDAP-authenticated
+users receive a random placeholder instead. So if the Matomo DB is compromised for whatever reason, the LDAP password material is not exposed there.
 
 **Token Auths**
 

@@ -43,9 +43,10 @@ use Piwik\Plugins\UsersManager\Model as UserModel;
  * There is no LDAP concept of a authentication token, and connecting to the LDAP
  * server for every token auth authentication would be very wasteful.
  *
- * So instead, when a user is synchronized, a token auth is generated using part of
- * the password hash stored in LDAP. We don't want to store the whole password hash
- * so attackers cannot get the true hash if they gain access to the MySQL DB.
+ * So instead, when a user is synchronized, Matomo stores a random placeholder in the
+ * password column and token auth authentication continues to use Matomo's normal token
+ * auth flow. The placeholder is intentionally unrelated to LDAP password attributes so
+ * database-only authentication cannot bypass LDAP-side checks.
  *
  * Once the token auth is generated, authenticating with it is done in the same way
  * as with {@link Piwik\Plugins\Login\Auth}. In fact, this class will create an

@@ -264,20 +264,20 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
 
     public function test_RandomPasswordGenerated()
     {
-        $passwordManager = new Password();
-
         $this->authenticateViaLdap();
 
         $user = $this->getUser(self::TEST_LOGIN);
 
-        $this->assertTrue($passwordManager->verify(md5(self::TEST_PASS_LDAP), $user['password']));
+        $this->assertPasswordIsRandomPlaceholder($user['password']);
 
-        // test that password doesn't change after re-synchronizing
+        // the placeholder is regenerated when re-synchronizing. This does not invalidate existing
+        // sessions, since UserSynchronizer resets ts_password_modified afterwards.
         $this->authenticateViaLdap();
 
         $userAgain = $this->getUser(self::TEST_LOGIN);
 
-        $this->assertTrue($passwordManager->verify(md5(self::TEST_PASS_LDAP), $userAgain['password']));
+        $this->assertPasswordIsRandomPlaceholder($userAgain['password']);
+        $this->assertNotEquals($user['password'], $userAgain['password']);
     }
 
     public function test_CorrectExistingUserUpdated_WhenUserEmailSuffixUsed()

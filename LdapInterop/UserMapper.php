@@ -125,19 +125,29 @@ class UserMapper
     }
 
     /**
-     * The password we store for a mapped user isn't used to authenticate, it's just
-     * data used to generate a user's token auth.
+     * Returns the value to store in the Matomo user's password column.
+     *
+     * When LoginLdap is configured to always authenticate against LDAP, this value must never be
+     * derived from LDAP password data. Otherwise fallback database authentication would let users
+     * bypass LDAP-side checks such as ldap_user_filter, required_member_of and directory account
+     * state.
+     *
+     * When LDAP is only used for synchronization, the stored database password remains part of the
+     * supported authentication flow, so the legacy behavior is preserved.
      */
     private function getPiwikPasswordForLdapUser($ldapUser, $user)
     {
+        $useLdapForAuthentication = Config::getUseLdapForAuthentication();
         $ldapPassword = $this->getLdapUserField($ldapUser, $this->ldapUserPasswordField);
 
-        if (!empty($user['password']) && !Config::getShouldSynchronizeUsersAfterLogin()) {
-            // do not generate new passwords for users that are already synchronized
-            return $user['password'];
-        } elseif (!empty($ldapPassword)) {
-            return $this->hashLdapPassword($ldapPassword);
-        } else {
+        if (!$useLdapForAuthentication) {
+            if (!empty($user['password']) && !Config::getShouldSynchronizeUsersAfterLogin()) {
+                // do not generate new passwords for users that are already synchronized
+                return $user['password'];
+            } elseif (!empty($ldapPassword)) {
+                return $this->hashLdapPassword($ldapPassword);
+            }
+
             $this->logger->debug(
                 "UserMapper::{func}: Could not find LDAP password for user '{user}', generating random one.",
                 array(
@@ -148,6 +158,16 @@ class UserMapper
 
             return $this->generateRandomPassword();
         }
+
+        $this->logger->debug(
+            "UserMapper::{func}: generating random placeholder password for user '{user}'.",
+            array(
+                'func' => __FUNCTION__,
+                'user' => @$ldapUser[$this->ldapUserIdField]
+            )
+        );
+
+        return $this->generateRandomPassword();
     }
 
     /**
@@ -157,7 +177,7 @@ class UserMapper
      */
     public function generateRandomPassword()
     {
-        return $this->hashLdapPassword(uniqid());
+        return $this->hashLdapPassword(random_bytes(32));
     }
 
     private function getEmailAddressForLdapUser($ldapUser, $login)
@@ -290,8 +310,8 @@ class UserMapper
     }
 
     /**
-     * Hashes the LDAP password so no part the real LDAP password (or the hash stored in
-     * LDAP) will be stored in Piwik's DB.
+     * Hashes a value into the MD5 shaped hash that UsersManager::checkPasswordHash() expects,
+     * since the value is handed to the UsersManager API as an already hashed password.
      */
     protected function hashLdapPassword(
         #[\SensitiveParameter]

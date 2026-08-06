@@ -167,18 +167,17 @@ class PasswordConfirmationTest extends LdapIntegrationTest
     }
 
     /**
-     * A synchronized LDAP user's Matomo password column holds md5() of the LDAP password
-     * *hash* (see UserMapper::getPiwikPasswordForLdapUser), never the plaintext LDAP
-     * password, so confirming with TEST_PASS can only succeed by binding to LDAP.
+     * A synchronized LDAP user's Matomo password column holds an unguessable placeholder (see
+     * UserMapper::getPiwikPasswordForLdapUser), neither the plaintext LDAP password nor anything
+     * derived from the LDAP password attribute, so confirming with TEST_PASS can only succeed by
+     * binding to LDAP.
      */
     public function testLdapUserPasswordConfirmationIsCheckedAgainstLdapNotTheMatomoDatabase()
     {
         $ldapAuth = $this->useRealLdapUser();
 
         $user = $this->getUser(self::TEST_LOGIN);
-        $passwordHelper = new \Piwik\Auth\Password();
-        $this->assertFalse($passwordHelper->verify(md5(self::TEST_PASS), $user['password']));
-        $this->assertTrue($passwordHelper->verify(md5(self::TEST_PASS_LDAP), $user['password']));
+        $this->assertPasswordIsRandomPlaceholder($user['password']);
 
         StaticContainer::getContainer()->set('Piwik\Auth', new \Piwik\Plugins\Login\Auth());
         $this->assertFalse($this->passwordVerifier->isPasswordCorrect(self::TEST_LOGIN, self::TEST_PASS));

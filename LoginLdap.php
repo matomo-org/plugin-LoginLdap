@@ -94,6 +94,7 @@ class LoginLdap extends \Piwik\Plugin
         $keys[] = 'LoginLdap_UserIdField';
         $keys[] = 'LoginLdap_UserIdFieldDescription';
         $keys[] = 'LoginLdap_PasswordField';
+        $keys[] = 'LoginLdap_PasswordFieldLegacy';
         $keys[] = 'LoginLdap_MailField';
         $keys[] = 'LoginLdap_MailFieldDescription';
         $keys[] = 'LoginLdap_UsernameSuffix';
@@ -140,6 +141,8 @@ class LoginLdap extends \Piwik\Plugin
         $keys[] = 'LoginLdap_MemberOfDescription2';
         $keys[] = 'LoginLdap_PasswordFieldDescription';
         $keys[] = 'LoginLdap_PasswordFieldDescription2';
+        $keys[] = 'LoginLdap_PasswordFieldLdapAuthDescription';
+        $keys[] = 'LoginLdap_PasswordFieldLdapAuthDescription2';
         $keys[] = 'LoginLdap_LoadUserCommandDesc';
         $keys[] = 'LoginLdap_ReadMoreAboutAccessSynchronization';
         $keys[] = 'LoginLdap_ThisMatomoInstanceNameDescription';
