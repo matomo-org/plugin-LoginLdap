@@ -31,9 +31,9 @@ class Client
     );
 
     /**
-     * The LDAP connection resource. Set to the result of `ldap_connect`.
+     * The LDAP connection. Set to the result of `ldap_connect`.
      *
-     * @var resource
+     * @var \LDAP\Connection|false|null
      */
     private $connectionResource;
 
