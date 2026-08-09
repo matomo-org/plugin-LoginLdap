@@ -105,8 +105,8 @@ class SynchronizeUsersTest extends LdapIntegrationTest
         $users = $this->getLdapUserLogins();
         $this->assertEquals(array('blackwidow', 'ironman'), $users);
 
-        $this->assertRegExp("/^.*missinguser.*User.*not found.*$/", $this->applicationTester->getDisplay());
-        $this->assertRegExp("/^.*msmarvel.*LDAP entity missing required.*$/", $this->applicationTester->getDisplay());
+        $this->assertMatchesRegularExpression("/^.*missinguser.*User.*not found.*$/", $this->applicationTester->getDisplay());
+        $this->assertMatchesRegularExpression("/^.*msmarvel.*LDAP entity missing required.*$/", $this->applicationTester->getDisplay());
     }
 
     public function test_CommandSkipsExisitingUsers_IfSkipExistingOptionUsed()
