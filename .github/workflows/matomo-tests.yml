@@ -1,7 +1,7 @@
 # Action for running tests
 # This file has been automatically created.
 # To recreate it you can run this command
-# ./console generate:test-action --plugin="LoginLdap" --php-versions="8.1,8.5" --setup-script=".github/scripts/setup_ldap.sh" --has-submodules --schedule-cron="25 3 * * 6"
+# ./console generate:test-action --plugin="LoginLdap" --php-versions="matomo6_min_php,matomo6_max_php" --setup-script=".github/scripts/setup_ldap.sh" --has-submodules --schedule-cron="25 3 * * 6"
 
 name: Plugin LoginLdap Tests
 
@@ -37,7 +37,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [ '8.1', '8.5' ]
+        php: [ 'matomo6_min_php', 'matomo6_max_php' ]
         target: ['minimum_required_matomo', 'maximum_supported_matomo']
         database:
           - { engine: 'Mysql', version: '8.0' }
@@ -61,7 +61,7 @@ jobs:
           matomo-test-branch: ${{ matrix.target }}
           setup-script: '.github/scripts/setup_ldap.sh'
           artifacts-pass: ${{ secrets.ARTIFACTS_PASS }}
-          upload-artifacts: ${{ matrix.php == '8.1' && matrix.target == 'maximum_supported_matomo' && matrix.database.engine == 'Mysql' }}
+          upload-artifacts: ${{ matrix.php == 'matomo6_min_php' && matrix.target == 'maximum_supported_matomo' && matrix.database.engine == 'Mysql' }}
   UI:
     runs-on: ubuntu-24.04
     steps:
@@ -79,7 +79,7 @@ jobs:
           test-type: 'UI'
           mysql-engine: 'Mysql'
           mysql-version: '8.0'
-          php-version: '8.1'
+          php-version: 'matomo6_min_php'
           node-version: '24'
           artifacts-pass: ${{ secrets.ARTIFACTS_PASS }}
           upload-artifacts: true
