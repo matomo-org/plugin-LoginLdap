@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 6.0.0
+* Compatibility with Matomo 6
+
 #### LoginLdap 5.2.4 - 2026-08-10
 - Added code to change the logic for random password generation
 
