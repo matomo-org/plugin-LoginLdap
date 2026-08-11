@@ -61,14 +61,35 @@ describe("LoginLdap_Admin", function () {
         await page.waitForNetworkIdle();
         var elem = await page.jQuery('#loginPage');
 
-        // Assert that the button starts off disabled.
-        await page.waitForSelector('#login_form_submit[disabled]');
-
-        // Button enabled with password entered.
-        await page.type('#login_form_password', 'p');
+        // login.js sets `novalidate` when it takes the form's validation over, so waiting on it
+        // means the form has finished initialising. The confirm button is always enabled now.
+        await page.waitForSelector('#confirm_password_form[novalidate]');
         await page.waitForSelector('#login_form_submit:not([disabled])');
 
+        await page.type('#login_form_password', 'p');
+        await page.waitForFunction("$('#login_form_password').val() === 'p'");
+
         expect(await elem.screenshot()).to.matchImage('addNewToken_with_password');
+    });
+
+    it("should report the empty password instead of submitting the confirmation form", async function () {
+        testEnvironment.configOverride.LoginLdap = { enable_password_confirmation: 1 };
+        testEnvironment.save();
+        await page.goto(addNewTokenUrl);
+        await page.waitForNetworkIdle();
+        await page.waitForSelector('#confirm_password_form[novalidate]');
+
+        var urlBeforeSubmit = page.url();
+
+        await page.click('#login_form_submit');
+        await page.waitForSelector('#login_form_errors .notification');
+
+        var errors = await page.$eval('#login_form_errors', function (el) {
+            return el.innerText;
+        });
+
+        expect(errors).to.contain('Password required');
+        expect(page.url()).to.equal(urlBeforeSubmit);
     });
 
     it("should still show the password confirmation screen for non-LDAP users when password confirmation is disabled", async function () {
@@ -77,7 +98,8 @@ describe("LoginLdap_Admin", function () {
         await page.goto(addNewTokenUrl);
         await page.waitForNetworkIdle();
         var elem = await page.jQuery('#loginPage');
-        await page.waitForSelector('#login_form_submit[disabled]');
+        await page.waitForSelector('#confirm_password_form[novalidate]');
+        await page.waitForSelector('#login_form_submit:not([disabled])');
         expect(await elem.screenshot()).to.matchImage('addNewToken_with_password_non_ldap_user');
     });
 
