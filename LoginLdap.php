@@ -63,10 +63,24 @@ class LoginLdap extends \Piwik\Plugin
 
     public function getStylesheetFiles(&$stylesheetFiles)
     {
-        $stylesheetFiles[] = "plugins/Login/stylesheets/login.less";
-        $stylesheetFiles[] = "plugins/Login/stylesheets/variables.less";
-        $stylesheetFiles[] = "plugins/Login/stylesheets/loginLayout.less";
-        $stylesheetFiles[] = "plugins/Login/stylesheets/loginForm.less";
+        // Registered here too, as the Login plugin may be deactivated. Only add the files that
+        // exist: older Matomo versions don't ship them all, and a missing one makes the asset
+        // manager throw.
+        $loginPluginDir = Manager::getPluginDirectory("Login");
+        $loginStylesheets = array(
+            "login.less",
+            "variables.less",
+            "loginLayout.less",
+            "loginForm.less",
+            "loginWhatsNew.less",
+        );
+
+        foreach ($loginStylesheets as $stylesheet) {
+            if (is_file("$loginPluginDir/stylesheets/$stylesheet")) {
+                $stylesheetFiles[] = "plugins/Login/stylesheets/$stylesheet";
+            }
+        }
+
         $stylesheetFiles[] = "plugins/LoginLdap/vue/src/Admin/Admin.less";
         $stylesheetFiles[] = "plugins/LoginLdap/vue/src/TestableField/TestableField.less";
     }
@@ -153,6 +167,11 @@ class LoginLdap extends \Piwik\Plugin
         $keys[] = 'LoginLdap_OptionsPWCONFIRMATIONDescription';
         $keys[] = 'General_Warning';
         $keys[] = 'LoginLdap_LoginPluginEnabledWarning';
+
+        // Used by the login form validation in Login's login.js, which is registered above.
+        $keys[] = 'Login_LoginOrEmail';
+        $keys[] = 'General_Password';
+        $keys[] = 'General_Required';
     }
 
     /**
