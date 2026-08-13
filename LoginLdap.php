@@ -66,6 +66,7 @@ class LoginLdap extends \Piwik\Plugin
         $stylesheetFiles[] = "plugins/Login/stylesheets/login.less";
         $stylesheetFiles[] = "plugins/Login/stylesheets/loginLayout.less";
         $stylesheetFiles[] = "plugins/Login/stylesheets/loginForm.less";
+        $stylesheetFiles[] = "plugins/Login/stylesheets/loginWhatsNew.less";
         $stylesheetFiles[] = "plugins/LoginLdap/vue/src/Admin/Admin.less";
         $stylesheetFiles[] = "plugins/LoginLdap/vue/src/TestableField/TestableField.less";
     }
@@ -152,6 +153,11 @@ class LoginLdap extends \Piwik\Plugin
         $keys[] = 'LoginLdap_OptionsPWCONFIRMATIONDescription';
         $keys[] = 'General_Warning';
         $keys[] = 'LoginLdap_LoginPluginEnabledWarning';
+
+        // Used by the login form validation in Login's login.js, which is registered above.
+        $keys[] = 'Login_LoginOrEmail';
+        $keys[] = 'General_Password';
+        $keys[] = 'General_Required';
     }
 
     /**
