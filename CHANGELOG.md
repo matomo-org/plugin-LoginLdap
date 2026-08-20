@@ -2,6 +2,7 @@
 
 #### LoginLdap 6.0.0
 * Compatibility with Matomo 6
+* Added strict check for TLS if enabled
 
 #### LoginLdap 5.2.4 - 2026-08-10
 - Added code to change the logic for random password generation

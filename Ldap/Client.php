@@ -73,8 +73,10 @@ class Client
      * @param string $serverHostName The hostname of the LDAP server.
      * @param int $port The server port to use.
      * @param int $timeout The timeout in seconds of the network connection.
-     * @throws Exception If an error occurs during the `ldap_connect` call or if there is a connection
-     *                   issue during the subsequent anonymous bind.
+     * @param bool $startTLS Whether to upgrade the connection using StartTLS before using it.
+     * @throws Exception If an error occurs during the `ldap_connect` call, if StartTLS was requested
+     *                   but could not be started, or if there is a connection issue during the
+     *                   subsequent anonymous bind.
      */
     public function connect($serverHostName, $port = ServerInfo::DEFAULT_LDAP_PORT, $timeout = self::DEFAULT_TIMEOUT_SECS, $startTLS = false)
     {
@@ -98,24 +100,34 @@ class Client
 
         $this->logger->debug("ldap_connect result is {result}", array('result' => $this->connectionResource));
 
+        // if TLS was requested, the connection has to be upgraded before anything else is sent over it.
+        // a failure here is always fatal: carrying on would send the LDAP credentials over an
+        // unencrypted connection, which is exactly what enabling TLS is supposed to prevent.
+        if ($startTLS) {
+            if (!ldap_start_tls($this->connectionResource)) {
+                $error = ldap_error($this->connectionResource);
+
+                $this->logger->debug("ldap_start_tls failed: {err}", array('err' => $error));
+
+                $this->closeIfCurrentlyOpen();
+
+                throw new Exception("ldap_start_tls failed: " . $error);
+            }
+
+            $this->logger->debug("ldap_start_tls call finished; TLS is started");
+        }
+
         // ldap_connect will not always try to connect to the server, so execute a bind
         // to test the connection
         try {
-            if ($startTLS) {
-                if (!ldap_start_tls($this->connectionResource)) {
-                    throw new Exception("ldap_start_tls failed: " . ldap_error($this->connectionResource));
-                }
-            }
             ldap_bind($this->connectionResource);
 
-            $this->logger->debug("anonymous ldap_bind call finished; connection ok" . ($startTLS ? ' + TLS is started' : ''));
+            $this->logger->debug("anonymous ldap_bind call finished; connection ok");
         } catch (Exception $ex) {
             // if the error was due to a connection error, rethrow, otherwise ignore it
             $errno = ldap_errno($this->connectionResource);
 
-            $fct = ($startTLS ? "ldap_start_tls" : "ldap_bind");
-
-            $this->logger->debug("anonymous {fct} returned error '{err}'", array('err' => $errno, 'fct' => $fct));
+            $this->logger->debug("anonymous ldap_bind returned error '{err}'", array('err' => $errno));
 
             if (!in_array($errno, self::$initialBindErrorCodesToIgnore)) {
                 throw $ex;
