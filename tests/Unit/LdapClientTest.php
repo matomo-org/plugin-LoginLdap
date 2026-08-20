@@ -33,7 +33,8 @@ class LdapClientTest extends TestCase
         LdapFunctions::$phpUnitMock = $this->getMockBuilder('stdClass')
                                            ->addMethods(array('ldap_connect', 'ldap_close',
                                              'ldap_bind', 'ldap_search', 'ldap_set_option',
-                                             'ldap_get_entries', 'ldap_count_entries', 'ldap_error'))
+                                             'ldap_get_entries', 'ldap_count_entries', 'ldap_error',
+                                             'ldap_start_tls', 'ldap_errno'))
                                            ->getMock();
     }
 
@@ -90,6 +91,81 @@ class LdapClientTest extends TestCase
 
         $ldapClient = new LdapClient();
         $ldapClient->connect("hostname", 1234);
+    }
+
+    public function getStartTlsFailureErrorCodes()
+    {
+        return array(
+            // codes that are ignored for the anonymous bind, but must never be ignored for StartTLS
+            array(7), // LDAP_AUTH_METHOD_NOT_SUPPORTED
+            array(8), // LDAP_STRONG_AUTH_REQUIRED
+            array(48), // LDAP_INAPPROPRIATE_AUTH
+            array(49), // LDAP_INVALID_CREDENTIALS
+            array(50), // LDAP_INSUFFICIENT_ACCESS
+
+            array(2), // LDAP_PROTOCOL_ERROR
+            array(52), // LDAP_UNAVAILABLE
+        );
+    }
+
+    /**
+     * @dataProvider getStartTlsFailureErrorCodes
+     */
+    public function test_connect_Throws_AndDoesNotUseTheConnection_IfStartTLSFails($errorCode)
+    {
+        $this->addLdapConnectMethodMock("hostname", 1234);
+
+        LdapFunctions::$phpUnitMock->expects($this->once())->method('ldap_start_tls')->will($this->returnValue(false));
+        LdapFunctions::$phpUnitMock->expects($this->any())->method('ldap_error')
+            ->will($this->returnValue("start tls error"));
+        LdapFunctions::$phpUnitMock->expects($this->any())->method('ldap_errno')->will($this->returnValue($errorCode));
+
+        // nothing may be sent over a connection that failed to upgrade to TLS
+        LdapFunctions::$phpUnitMock->expects($this->never())->method('ldap_bind');
+        LdapFunctions::$phpUnitMock->expects($this->never())->method('ldap_search');
+        LdapFunctions::$phpUnitMock->expects($this->once())->method('ldap_close');
+
+        $ldapClient = new LdapClient();
+
+        $exception = null;
+        try {
+            $ldapClient->connect("hostname", 1234, LdapClient::DEFAULT_TIMEOUT_SECS, true);
+        } catch (\Exception $ex) {
+            $exception = $ex;
+        }
+
+        $this->assertNotNull(
+            $exception,
+            "connect() did not throw although ldap_start_tls failed with error code $errorCode"
+        );
+        $this->assertStringStartsWith("ldap_start_tls failed:", $exception->getMessage());
+        $this->assertFalse($ldapClient->isOpen());
+    }
+
+    public function test_connect_BindsAnonymously_IfStartTLSSucceeds()
+    {
+        $this->addLdapConnectMethodMock("hostname", 1234);
+
+        LdapFunctions::$phpUnitMock->expects($this->once())->method('ldap_start_tls')
+            ->with($this->equalTo("connection_resource_hostname_1234"))->will($this->returnValue(true));
+        LdapFunctions::$phpUnitMock->expects($this->once())->method('ldap_bind');
+
+        $ldapClient = new LdapClient();
+        $ldapClient->connect("hostname", 1234, LdapClient::DEFAULT_TIMEOUT_SECS, true);
+
+        $this->assertTrue($ldapClient->isOpen());
+    }
+
+    public function test_connect_DoesNotStartTLS_IfNotRequested()
+    {
+        $this->addLdapConnectMethodMock("hostname", 1234);
+
+        LdapFunctions::$phpUnitMock->expects($this->never())->method('ldap_start_tls');
+
+        $ldapClient = new LdapClient();
+        $ldapClient->connect("hostname", 1234);
+
+        $this->assertTrue($ldapClient->isOpen());
     }
 
     public function test_close_Succeeds_IfConnectionAlreadyClosed()
