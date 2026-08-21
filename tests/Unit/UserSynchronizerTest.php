@@ -15,6 +15,7 @@ use PHPUnit\Framework\TestCase;
 use Piwik\Access;
 use Piwik\Auth\Password;
 use Piwik\Config;
+use Piwik\Piwik;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 use Piwik\Plugins\UsersManager\Model;
 use Piwik\Plugins\UsersManager\UserAccessFilter;
@@ -115,7 +116,10 @@ class UserSynchronizerTest extends TestCase
     public function test_synchronizeLdapUser_Throws_IfLdapUserResolvesToDifferentExistingMatomoLogin()
     {
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage("Cannot synchronize LDAP user 'josé': it resolves to a different existing Matomo login.");
+        $this->expectExceptionMessage(Piwik::translate(
+            'LoginLdap_CannotSynchronizeUserLoginCollision',
+            array('josé', 'jose')
+        ));
 
         $this->setUserManagerApiMock($throws = false);
         $this->setUserModelMock(array('login' => 'jose', 'password' => 'password', 'email' => 'email'));
