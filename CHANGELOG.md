@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 5.2.6 - 2026-08-24
+- Added strict check for TLS if enabled
+
 #### LoginLdap 5.2.5 - 2026-08-17
 - Added the stylesheets of the refreshed Matomo login layout, so the LDAP login page matches it
 - Added code to fix the missing translations in the login form validation messages

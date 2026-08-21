@@ -48,6 +48,18 @@ function ldap_error($link_identifier)
     return LdapFunctions::ldap_error($link_identifier);
 }
 
+function ldap_start_tls($connection = null)
+{
+    /** @noinspection PhpUndefinedMethodInspection */
+    return LdapFunctions::ldap_start_tls($connection);
+}
+
+function ldap_errno($link_identifier)
+{
+    /** @noinspection PhpUndefinedMethodInspection */
+    return LdapFunctions::ldap_errno($link_identifier);
+}
+
 function ldap_bind($connection = null, $resourceDn = null, $password = null)
 {
     /** @noinspection PhpUndefinedMethodInspection */
