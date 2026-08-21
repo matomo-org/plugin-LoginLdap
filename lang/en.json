@@ -16,6 +16,7 @@
         "MailFieldDescription": "The LDAP attribute containing a user's e-mail address, e.g. \"mail\".",
         "UserIdFieldDescription": "The LDAP attribute containing a user's username, e.g. \"uid\", or for Active Directory: \"userPrincipalName\".",
         "UserNotFound": "User \"%s\" not found!",
+        "CannotSynchronizeUserLoginCollision": "Cannot synchronize LDAP user \"%1$s\": it resolves to the existing Matomo user \"%2$s\", which is a different login. This usually means two LDAP identities differing only by accent or case map onto one Matomo login.",
         "NoUserName": "No username given!",
         "UsernameSuffix": "E-mail Address Suffix",
         "UsernameSuffixDescription": "Appended to usernames to generate e-mail addresses for users that have none in LDAP. Set to, e.g., \"@localhost.com\".",

@@ -15,6 +15,7 @@ use Piwik\Common;
 use Piwik\Container\StaticContainer;
 use Piwik\Date;
 use Piwik\Db;
+use Piwik\Piwik;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Plugins\UsersManager\Model as UserModel;
@@ -156,8 +157,10 @@ class UserSynchronizer
                     )
                 );
 
-                throw new \Exception("Cannot synchronize LDAP user '{$user['login']}': it resolves to a different "
-                    . "existing Matomo login.");
+                throw new \Exception(Piwik::translate(
+                    'LoginLdap_CannotSynchronizeUserLoginCollision',
+                    array($user['login'], $existingUser['login'])
+                ));
             }
 
             $syncLogin = !empty($existingUser) ? $existingUser['login'] : $user['login'];
