@@ -286,7 +286,17 @@ abstract class Base implements Auth
     {
         if (empty($this->userForLogin)) {
             if (!empty($this->login)) {
-                $this->userForLogin = $this->usersModel->getUser($this->login);
+                $user = $this->usersModel->getUser($this->login);
+
+                if (!empty($user) && !$this->isSameLogin($this->login, $user['login'])) {
+                    throw new Exception(sprintf(
+                        "Refusing to authenticate: asserted login '%s' resolved to the different existing user '%s'.",
+                        $this->login,
+                        $user['login']
+                    ));
+                }
+
+                $this->userForLogin = $user;
             } elseif (!empty($this->token_auth)) {
                 $this->userForLogin = $this->usersModel->getUserByTokenAuth($this->token_auth);
             } else {
@@ -294,6 +304,11 @@ abstract class Base implements Auth
             }
         }
         return $this->userForLogin;
+    }
+
+    private function isSameLogin(string $assertedLogin, string $storedLogin): bool
+    {
+        return mb_strtolower($assertedLogin, 'UTF-8') === mb_strtolower($storedLogin, 'UTF-8');
     }
 
     protected function tryFallbackAuth($onlySuperUsers = true, ?Auth $auth = null)
