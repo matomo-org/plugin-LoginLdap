@@ -163,7 +163,7 @@ abstract class Base implements Auth
     /**
      * Returns the user's token auth.
      *
-     * @return string
+     * @return string|null
      */
     public function getTokenAuth()
     {
@@ -376,7 +376,7 @@ abstract class Base implements Auth
 
     protected function makeAuthFailure()
     {
-        return new AuthResult(AuthResult::FAILURE, $this->login, null);
+        return new AuthResult(AuthResult::FAILURE, $this->login, null); // @phpstan-ignore argument.type (core Login\Auth passes null here too; the AuthResult @param is too narrow)
     }
 
     protected function authenticateByLdap()

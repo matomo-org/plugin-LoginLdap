@@ -1,0 +1,171 @@
+#!/bin/bash
+
+# This hook is called with the following parameters:
+#
+# $1 -- Name of the remote to which the push is being done
+# $2 -- URL to which the push is being done
+#
+# If pushing without using a named remote those arguments will be equal.
+#
+# Information about the commits which are being pushed is supplied as lines to
+# the standard input in the form:
+#
+#   <local ref> <local oid> <remote ref> <remote oid>
+
+
+
+### Check we're running in the context of a plugin and get helpful dir variables ###
+
+REPO_DIR="$(git rev-parse --show-toplevel)"
+echo "Running pre-push hook in repo: $REPO_DIR"
+
+if [[ "$REPO_DIR" =~ /plugins/(.*) ]]; then
+    PLUGIN_PATH="plugins/${BASH_REMATCH[1]}/"
+else
+    echo "Not inside a Matomo checkout's plugins/ directory, skipping PHPStan checks"
+    exit 0
+fi
+MATOMO_DIR=$(echo "$REPO_DIR" | sed -E 's|/plugins/.*$||')
+
+
+
+### Figure out how to run PHPStan - ddev or not. ###
+
+COMMAND=()
+# Use local PHP if setup
+if command -v php >/dev/null 2>&1 && [ -f "${MATOMO_DIR}/vendor/bin/phpstan" ]; then
+    COMMAND=("${MATOMO_DIR}/vendor/bin/phpstan")
+    PLUGIN_PATH=''
+elif command -v ddev >/dev/null 2>&1; then
+  # Fall back to ddev when there is no local PHPStan. Local takes priority: it is faster,
+  # and it is what the elif above actually encodes.
+  if [ -d "$MATOMO_DIR/.ddev" ]; then
+    cd "$MATOMO_DIR" || exit 1
+    # `ddev status` exits 0 for a stopped project, so its exit code says nothing about whether
+    # the containers are up. `ddev describe -j` reports the real state.
+    if [[ "$(ddev describe -j 2>/dev/null | sed -n 's/.*"status":"\([a-z]*\)".*/\1/p' | head -1)" == "running" ]]; then
+      COMMAND=(ddev exec phpstan)
+    else
+      DDEV_STOPPED=1
+    fi
+  fi
+fi
+# If no command, exit
+if [[ ${#COMMAND[@]} -eq 0 ]]; then
+  if [[ "${DDEV_STOPPED:-0}" -eq 1 ]]; then
+    # The tooling exists and simply is not started. Blocking the push here teaches people to
+    # reach for --no-verify, which is worse than skipping one check.
+    echo "ddev is not running, so PHPStan was skipped. Run 'ddev start' to check before pushing."
+    exit 0
+  fi
+  echo "No way to run phpstan found."
+  exit 1
+fi
+
+
+
+# Basic setup
+cd "$REPO_DIR" || exit 1
+STATUS=0
+# The branch to diff against is the remote's default, not a fixed name: plugins on
+# 6.x-dev would otherwise be compared against 5.x-dev and diff the wrong files.
+# origin/HEAD is only set if the clone recorded it, so fall back to asking the remote,
+# then to 5.x-dev for a clone that can reach neither.
+MAIN_BRANCH=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null | sed 's|^origin/||')
+if [[ -z "$MAIN_BRANCH" ]]; then
+  MAIN_BRANCH=$(git remote show origin 2>/dev/null | sed -n 's/.*HEAD branch: //p')
+fi
+MAIN_BRANCH=${MAIN_BRANCH:-5.x-dev}
+
+# PHPStan analyses the plugin against whichever Matomo checkout happens to contain it, which is not
+# necessarily the major this branch targets. A 6.x-dev branch sitting in a Matomo 5 checkout is
+# analysed against Matomo 5, and the findings look entirely real -- correct files, correct line
+# numbers -- for signatures that simply differ between the majors. Warn rather than fail: the
+# mismatch is sometimes deliberate, and a hard failure on a guess is what teaches --no-verify.
+CORE_VERSION_FILE="$MATOMO_DIR/core/Version.php"
+if [ -f "$CORE_VERSION_FILE" ]; then
+  CORE_MAJOR=$(sed -n "s/.*const VERSION = '\([0-9]\{1,\}\)\..*/\1/p" "$CORE_VERSION_FILE" | head -1)
+  # Only `<major>.x-dev` says anything about the target major; any other branch name is left alone.
+  BRANCH_MAJOR=$(printf '%s' "$MAIN_BRANCH" | sed -n 's/^\([0-9]\{1,\}\)\.x-dev$/\1/p')
+  if [ -n "$CORE_MAJOR" ] && [ -n "$BRANCH_MAJOR" ] && [ "$CORE_MAJOR" != "$BRANCH_MAJOR" ]; then
+    echo
+    echo "WARNING: analysing against Matomo ${CORE_MAJOR}.x in $MATOMO_DIR, but this plugin's"
+    echo "         default branch is $MAIN_BRANCH. Findings below may not match CI, which"
+    echo "         analyses against Matomo ${BRANCH_MAJOR}.x. Check a finding against a Matomo"
+    echo "         ${BRANCH_MAJOR}.x checkout before acting on it."
+    echo
+  fi
+fi
+ZERO_OID='0000000000000000000000000000000000000000'
+PHPSTAN_CREATED_CONFIG=phpstan/phpstan.created.neon
+PHPSTAN_MODIFIED_CONFIG=phpstan/phpstan.modified.neon
+
+
+
+### Run PHPStan on the files a pushed commit adds or changes. ###
+
+# $1 -- the pushed commit
+# $2 -- git diff filter (A for created files, CMR for modified files; R matters because a
+#       renamed-and-modified file has status R and would otherwise skip the check)
+# $3 -- the phpstan config to use
+# $4 -- log label for the file kind
+check_pushed_commit() {
+  local commit="$1" filter="$2" config="$3" label="$4"
+
+  if [[ ! -f "$config" ]]; then
+    return 0
+  fi
+
+  # Use the merge base with the remote main branch: the local branch can be stale
+  # or missing, which silently widens the diff to files the push doesn't touch.
+  local diff_base
+  diff_base=$(git merge-base "$commit" "origin/${MAIN_BRANCH}" 2>/dev/null)
+  if [[ -z "$diff_base" ]]; then
+    echo "Could not resolve the merge base between ${commit} and origin/${MAIN_BRANCH}."
+    echo "Run 'git fetch origin ${MAIN_BRANCH}' and push again."
+    return 1
+  fi
+
+  # Read NUL-delimited so a path containing a space stays one argument. Quoting the paths and
+  # piping through xargs does not: xargs strips the quotes it was given, then splits on the space.
+  local changed_files=()
+  local file
+  while IFS= read -r -d '' file; do
+    [[ "$file" == *.php ]] && changed_files+=("${PLUGIN_PATH}${file}")
+  done < <(git diff --name-only -z "$diff_base" "$commit" --diff-filter="$filter")
+
+  if [[ ${#changed_files[@]} -eq 0 ]]; then
+    echo "No ${label} PHP files"
+    return 0
+  fi
+
+  echo "Running PHPstan on ${label} files"
+  "${COMMAND[@]}" analyse -c "${PLUGIN_PATH}${config}" "${changed_files[@]}" || return 1
+}
+
+# Check the commits actually being pushed, as supplied on stdin: HEAD is wrong
+# when pushing another local branch or several refs at once. The inner commands
+# read /dev/null so they cannot consume the remaining stdin lines.
+# shellcheck disable=SC2034 # remote_ref/remote_oid consume git's 4-field pre-push line
+while read -r local_ref local_oid remote_ref remote_oid; do
+  if [[ "$local_oid" == "$ZERO_OID" ]]; then
+    continue # deleting the remote ref, nothing is pushed
+  fi
+  echo "Checking ${local_ref} (${local_oid})"
+  check_pushed_commit "$local_oid" A "$PHPSTAN_CREATED_CONFIG" "created" < /dev/null || STATUS=1
+  # CMR, not CM: a renamed-and-modified PHP file has status R and would otherwise skip the check.
+  check_pushed_commit "$local_oid" CMR "$PHPSTAN_MODIFIED_CONFIG" "modified" < /dev/null || STATUS=1
+done
+
+# Don't bother running the full check, as we check changes files already, and
+# can assume that the unchanged files don't need rechecking.
+#
+# Github will check this anyway.
+#
+# PHPSTAN_BASE_CONFIG=phpstan.neon
+# if [[ -f "$PHPSTAN_BASE_CONFIG" ]]; then
+#     echo "Running PHPstan at a base level on all plugin files"
+#   $COMMAND analyse -c ${PLUGIN_PATH}/${PHPSTAN_BASE_CONFIG} || STATUS=1
+# fi
+
+exit $STATUS

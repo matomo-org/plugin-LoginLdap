@@ -241,7 +241,7 @@ class LoginLdap extends \Piwik\Plugin
     ) {
         /** @var Auth $auth */
         $auth = StaticContainer::get('Piwik\Auth');
-        $auth->setLogin($login = null);
+        $auth->setLogin($login = null); // @phpstan-ignore argument.type (core Login.php does the same; the Auth::setLogin @param is too narrow)
         $auth->setTokenAuth($tokenAuth);
     }
 
