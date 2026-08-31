@@ -1,5 +1,3 @@
-# Action for running tests
-
 name: AI Checklist
 
 on:
@@ -8,15 +6,7 @@ on:
 
 permissions:
   actions: read
-  checks: none
-  contents: none
-  deployments: none
-  issues: none
-  packages: none
   pull-requests: read
-  repository-projects: none
-  security-events: none
-  statuses: none
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -24,9 +14,4 @@ concurrency:
 
 jobs:
   AiChecklist:
-    runs-on: ubuntu-24.04
-    strategy:
-      fail-fast: false
-    steps:
-      - name: Run tests
-        uses: matomo-org/github-action-checklist-gate@main
+    uses: matomo-org/plugin-ci-workflows/.github/workflows/plugin-ai-checklist.yml@main
