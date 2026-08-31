@@ -382,7 +382,7 @@ class LdapUsers
     /**
      * Sets the {@link $ldapClientClass} member.
      *
-     * @param string $ldapClientClass
+     * @param string|LdapClient $ldapClientClass
      */
     public function setLdapClientClass($ldapClientClass)
     {

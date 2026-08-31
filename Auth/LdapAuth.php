@@ -68,7 +68,7 @@ class LdapAuth extends Base
     /**
      * Sets the hash of the password to authenticate with. The hash will be an MD5 hash.
      *
-     * @param string $passwordHash The hashed password.
+     * @param string|null $passwordHash The hashed password, or null to clear it.
      * @throws Exception if authentication by hashed password is not supported.
      */
     public function setPasswordHash(

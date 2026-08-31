@@ -228,7 +228,8 @@ class UserAccessAttributeParser
      * Returns the instance ID and list of sites from an instance ID/sites list pair.
      *
      * @param string $spec eg, `"piwikServerA:1,2,3"`
-     * @return string[] contains two string elements
+     * @return array{0: string|null, 1: string} the instance id (null when the spec omits one)
+     *                                            and the site specification
      */
     protected function getInstanceIdAndSitesFromSpec($spec)
     {
@@ -265,7 +266,7 @@ class UserAccessAttributeParser
         if ($this->thisPiwikInstanceName === null) {
             $result = $this->isUrlThisInstanceUrl($instanceId);
         } else {
-            preg_match("/\\b" . preg_quote($this->thisPiwikInstanceName) . "\\b/", $instanceId, $matches);
+            preg_match("/\\b" . preg_quote($this->thisPiwikInstanceName, '/') . "\\b/", $instanceId, $matches);
 
             if (empty($matches)) {
                 $result = false;
@@ -312,7 +313,7 @@ class UserAccessAttributeParser
     protected function getSuperUserInstancesFromAttribute($attributeValue)
     {
         $delimiters = $this->serverIdsSeparator . $this->serverSpecificationDelimiter;
-        $result = preg_split("/[" . preg_quote($delimiters) . "]/", $attributeValue);
+        $result = preg_split("/[" . preg_quote($delimiters, '/') . "]/", $attributeValue);
         return array_map('trim', $result);
     }
 
