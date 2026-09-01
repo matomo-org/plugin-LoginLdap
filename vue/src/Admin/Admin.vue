@@ -353,7 +353,7 @@
                   v-model="serverInfo.port"
                   placeholder="389"
                   :title="translate('LoginLdap_LdapPort')"
-                  :inline-help="translate('LoginLdap_LdapUrlPortWarning')"
+                  :inline-help="translate('LoginLdap_LdapUrlPortHelp')"
                 >
                 </Field>
               </div>

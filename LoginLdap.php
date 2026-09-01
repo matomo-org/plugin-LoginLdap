@@ -127,7 +127,7 @@ class LoginLdap extends \Piwik\Plugin
         $keys[] = 'LoginLdap_ServerName';
         $keys[] = 'LoginLdap_ServerUrl';
         $keys[] = 'LoginLdap_LdapPort';
-        $keys[] = 'LoginLdap_LdapUrlPortWarning';
+        $keys[] = 'LoginLdap_LdapUrlPortHelp';
         $keys[] = 'LoginLdap_StartTLS';
         $keys[] = 'LoginLdap_StartTLSFieldHelp';
         $keys[] = 'LoginLdap_BaseDn';
