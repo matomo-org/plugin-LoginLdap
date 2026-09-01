@@ -85,11 +85,7 @@ class Client
         $this->logger->debug("Calling ldap_connect('{host}', {port})", array('host' => $serverHostName, 'port' => $port));
 
         if (version_compare(PHP_VERSION, 8.3, '>=')) {
-            $uri = 'ldap://' . $serverHostName . ':' . $port;
-            if (stripos($serverHostName, 'ldap:') !== false || stripos($serverHostName, 'ldaps:') !== false) {
-                $uri = $serverHostName . ':' . $port;
-            }
-            $this->connectionResource = ldap_connect($uri);
+            $this->connectionResource = ldap_connect($this->buildConnectionUri($serverHostName, $port));
         } else {
             $this->connectionResource = ldap_connect($serverHostName, $port);
         }
@@ -271,6 +267,45 @@ class Client
     {
         return $this->connectionResource !== null
             && $this->connectionResource !== false;
+    }
+
+    /**
+     * Combines the configured hostname and port into the single URI `ldap_connect()` takes from
+     * PHP 8.3, where the two-argument form is deprecated.
+     *
+     * A hostname that is already a URL keeps the port it carries, and is only given the configured
+     * one when it has none -- which is what `ldap_initialize()` does with it. Appending the port
+     * unconditionally turned `ldap://localhost/` into `ldap://localhost/:389`.
+     *
+     * The port arriving here is already right for the scheme: ServerInfo resolves an unset port to
+     * 636 for an `ldaps://` hostname and 389 otherwise.
+     *
+     * @param string $serverHostName A plain hostname, or an ldap://, ldaps:// or ldapi:// URL.
+     * @param int $port
+     * @return string
+     */
+    private function buildConnectionUri($serverHostName, $port)
+    {
+        // A unix socket has no port to fill in, and no host to put one after.
+        if (preg_match('~^ldapi://~i', $serverHostName)) {
+            return $serverHostName;
+        }
+
+        // ldap:/// names no server, leaving it to ldap.conf or a DNS SRV lookup. Attaching a port
+        // would both override that choice and produce ldap://:389/, so the URL is left as it is.
+        if (preg_match('~^ldaps?://(?:[/?#]|$)~i', $serverHostName)) {
+            return $serverHostName;
+        }
+
+        // Split the scheme and host -- bracketed, for an IPv6 literal -- from an optional port and
+        // whatever path or query follows, so a filled-in port lands before the path, not after it.
+        if (preg_match('~^(ldaps?://(?:\[[^\]]*\]|[^/?#:]*))(:\d+)?(.*)$~i', $serverHostName, $urlParts)) {
+            $urlPort = isset($urlParts[2]) && $urlParts[2] !== '' ? $urlParts[2] : ':' . $port;
+
+            return $urlParts[1] . $urlPort . $urlParts[3];
+        }
+
+        return 'ldap://' . $serverHostName . ':' . $port;
     }
 
     private function doClose()
