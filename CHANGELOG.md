@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 6.0.1 - 2026-09-07
+* Fixed LDAP site access being denied when the instance name or a server separator contains a slash
+
 #### LoginLdap 6.0.0
 * Compatibility with Matomo 6
 * Added strict check for TLS if enabled

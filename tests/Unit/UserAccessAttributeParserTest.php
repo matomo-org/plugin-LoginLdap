@@ -125,6 +125,36 @@ class UserAccessAttributeParserTest extends TestCase
         $this->assertEquals(array(1,2), $ids);
     }
 
+    public function test_getSiteIdsFromAccessAttribute_ReturnsCorrectSiteIdList_WhenInstanceNameContainsASlash()
+    {
+        // The instance name goes into a pattern delimited by "/", so an unescaped slash in it used to
+        // make preg_match warn and match nothing, and the user was granted no sites at all.
+        $this->userAccessAttributeParser->setThisPiwikInstanceName('my/Piwik');
+
+        $ids = $this->userAccessAttributeParser->getSiteIdsFromAccessAttribute("my/Piwik:1,2;otherPiwik:4");
+        $this->assertEquals(array(1, 2), $ids);
+    }
+
+    public function test_getSuperUserAccessFromSuperUserAttribute_ReturnsTrue_WhenSeparatorsContainASlash()
+    {
+        // The separators are interpolated into a character class in a pattern delimited by "/", so
+        // an unescaped slash used to make preg_split return false and array_map() fatal on PHP 8.
+        // Only the superuser attribute is split this way, which is why this is not a site ID test.
+        $this->userAccessAttributeParser->setServerIdsSeparator('/');
+        $this->userAccessAttributeParser->setThisPiwikInstanceName('myPiwik');
+
+        $this->assertTrue($this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute('otherPiwik/myPiwik'));
+        $this->assertFalse($this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute('otherPiwik/thirdPiwik'));
+    }
+
+    public function test_getSuperUserAccessFromSuperUserAttribute_ReturnsTrue_WhenInstanceNameContainsASlash()
+    {
+        $this->userAccessAttributeParser->setThisPiwikInstanceName('my/Piwik');
+
+        $this->assertTrue($this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute('otherPiwik,my/Piwik'));
+        $this->assertFalse($this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute('otherPiwik,thirdPiwik'));
+    }
+
     public function test_getSiteIdsFromAccessAttribute_ReturnsCorrectSiteIdList_WhenAllStringUsed()
     {
         $this->userAccessAttributeParser->setThisPiwikInstanceName('myPiwik');
