@@ -302,10 +302,7 @@
         :value="translate('LoginLdap_Go')"
         style="margin-right:7px"
       />
-      <img
-        src="plugins/Morpheus/images/loading-blue.gif"
-        v-show="isSynchronizing"
-      /><br />
+      <MatomoLoader v-show="isSynchronizing" /><br />
       <br />
       <div v-show="synchronizeUserError || synchronizeUserDone">
         <div v-if="synchronizeUserError" v-html="$sanitize(synchronizeUserError)"></div>
@@ -427,6 +424,7 @@ import {
   AjaxHelper,
   AjaxForm,
   ContentBlock,
+  MatomoLoader,
   Notification,
   NotificationsStore,
 } from 'CoreHome';
@@ -528,6 +526,7 @@ export default defineComponent({
   components: {
     AjaxForm,
     ContentBlock,
+    MatomoLoader,
     Notification,
     PasswordConfirmation,
     Field,
