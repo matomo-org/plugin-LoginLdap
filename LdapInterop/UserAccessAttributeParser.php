@@ -237,7 +237,7 @@ class UserAccessAttributeParser
 
         if (count($parts) == 1) { // there is no instanceId
             return array(null, trim($parts[0]));
-        } elseif (count($parts) >= 2) { // malformed server access specification
+        } else { // malformed server access specification
             $this->logger->debug(
                 "UserAccessAttributeParser::{func}: Improper server specification in LDAP access attribute: '{value}'",
                 array('func' => __FUNCTION__, 'value' => $spec)

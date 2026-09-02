@@ -10,4 +10,5 @@ jobs:
     uses: matomo-org/plugin-ci-workflows/.github/workflows/plugin-phpstan.yml@main
     with:
       plugin-name: LoginLdap
+      verify-hook: true
     secrets: inherit

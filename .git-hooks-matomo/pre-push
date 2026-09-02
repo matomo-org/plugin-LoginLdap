@@ -229,4 +229,50 @@ done
 #   $COMMAND analyse -c ${PLUGIN_PATH}/${PHPSTAN_BASE_CONFIG} || STATUS=1
 # fi
 
+# A plugin whose core.hooksPath is unset has this file and no way to reach it, and nothing runs to
+# say so -- which is exactly why four plugins went a year without the check ever firing. A hook that
+# does run can see its siblings, so the working ones report the silent ones.
+#
+# Only plugins that ship the file are considered: a plugin without one has no hook to activate, and
+# pointing core.hooksPath at a directory that does not exist would be worse than leaving it alone --
+# git then runs no hook at all, including anything the repository keeps in .git/hooks, and says
+# nothing about it.
+#
+# Advisory, and at most once a day. Someone else's configuration is not grounds to fail a push.
+audit_sibling_plugins() {
+  local plugins_dir="${MATOMO_DIR}/plugins"
+  local marker="${MATOMO_DIR}/tmp/.matomo-hook-audit"
+  local dir inactive=()
+
+  [ -d "$plugins_dir" ] || return 0
+
+  # `find -mmin` rather than `stat`, whose format flags differ between GNU and BSD.
+  if [ -f "$marker" ] && [ -z "$(find "$marker" -mmin +1440 2>/dev/null)" ]; then
+    return 0
+  fi
+  if mkdir -p "${MATOMO_DIR}/tmp" 2>/dev/null; then
+    : > "$marker" 2>/dev/null || true
+  fi
+
+  for dir in "$plugins_dir"/*/; do
+    [ -f "${dir}.git-hooks-matomo/pre-push" ] || continue
+    git -C "$dir" rev-parse --git-dir >/dev/null 2>&1 || continue
+    [ -n "$(git -C "$dir" config --get core.hooksPath 2>/dev/null)" ] && continue
+    inactive+=("$(basename "$dir")")
+  done
+
+  [ ${#inactive[@]} -eq 0 ] && return 0
+
+  echo
+  echo "NOTE: ${#inactive[@]} plugin(s) ship a pre-push hook that never runs, because"
+  echo "      core.hooksPath is not set in them: ${inactive[*]}"
+  echo "      Activate with add-git-hooks-to-plugins.sh from matomo-developer-tools."
+  echo
+}
+
+# Only on a push that is going through: a rejected push's output should stay about the rejection.
+if [[ $STATUS -eq 0 ]]; then
+  audit_sibling_plugins
+fi
+
 exit $STATUS

@@ -135,6 +135,7 @@ class LdapUsers
      *                                   the {@link $authenticationRequiredMemberOf} and {@link $authenticationLdapFilter}
      *                                   fields.
      * @return array|null On success, returns user info stored in the LDAP database. On failure returns `null`.
+     * @throws ConnectionException if we cannot connect to any configured LDAP server.
      */
     public function authenticate(
         $username,
