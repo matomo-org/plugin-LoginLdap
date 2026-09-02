@@ -213,6 +213,13 @@ class Client
 
             $this->logger->debug("ldap_get_entries result is {result}", array('result' => $ldapInfo === false ? 'false' : 'not false'));
 
+            // false means the entries could not be retrieved, which transformLdapInfo() would turn
+            // into an empty array -- indistinguishable from a search that matched nothing, so a
+            // failed lookup would surface as a failed login rather than as the LDAP error it is.
+            if ($ldapInfo === false) {
+                throw new Exception("ldap_get_entries failed: " . ldap_error($connectionResource));
+            }
+
             return $this->transformLdapInfo($ldapInfo);
         } else {
             return null;

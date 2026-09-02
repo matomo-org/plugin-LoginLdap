@@ -69,7 +69,6 @@ class LdapAuth extends Base
      * Rejects any password hash: this class authenticates against LDAP, which cannot verify one.
      *
      * @param string|null $passwordHash Only null is accepted; any hash throws.
-     * @throws Exception if a password hash is given.
      */
     public function setPasswordHash(
         #[\SensitiveParameter]

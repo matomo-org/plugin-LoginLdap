@@ -140,7 +140,7 @@ abstract class Base implements Auth
     /**
      * Sets the hash of the password to authenticate with. The hash will be an MD5 hash.
      *
-     * @param string $passwordHash The hashed password.
+     * @param string|null $passwordHash The hashed password, or null to authenticate by password instead.
      */
     public function setPasswordHash(
         #[\SensitiveParameter]

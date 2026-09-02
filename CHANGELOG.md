@@ -2,6 +2,7 @@
 
 #### LoginLdap 6.0.1 - 2026-09-07
 * Fixed LDAP site access being denied when the instance name or a server separator contains a slash
+* Fixed a failed LDAP entry lookup being reported as no matching users, which surfaced as a failed login instead of the underlying LDAP error
 
 #### LoginLdap 6.0.0
 * Compatibility with Matomo 6
