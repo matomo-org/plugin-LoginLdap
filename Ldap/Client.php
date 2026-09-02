@@ -300,7 +300,9 @@ class Client
         // Split the scheme and host -- bracketed, for an IPv6 literal -- from an optional port and
         // whatever path or query follows, so a filled-in port lands before the path, not after it.
         if (preg_match('~^(ldaps?://(?:\[[^\]]*\]|[^/?#:]*))(:\d+)?(.*)$~i', $serverHostName, $urlParts)) {
-            $urlPort = isset($urlParts[2]) && $urlParts[2] !== '' ? $urlParts[2] : ':' . $port;
+            // Group 2 is always set, even unmatched: a later group participates, so PHP pads it
+            // with '' rather than omitting it. The emptiness check is the one doing the work.
+            $urlPort = $urlParts[2] !== '' ? $urlParts[2] : ':' . $port;
 
             return $urlParts[1] . $urlPort . $urlParts[3];
         }
