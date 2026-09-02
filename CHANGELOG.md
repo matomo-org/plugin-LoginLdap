@@ -7,6 +7,7 @@
 * Compatibility with Matomo 6
 * Added strict check for TLS if enabled
 * Added strict comparison of login username
+* Fixed an invalid connection URI on PHP 8.3 and newer when the LDAP server hostname is a URL that ends in a path or already specifies a port
 
 #### LoginLdap 5.2.4 - 2026-08-10
 - Added code to change the logic for random password generation

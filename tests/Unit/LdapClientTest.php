@@ -80,6 +80,54 @@ class LdapClientTest extends TestCase
         $this->assertTrue($ldapClient->isOpen());
     }
 
+    /**
+     * @dataProvider getConnectionUris
+     */
+    public function test_connect_BuildsTheExpectedUri($hostname, $port, $expectedUri)
+    {
+        if (version_compare(PHP_VERSION, '8.3', '<')) {
+            $this->markTestSkipped('ldap_connect() only takes a single URI from PHP 8.3 onwards.');
+        }
+
+        LdapFunctions::$phpUnitMock->expects($this->once())->method('ldap_connect')
+            ->with($this->equalTo($expectedUri))
+            ->willReturn('connection_resource');
+
+        $ldapClient = new LdapClient();
+        $ldapClient->connect($hostname, $port);
+    }
+
+    public function getConnectionUris()
+    {
+        return [
+            // A plain hostname is given the scheme and the configured port, as before.
+            ['localhost', 1389, 'ldap://localhost:1389'],
+
+            // A URL without a port takes the configured one. ServerInfo has already resolved that
+            // to 636 for an ldaps:// hostname, so nothing here needs to know the scheme default.
+            ['ldap://localhost', 389, 'ldap://localhost:389'],
+            ['ldap://localhost', 1389, 'ldap://localhost:1389'],
+            ['ldap://localhost/', 389, 'ldap://localhost:389/'],
+            ['ldaps://localhost/', 636, 'ldaps://localhost:636/'],
+            ['ldap://[::1]/', 389, 'ldap://[::1]:389/'],
+
+            // A URL that carries its own port keeps it, rather than gaining a second.
+            ['ldap://localhost:1389', 389, 'ldap://localhost:1389'],
+            ['ldap://localhost:1389/', 389, 'ldap://localhost:1389/'],
+            ['ldaps://localhost:636/dc=x', 389, 'ldaps://localhost:636/dc=x'],
+            ['ldap://[::1]:1389/', 389, 'ldap://[::1]:1389/'],
+
+            // A unix socket has no port to fill in.
+            ['ldapi:///var/run/ldapi', 389, 'ldapi:///var/run/ldapi'],
+
+            // ldap:/// names no server, leaving it to ldap.conf or a DNS SRV lookup. Attaching the
+            // port would override that, and there is no host for it to sit after.
+            ['ldap:///', 389, 'ldap:///'],
+            ['ldaps:///', 636, 'ldaps:///'],
+            ['ldap:///dc=example,dc=com', 389, 'ldap:///dc=example,dc=com'],
+        ];
+    }
+
     public function test_connect_ThrowsPhpErrors()
     {
         $this->expectException(\Piwik\Exception\ErrorException::class);
