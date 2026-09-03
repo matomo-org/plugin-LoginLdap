@@ -180,9 +180,7 @@ class LoginLdap extends \Piwik\Plugin
         if (Manager::getInstance()->isPluginActivated("Login") == false) {
             Manager::getInstance()->activatePlugin("Login");
         }
-        if (method_exists(Session::class, 'destroyAllSessions')) {
-            Session::destroyAllSessions();
-        }
+        Session::destroyAllSessions();
     }
 
     public function disableConfirmResetPasswordForLdapUsers()
@@ -241,7 +239,7 @@ class LoginLdap extends \Piwik\Plugin
     ) {
         /** @var Auth $auth */
         $auth = StaticContainer::get('Piwik\Auth');
-        $auth->setLogin($login = null);
+        $auth->setLogin($login = null); // @phpstan-ignore argument.type (core Login.php does the same; the Auth::setLogin @param is too narrow)
         $auth->setTokenAuth($tokenAuth);
     }
 

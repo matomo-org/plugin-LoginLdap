@@ -66,10 +66,9 @@ use Piwik\Plugins\UsersManager\Model as UserModel;
 class LdapAuth extends Base
 {
     /**
-     * Sets the hash of the password to authenticate with. The hash will be an MD5 hash.
+     * Rejects any password hash: this class authenticates against LDAP, which cannot verify one.
      *
-     * @param string $passwordHash The hashed password.
-     * @throws Exception if authentication by hashed password is not supported.
+     * @param string|null $passwordHash Only null is accepted; any hash throws.
      */
     public function setPasswordHash(
         #[\SensitiveParameter]

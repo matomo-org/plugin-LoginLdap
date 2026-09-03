@@ -84,7 +84,7 @@ class Client
 
         $this->logger->debug("Calling ldap_connect('{host}', {port})", array('host' => $serverHostName, 'port' => $port));
 
-        if (version_compare(PHP_VERSION, 8.3, '>=')) {
+        if (version_compare(PHP_VERSION, '8.3', '>=')) {
             $this->connectionResource = ldap_connect($this->buildConnectionUri($serverHostName, $port));
         } else {
             $this->connectionResource = ldap_connect($serverHostName, $port);
@@ -211,7 +211,14 @@ class Client
 
             $ldapInfo = ldap_get_entries($connectionResource, $searchResultResource);
 
-            $this->logger->debug("ldap_get_entries result is {result}", array('result' => $ldapInfo === null ? 'null' : 'not null'));
+            $this->logger->debug("ldap_get_entries result is {result}", array('result' => $ldapInfo === false ? 'false' : 'not false'));
+
+            // false means the entries could not be retrieved, which transformLdapInfo() would turn
+            // into an empty array -- indistinguishable from a search that matched nothing, so a
+            // failed lookup would surface as a failed login rather than as the LDAP error it is.
+            if ($ldapInfo === false) {
+                throw new Exception("ldap_get_entries failed: " . ldap_error($connectionResource));
+            }
 
             return $this->transformLdapInfo($ldapInfo);
         } else {

@@ -1,0 +1,10 @@
+name: License check
+
+on: pull_request
+
+permissions:
+  contents: read
+
+jobs:
+  license-check:
+    uses: matomo-org/plugin-ci-workflows/.github/workflows/plugin-license-check.yml@main

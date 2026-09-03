@@ -140,8 +140,7 @@ abstract class Base implements Auth
     /**
      * Sets the hash of the password to authenticate with. The hash will be an MD5 hash.
      *
-     * @param string $passwordHash The hashed password.
-     * @throws Exception if authentication by hashed password is not supported.
+     * @param string|null $passwordHash The hashed password, or null to authenticate by password instead.
      */
     public function setPasswordHash(
         #[\SensitiveParameter]
@@ -163,7 +162,7 @@ abstract class Base implements Auth
     /**
      * Returns the user's token auth.
      *
-     * @return string
+     * @return string|null
      */
     public function getTokenAuth()
     {
@@ -376,7 +375,7 @@ abstract class Base implements Auth
 
     protected function makeAuthFailure()
     {
-        return new AuthResult(AuthResult::FAILURE, $this->login, null);
+        return new AuthResult(AuthResult::FAILURE, $this->login, null); // @phpstan-ignore argument.type (core Login\Auth passes null here too; the AuthResult @param is too narrow)
     }
 
     protected function authenticateByLdap()

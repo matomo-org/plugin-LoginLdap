@@ -119,7 +119,7 @@ class UserAccessAttributeParser
      * Parses an LDAP access attribute value and returns the list of site IDs that apply to
      * this specific Piwik instance.
      *
-     * @var string $attributeValue eg `"piwikServerA:1,2,3;piwikServerB:4,5,6"`.
+     * @param string $attributeValue eg `"piwikServerA:1,2,3;piwikServerB:4,5,6"`.
      * @return array
      */
     public function getSiteIdsFromAccessAttribute($attributeValue)
@@ -151,7 +151,6 @@ class UserAccessAttributeParser
             $attributeValue == 1
             || strtolower($attributeValue) == 'true'
             || $attributeValue === ''
-            || $attributeValue === null
         ) { // special case when not managing multiple Piwik instances
             return true;
         }
@@ -229,7 +228,8 @@ class UserAccessAttributeParser
      * Returns the instance ID and list of sites from an instance ID/sites list pair.
      *
      * @param string $spec eg, `"piwikServerA:1,2,3"`
-     * @return string[] contains two string elements
+     * @return array{0: string|null, 1: string} the instance id (null when the spec omits one)
+     *                                            and the site specification
      */
     protected function getInstanceIdAndSitesFromSpec($spec)
     {
@@ -237,7 +237,7 @@ class UserAccessAttributeParser
 
         if (count($parts) == 1) { // there is no instanceId
             return array(null, trim($parts[0]));
-        } elseif (count($parts) >= 2) { // malformed server access specification
+        } else { // malformed server access specification
             $this->logger->debug(
                 "UserAccessAttributeParser::{func}: Improper server specification in LDAP access attribute: '{value}'",
                 array('func' => __FUNCTION__, 'value' => $spec)
@@ -266,7 +266,7 @@ class UserAccessAttributeParser
         if ($this->thisPiwikInstanceName === null) {
             $result = $this->isUrlThisInstanceUrl($instanceId);
         } else {
-            preg_match("/\\b" . preg_quote($this->thisPiwikInstanceName) . "\\b/", $instanceId, $matches);
+            preg_match("/\\b" . preg_quote($this->thisPiwikInstanceName, '/') . "\\b/", $instanceId, $matches);
 
             if (empty($matches)) {
                 $result = false;
@@ -313,7 +313,7 @@ class UserAccessAttributeParser
     protected function getSuperUserInstancesFromAttribute($attributeValue)
     {
         $delimiters = $this->serverIdsSeparator . $this->serverSpecificationDelimiter;
-        $result = preg_split("/[" . preg_quote($delimiters) . "]/", $attributeValue);
+        $result = preg_split("/[" . preg_quote($delimiters, '/') . "]/", $attributeValue);
         return array_map('trim', $result);
     }
 

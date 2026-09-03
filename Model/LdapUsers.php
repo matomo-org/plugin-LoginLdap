@@ -65,7 +65,7 @@ class LdapUsers
      * The fully qualified class name of the LDAP client to use. Mostly for testing purposes,
      * but it might have some future use.
      *
-     * @var string
+     * @var string|LdapClient
      */
     private $ldapClientClass = "Piwik\\Plugins\\LoginLdap\\Ldap\\Client";
 
@@ -129,13 +129,13 @@ class LdapUsers
      *
      * @param string $username The LDAP user's username. This is the value of the LDAP field specified by
      *                         {@link $ldapUserIdField}.
-     * @param string $password The password to try and authenticate.
+     * @param string|null $password The password to try and authenticate.
      * @param bool $alreadyAuthenticated Whether to assume the user has already been authenticated or not.
      *                                   If true, we make sure the user is allowed to access Piwik based on
      *                                   the {@link $authenticationRequiredMemberOf} and {@link $authenticationLdapFilter}
      *                                   fields.
      * @return array|null On success, returns user info stored in the LDAP database. On failure returns `null`.
-     * @throws ConnectionException if we connect to any configured LDAP server.
+     * @throws ConnectionException if we cannot connect to any configured LDAP server.
      */
     public function authenticate(
         $username,
@@ -383,7 +383,7 @@ class LdapUsers
     /**
      * Sets the {@link $ldapClientClass} member.
      *
-     * @param string $ldapClientClass
+     * @param string|LdapClient $ldapClientClass
      */
     public function setLdapClientClass($ldapClientClass)
     {

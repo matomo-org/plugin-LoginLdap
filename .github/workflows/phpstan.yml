@@ -1,0 +1,14 @@
+name: PHPStan check
+
+on: pull_request
+
+permissions:
+  contents: read
+
+jobs:
+  phpstan:
+    uses: matomo-org/plugin-ci-workflows/.github/workflows/plugin-phpstan.yml@main
+    with:
+      plugin-name: LoginLdap
+      verify-hook: true
+    secrets: inherit
