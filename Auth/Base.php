@@ -17,6 +17,7 @@ use Piwik\Piwik;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
+use Piwik\Plugins\LoginLdap\UserIdentity;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Plugins\UsersManager\Model as UserModel;
 use Piwik\Log\LoggerInterface;
@@ -306,9 +307,19 @@ abstract class Base implements Auth
         return $this->userForLogin;
     }
 
-    private function isSameLogin(string $assertedLogin, string $storedLogin): bool
+    /**
+     * Returns whether the asserted login and the login of the user row it resolved to identify the same user.
+     *
+     * Implementations that verify no credential against the returned row have to override this and require an
+     * exact match.
+     *
+     * @param string $assertedLogin
+     * @param string $storedLogin
+     * @return bool
+     */
+    protected function isSameLogin(string $assertedLogin, string $storedLogin): bool
     {
-        return mb_strtolower($assertedLogin, 'UTF-8') === mb_strtolower($storedLogin, 'UTF-8');
+        return UserIdentity::isSameLogin($assertedLogin, $storedLogin);
     }
 
     protected function tryFallbackAuth($onlySuperUsers = true, ?Auth $auth = null)

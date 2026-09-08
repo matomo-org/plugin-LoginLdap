@@ -1,5 +1,10 @@
 # LoginLdap Changelog
 
+#### LoginLdap 5.2.7
+- Fixed the login comparison so that logins the database collation treats as equal, but which are different users, are no longer accepted
+- Added an exact login match requirement when authenticating through the web server
+- Added termination of a Matomo session when the web server starts authenticating a different user
+
 #### LoginLdap 5.2.6 - 2026-08-24
 - Added strict check for TLS if enabled
 - Added strict comparison of login username
