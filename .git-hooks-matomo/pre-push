@@ -198,7 +198,75 @@ check_pushed_commit() {
   fi
 
   echo "Running PHPstan on ${label} files"
-  "${COMMAND[@]}" analyse -c "${PLUGIN_PATH}${config}" "${changed_files[@]}" || return 1
+
+  local out_file err_file status
+  out_file=$(mktemp) || { echo "Could not create a temporary file to capture the analysis" >&2; return 1; }
+  err_file=$(mktemp) || { rm -f "$out_file"; echo "Could not create a temporary file to capture the analysis" >&2; return 1; }
+
+  # The exemption below matches a line of stderr, so the analyser must not be allowed to reshape it.
+  # All three of these were verified against 2.2.9 to break the match and block the push this exists
+  # to let through:
+  #   --no-ansi     PHPStan decorates its output whenever MSYSTEM and TERM=xterm are set (Git Bash
+  #                 sets both), even into a file, wrapping the line in colour codes.
+  #   COLUMNS=120   Symfony wraps its error block to the terminal width, and an exported COLUMNS
+  #                 below ~36 splits the line in two. Only the local-PHP path inherits this, which
+  #                 is also the only path that can inherit a small COLUMNS in the first place.
+  #   --no-progress both streams are captured, so the bar can never render live; without this the
+  #                 run ends by dumping a dead progress bar into the output.
+  COLUMNS=120 "${COMMAND[@]}" analyse --no-ansi --no-progress -c "${PLUGIN_PATH}${config}" \
+    "${changed_files[@]}" > "$out_file" 2> "$err_file"
+  status=$?
+
+  # PHPStan reports "nothing to analyse" on stderr and leaves stdout empty, while a run that
+  # analysed anything writes its result table to stdout. That pair is the only signal it offers:
+  # the exit code is 1 either way, and --error-format=json still emits this one as plain text
+  # (checked on 2.2.9). Matching stderr alone would accept a real failure whose own message
+  # happened to contain the phrase, which a custom rule is free to produce.
+  #
+  # Any other sign of failure on stderr withdraws the exemption too. That test is keyed to the
+  # shapes below rather than to stderr being otherwise empty, because Xdebug notices and PHP's own
+  # deprecation output land on stderr in ordinary dev environments -- treating those as failures
+  # would re-block precisely the pushes this exemption exists to let through.
+  #
+  # [ERROR] is the block PHPStan actually emits. [FATAL] and PHP's own fatals have not been seen
+  # alongside the no-files line, but a process that died is never a clean "nothing to analyse", and
+  # a fatal -- unlike a deprecation -- is never benign, so matching them cannot cost a false block.
+  local no_files_re='^[[:space:]]*(\[ERROR\][[:space:]]+)?No files found to analyse\.?[[:space:]]*$'
+  local failure_re='^[[:space:]]*(\[(ERROR|FATAL)\]|(PHP )?(Fatal|Parse) error:)'
+  local other_diagnostics
+  other_diagnostics=$(grep -E "$failure_re" "$err_file" | grep -vE "$no_files_re")
+
+  if [[ "$status" -ne 0 ]] && [[ ! -s "$out_file" ]] \
+    && grep -qE "$no_files_re" "$err_file" \
+    && [[ -z "$other_diagnostics" ]]
+  then
+    # Reporting an [ERROR] on a push being allowed through is how a hook teaches people to stop
+    # reading its output, so the one line the message below restates in plain English is dropped --
+    # along with the blank lines Symfony pads its block with, which would otherwise be all that
+    # survives on a quiet run.
+    # ddev wraps a non-zero exit in its own coloured "Failed to execute command ...: exit status 1",
+    # which --no-ansi cannot reach because it is ddev's line rather than PHPStan's. On an exempt run
+    # that is the failure being deliberately overridden.
+    #
+    # The escape is a shell literal rather than \x1b inside the sed script, because BSD and busybox
+    # sed leave \x1b unexpanded and Linux CI cannot catch that regression. LC_ALL=C keeps the
+    # substitution byte-oriented, so stderr carrying a non-UTF-8 path byte cannot abort it.
+    local esc=$'\033'
+    LC_ALL=C sed "s/${esc}\\[[0-9;]*m//g" "$err_file" \
+      | grep -vE "$no_files_re" \
+      | grep -vE '^Failed to execute command .*: exit status [0-9]+$' \
+      | grep -v '^[[:space:]]*$' >&2
+    # Name the files: an excludePaths that accidentally matches everything otherwise retires the
+    # hook as silently as the unset core.hooksPath the sibling audit reports.
+    echo "Every ${label} file is excluded by ${config}, so there is nothing to analyse: ${changed_files[*]}"
+    rm -f "$out_file" "$err_file"
+    return 0
+  fi
+
+  cat "$err_file" >&2
+  cat "$out_file"
+  rm -f "$out_file" "$err_file"
+  return "$status"
 }
 
 # Check the commits actually being pushed, as supplied on stdin: HEAD is wrong
