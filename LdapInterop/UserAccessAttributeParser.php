@@ -259,26 +259,23 @@ class UserAccessAttributeParser
      */
     protected function isInstanceIdForThisInstance($instanceId)
     {
-        if (empty($instanceId)) {
+        $instanceId = trim($instanceId);
+
+        if ($instanceId === '') {
             return true;
         }
 
         if ($this->thisPiwikInstanceName === null) {
             $result = $this->isUrlThisInstanceUrl($instanceId);
         } else {
-            preg_match("/\\b" . preg_quote($this->thisPiwikInstanceName, '/') . "\\b/", $instanceId, $matches);
+            $result = $instanceId === trim($this->thisPiwikInstanceName);
 
-            if (empty($matches)) {
-                $result = false;
-            } else {
-                if (strlen($matches[0]) != strlen($instanceId)) {
-                    $this->logger->debug(
-                        "UserAccessAttributeParser::{func}: Found extra characters in Piwik instance ID. Whole ID entry = {id}.",
-                        array('func' => __FUNCTION__, 'id' => $instanceId)
-                    );
-                }
-
-                $result = true;
+            if (!$result && $this->containsInstanceName($instanceId)) {
+                $this->logger->warning(
+                    "UserAccessAttributeParser::{func}: Ignoring instance ID '{id}': it contains the configured "
+                        . "instance name '{name}' but is not equal to it.",
+                    array('func' => __FUNCTION__, 'id' => $instanceId, 'name' => $this->thisPiwikInstanceName)
+                );
             }
         }
 
@@ -315,6 +312,21 @@ class UserAccessAttributeParser
         $delimiters = $this->serverIdsSeparator . $this->serverSpecificationDelimiter;
         $result = preg_split("/[" . preg_quote($delimiters, '/') . "]/", $attributeValue);
         return array_map('trim', $result);
+    }
+
+    /**
+     * Returns whether $instanceId contains the configured instance name as a word.
+     *
+     * Only used to log identifiers that earlier versions accepted for this instance.
+     *
+     * @param string $instanceId
+     * @return bool
+     */
+    private function containsInstanceName($instanceId)
+    {
+        $pattern = "/\\b" . preg_quote(trim($this->thisPiwikInstanceName), '/') . "\\b/";
+
+        return (bool) preg_match($pattern, $instanceId);
     }
 
     /**

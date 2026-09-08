@@ -151,8 +151,8 @@ class UserAccessAttributeParserTest extends TestCase
     {
         $this->userAccessAttributeParser->setThisPiwikInstanceName('my/Piwik');
 
-        $this->assertTrue($this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute('otherPiwik,my/Piwik'));
-        $this->assertFalse($this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute('otherPiwik,thirdPiwik'));
+        $this->assertTrue($this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute('otherPiwik;my/Piwik'));
+        $this->assertFalse($this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute('otherPiwik;thirdPiwik'));
     }
 
     public function test_getSiteIdsFromAccessAttribute_ReturnsCorrectSiteIdList_WhenAllStringUsed()
@@ -189,8 +189,10 @@ class UserAccessAttributeParserTest extends TestCase
 
         $this->userAccessAttributeParser->setThisPiwikInstanceName("myPi|wik");
 
+        // only 'myPi|wik' is the configured instance ID. 'myPi|wik = view' and 'myPi | wik' are different
+        // identifiers and no longer contribute their sites
         $ids = $this->userAccessAttributeParser->getSiteIdsFromAccessAttribute(" ; ; myPi|wik : 1,2 ; myPi|wik = view:3,def; myPi | wik:4,5 ; ; ");
-        $this->assertEquals(array(1,2,3), $ids);
+        $this->assertEquals(array(1,2), $ids);
     }
 
     public function test_getSiteIdsFromAccessAttribute_ReturnsCorrectSiteIdList_WhenCustomDelimitersAreUsed()
@@ -256,6 +258,48 @@ class UserAccessAttributeParserTest extends TestCase
         $this->assertTrue($hasSuperUserAccess);
     }
 
+    /**
+     * @dataProvider getInstanceIdsThatAreNotThisInstance
+     */
+    public function test_getSuperUserAccessFromSuperUserAttribute_ReturnsFalse_IfInstanceIdOnlyContainsTheInstanceName($instanceId)
+    {
+        $this->userAccessAttributeParser->setThisPiwikInstanceName('matomo-prod');
+
+        $this->assertFalse($this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute($instanceId));
+    }
+
+    /**
+     * @dataProvider getInstanceIdsThatAreNotThisInstance
+     */
+    public function test_getSiteIdsFromAccessAttribute_ReturnsNoSites_IfInstanceIdOnlyContainsTheInstanceName($instanceId)
+    {
+        $this->userAccessAttributeParser->setThisPiwikInstanceName('matomo-prod');
+
+        $this->assertEquals(array(), $this->userAccessAttributeParser->getSiteIdsFromAccessAttribute($instanceId . ":1,2,3"));
+    }
+
+    public function getInstanceIdsThatAreNotThisInstance()
+    {
+        return array(
+            'suffix' => array('matomo-prod-eu'),
+            'prefix' => array('eu-matomo-prod'),
+            'surrounding text' => array('the matomo-prod instance'),
+            'unrelated' => array('matomo-stage'),
+
+            // '0' used to be treated as an unspecified instance ID, which matched every instance
+            'zero' => array('0'),
+        );
+    }
+
+    public function test_getSuperUserAccessFromSuperUserAttribute_ReturnsTrue_IfInstanceIdIsTheInstanceName()
+    {
+        $this->userAccessAttributeParser->setThisPiwikInstanceName('matomo-prod');
+
+        $this->assertTrue($this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute('matomo-prod'));
+        $this->assertTrue($this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute('  matomo-prod  '));
+        $this->assertTrue($this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute('matomo-prod-eu;matomo-prod'));
+    }
+
     public function test_getSuperUserAccessFromSuperUserAttribute_ReturnsFalse_IfInstanceNotInAttribute()
     {
         $this->userAccessAttributeParser->setThisPiwikInstanceName('myPiwik');
@@ -284,11 +328,13 @@ class UserAccessAttributeParserTest extends TestCase
     {
         $this->userAccessAttributeParser->setThisPiwikInstanceName('myPiwik');
 
+        // an instance ID is only this instance when it is exactly the configured name. Malformed values are
+        // no longer searched for the name, since that made one instance's grant apply to another.
         $hasSuperUserAccess = $this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute(" myPiwik = superuser ; whatever");
-        $this->assertTrue($hasSuperUserAccess);
+        $this->assertFalse($hasSuperUserAccess);
 
         $hasSuperUserAccess = $this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute("anothe; superuser = myPiwik ; whatever");
-        $this->assertTrue($hasSuperUserAccess);
+        $this->assertFalse($hasSuperUserAccess);
 
         $this->userAccessAttributeParser->setThisPiwikInstanceName(null);
         $this->userAccessAttributeParser->setServerSpecificationDelimiter('|');
