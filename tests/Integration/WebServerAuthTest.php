@@ -70,6 +70,32 @@ class WebServerAuthTest extends LdapIntegrationTest
         $this->assertEquals(0, $authResult->getCode());
     }
 
+    /**
+     * @dataProvider getLoginsResolvingToTheSuperUser
+     */
+    public function test_WebServerAuth_Fails_IfAssertedLoginResolvesToDifferentExistingUser($remoteUser)
+    {
+        Config::getInstance()->LoginLdap['use_webserver_auth'] = 1;
+
+        // each of these resolves to the existing super user through the collation of the login column, but the
+        // web server authenticated a different principal
+        $_SERVER['REMOTE_USER'] = $remoteUser;
+
+        $ldapAuth = WebServerAuth::makeConfigured();
+        $authResult = $ldapAuth->authenticate();
+
+        $this->assertEquals(AuthResult::FAILURE, $authResult->getCode());
+        $this->assertNotEquals(self::TEST_SUPERUSER_LOGIN, $authResult->getIdentity());
+    }
+
+    public function getLoginsResolvingToTheSuperUser()
+    {
+        return array(
+            'ascii case difference' => array(ucfirst(self::TEST_SUPERUSER_LOGIN)),
+            'accented character' => array(substr(self::TEST_SUPERUSER_LOGIN, 0, -1) . "\xc3\xa1"),
+        );
+    }
+
     public function test_WebServerAuth_Fails_IfUserIsNotPartOfRequiredGroup()
     {
         Config::getInstance()->LoginLdap['use_webserver_auth'] = 1;

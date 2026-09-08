@@ -8,6 +8,11 @@
  */
 
 return [
+    // keeps a Matomo session from outliving the web server identity it was created for
+    \Piwik\Session\SessionAuth::class => \Piwik\DI::decorate(function (\Piwik\Session\SessionAuth $previous) {
+        return new \Piwik\Plugins\LoginLdap\Auth\WebServerSessionAuth($previous);
+    }),
+
     'observers.global' => \Piwik\DI::add([
         ['Login.userRequiresPasswordConfirmation', \Piwik\DI::value(function (&$requiresPasswordConfirmation, $login) {
             if (\Piwik\Plugins\LoginLdap\Auth\WebServerAuth::isCurrentRequestWebServerAuthenticated()) {
