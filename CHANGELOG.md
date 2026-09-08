@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 5.2.7
+- Fixed the LDAP instance identifier comparison, so an access value naming a different Matomo instance is no longer applied to this one
+
 #### LoginLdap 5.2.6 - 2026-08-24
 - Added strict check for TLS if enabled
 - Added strict comparison of login username
