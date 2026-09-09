@@ -115,7 +115,7 @@ class WebServerSessionAuthTest extends TestCase
         $result = $this->makeAuth($this->makeWrappedAuth($isCalled = false))->authenticate();
 
         $this->assertEquals(AuthResult::FAILURE, $result->getCode());
-        $this->assertNull($result->getIdentity());
+        $this->assertSame('', $result->getIdentity());
         $this->assertSessionWasEnded();
     }
 
@@ -124,10 +124,46 @@ class WebServerSessionAuthTest extends TestCase
         return array(
             'a different user' => array('bob'),
 
-            // the session guard uses the same exact comparison WebServerAuth uses
-            'ascii case difference' => array('Karen'),
+            // the session guard uses the same comparison WebServerAuth uses, so a session it keeps is always
+            // one WebServerAuth would authenticate
             'accented character' => array("\xc3\xa1aren"),
             'kelvin sign' => array("\xe2\x84\xaaaren"),
+        );
+    }
+
+    public function test_authenticate_UsesTheSessionAuth_IfTheAssertedLoginDiffersOnlyByAsciiCase()
+    {
+        $_SERVER['REMOTE_USER'] = ucfirst(self::SESSION_USER);
+
+        $result = $this->makeAuth($this->makeWrappedAuth($isCalled = true))->authenticate();
+
+        $this->assertEquals(AuthResult::SUCCESS, $result->getCode());
+        $this->assertSessionWasKept();
+    }
+
+    /**
+     * @dataProvider getRemoteUsersThatStripToNothing
+     */
+    public function test_authenticate_UsesTheSessionAuth_IfTheAssertedLoginStripsToNothing($remoteUser)
+    {
+        Config::getInstance()->LoginLdap = array(
+            'use_webserver_auth' => 1,
+            'strip_domain_from_web_auth' => 1,
+        );
+
+        $_SERVER['REMOTE_USER'] = $remoteUser;
+
+        $result = $this->makeAuth($this->makeWrappedAuth($isCalled = true))->authenticate();
+
+        $this->assertEquals(AuthResult::SUCCESS, $result->getCode());
+        $this->assertSessionWasKept();
+    }
+
+    public function getRemoteUsersThatStripToNothing()
+    {
+        return array(
+            'domain only' => array('SHIELD\\'),
+            'at sign only' => array('@shield.org'),
         );
     }
 

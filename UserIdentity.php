@@ -33,21 +33,6 @@ class UserIdentity
     }
 
     /**
-     * Returns true if the asserted login and the stored login are byte for byte identical.
-     *
-     * Used where the login is the only thing binding a request to an account, so that not even ASCII case
-     * differences are tolerated.
-     *
-     * @param string $assertedLogin The login the web server asserted.
-     * @param string $storedLogin The login of the user row, or of the session, it was matched against.
-     * @return bool
-     */
-    public static function isSameLoginExact(string $assertedLogin, string $storedLogin): bool
-    {
-        return $assertedLogin === $storedLogin;
-    }
-
-    /**
      * Lowercases the ASCII letters in $value and leaves every other byte untouched.
      *
      * strtolower() is not used since it is locale aware on PHP versions before 8.2 and can fold bytes outside

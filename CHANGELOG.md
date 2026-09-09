@@ -3,7 +3,6 @@
 #### LoginLdap 5.2.7- 2026-09-14
 - Fixed the LDAP instance identifier comparison, so an access value naming a different Matomo instance is no longer applied to this one
 - Fixed the login comparison so that logins the database collation treats as equal, but which are different users, are no longer accepted
-- Added an exact login match requirement when authenticating through the web server
 - Added termination of a Matomo session when the web server starts authenticating a different user
 
 #### LoginLdap 5.2.6 - 2026-08-24

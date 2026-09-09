@@ -17,7 +17,6 @@ use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\LoginLdap\Ldap\Exceptions\ConnectionException;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
-use Piwik\Plugins\LoginLdap\UserIdentity;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Plugins\UsersManager\Model as UserModel;
 use Piwik\Session;
@@ -177,19 +176,6 @@ class WebServerAuth extends Base
     {
         $auth = StaticContainer::get('Piwik\Auth');
         return $auth instanceof WebServerAuth && !empty($_SERVER['REMOTE_USER']);
-    }
-
-    /**
-     * No password, password hash or token auth is verified against the row the asserted login resolves to, so
-     * unlike the other auth implementations this one requires the stored login to match it exactly.
-     *
-     * @param string $assertedLogin
-     * @param string $storedLogin
-     * @return bool
-     */
-    protected function isSameLogin(string $assertedLogin, string $storedLogin): bool
-    {
-        return UserIdentity::isSameLoginExact($assertedLogin, $storedLogin);
     }
 
     private function synchronizeLoggedInUser()

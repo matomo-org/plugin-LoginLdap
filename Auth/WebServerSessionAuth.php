@@ -14,7 +14,6 @@ use Piwik\Container\StaticContainer;
 use Piwik\Log\LoggerInterface;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\LoginLdap\UserIdentity;
-use Piwik\Session;
 use Piwik\Session\SessionAuth;
 use Piwik\Session\SessionFingerprint;
 
@@ -72,7 +71,7 @@ class WebServerSessionAuth extends SessionAuth
 
         $this->endSession();
 
-        return new AuthResult(AuthResult::FAILURE, null, null);
+        return new AuthResult(AuthResult::FAILURE, '', '');
     }
 
     /**
@@ -92,14 +91,15 @@ class WebServerSessionAuth extends SessionAuth
         $assertedLogin = WebServerAuth::getAssertedLogin();
 
         // an absent REMOTE_USER is not a mismatch: setups that require web server authentication on only some
-        // paths would otherwise log people out at random
-        if ($assertedLogin === null) {
+        // paths would otherwise log people out at random. Neither is one that strips to nothing, which
+        // WebServerAuth cannot authenticate anybody with either.
+        if ($assertedLogin === null || trim($assertedLogin) === '') {
             return null;
         }
 
         $sessionUser = (new SessionFingerprint())->getUser();
 
-        if (empty($sessionUser) || UserIdentity::isSameLoginExact($assertedLogin, $sessionUser)) {
+        if (empty($sessionUser) || UserIdentity::isSameLogin($assertedLogin, $sessionUser)) {
             return null;
         }
 
@@ -114,9 +114,9 @@ class WebServerSessionAuth extends SessionAuth
      */
     private function endSession(): void
     {
-        if (Session::isSessionStarted()) {
-            $_SESSION = array();
-        }
+        // not gated on Session::isSessionStarted(): that flag stays false when Session::start() returned early
+        // because a session was already active or headers were sent, and $_SESSION is populated regardless
+        $_SESSION = array();
 
         $this->destroyCurrentSession(new SessionFingerprint());
     }
