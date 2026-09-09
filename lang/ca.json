@@ -32,7 +32,6 @@
         "LdapPort": "Port del servidor",
         "LdapSuperUserAccessField": "Camp LDAP d'accés de superusuari",
         "LdapSuperUserAccessFieldDescription": "L'atribut LDAP personalitzat que determina si un usuari és un superusuari o no.",
-        "LdapUrlPortWarning": "L'opció de port s'ignora quan el nom d'amfitrió del servidor es defineix com una URL LDAP (és a dir, ldap://localhost/ en comptes de localhost).",
         "LdapUserAccessAttributeServerSeparator": "Servidor d'atributs d'accés d'usuari i separador de llista de llocs",
         "LdapUserAccessAttributeServerSeparatorDescription": "La cadena que s'utilitza per separar els ID d'instància del servidor Matomo amb les llistes d'ID de lloc. Si es defineix com ':' s'espera que l'atribut d'accés sigui semblant a '&lt;server-id&gt;:&lt;site-list&gt;;&lt;server-id&gt;:&lt;site-list&gt;'.",
         "LdapUserAccessAttributeServerSpecDelimiter": "Delimitador d'especificació del servidor de l'atribut d'accés d'usuari",
