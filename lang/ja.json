@@ -33,7 +33,6 @@
         "LdapPort": "サーバーポート",
         "LdapSuperUserAccessField": "LDAP スーパーユーザーアクセスフィールド",
         "LdapSuperUserAccessFieldDescription": "ユーザがスーパーユーザであるかどうかを決定するカスタム LDAP 属性です。",
-        "LdapUrlPortWarning": "サーバのホスト名は LDAP URL ( すなわち、localhost の代わりに ldap://localhost/ ) に設定されている場合、ポートオプションは無視されます。",
         "LdapUserAccessAttributeServerSeparator": "ユーザーアクセス属性サーバーとサイトリストセパレータ",
         "LdapUserAccessAttributeServerSeparatorDescription": "Matomo サーバーインスタンス ID をサイト ID リストで区切るために使用される文字列。 '：' に設定すると、アクセス属性は '&lt;server-id&gt;:&lt;site-list&gt;;&lt;server-id&gt;:&lt;site-list&gt;'のようになります。",
         "LdapUserAccessAttributeServerSpecDelimiter": "ユーザーアクセス属性サーバー指定の区切り文字",
