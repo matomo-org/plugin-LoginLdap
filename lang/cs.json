@@ -33,7 +33,6 @@
         "LdapPort": "Port serveru",
         "LdapSuperUserAccessField": "LDAP pole superuživatelského přístupu",
         "LdapSuperUserAccessFieldDescription": "Vlastní LDAP atribut, který udává, jestli je uživatel super-uživatel.",
-        "LdapUrlPortWarning": "Možnost port je ignorována, pokud je jméno hostitele zadáno jako URL (t. j. ldap://localhost/ místo localhost).",
         "LdapUserAccessAttributeServerSeparator": "Oddělovač stránek & serverů v atributu uživatelského přístupu",
         "LdapUserAccessAttributeServerSeparatorDescription": "Řetězec používaný k oddělení ID instancí serveru Matomo pomocí seznamů ID stránek. Pokud je nastaven na hodnotu ':', bude atribut přístupu vypadat jako '&lt;server-id&gt;:&lt;site-list&gt;;&lt;server-id&gt;:&lt;site-list&gt;'.",
         "LdapUserAccessAttributeServerSpecDelimiter": "Oddělovač specifikací serverů v atributu uživatelského přístupu",
