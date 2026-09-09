@@ -32,7 +32,6 @@
         "LdapPort": "Serverpoort",
         "LdapSuperUserAccessField": "LDAP Super Gebruiker Toegang Veld",
         "LdapSuperUserAccessFieldDescription": "Het standaard LDAP attribuut dat bepaalt of een gebruiker een superuser is of niet.",
-        "LdapUrlPortWarning": "De port optie wordt genegeerd wanneer de hostname van de server wordt aangepast naar een LDAP URL (bijvoorbeeld, ldap://localhost/ in plaats van localhost).",
         "LdapUserAccessAttributeServerSeparator": "Gebruikerstoegang Attribute Server &amp; Site List scheidingsteken",
         "LdapUserAccessAttributeServerSeparatorDescription": "De string die gebruikt wordt om Matomo server-instanctie ID's te scheiden met site ID lijsten. Indien ingesteld op ':', zal het toegangsattribuut er waarschijnlijk uitzien zoals '&lt;server-id&gt;:&lt;site-list&gt;;&lt;server-id&gt;:&lt;site-list&gt;'.",
         "LdapUserAccessAttributeServerSpecDelimiter": "Gebruikerstoegang Attribute Server Specificatie scheidingsteken",
