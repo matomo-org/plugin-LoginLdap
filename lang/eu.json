@@ -32,7 +32,6 @@
         "LdapPort": "Zerbitzariaren ataka",
         "LdapSuperUserAccessField": "LDAP super erabiltzaile sarbidea eremua",
         "LdapSuperUserAccessFieldDescription": "Erabiltzaile bat super erabiltzailea den ala ez erabakitzen duen LDAP atributu pertsonalizatua.",
-        "LdapUrlPortWarning": "Ataka aukerari ez ikusia egiten zaio zerbitzariaren ostalari-izenean LDAP URL bat ezartzen denean (adibidez, ldap://localhost/ jarrita localhost ordez).",
         "LdapUserAccessAttributeServerSeparator": "Erabiltzailearen sarbidearen atributuaren zerbitzaria eta guneen zerrendako banatzailea",
         "LdapUserAccessAttributeServerSeparatorDescription": "Guneen ID zerrendetan Matomo zerbitzarien instantzien IDak banatzeko erabiltzen den katea. ':' ezartzen bada, sarbide atributuak honelako itxura izango du: '&amp;tl;server-id&gt;:&amp;tl;site-list&gt;;&amp;tl;server-id&gt;:&amp;tl;site-list&gt;'.",
         "LdapUserAccessAttributeServerSpecDelimiter": "Erabiltzailearen sarbide atributuaren zerbitzariko espezifikazioaren banatzailea",

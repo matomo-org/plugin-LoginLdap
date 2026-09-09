@@ -31,7 +31,6 @@
         "LdapPort": "Serverport",
         "LdapSuperUserAccessField": "LDAP superbruger adgangsfelt",
         "LdapSuperUserAccessFieldDescription": "Brugerdefineret LDAP-attribut, der bestemmer, om en bruger er superbruger eller ej.",
-        "LdapUrlPortWarning": "Port indstilling ignoreres når serverens værtsnavn er indstillet til en LDAP URL (fx. ldap://localhost/ i stedet for localhost).",
         "LdapUserAccessAttributeServerSeparator": "Brugeradgang attributserver & webside separator",
         "LdapUserAccessAttributeServerSeparatorDescription": "Strengen bruges til at adskille Matomo serverforekomst id'er med webstedets ID lister. Hvis den er sat til ':', forventes adgangsattributten at ligne '&lt;server-id&gt;:&lt;site-list&gt;;&lt;server-id&gt;:&lt;site-list&gt;'.",
         "LdapUserAccessAttributeServerSpecDelimiter": "Afgrænsningstegn for serverspecifikation brugeradgangsattribut",

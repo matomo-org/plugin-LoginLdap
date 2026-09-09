@@ -32,7 +32,6 @@
         "LdapPort": "Tjenerport",
         "LdapSuperUserAccessField": "Felt for LDAP-superbrukertilgang",
         "LdapSuperUserAccessFieldDescription": "Den egendefinerte LDAP-attributten avgjør hvorvidt en bruker er en superbruker eller ei.",
-        "LdapUrlPortWarning": "Portdelen ignoreres når tjenervertsnavn er satt til en LDAP-URL (altså, ldap://localhost/ istedenfor localhost).",
         "LdapUserAccessAttributeServerSeparator": "Brukertilgangsattributt til tjener, og sidelisteinndeler",
         "LdapUserAccessAttributeServerSeparatorDescription": "Strengen brukes til å dele inn listen over Matomo-tjenerinstans-ID-er i listen over ID-er. Hvis satt til «;» forventes tilgangsattributten å se ut som «&lt;server-id&gt;:&lt;site-list&gt;;&lt;server-id&gt;:&lt;site-list&gt;».",
         "LdapUserAccessAttributeServerSpecDelimiter": "Inndeler for brukertilgangsattributt for tjenerspesifikasjon",

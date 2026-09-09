@@ -33,7 +33,6 @@
         "LdapPort": "Port Freastalaí",
         "LdapSuperUserAccessField": "Réimse Rochtana Úsáideora Super LDAP",
         "LdapSuperUserAccessFieldDescription": "An tréith LDAP saincheaptha a chinneann an bhfuil úsáideoir ina superuser nó nach bhfuil.",
-        "LdapUrlPortWarning": "Déantar neamhaird ar rogha an phoirt nuair a shocraítear óstainm an fhreastalaí chuig URL LDAP (ie, ldap://localhost/ in ionad localhost).",
         "LdapUserAccessAttributeServerSeparator": "Freastalaí Tréithe Rochtana Úsáideora &amp; Deighilteoir Liosta Suímh",
         "LdapUserAccessAttributeServerSeparatorDescription": "An teaghrán a úsáidtear chun IDanna ásc freastalaí Matomo a scaradh le liostaí aitheantais an láithreáin. Má shocraítear ':', beifear ag súil go mbeidh cuma ':&lt;server-id&gt;&lt;site-list&gt;;&lt;server-id&gt;&lt;site-list&gt;:' ar an tréith rochtana.",
         "LdapUserAccessAttributeServerSpecDelimiter": "Teormharcóir Sonraíocht Freastalaí Tréithe Rochtana Úsáideora",

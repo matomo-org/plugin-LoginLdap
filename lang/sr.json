@@ -32,7 +32,6 @@
         "LdapPort": "Port servera",
         "LdapSuperUserAccessField": "Polje LDAP superkorisnik",
         "LdapSuperUserAccessFieldDescription": "LDAP atribut koji određuje da li je korisnik superkorisnik ili ne.",
-        "LdapUrlPortWarning": "Broj porta se ignoriše kada je naziv hosta predstavljen LDAP URL-om (npr. ldap://localhost/ umesto of localhost).",
         "LdapUserAccessAttributeServerSeparator": "Separator liste sajtova i atributa korisničkih pristupa",
         "LdapUserAccessAttributeServerSeparatorDescription": "Znak koji će da razdvaja Matomo servere i sajtove. Ako je postavljen na ';', lista će izgledati poput '&lt;server-id&gt;:&lt;site-list&gt;;&lt;server-id&gt;:&lt;site-list&gt;'.",
         "LdapUserAccessAttributeServerSpecDelimiter": "Delimiter za specifikaciju atributa korisničkih pristupa",

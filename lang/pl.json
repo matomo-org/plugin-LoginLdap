@@ -32,7 +32,6 @@
         "LdapPort": "Port Serwera",
         "LdapSuperUserAccessField": "LDAP - Pole uprawnień Super Użytkownika",
         "LdapSuperUserAccessFieldDescription": "Konfigurowalny atrybut LDAP określający serwisy, w których użytkownikowi nadano uprawnienia Super Użytkownika.",
-        "LdapUrlPortWarning": "Opcjonalny numer portu jest ignorowany jeśli nazwa hosta jest skonfigurowana jako LDAP URL (np., ldap://localhost/ zamiast localhost).",
         "LdapUserAccessAttributeServerSeparator": "Serwerowy atrybut dostępu użytkownika i separator listy serwisów",
         "LdapUserAccessAttributeServerSeparatorDescription": "Ciąg wykorzystywany do oddzielenia identyfikatorów serwerów Matomo z identyfikatorami serwisów. Ustawienie ':' wygeneruje taki atrybut '&lt;server-id&gt;:&lt;site-list&gt;;&lt;server-id&gt;:&lt;site-list&gt;'.",
         "LdapUserAccessAttributeServerSpecDelimiter": "Separator konfiguracji serwera dla atrybutu dostępu użytkownika",

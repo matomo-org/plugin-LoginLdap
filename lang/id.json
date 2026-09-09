@@ -32,7 +32,6 @@
         "LdapPort": "Porta Server",
         "LdapSuperUserAccessField": "Kolom Akses Pengguna Super LDAP",
         "LdapSuperUserAccessFieldDescription": "Atribut LDAP khusus yang menentukan apakah pengguna adalah pengguna super atau bukan.",
-        "LdapUrlPortWarning": "Opsi porta diabaikan bila nama host server disetel ke URL LDAP (mis. ldap://localhost/ bukan localhost).",
         "LdapUserAccessAttributeServerSeparator": "Pemisah Daftar Situs &amp; Server Atribut Akses Pengguna",
         "LdapUserAccessAttributeServerSeparatorDescription": "String yang digunakan untuk memisahkan ID server Matomo dengan daftar ID situs. Jika disetel ke ':', atribut akses akan terlihat seperti '&lt;server-id&gt;:&lt;site-list&gt;;&lt;server-id&gt;:&lt;site-list&gt;'.",
         "LdapUserAccessAttributeServerSpecDelimiter": "Pembatas Spesifikasi Server Atribut Akses Pengguna",

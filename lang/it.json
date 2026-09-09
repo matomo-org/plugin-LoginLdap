@@ -32,7 +32,6 @@
         "LdapPort": "Porta Server",
         "LdapSuperUserAccessField": "Campo Accesso Super User LDAP",
         "LdapSuperUserAccessFieldDescription": "Attributo LDAP personalizzato che determina se un utente è o meno un superuser.",
-        "LdapUrlPortWarning": "L'opzione porta viene ignorata quando l'hostname del server è impostato come URL LDAP (cioè, ldap://localhost/ invece di localhost).",
         "LdapUserAccessAttributeServerSeparator": "Server Attributi Accesso Utente & Separatore Elenco Siti",
         "LdapUserAccessAttributeServerSeparatorDescription": "Stringa usata per separare gli ID delle istanze server dagli ID elenchi siti. Se impostata a ':', ci si aspetterà un attributo di accesso simile a '&lt;server-id&gt;:&lt;site-list&gt;;&lt;server-id&gt;:&lt;site-list&gt;'.",
         "LdapUserAccessAttributeServerSpecDelimiter": "Delimitatore Specifiche Server Attributi Accesso Utente",

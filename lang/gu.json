@@ -32,7 +32,6 @@
         "LdapPort": "સર્વર પોર્ટ",
         "LdapSuperUserAccessField": "LDAP સુપર યુઝર એક્સેસ ફીલ્ડ",
         "LdapSuperUserAccessFieldDescription": "કસ્ટમ LDAP એટ્રિબ્યુટ જે નક્કી કરે છે કે વપરાશકર્તા સુપરયુઝર છે કે નહીં.",
-        "LdapUrlPortWarning": "પોર્ટ વિકલ્પને અવગણાય છે જ્યારે સર્વર હોસ્ટનેમને LDAP URL (અર્થાતી, ldap://localhost/ ના બદલે localhost) પર સેટ કરવામાં આવે છે.",
         "LdapUserAccessAttributeServerSeparator": "યુઝર એક્સેસ એટ્રિબ્યુટ સર્વર અને સાઇટ લિસ્ટ સેપરેટર",
         "LdapUserAccessAttributeServerSeparatorDescription": "Matomo સર્વર ઇન્સ્ટન્સ ID ને સાઇટ ID સૂચિઓ સાથે અલગ કરવા માટે વપરાતી સ્ટ્રિંગ. જો ':' પર સેટ કરેલ હોય, તો એક્સેસ એટ્રિબ્યુટ '&lt;server-id&gt;:&lt;site-list&gt;;&lt;server-id&gt;:&lt;site-list&gt;' જેવી દેખાવાની અપેક્ષા રાખવામાં આવશે.",
         "LdapUserAccessAttributeServerSpecDelimiter": "યુઝર એક્સેસ એટ્રિબ્યુટ સર્વર સ્પેસિફિકેશન ડિલિમિટર",

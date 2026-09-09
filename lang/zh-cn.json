@@ -32,7 +32,6 @@
         "LdapPort": "服务器端口",
         "LdapSuperUserAccessField": "LDAP超级用户访问字段",
         "LdapSuperUserAccessFieldDescription": "确定用户是否为超级用户的定制LDAP属性。",
-        "LdapUrlPortWarning": "当服务器主机名设置为LDAP URL（即ldap://localhost/ 而不是localhost）时，将忽略port选项。",
         "LdapUserAccessAttributeServerSeparator": "用户访问属性服务器和站点列表分隔符",
         "LdapUserAccessAttributeServerSeparatorDescription": "用于将Matomo服务器实例ID与站点ID列表分开的字符串。 如果设置为“：”，则访问属性应类似于“&lt;server-id&gt;:&lt;site-list&gt;;&lt;server-id&gt;:&lt;site-list&gt;”。",
         "LdapUserAccessAttributeServerSpecDelimiter": "用户访问属性服务器规范分隔符",

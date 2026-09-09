@@ -33,7 +33,6 @@
         "LdapPort": "Server Port",
         "LdapSuperUserAccessField": "LDAP Feld Hauptadministrator Zugriff",
         "LdapSuperUserAccessFieldDescription": "LDAP Attribut, das vorgibt, ob ein Benutzer Superuser ist oder nicht.",
-        "LdapUrlPortWarning": "Die Port Einstellung wird ignoriert, wenn der Server Hostname auf eine LDAP URL (zum Beispiel ldap://localhost/ anstelle von localhost) gesetzt ist.",
         "LdapUserAccessAttributeServerSeparator": "Benutzerzugriffs Eigenschaft Server- & Seitenlisten-Separator",
         "LdapUserAccessAttributeServerSeparatorDescription": "Die eingesetzte Zeichenfolge, welche separate Matomo-Server-Instanzen mit Seiten-Ids auflistet. Wenn auf ':' gesetzt, wird ein Zugriffsattribut wie folgt erwartet: '&lt;server-id&gt;:&lt;site-list&gt;;&lt;server-id&gt;:&lt;site-list&gt;'.",
         "LdapUserAccessAttributeServerSpecDelimiter": "Trennzeichen für die Server Spezifikation des Benutzerzugriffsattributs",

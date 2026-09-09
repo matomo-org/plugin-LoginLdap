@@ -33,7 +33,6 @@
         "LdapPort": "Sunucu bağlantı noktası",
         "LdapSuperUserAccessField": "LDAP süper kullanıcı izni alanı",
         "LdapSuperUserAccessFieldDescription": "Kullanıcının süper kullanıcı izni olup olmadığını belirleyecek LDAP özniteliği.",
-        "LdapUrlPortWarning": "Sunucu adı bir LDAP adresi olarak ayarlandığında bağlantı noktası seçeneği yok sayılır (Örnek: localhost yerine ldap://localhost/ gibi).",
         "LdapUserAccessAttributeServerSeparator": "Kullanıcı izni özniteliği sunucu ve site listesi ayracı",
         "LdapUserAccessAttributeServerSeparatorDescription": "Matomo sunucu kopya kimlikleri ile site kimliği listelerini ayırmak için kullanılacak dizge. ':' olarak ayarlanırsa izin özniteliğinin şu şekilde görünmesi beklenir '&lt;server-id&gt;:&lt;site-list&gt;;&lt;server-id&gt;:&lt;site-list&gt;'.",
         "LdapUserAccessAttributeServerSpecDelimiter": "Kullanıcı izni özniteliği sunucu belirteci ayracı",

@@ -32,7 +32,6 @@
         "LdapPort": "Puerto del servidor",
         "LdapSuperUserAccessField": "Campo de acceso súperusuario de LDAP",
         "LdapSuperUserAccessFieldDescription": "El atributo personalizado de LDAP que determina si un usuario es súperusuario o no.",
-        "LdapUrlPortWarning": "La opción de puerto es ignorado cuando el nombre del servidor está establecido a una dirección web de LDAP (por ejempli: \"ldap://localhost/\" en lugar de \"localhost\").",
         "LdapUserAccessAttributeServerSeparator": "Servidor de atributo de acceso de usuario y separador de lista de sitio",
         "LdapUserAccessAttributeServerSeparatorDescription": "La cadena usada para separar los identificadores de instancia de servidor de Matomo con listas de identificadores de sitio. Es está establecida a \";\", entonces el atributo de acceso tendría que aparecer como \"&lt;server-id&gt;:&lt;site-list&gt;;&lt;server-id&gt;:&lt;site-list&gt;\".",
         "LdapUserAccessAttributeServerSpecDelimiter": "Delimitador de especificación de servidor de atributo de acceso de usuario",

@@ -32,7 +32,6 @@
         "LdapPort": "Portë Shërbyesi",
         "LdapSuperUserAccessField": "Fusha LDAP për Hyrje Superpërdoruesi",
         "LdapSuperUserAccessFieldDescription": "Atributi vetjak LDAP që përcakton nëse një përdorues është apo jo superpërdorues.",
-        "LdapUrlPortWarning": "Mundësia portë shpërfillet, kur si strehëemër shërbyesi është caktuar një URL LDAP (domethënë, ldap://localhost/, në vend se localhost).",
         "LdapUserAccessAttributeServerSeparator": "Ndarës Shërbyesi & Listë Sajti në Atribut Hyrjesh Përdoruesi",
         "LdapUserAccessAttributeServerSeparatorDescription": "Vargu i përdorur për të ndarë ID instancash shërbyesi Matomo me lista ID-sh sajti. Nëse vihet si ':', atributi i hyrjeve do të pritet të duket si '&lt;server-id&gt;:&lt;site-list&gt;;&lt;server-id&gt;:&lt;site-list&gt;'.",
         "LdapUserAccessAttributeServerSpecDelimiter": "Kufizues Specifikimesh Shërbyesi në Atribut Hyrjesh Përdoruesi",
