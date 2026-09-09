@@ -2,6 +2,7 @@
 
 #### LoginLdap 6.0.2
 * Fixed the LDAP instance identifier comparison, so an access value naming a different Matomo instance is no longer applied to this one
+* Fixed the loading indicator showing as a white box in dark mode
 
 #### LoginLdap 6.0.1 - 2026-09-07
 * Fixed LDAP site access being denied when the instance name or a server separator contains a slash
