@@ -4,6 +4,7 @@
 - Fixed the LDAP instance identifier comparison, so an access value naming a different Matomo instance is no longer applied to this one
 - Fixed the login comparison so that logins the database collation treats as equal, but which are different users, are no longer accepted
 - Added termination of a Matomo session when the web server starts authenticating a different user
+- Fixed the login result being built from the user's access as it was before LDAP access synchronization ran
 
 #### LoginLdap 5.2.6 - 2026-08-24
 - Added strict check for TLS if enabled

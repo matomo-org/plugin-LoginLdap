@@ -112,16 +112,21 @@ class WebServerAuthLoginResolutionTest extends TestCase
     }
 
     /**
-     * @param array $existingUser what UserModel::getUser() returns for the asserted login
+     * @param array $existingUser the Matomo user row before this authentication, empty when there is none yet
      */
     private function makeAuth($existingUser)
     {
         $auth = new WebServerAuth($this->createMock(LoggerInterface::class));
 
+        // synchronization creates the user when there is none, so the row is only absent until it runs
+        $userExists = !empty($existingUser);
+
         $usersModel = $this->getMockBuilder(UserModel::class)
                            ->onlyMethods(array('getUser', 'generateRandomTokenAuth'))
                            ->getMock();
-        $usersModel->method('getUser')->willReturn($existingUser);
+        $usersModel->method('getUser')->willReturnCallback(function () use (&$userExists) {
+            return $userExists ? $this->makeUserRow() : array();
+        });
         $usersModel->method('generateRandomTokenAuth')->willReturn('atoken');
         $auth->setUsersModel($usersModel);
 
@@ -135,7 +140,11 @@ class WebServerAuthLoginResolutionTest extends TestCase
         $synchronizer = $this->getMockBuilder(UserSynchronizer::class)
                              ->onlyMethods(array('synchronizeLdapUser', 'synchronizePiwikAccessFromLdap'))
                              ->getMock();
-        $synchronizer->method('synchronizeLdapUser')->willReturn($this->makeUserRow());
+        $synchronizer->method('synchronizeLdapUser')->willReturnCallback(function () use (&$userExists) {
+            $userExists = true;
+
+            return $this->makeUserRow();
+        });
         $auth->setUserSynchronizer($synchronizer);
 
         return $auth;
