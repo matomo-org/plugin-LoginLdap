@@ -63,21 +63,21 @@ class WebServerAuth extends Base
     public function authenticate()
     {
         try {
-            $webServerAuthUser = $this->getAlreadyAuthenticatedLogin();
+            $webServerAuthUser = self::getAlreadyAuthenticatedLogin();
 
             if (empty($webServerAuthUser)) {
                 $this->logger->debug("using web server authentication, but REMOTE_USER server variable not found.");
 
                 return $this->tryFallbackAuth($onlySuperUsers = false, $this->fallbackAuth);
             } else {
-                if (Config::getStripDomainFromWebAuth()) {
-                    $this->login = preg_replace('/(.*?\\\\)|(@.*)/', '', $webServerAuthUser);
-                } else {
-                    $this->login = $webServerAuthUser;
-                }
+                $this->login = self::getAssertedLogin();
                 $this->password = '';
 
                 $this->logger->info("User '{login}' authenticated by webserver.", array('login' => $this->login));
+
+                // resolve the login before synchronizing, so that a login resolving to a different existing
+                // user is rejected before synchronization writes to that user's row
+                $this->getUserForLogin();
 
                 if ($this->synchronizeUsersAfterSuccessfulLogin) {
                     $this->synchronizeLoggedInUser();
@@ -146,15 +146,53 @@ class WebServerAuth extends Base
         $this->fallbackAuth = $fallbackAuth;
     }
 
-    private function getAlreadyAuthenticatedLogin()
+    private static function getAlreadyAuthenticatedLogin()
     {
         return @$_SERVER['REMOTE_USER'];
     }
 
+    /**
+     * Returns the login the web server authenticated for this request, or null when it authenticated nobody.
+     *
+     * The single answer to "who does the web server say this is", so that authentication, the session guard
+     * and {@link self::isCurrentRequestWebServerAuthenticated()} cannot disagree about it.
+     *
+     * The value is returned as the web server gave it. Trimming it here would let "ironman " authenticate as
+     * "ironman", which is a row the login column's collation returns for it and which the login comparison
+     * exists to refuse. Trimming decides only whether anybody was asserted at all, so that a REMOTE_USER of
+     * "  ", or one that strips to nothing such as "SHIELD\\", names nobody rather than the empty login.
+     *
+     * @return string|null
+     */
+    public static function getAssertedLogin(): ?string
+    {
+        $webServerAuthUser = self::getAlreadyAuthenticatedLogin();
+
+        if (empty($webServerAuthUser)) {
+            return null;
+        }
+
+        if (Config::getStripDomainFromWebAuth()) {
+            $webServerAuthUser = preg_replace('/(.*?\\\\)|(@.*)/', '', $webServerAuthUser);
+        }
+
+        return trim($webServerAuthUser) === '' ? null : $webServerAuthUser;
+    }
+
+    /**
+     * Returns whether the web server authenticated somebody for this request.
+     *
+     * Callers use this to skip Matomo's own password confirmation, so it has to agree with
+     * {@link self::getAssertedLogin()}: an assertion naming nobody authenticates nobody, and must not skip
+     * anything.
+     *
+     * @return bool
+     */
     public static function isCurrentRequestWebServerAuthenticated(): bool
     {
         $auth = StaticContainer::get('Piwik\Auth');
-        return $auth instanceof WebServerAuth && !empty($_SERVER['REMOTE_USER']);
+
+        return $auth instanceof WebServerAuth && self::getAssertedLogin() !== null;
     }
 
     private function synchronizeLoggedInUser()
