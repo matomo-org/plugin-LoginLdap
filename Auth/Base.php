@@ -289,7 +289,17 @@ abstract class Base implements Auth
             if (!empty($this->login)) {
                 $user = $this->usersModel->getUser($this->login);
 
-                if (!empty($user) && !$this->isSameLogin($this->login, $user['login'])) {
+                if (!empty($user) && !UserIdentity::isSameLogin($this->login, $user['login'])) {
+                    $this->logger->warning(
+                        "Auth\\Base::{func}: refusing to authenticate '{assertedLogin}': it resolves to the "
+                            . "existing Matomo user '{storedLogin}', which is a different login.",
+                        array(
+                            'func' => __FUNCTION__,
+                            'assertedLogin' => $this->login,
+                            'storedLogin' => $user['login'],
+                        )
+                    );
+
                     throw new Exception(sprintf(
                         "Refusing to authenticate: asserted login '%s' resolved to the different existing user '%s'.",
                         $this->login,
@@ -305,21 +315,6 @@ abstract class Base implements Auth
             }
         }
         return $this->userForLogin;
-    }
-
-    /**
-     * Returns whether the asserted login and the login of the user row it resolved to identify the same user.
-     *
-     * Implementations that verify no credential against the returned row have to override this and require an
-     * exact match.
-     *
-     * @param string $assertedLogin
-     * @param string $storedLogin
-     * @return bool
-     */
-    protected function isSameLogin(string $assertedLogin, string $storedLogin): bool
-    {
-        return UserIdentity::isSameLogin($assertedLogin, $storedLogin);
     }
 
     protected function tryFallbackAuth($onlySuperUsers = true, ?Auth $auth = null)
@@ -387,7 +382,7 @@ abstract class Base implements Auth
 
     protected function makeAuthFailure()
     {
-        return new AuthResult(AuthResult::FAILURE, $this->login, null);
+        return new AuthResult(AuthResult::FAILURE, $this->login, '');
     }
 
     protected function authenticateByLdap()

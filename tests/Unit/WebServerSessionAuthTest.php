@@ -26,6 +26,7 @@ use Piwik\Session\SessionFingerprint;
 class WebServerSessionAuthTest extends TestCase
 {
     private const SESSION_USER = 'karen';
+    private const OTHER_SESSION_NAMESPACE = 'Piwik_Login';
 
     /**
      * @var array
@@ -49,7 +50,12 @@ class WebServerSessionAuthTest extends TestCase
             'strip_domain_from_web_auth' => 0,
         );
 
-        $_SESSION = array(SessionFingerprint::USER_NAME_SESSION_VAR_NAME => self::SESSION_USER);
+        $_SESSION = array(
+            SessionFingerprint::USER_NAME_SESSION_VAR_NAME => self::SESSION_USER,
+            // a namespace belonging to the session's user that SessionFingerprint::clear() does not touch,
+            // so that the tests can tell the wipe in endSession() from clear() emptying the array by itself
+            self::OTHER_SESSION_NAMESPACE => array('redirectParams' => 'whatever'),
+        );
     }
 
     public function tearDown(): void
@@ -86,6 +92,7 @@ class WebServerSessionAuthTest extends TestCase
     public function test_authenticate_UsesTheSessionAuth_IfThereIsNoSessionYet()
     {
         $_SESSION = array();
+
         $_SERVER['REMOTE_USER'] = 'someoneelse';
 
         $result = $this->makeAuth($this->makeWrappedAuth($isCalled = true))->authenticate();
@@ -115,7 +122,7 @@ class WebServerSessionAuthTest extends TestCase
         $result = $this->makeAuth($this->makeWrappedAuth($isCalled = false))->authenticate();
 
         $this->assertEquals(AuthResult::FAILURE, $result->getCode());
-        $this->assertNull($result->getIdentity());
+        $this->assertSame('', $result->getIdentity());
         $this->assertSessionWasEnded();
     }
 
@@ -124,10 +131,50 @@ class WebServerSessionAuthTest extends TestCase
         return array(
             'a different user' => array('bob'),
 
-            // the session guard uses the same exact comparison WebServerAuth uses
-            'ascii case difference' => array('Karen'),
+            // the session guard uses the same comparison WebServerAuth uses, so a session it keeps is always
+            // one WebServerAuth would authenticate
             'accented character' => array("\xc3\xa1aren"),
             'kelvin sign' => array("\xe2\x84\xaaaren"),
+
+            // not trimmed into the session's user, for the same reason WebServerAuth will not authenticate it
+            'surrounding whitespace' => array(' ' . self::SESSION_USER . ' '),
+        );
+    }
+
+    public function test_authenticate_UsesTheSessionAuth_IfTheAssertedLoginDiffersOnlyByAsciiCase()
+    {
+        $_SERVER['REMOTE_USER'] = ucfirst(self::SESSION_USER);
+
+        $result = $this->makeAuth($this->makeWrappedAuth($isCalled = true))->authenticate();
+
+        $this->assertEquals(AuthResult::SUCCESS, $result->getCode());
+        $this->assertSessionWasKept();
+    }
+
+    /**
+     * @dataProvider getRemoteUsersThatStripToNothing
+     */
+    public function test_authenticate_UsesTheSessionAuth_IfTheAssertedLoginStripsToNothing($remoteUser)
+    {
+        Config::getInstance()->LoginLdap = array(
+            'use_webserver_auth' => 1,
+            'strip_domain_from_web_auth' => 1,
+        );
+
+        $_SERVER['REMOTE_USER'] = $remoteUser;
+
+        $result = $this->makeAuth($this->makeWrappedAuth($isCalled = true))->authenticate();
+
+        $this->assertEquals(AuthResult::SUCCESS, $result->getCode());
+        $this->assertSessionWasKept();
+    }
+
+    public function getRemoteUsersThatStripToNothing()
+    {
+        return array(
+            'domain only' => array('SHIELD\\'),
+            'at sign only' => array('@shield.org'),
+            'whitespace only' => array('   '),
         );
     }
 
@@ -159,11 +206,13 @@ class WebServerSessionAuthTest extends TestCase
     private function assertSessionWasKept()
     {
         $this->assertEquals(self::SESSION_USER, (new SessionFingerprint())->getUser());
+        $this->assertArrayHasKey(self::OTHER_SESSION_NAMESPACE, $_SESSION);
     }
 
     private function assertSessionWasEnded()
     {
         $this->assertNull((new SessionFingerprint())->getUser());
+        $this->assertArrayNotHasKey(self::OTHER_SESSION_NAMESPACE, $_SESSION);
         $this->assertEquals(array(), $_SESSION);
     }
 

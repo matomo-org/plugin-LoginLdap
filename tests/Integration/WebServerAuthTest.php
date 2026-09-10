@@ -91,9 +91,37 @@ class WebServerAuthTest extends LdapIntegrationTest
     public function getLoginsResolvingToTheSuperUser()
     {
         return array(
-            'ascii case difference' => array(ucfirst(self::TEST_SUPERUSER_LOGIN)),
             'accented character' => array(substr(self::TEST_SUPERUSER_LOGIN, 0, -1) . "\xc3\xa1"),
         );
+    }
+
+    public function test_WebServerAuth_Works_IfAssertedLoginDiffersFromTheStoredOneOnlyByAsciiCase()
+    {
+        Config::getInstance()->LoginLdap['use_webserver_auth'] = 1;
+
+        $_SERVER['REMOTE_USER'] = strtoupper(self::TEST_SUPERUSER_LOGIN);
+
+        $ldapAuth = WebServerAuth::makeConfigured();
+        $authResult = $ldapAuth->authenticate();
+
+        $this->assertEquals(AuthResult::SUCCESS_SUPERUSER_AUTH_CODE, $authResult->getCode());
+        $this->assertEquals(self::TEST_SUPERUSER_LOGIN, $authResult->getIdentity());
+    }
+
+    public function test_WebServerAuth_Works_OnEveryRequest_IfTheUserIsProvisionedFromADifferentlyCasedLogin()
+    {
+        Config::getInstance()->LoginLdap['use_webserver_auth'] = 1;
+
+        // the Matomo user does not exist yet, so it is created from the LDAP entry's own casing. Every later
+        // request asserts the login the web server has, which must keep resolving to that user.
+        $_SERVER['REMOTE_USER'] = strtoupper(self::TEST_LOGIN);
+
+        foreach (array('first', 'second') as $request) {
+            $authResult = WebServerAuth::makeConfigured()->authenticate();
+
+            $this->assertEquals(AuthResult::SUCCESS, $authResult->getCode(), "failed on the {$request} request");
+            $this->assertEquals(self::TEST_LOGIN, $authResult->getIdentity());
+        }
     }
 
     public function test_WebServerAuth_Fails_IfUserIsNotPartOfRequiredGroup()

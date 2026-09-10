@@ -17,7 +17,6 @@ use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\LoginLdap\Ldap\Exceptions\ConnectionException;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
-use Piwik\Plugins\LoginLdap\UserIdentity;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Plugins\UsersManager\Model as UserModel;
 use Piwik\Session;
@@ -153,8 +152,15 @@ class WebServerAuth extends Base
     }
 
     /**
-     * Returns the login the web server authenticated for this request, normalized the way
-     * {@link self::authenticate()} normalizes it, or null when the web server authenticated nobody.
+     * Returns the login the web server authenticated for this request, or null when it authenticated nobody.
+     *
+     * The single answer to "who does the web server say this is", so that authentication, the session guard
+     * and {@link self::isCurrentRequestWebServerAuthenticated()} cannot disagree about it.
+     *
+     * The value is returned as the web server gave it. Trimming it here would let "ironman " authenticate as
+     * "ironman", which is a row the login column's collation returns for it and which the login comparison
+     * exists to refuse. Trimming decides only whether anybody was asserted at all, so that a REMOTE_USER of
+     * "  ", or one that strips to nothing such as "SHIELD\\", names nobody rather than the empty login.
      *
      * @return string|null
      */
@@ -167,29 +173,26 @@ class WebServerAuth extends Base
         }
 
         if (Config::getStripDomainFromWebAuth()) {
-            return preg_replace('/(.*?\\\\)|(@.*)/', '', $webServerAuthUser);
+            $webServerAuthUser = preg_replace('/(.*?\\\\)|(@.*)/', '', $webServerAuthUser);
         }
 
-        return $webServerAuthUser;
-    }
-
-    public static function isCurrentRequestWebServerAuthenticated(): bool
-    {
-        $auth = StaticContainer::get('Piwik\Auth');
-        return $auth instanceof WebServerAuth && !empty($_SERVER['REMOTE_USER']);
+        return trim($webServerAuthUser) === '' ? null : $webServerAuthUser;
     }
 
     /**
-     * No password, password hash or token auth is verified against the row the asserted login resolves to, so
-     * unlike the other auth implementations this one requires the stored login to match it exactly.
+     * Returns whether the web server authenticated somebody for this request.
      *
-     * @param string $assertedLogin
-     * @param string $storedLogin
+     * Callers use this to skip Matomo's own password confirmation, so it has to agree with
+     * {@link self::getAssertedLogin()}: an assertion naming nobody authenticates nobody, and must not skip
+     * anything.
+     *
      * @return bool
      */
-    protected function isSameLogin(string $assertedLogin, string $storedLogin): bool
+    public static function isCurrentRequestWebServerAuthenticated(): bool
     {
-        return UserIdentity::isSameLoginExact($assertedLogin, $storedLogin);
+        $auth = StaticContainer::get('Piwik\Auth');
+
+        return $auth instanceof WebServerAuth && self::getAssertedLogin() !== null;
     }
 
     private function synchronizeLoggedInUser()

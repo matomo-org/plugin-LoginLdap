@@ -14,7 +14,6 @@ use Piwik\Container\StaticContainer;
 use Piwik\Log\LoggerInterface;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\LoginLdap\UserIdentity;
-use Piwik\Session;
 use Piwik\Session\SessionAuth;
 use Piwik\Session\SessionFingerprint;
 
@@ -72,7 +71,7 @@ class WebServerSessionAuth extends SessionAuth
 
         $this->endSession();
 
-        return new AuthResult(AuthResult::FAILURE, null, null);
+        return new AuthResult(AuthResult::FAILURE, '', '');
     }
 
     /**
@@ -92,14 +91,18 @@ class WebServerSessionAuth extends SessionAuth
         $assertedLogin = WebServerAuth::getAssertedLogin();
 
         // an absent REMOTE_USER is not a mismatch: setups that require web server authentication on only some
-        // paths would otherwise log people out at random
+        // paths would otherwise log people out at random. getAssertedLogin() also reports one that names
+        // nobody as absent, so this and WebServerAuth agree on every value.
+        //
+        // A REMOTE_USER that only differs from the session's user by surrounding whitespace is a mismatch and
+        // ends the session, as it would be for any other login WebServerAuth refuses to authenticate.
         if ($assertedLogin === null) {
             return null;
         }
 
         $sessionUser = (new SessionFingerprint())->getUser();
 
-        if (empty($sessionUser) || UserIdentity::isSameLoginExact($assertedLogin, $sessionUser)) {
+        if (empty($sessionUser) || UserIdentity::isSameLogin($assertedLogin, $sessionUser)) {
             return null;
         }
 
@@ -114,9 +117,9 @@ class WebServerSessionAuth extends SessionAuth
      */
     private function endSession(): void
     {
-        if (Session::isSessionStarted()) {
-            $_SESSION = array();
-        }
+        // not gated on Session::isSessionStarted(): Session::start() returns before setting that flag when a
+        // session is already active, so the flag can be false while $_SESSION holds the previous user's data
+        $_SESSION = array();
 
         $this->destroyCurrentSession(new SessionFingerprint());
     }
