@@ -366,6 +366,10 @@ abstract class Base implements Auth
         $syncedLogin = !empty($this->userForLogin['login']) ? $this->userForLogin['login'] : $this->login;
 
         $this->userSynchronizer->synchronizePiwikAccessFromLdap($syncedLogin, $ldapUser);
+
+        // read the row back: access synchronization has just applied the access LDAP grants now, which can
+        // differ from what the row held when it was returned above
+        $this->userForLogin = $this->usersModel->getUser($syncedLogin);
     }
 
     protected function makeSuccessLogin($userInfo)

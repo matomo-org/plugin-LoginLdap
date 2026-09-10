@@ -5,6 +5,7 @@
 * Fixed the loading indicator showing as a white box in dark mode
 * Fixed the login comparison so that logins the database collation treats as equal, but which are different users, are no longer accepted
 * Added termination of a Matomo session when the web server starts authenticating a different user
+* Fixed the login result being built from the user's access as it was before LDAP access synchronization ran
 
 #### LoginLdap 6.0.1 - 2026-09-07
 * Fixed LDAP site access being denied when the instance name or a server separator contains a slash
