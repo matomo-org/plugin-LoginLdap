@@ -17,6 +17,7 @@ use Piwik\Piwik;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
 use Piwik\Plugins\LoginLdap\Model\LdapUsers;
+use Piwik\Plugins\LoginLdap\UserIdentity;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Plugins\UsersManager\Model as UserModel;
 use Piwik\Log\LoggerInterface;
@@ -287,7 +288,17 @@ abstract class Base implements Auth
             if (!empty($this->login)) {
                 $user = $this->usersModel->getUser($this->login);
 
-                if (!empty($user) && !$this->isSameLogin($this->login, $user['login'])) {
+                if (!empty($user) && !UserIdentity::isSameLogin($this->login, $user['login'])) {
+                    $this->logger->warning(
+                        "Auth\\Base::{func}: refusing to authenticate '{assertedLogin}': it resolves to the "
+                            . "existing Matomo user '{storedLogin}', which is a different login.",
+                        array(
+                            'func' => __FUNCTION__,
+                            'assertedLogin' => $this->login,
+                            'storedLogin' => $user['login'],
+                        )
+                    );
+
                     throw new Exception(sprintf(
                         "Refusing to authenticate: asserted login '%s' resolved to the different existing user '%s'.",
                         $this->login,
@@ -303,11 +314,6 @@ abstract class Base implements Auth
             }
         }
         return $this->userForLogin;
-    }
-
-    private function isSameLogin(string $assertedLogin, string $storedLogin): bool
-    {
-        return mb_strtolower($assertedLogin, 'UTF-8') === mb_strtolower($storedLogin, 'UTF-8');
     }
 
     protected function tryFallbackAuth($onlySuperUsers = true, ?Auth $auth = null)

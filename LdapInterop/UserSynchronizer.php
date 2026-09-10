@@ -17,6 +17,7 @@ use Piwik\Date;
 use Piwik\Db;
 use Piwik\Piwik;
 use Piwik\Plugins\LoginLdap\Config;
+use Piwik\Plugins\LoginLdap\UserIdentity;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Plugins\UsersManager\Model as UserModel;
 use Piwik\Plugins\UsersManager\UserUpdater;
@@ -145,11 +146,10 @@ class UserSynchronizer
                 'ldapLogin' => $user['login']
             ));
 
-            if (!empty($existingUser) && mb_strtolower($existingUser['login']) !== mb_strtolower($user['login'])) {
+            if (!empty($existingUser) && !UserIdentity::isSameLogin($user['login'], $existingUser['login'])) {
                 $logger->warning(
                     "UserSynchronizer::{func}: refusing to synchronize LDAP user '{ldapLogin}': it resolves to the "
-                        . "existing Matomo user '{existingLogin}', which is a different login. This usually means two "
-                        . "LDAP identities differing by accent map onto one Matomo login.",
+                        . "existing Matomo user '{existingLogin}', which is a different login.",
                     array(
                         'func' => 'synchronizeLdapUser',
                         'ldapLogin' => $user['login'],

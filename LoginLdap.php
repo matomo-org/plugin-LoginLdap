@@ -259,11 +259,10 @@ class LoginLdap extends \Piwik\Plugin
             return;
         }
 
-        // Only a web-server-authenticated request bypasses the password. When REMOTE_USER is
-        // absent, WebServerAuth delegates to its password-validating fallback, so token
-        // creation stays safe and must remain allowed.
-        $auth = StaticContainer::get('Piwik\Auth');
-        if ($auth instanceof WebServerAuth && !empty($_SERVER['REMOTE_USER'])) {
+        // Only a web-server-authenticated request bypasses the password. When the web server authenticated
+        // nobody, WebServerAuth delegates to its password-validating fallback, so token creation stays safe
+        // and must remain allowed.
+        if (WebServerAuth::isCurrentRequestWebServerAuthenticated()) {
             throw new Exception(Piwik::translate('LoginLdap_CreateAppSpecificTokenAuthBlocked'));
         }
     }
