@@ -81,6 +81,27 @@ class WebServerAuthLoginResolutionTest extends TestCase
     }
 
     /**
+     * @dataProvider getLoginsWithSurroundingWhitespace
+     */
+    public function test_authenticate_Succeeds_IfTheAssertedLoginHasSurroundingWhitespace($remoteUser)
+    {
+        $_SERVER['REMOTE_USER'] = $remoteUser;
+
+        $result = $this->makeAuth($this->makeUserRow())->authenticate();
+
+        $this->assertEquals(AuthResult::SUCCESS, $result->getCode());
+        $this->assertEquals(self::LDAP_LOGIN, $result->getIdentity());
+    }
+
+    public function getLoginsWithSurroundingWhitespace()
+    {
+        return array(
+            'trailing' => array(self::LDAP_LOGIN . ' '),
+            'leading' => array(' ' . self::LDAP_LOGIN),
+        );
+    }
+
+    /**
      * @dataProvider getLoginsResolvingToADifferentUser
      */
     public function test_authenticate_Fails_IfAssertedLoginResolvesToADifferentUser($remoteUser)
@@ -98,7 +119,7 @@ class WebServerAuthLoginResolutionTest extends TestCase
         return array(
             'accented character' => array("ironm\xc3\xa1n"),
             'kelvin sign' => array("\xe2\x84\xaaironman"),
-            'trailing space' => array('ironman '),
+            'a different user' => array('thanos'),
         );
     }
 

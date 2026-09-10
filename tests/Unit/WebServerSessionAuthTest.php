@@ -26,6 +26,7 @@ use Piwik\Session\SessionFingerprint;
 class WebServerSessionAuthTest extends TestCase
 {
     private const SESSION_USER = 'karen';
+    private const OTHER_SESSION_NAMESPACE = 'Piwik_Login';
 
     /**
      * @var array
@@ -49,7 +50,12 @@ class WebServerSessionAuthTest extends TestCase
             'strip_domain_from_web_auth' => 0,
         );
 
-        $_SESSION = array(SessionFingerprint::USER_NAME_SESSION_VAR_NAME => self::SESSION_USER);
+        $_SESSION = array(
+            SessionFingerprint::USER_NAME_SESSION_VAR_NAME => self::SESSION_USER,
+            // a namespace belonging to the session's user that SessionFingerprint::clear() does not touch,
+            // so that the tests can tell the wipe in endSession() from clear() emptying the array by itself
+            self::OTHER_SESSION_NAMESPACE => array('redirectParams' => 'whatever'),
+        );
     }
 
     public function tearDown(): void
@@ -86,6 +92,7 @@ class WebServerSessionAuthTest extends TestCase
     public function test_authenticate_UsesTheSessionAuth_IfThereIsNoSessionYet()
     {
         $_SESSION = array();
+
         $_SERVER['REMOTE_USER'] = 'someoneelse';
 
         $result = $this->makeAuth($this->makeWrappedAuth($isCalled = true))->authenticate();
@@ -164,7 +171,18 @@ class WebServerSessionAuthTest extends TestCase
         return array(
             'domain only' => array('SHIELD\\'),
             'at sign only' => array('@shield.org'),
+            'whitespace only' => array('   '),
         );
+    }
+
+    public function test_authenticate_UsesTheSessionAuth_IfTheAssertedLoginHasSurroundingWhitespace()
+    {
+        $_SERVER['REMOTE_USER'] = ' ' . self::SESSION_USER . ' ';
+
+        $result = $this->makeAuth($this->makeWrappedAuth($isCalled = true))->authenticate();
+
+        $this->assertEquals(AuthResult::SUCCESS, $result->getCode());
+        $this->assertSessionWasKept();
     }
 
     public function test_authenticate_UsesTheSessionAuth_IfOnlyTheStrippedDomainDiffers()
@@ -195,11 +213,13 @@ class WebServerSessionAuthTest extends TestCase
     private function assertSessionWasKept()
     {
         $this->assertEquals(self::SESSION_USER, (new SessionFingerprint())->getUser());
+        $this->assertArrayHasKey(self::OTHER_SESSION_NAMESPACE, $_SESSION);
     }
 
     private function assertSessionWasEnded()
     {
         $this->assertNull((new SessionFingerprint())->getUser());
+        $this->assertArrayNotHasKey(self::OTHER_SESSION_NAMESPACE, $_SESSION);
         $this->assertEquals(array(), $_SESSION);
     }
 

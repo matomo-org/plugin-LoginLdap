@@ -152,8 +152,11 @@ class WebServerAuth extends Base
     }
 
     /**
-     * Returns the login the web server authenticated for this request, normalized the way
-     * {@link self::authenticate()} normalizes it, or null when the web server authenticated nobody.
+     * Returns the login the web server authenticated for this request, or null when it authenticated nobody.
+     *
+     * Trimmed, so that the login this authenticates and the login {@link WebServerSessionAuth} compares the
+     * session against are the same value. A REMOTE_USER of "  ", or one that strips to nothing such as
+     * "SHIELD\\", names nobody and is reported as such.
      *
      * @return string|null
      */
@@ -166,10 +169,12 @@ class WebServerAuth extends Base
         }
 
         if (Config::getStripDomainFromWebAuth()) {
-            return preg_replace('/(.*?\\\\)|(@.*)/', '', $webServerAuthUser);
+            $webServerAuthUser = preg_replace('/(.*?\\\\)|(@.*)/', '', $webServerAuthUser);
         }
 
-        return $webServerAuthUser;
+        $webServerAuthUser = trim($webServerAuthUser);
+
+        return $webServerAuthUser === '' ? null : $webServerAuthUser;
     }
 
     public static function isCurrentRequestWebServerAuthenticated(): bool

@@ -91,9 +91,9 @@ class WebServerSessionAuth extends SessionAuth
         $assertedLogin = WebServerAuth::getAssertedLogin();
 
         // an absent REMOTE_USER is not a mismatch: setups that require web server authentication on only some
-        // paths would otherwise log people out at random. Neither is one that strips to nothing, which
-        // WebServerAuth cannot authenticate anybody with either.
-        if ($assertedLogin === null || trim($assertedLogin) === '') {
+        // paths would otherwise log people out at random. getAssertedLogin() also reports one that names
+        // nobody as absent, so this and WebServerAuth agree on every value.
+        if ($assertedLogin === null) {
             return null;
         }
 
@@ -114,8 +114,8 @@ class WebServerSessionAuth extends SessionAuth
      */
     private function endSession(): void
     {
-        // not gated on Session::isSessionStarted(): that flag stays false when Session::start() returned early
-        // because a session was already active or headers were sent, and $_SESSION is populated regardless
+        // not gated on Session::isSessionStarted(): Session::start() returns before setting that flag when a
+        // session is already active, so the flag can be false while $_SESSION holds the previous user's data
         $_SESSION = array();
 
         $this->destroyCurrentSession(new SessionFingerprint());
