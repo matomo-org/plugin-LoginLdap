@@ -11,6 +11,7 @@
 namespace Piwik\Plugins\LoginLdap\tests\Integration;
 
 use Piwik\Access;
+use Piwik\AuthResult;
 use Piwik\Auth\Password;
 use Piwik\Config;
 use Piwik\Db;
@@ -170,7 +171,11 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
     {
         $this->enableAccessSynchronization();
 
-        $this->authenticateViaLdap(self::TEST_SUPERUSER_LOGIN, self::TEST_SUPERUSER_PASS);
+        $this->authenticateViaLdap(
+            self::TEST_SUPERUSER_LOGIN,
+            self::TEST_SUPERUSER_PASS,
+            AuthResult::SUCCESS_SUPERUSER_AUTH_CODE
+        );
 
         $superusers = $this->getSuperUsers();
         $this->assertEquals(array(self::TEST_SUPERUSER_LOGIN), $superusers);
@@ -227,7 +232,7 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
         Config::getInstance()->LoginLdap['instance_name'] = 'myPiwik';
         $this->enableAccessSynchronization();
 
-        $this->authenticateViaLdap('thor', 'bilgesnipe');
+        $this->authenticateViaLdap('thor', 'bilgesnipe', AuthResult::SUCCESS_SUPERUSER_AUTH_CODE);
 
         $superusers = $this->getSuperUsers();
         $this->assertEquals(array('thor'), $superusers);
@@ -256,7 +261,7 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
         $this->setPiwikInstanceUrl('http://localhost/');
         $this->enableAccessSynchronization();
 
-        $this->authenticateViaLdap('thor', 'bilgesnipe');
+        $this->authenticateViaLdap('thor', 'bilgesnipe', AuthResult::SUCCESS_SUPERUSER_AUTH_CODE);
 
         $superusers = $this->getSuperUsers();
         $this->assertEquals(array('thor'), $superusers);
@@ -320,14 +325,23 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
         return $result;
     }
 
-    private function authenticateViaLdap($login = self::TEST_LOGIN, $pass = self::TEST_PASS)
-    {
+    /**
+     * @param string $login
+     * @param string $pass
+     * @param int $expectedCode the result code for the access synchronization leaves the user with, which is
+     *                          the superuser code when the LDAP entry grants superuser access
+     */
+    private function authenticateViaLdap(
+        $login = self::TEST_LOGIN,
+        $pass = self::TEST_PASS,
+        $expectedCode = AuthResult::SUCCESS
+    ) {
         $ldapAuth = LdapAuth::makeConfigured();
         $ldapAuth->setLogin($login);
         $ldapAuth->setPassword($pass);
         $authResult = $ldapAuth->authenticate();
 
-        $this->assertEquals(1, $authResult->getCode());
+        $this->assertEquals($expectedCode, $authResult->getCode());
 
         return $authResult;
     }
