@@ -135,6 +135,9 @@ class WebServerSessionAuthTest extends TestCase
             // one WebServerAuth would authenticate
             'accented character' => array("\xc3\xa1aren"),
             'kelvin sign' => array("\xe2\x84\xaaaren"),
+
+            // not trimmed into the session's user, for the same reason WebServerAuth will not authenticate it
+            'surrounding whitespace' => array(' ' . self::SESSION_USER . ' '),
         );
     }
 
@@ -173,16 +176,6 @@ class WebServerSessionAuthTest extends TestCase
             'at sign only' => array('@shield.org'),
             'whitespace only' => array('   '),
         );
-    }
-
-    public function test_authenticate_UsesTheSessionAuth_IfTheAssertedLoginHasSurroundingWhitespace()
-    {
-        $_SERVER['REMOTE_USER'] = ' ' . self::SESSION_USER . ' ';
-
-        $result = $this->makeAuth($this->makeWrappedAuth($isCalled = true))->authenticate();
-
-        $this->assertEquals(AuthResult::SUCCESS, $result->getCode());
-        $this->assertSessionWasKept();
     }
 
     public function test_authenticate_UsesTheSessionAuth_IfOnlyTheStrippedDomainDiffers()

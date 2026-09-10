@@ -93,6 +93,9 @@ class WebServerSessionAuth extends SessionAuth
         // an absent REMOTE_USER is not a mismatch: setups that require web server authentication on only some
         // paths would otherwise log people out at random. getAssertedLogin() also reports one that names
         // nobody as absent, so this and WebServerAuth agree on every value.
+        //
+        // A REMOTE_USER that only differs from the session's user by surrounding whitespace is a mismatch and
+        // ends the session, as it would be for any other login WebServerAuth refuses to authenticate.
         if ($assertedLogin === null) {
             return null;
         }

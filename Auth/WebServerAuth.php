@@ -154,9 +154,13 @@ class WebServerAuth extends Base
     /**
      * Returns the login the web server authenticated for this request, or null when it authenticated nobody.
      *
-     * Trimmed, so that the login this authenticates and the login {@link WebServerSessionAuth} compares the
-     * session against are the same value. A REMOTE_USER of "  ", or one that strips to nothing such as
-     * "SHIELD\\", names nobody and is reported as such.
+     * The single answer to "who does the web server say this is", so that authentication, the session guard
+     * and {@link self::isCurrentRequestWebServerAuthenticated()} cannot disagree about it.
+     *
+     * The value is returned as the web server gave it. Trimming it here would let "ironman " authenticate as
+     * "ironman", which is a row the login column's collation returns for it and which the login comparison
+     * exists to refuse. Trimming decides only whether anybody was asserted at all, so that a REMOTE_USER of
+     * "  ", or one that strips to nothing such as "SHIELD\\", names nobody rather than the empty login.
      *
      * @return string|null
      */
@@ -172,15 +176,23 @@ class WebServerAuth extends Base
             $webServerAuthUser = preg_replace('/(.*?\\\\)|(@.*)/', '', $webServerAuthUser);
         }
 
-        $webServerAuthUser = trim($webServerAuthUser);
-
-        return $webServerAuthUser === '' ? null : $webServerAuthUser;
+        return trim($webServerAuthUser) === '' ? null : $webServerAuthUser;
     }
 
+    /**
+     * Returns whether the web server authenticated somebody for this request.
+     *
+     * Callers use this to skip Matomo's own password confirmation, so it has to agree with
+     * {@link self::getAssertedLogin()}: an assertion naming nobody authenticates nobody, and must not skip
+     * anything.
+     *
+     * @return bool
+     */
     public static function isCurrentRequestWebServerAuthenticated(): bool
     {
         $auth = StaticContainer::get('Piwik\Auth');
-        return $auth instanceof WebServerAuth && !empty($_SERVER['REMOTE_USER']);
+
+        return $auth instanceof WebServerAuth && self::getAssertedLogin() !== null;
     }
 
     private function synchronizeLoggedInUser()
