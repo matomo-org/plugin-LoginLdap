@@ -75,7 +75,7 @@
         "PasswordFieldLdapAuthDescription2": "Bunun yerine, LoginLdap rastgele bir yer belirtici kaydeder. Böylece yalnızca veri tabanı kimlik doğrulaması LDAP tarafı denetimlerini atlayamaz. Bu alan, LDAP yalnızca eşitleme için kullanıldığında kullanılır.",
         "PasswordFieldLegacy": "Kullanıcı parolası alanı (eski LDAP kimlik doğrulama kipinde)",
         "PluginDescription": "LDAP kimlik doğrulaması için oturum açma eklentisi standart Matomo oturum açma eklentisine alternatfif olarak kullanılabilir.",
-        "ReadMoreAboutAccessSynchronization": "Kullanıcı izinlerinin eşitlenmesi hakkında ayrıntılı bilgi almak için %1$sbelgelere bakın%2$s.",
+        "ReadMoreAboutAccessSynchronization": "Kullanıcı izinlerinin eşitlenmesi ile ilgili ayrıntılı bilgi almak için %1$sbelgelere bakın%2$s.",
         "ServerName": "Sunucu adı",
         "ServerUrl": "Sunucu adresi",
         "Settings": "LDAP ayarları",
