@@ -29,11 +29,19 @@ class UserAccessAttributeParserTest extends TestCase
      */
     private $userAccessAttributeParser;
 
+    /**
+     * @var array
+     */
+    private $generalConfig;
+
     public function setUp(): void
     {
         parent::setUp();
 
         Config::getInstance()->LoginLdap = array();
+
+        $this->generalConfig = Config::getInstance()->General;
+        $this->setTrustedHosts(array('whatever.com', 'www.whatever.com'));
 
         $this->setSitesManagerApiMock();
 
@@ -42,6 +50,7 @@ class UserAccessAttributeParserTest extends TestCase
 
     public function tearDown(): void
     {
+        Config::getInstance()->General = $this->generalConfig;
         Option::setSingletonInstance(null);
     }
 
@@ -327,6 +336,71 @@ class UserAccessAttributeParserTest extends TestCase
         $this->assertTrue($hasSuperUserAccess);
     }
 
+    /**
+     * @dataProvider getUrlsWhoseHostIsNotExactlyATrustedHost
+     */
+    public function test_getSuperUserAccessFromSuperUserAttribute_ReturnsFalse_IfHostIsNotExactlyATrustedHost($trustedHosts, $thisUrl, $instanceId)
+    {
+        $this->setTrustedHosts($trustedHosts);
+        $this->setThisPiwikUrl($thisUrl);
+        $this->userAccessAttributeParser->setServerIdsSeparator('|');
+
+        $this->assertFalse($this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute($instanceId));
+    }
+
+    /**
+     * @dataProvider getUrlsWhoseHostIsNotExactlyATrustedHost
+     */
+    public function test_getSiteIdsFromAccessAttribute_ReturnsNoSites_IfHostIsNotExactlyATrustedHost($trustedHosts, $thisUrl, $instanceId)
+    {
+        $this->setTrustedHosts($trustedHosts);
+        $this->setThisPiwikUrl($thisUrl);
+        $this->userAccessAttributeParser->setServerIdsSeparator('|');
+
+        $this->assertEquals(array(), $this->userAccessAttributeParser->getSiteIdsFromAccessAttribute($instanceId . '|1,2,3'));
+    }
+
+    public function getUrlsWhoseHostIsNotExactlyATrustedHost()
+    {
+        return array(
+            // the trusted host check accepts subdomains of trusted hosts, so the URL can have one
+            'subdomain of a trusted host' => array(array('whatever.com'), 'https://staging.whatever.com', 'staging.whatever.com'),
+            'no trusted hosts' => array(array(), 'https://whatever.com', 'whatever.com'),
+            'unrelated trusted host' => array(array('another.com'), 'https://whatever.com', 'whatever.com'),
+        );
+    }
+
+    /**
+     * @dataProvider getTrustedHostVariationsToTest
+     */
+    public function test_getSuperUserAccessFromSuperUserAttribute_ReturnsTrue_IfHostIsATrustedHost($trustedHost, $thisUrl, $instanceId)
+    {
+        $this->setTrustedHosts(array('another.com', $trustedHost));
+        $this->setThisPiwikUrl($thisUrl);
+        $this->userAccessAttributeParser->setServerIdsSeparator('|');
+
+        $this->assertTrue($this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute($instanceId));
+    }
+
+    public function getTrustedHostVariationsToTest()
+    {
+        return array(
+            'same host' => array('staging.whatever.com', 'https://staging.whatever.com', 'staging.whatever.com'),
+            'trusted host with port' => array('whatever.com:8080', 'http://whatever.com:8080/matomo', 'whatever.com:8080/matomo'),
+            'different case and trailing dot' => array('WhatEver.com.', 'https://whatever.com', 'whatever.com'),
+            'ipv6 host with port' => array('[::1]:8080', 'http://[::1]:8080', '[::1]:8080'),
+        );
+    }
+
+    public function test_getSuperUserAccessFromSuperUserAttribute_IgnoresTrustedHosts_IfInstanceNameIsSet()
+    {
+        $this->setTrustedHosts(array());
+        $this->setThisPiwikUrl('https://staging.whatever.com');
+        $this->userAccessAttributeParser->setThisPiwikInstanceName('myPiwik');
+
+        $this->assertTrue($this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute('myPiwik'));
+    }
+
     private function setSitesManagerApiMock()
     {
         $mock = $this->getMockBuilder('stdClass')
@@ -351,5 +425,12 @@ class UserAccessAttributeParserTest extends TestCase
         });
 
         Option::setSingletonInstance($mock);
+    }
+
+    private function setTrustedHosts($trustedHosts)
+    {
+        $general = Config::getInstance()->General;
+        $general['trusted_hosts'] = $trustedHosts;
+        Config::getInstance()->General = $general;
     }
 }

@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 5.2.8 - 2026-10-12
+- Fixed the matching of LDAP access values to this Matomo by URL, so it only applies when this Matomo's host is exactly one of its trusted hosts
+
 #### LoginLdap 5.2.7 - 2026-09-14
 - Fixed the LDAP instance identifier comparison, so an access value naming a different Matomo instance is no longer applied to this one
 - Fixed the login comparison so that logins the database collation treats as equal, but which are different users, are no longer accepted

@@ -213,6 +213,11 @@ for LDAP access attributes. For example:
 - `admin: mymatomoserver.whatever.com:all;mythirdserver.com:3,4`
 - `superuser: myotherserver.com;myotherserver.com/othermatomo`
 
+URLs in access attributes are only matched if the host of this Matomo's URL is exactly one of the `[General] trusted_hosts`
+configured in Matomo. A subdomain of a trusted host does not identify this Matomo, so access attributes naming it are ignored.
+If you manage access for multiple Matomo instances, we recommend setting the **Special Name For This Matomo Instance** setting
+in each of them.
+
 If you don't want to use URLs in your access attributes, you can use the **Special Name For This Matomo Instance** setting to specify a special name
 for each of your Matomos. For example, if you set it to 'matomoServerA' in one Matomo and 'matomoServerB' in another, your LDAP attributes might look
 like:
