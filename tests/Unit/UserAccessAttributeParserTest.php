@@ -12,6 +12,7 @@ namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Piwik\Config;
+use Piwik\Log\LoggerInterface;
 use Piwik\Option;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserAccessAttributeParser;
 use Piwik\Plugins\SitesManager\API as SitesManagerAPI;
@@ -368,6 +369,21 @@ class UserAccessAttributeParserTest extends TestCase
             'no trusted hosts' => array(array(), 'https://whatever.com', 'whatever.com'),
             'unrelated trusted host' => array(array('another.com'), 'https://whatever.com', 'whatever.com'),
         );
+    }
+
+    public function test_getSiteIdsFromAccessAttribute_LogsIgnoredUrlInstanceIdsOnce_IfHostIsNotATrustedHost()
+    {
+        $this->setTrustedHosts(array('whatever.com'));
+        $this->setThisPiwikUrl('https://staging.whatever.com');
+
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+        $logger->expects($this->once())->method('warning');
+
+        $parser = new UserAccessAttributeParser($logger);
+        $parser->setServerIdsSeparator('|');
+
+        $this->assertEquals(array(), $parser->getSiteIdsFromAccessAttribute('staging.whatever.com|1;another.com|2'));
+        $this->assertEquals(array(), $parser->getSiteIdsFromAccessAttribute('staging.whatever.com|3'));
     }
 
     /**

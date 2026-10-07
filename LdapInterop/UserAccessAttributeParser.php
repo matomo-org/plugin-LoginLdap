@@ -114,6 +114,13 @@ class UserAccessAttributeParser
      */
     private $logger;
 
+    /**
+     * Whether it was already logged that URL based instance IDs are ignored, so it is logged once per parser.
+     *
+     * @var bool
+     */
+    private $isUntrustedHostLogged = false;
+
     public function __construct(?LoggerInterface $logger = null)
     {
         $this->logger = $logger ?: StaticContainer::get(LoggerInterface::class);
@@ -347,12 +354,15 @@ class UserAccessAttributeParser
         // the URL of this instance can come from the request's host, which also accepts subdomains of
         // trusted hosts, so it only identifies this instance if its host is exactly a configured trusted host
         if (!$this->isUrlHostATrustedHost($thisPiwikUrl)) {
-            $this->logger->warning(
-                "UserAccessAttributeParser::{func}: Ignoring URL based instance IDs: the host of this instance's "
-                    . "URL '{url}' is not one of the configured trusted hosts. Set the [LoginLdap] instance_name "
-                    . "config option to identify this instance.",
-                array('func' => __FUNCTION__, 'url' => $thisPiwikUrl)
-            );
+            if (!$this->isUntrustedHostLogged) {
+                $this->isUntrustedHostLogged = true;
+                $this->logger->warning(
+                    "UserAccessAttributeParser::{func}: Ignoring URL based instance IDs: the host of this instance's "
+                        . "URL '{url}' is not one of the configured trusted hosts. Set the [LoginLdap] instance_name "
+                        . "config option to identify this instance.",
+                    array('func' => __FUNCTION__, 'url' => $thisPiwikUrl)
+                );
+            }
 
             return false;
         }
