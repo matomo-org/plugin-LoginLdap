@@ -338,9 +338,9 @@ class UserAccessAttributeParserTest extends TestCase
     }
 
     /**
-     * @dataProvider getUrlsWhoseHostIsNotExactlyATrustedHost
+     * @dataProvider getUrlsWhoseHostIsNotATrustedHost
      */
-    public function test_getSuperUserAccessFromSuperUserAttribute_ReturnsFalse_IfHostIsNotExactlyATrustedHost($trustedHosts, $thisUrl, $instanceId)
+    public function test_getSuperUserAccessFromSuperUserAttribute_ReturnsFalse_IfHostIsNotATrustedHost($trustedHosts, $thisUrl, $instanceId)
     {
         $this->setTrustedHosts($trustedHosts);
         $this->setThisPiwikUrl($thisUrl);
@@ -350,9 +350,9 @@ class UserAccessAttributeParserTest extends TestCase
     }
 
     /**
-     * @dataProvider getUrlsWhoseHostIsNotExactlyATrustedHost
+     * @dataProvider getUrlsWhoseHostIsNotATrustedHost
      */
-    public function test_getSiteIdsFromAccessAttribute_ReturnsNoSites_IfHostIsNotExactlyATrustedHost($trustedHosts, $thisUrl, $instanceId)
+    public function test_getSiteIdsFromAccessAttribute_ReturnsNoSites_IfHostIsNotATrustedHost($trustedHosts, $thisUrl, $instanceId)
     {
         $this->setTrustedHosts($trustedHosts);
         $this->setThisPiwikUrl($thisUrl);
@@ -361,11 +361,10 @@ class UserAccessAttributeParserTest extends TestCase
         $this->assertEquals(array(), $this->userAccessAttributeParser->getSiteIdsFromAccessAttribute($instanceId . '|1,2,3'));
     }
 
-    public function getUrlsWhoseHostIsNotExactlyATrustedHost()
+    public function getUrlsWhoseHostIsNotATrustedHost()
     {
         return array(
-            // the trusted host check accepts subdomains of trusted hosts, so the URL can have one
-            'subdomain of a trusted host' => array(array('whatever.com'), 'https://staging.whatever.com', 'staging.whatever.com'),
+            'different host' => array(array('whatever.com'), 'https://staging.whatever.com', 'staging.whatever.com'),
             'no trusted hosts' => array(array(), 'https://whatever.com', 'whatever.com'),
             'unrelated trusted host' => array(array('another.com'), 'https://whatever.com', 'whatever.com'),
         );

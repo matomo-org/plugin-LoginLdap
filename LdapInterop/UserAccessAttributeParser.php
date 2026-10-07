@@ -60,8 +60,8 @@ use Piwik\Log\LoggerInterface;
  *     admin: piwikC.com:all
  *     superuser: piwikC.com;piwikD.com
  *
- * Instances are only identified by URL if the host of this instance's URL is exactly one of the
- * `[General] trusted_hosts`. A subdomain of a trusted host does not identify this instance.
+ * Instances are only identified by URL if the host of this instance's URL is one of the
+ * `[General] trusted_hosts`.
  *
  * If you want to use a specific name, you would have to set the `[LoginLdap] instance_name`
  * INI config option for each of your Piwik instances.
@@ -351,8 +351,6 @@ class UserAccessAttributeParser
     {
         $thisPiwikUrl = SettingsPiwik::getPiwikUrl();
 
-        // the URL of this instance can come from the request's host, which also accepts subdomains of
-        // trusted hosts, so it only identifies this instance if its host is exactly a configured trusted host
         if (!$this->isUrlHostATrustedHost($thisPiwikUrl)) {
             if (!$this->isUntrustedHostLogged) {
                 $this->isUntrustedHostLogged = true;
@@ -375,7 +373,7 @@ class UserAccessAttributeParser
     }
 
     /**
-     * Returns true if the host of $url is exactly one of the configured trusted hosts.
+     * Returns true if the host of $url is one of the configured trusted hosts.
      *
      * @param string $url
      * @return bool
