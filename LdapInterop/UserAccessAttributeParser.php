@@ -15,6 +15,7 @@ use Piwik\Container\StaticContainer;
 use Piwik\Plugins\LoginLdap\Config;
 use Piwik\Site;
 use Piwik\SettingsPiwik;
+use Piwik\Url;
 use Piwik\Log\LoggerInterface;
 
 /**
@@ -58,6 +59,9 @@ use Piwik\Log\LoggerInterface;
  *     view: piwikB.myhost.com/path/to/piwik:all
  *     admin: piwikC.com:all
  *     superuser: piwikC.com;piwikD.com
+ *
+ * Instances are only identified by URL if the host and port of this instance's URL are one of the
+ * `[General] trusted_hosts`.
  *
  * If you want to use a specific name, you would have to set the `[LoginLdap] instance_name`
  * INI config option for each of your Piwik instances.
@@ -109,6 +113,13 @@ class UserAccessAttributeParser
      * @var LoggerInterface
      */
     private $logger;
+
+    /**
+     * Whether it was already logged that URL based instance IDs are ignored, so it is logged once per parser.
+     *
+     * @var bool
+     */
+    private $isUntrustedHostLogged = false;
 
     public function __construct(?LoggerInterface $logger = null)
     {
@@ -339,16 +350,98 @@ class UserAccessAttributeParser
     protected function isUrlThisInstanceUrl($instanceIdUrl)
     {
         $thisPiwikUrl = SettingsPiwik::getPiwikUrl();
-        $thisPiwikUrl = $this->getNormalizedUrl($thisPiwikUrl, $isThisPiwikUrl = true);
+
+        $normalizedThisPiwikUrl = $this->getNormalizedUrl($thisPiwikUrl, $isThisPiwikUrl = true);
+        if ($normalizedThisPiwikUrl === false) {
+            return false;
+        }
+
+        if (!$this->isUrlHostATrustedHost($thisPiwikUrl)) {
+            if (!$this->isUntrustedHostLogged) {
+                $this->isUntrustedHostLogged = true;
+                $this->logger->warning(
+                    "UserAccessAttributeParser::{func}: Ignoring URL based instance IDs: the host of this instance's "
+                        . "URL '{url}' is not one of the configured trusted hosts. Set the [LoginLdap] instance_name "
+                        . "config option to identify this instance.",
+                    array('func' => __FUNCTION__, 'url' => $thisPiwikUrl)
+                );
+            }
+
+            return false;
+        }
 
         $instanceIdUrl = $this->getNormalizedUrl($instanceIdUrl);
 
-        return $thisPiwikUrl == $instanceIdUrl;
+        return $normalizedThisPiwikUrl == $instanceIdUrl;
+    }
+
+    /**
+     * Returns true if the host and port of $url are one of the configured trusted hosts.
+     *
+     * @param string $url
+     * @return bool
+     */
+    private function isUrlHostATrustedHost($url)
+    {
+        $parsed = $this->parseUrl($url);
+        if (empty($parsed['host'])) {
+            return false;
+        }
+
+        $defaultPort = isset($parsed['scheme']) && strtolower($parsed['scheme']) === 'https' ? 443 : 80;
+        $hostAndPort = $this->getNormalizedHostAndPort($parsed['host'], $parsed['port'] ?? null, $defaultPort);
+
+        foreach (Url::getTrustedHosts() as $trustedHost) {
+            // trusted hosts may include a port
+            if (!preg_match('/^(\[[^\]]*\]|[^:]+)(?::(\d+))?$/', trim((string) $trustedHost), $matches)) {
+                continue;
+            }
+
+            if ($this->getNormalizedHostAndPort($matches[1], $matches[2] ?? null, $defaultPort) === $hostAndPort) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $host
+     * @param int|string|null $port
+     * @param int $defaultPort used when no port is given
+     * @return string eg, `"whatever.com:443"`
+     */
+    private function getNormalizedHostAndPort($host, $port, $defaultPort)
+    {
+        return rtrim(mb_strtolower($host), '.') . ':' . (empty($port) ? $defaultPort : (int) $port);
+    }
+
+    /**
+     * Parses a URL, treating a URL without a scheme as an http URL.
+     *
+     * @param string $url
+     * @return array|false
+     */
+    private function parseUrl($url)
+    {
+        $parsed = @parse_url($url);
+        if (empty($parsed)) {
+            return false;
+        }
+
+        if (
+            empty($parsed['scheme'])
+            && empty($parsed['host'])
+        ) { // parse_url will consider www.example.com the path if there is no protocol
+            $parsed = @parse_url('http://' . $url);
+        }
+
+        return $parsed;
     }
 
     private function getNormalizedUrl($url, $isThisPiwikUrl = false)
     {
-        $parsed = @parse_url($url);
+        $parsed = $this->parseUrl($url);
         if (empty($parsed)) {
             if ($isThisPiwikUrl) {
                 $this->logger->warning(
@@ -363,14 +456,6 @@ class UserAccessAttributeParser
             }
 
             return false;
-        }
-
-        if (
-            empty($parsed['scheme'])
-            && empty($parsed['host'])
-        ) { // parse_url will consider www.example.com the path if there is no protocol
-            $url = 'http://' . $url;
-            $parsed = @parse_url($url);
         }
 
         if (empty($parsed['host'])) {
