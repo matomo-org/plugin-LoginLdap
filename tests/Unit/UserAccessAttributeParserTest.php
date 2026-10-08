@@ -367,6 +367,8 @@ class UserAccessAttributeParserTest extends TestCase
             'different host' => array(array('whatever.com'), 'https://staging.whatever.com', 'staging.whatever.com'),
             'no trusted hosts' => array(array(), 'https://whatever.com', 'whatever.com'),
             'unrelated trusted host' => array(array('another.com'), 'https://whatever.com', 'whatever.com'),
+            'different port' => array(array('whatever.com'), 'http://whatever.com:9999', 'whatever.com:9999'),
+            'different port than the trusted host' => array(array('whatever.com:8080'), 'http://whatever.com:9999', 'whatever.com:9999'),
         );
     }
 
@@ -383,6 +385,19 @@ class UserAccessAttributeParserTest extends TestCase
 
         $this->assertEquals(array(), $parser->getSiteIdsFromAccessAttribute('staging.whatever.com|1;another.com|2'));
         $this->assertEquals(array(), $parser->getSiteIdsFromAccessAttribute('staging.whatever.com|3'));
+    }
+
+    public function test_getSiteIdsFromAccessAttribute_LogsInvalidUrl_IfThisInstanceUrlIsInvalid()
+    {
+        $this->setThisPiwikUrl('http://:80');
+
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+        $logger->expects($this->once())->method('warning')->with($this->stringContains('Invalid Piwik URL'));
+
+        $parser = new UserAccessAttributeParser($logger);
+        $parser->setServerIdsSeparator('|');
+
+        $this->assertEquals(array(), $parser->getSiteIdsFromAccessAttribute('whatever.com|1'));
     }
 
     /**
@@ -404,6 +419,7 @@ class UserAccessAttributeParserTest extends TestCase
             'trusted host with port' => array('whatever.com:8080', 'http://whatever.com:8080/matomo', 'whatever.com:8080/matomo'),
             'different case and trailing dot' => array('WhatEver.com.', 'https://whatever.com', 'whatever.com'),
             'ipv6 host with port' => array('[::1]:8080', 'http://[::1]:8080', '[::1]:8080'),
+            'default port' => array('whatever.com', 'https://whatever.com:443', 'whatever.com:443'),
         );
     }
 

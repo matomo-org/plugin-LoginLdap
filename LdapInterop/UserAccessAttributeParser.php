@@ -60,7 +60,7 @@ use Piwik\Log\LoggerInterface;
  *     admin: piwikC.com:all
  *     superuser: piwikC.com;piwikD.com
  *
- * Instances are only identified by URL if the host of this instance's URL is one of the
+ * Instances are only identified by URL if the host and port of this instance's URL are one of the
  * `[General] trusted_hosts`.
  *
  * If you want to use a specific name, you would have to set the `[LoginLdap] instance_name`
@@ -351,6 +351,11 @@ class UserAccessAttributeParser
     {
         $thisPiwikUrl = SettingsPiwik::getPiwikUrl();
 
+        $normalizedThisPiwikUrl = $this->getNormalizedUrl($thisPiwikUrl, $isThisPiwikUrl = true);
+        if ($normalizedThisPiwikUrl === false) {
+            return false;
+        }
+
         if (!$this->isUrlHostATrustedHost($thisPiwikUrl)) {
             if (!$this->isUntrustedHostLogged) {
                 $this->isUntrustedHostLogged = true;
@@ -365,15 +370,13 @@ class UserAccessAttributeParser
             return false;
         }
 
-        $thisPiwikUrl = $this->getNormalizedUrl($thisPiwikUrl, $isThisPiwikUrl = true);
-
         $instanceIdUrl = $this->getNormalizedUrl($instanceIdUrl);
 
-        return $thisPiwikUrl == $instanceIdUrl;
+        return $normalizedThisPiwikUrl == $instanceIdUrl;
     }
 
     /**
-     * Returns true if the host of $url is one of the configured trusted hosts.
+     * Returns true if the host and port of $url are one of the configured trusted hosts.
      *
      * @param string $url
      * @return bool
@@ -385,19 +388,32 @@ class UserAccessAttributeParser
             return false;
         }
 
-        $host = rtrim(mb_strtolower($parsed['host']), '.');
+        $defaultPort = isset($parsed['scheme']) && strtolower($parsed['scheme']) === 'https' ? 443 : 80;
+        $hostAndPort = $this->getNormalizedHostAndPort($parsed['host'], $parsed['port'] ?? null, $defaultPort);
 
         foreach (Url::getTrustedHosts() as $trustedHost) {
-            // trusted hosts may include a port, the host of a parsed URL does not
-            $trustedHost = preg_replace('/^(\[[^\]]*\]|[^:]*):\d+$/', '$1', trim((string) $trustedHost));
-            $trustedHost = rtrim(mb_strtolower($trustedHost), '.');
+            // trusted hosts may include a port
+            if (!preg_match('/^(\[[^\]]*\]|[^:]+)(?::(\d+))?$/', trim((string) $trustedHost), $matches)) {
+                continue;
+            }
 
-            if ($trustedHost !== '' && $trustedHost === $host) {
+            if ($this->getNormalizedHostAndPort($matches[1], $matches[2] ?? null, $defaultPort) === $hostAndPort) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    /**
+     * @param string $host
+     * @param int|string|null $port
+     * @param int $defaultPort used when no port is given
+     * @return string eg, `"whatever.com:443"`
+     */
+    private function getNormalizedHostAndPort($host, $port, $defaultPort)
+    {
+        return rtrim(mb_strtolower($host), '.') . ':' . (empty($port) ? $defaultPort : (int) $port);
     }
 
     /**

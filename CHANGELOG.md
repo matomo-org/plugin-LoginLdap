@@ -1,7 +1,7 @@
 # LoginLdap Changelog
 
 #### LoginLdap 5.2.8 - 2026-10-12
-- Improved the matching of LDAP access values to this Matomo by URL. If access values name this Matomo by URL, make sure its host is one of the trusted hosts, or set the LoginLdap instance name
+- Improved the matching of LDAP access values to this Matomo by URL. They now only apply if the host and port of this Matomo's URL are one of its trusted hosts, otherwise access synchronization removes the access they grant, including superuser access. Before updating, add the host to the trusted hosts or set the LoginLdap instance name
 
 #### LoginLdap 5.2.7 - 2026-09-14
 - Fixed the LDAP instance identifier comparison, so an access value naming a different Matomo instance is no longer applied to this one
