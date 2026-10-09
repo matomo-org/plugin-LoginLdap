@@ -12,6 +12,7 @@ namespace Piwik\Plugins\LoginLdap\tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Piwik\Config;
+use Piwik\Log\LoggerInterface;
 use Piwik\Option;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserAccessAttributeParser;
 use Piwik\Plugins\SitesManager\API as SitesManagerAPI;
@@ -29,11 +30,19 @@ class UserAccessAttributeParserTest extends TestCase
      */
     private $userAccessAttributeParser;
 
+    /**
+     * @var array
+     */
+    private $generalConfig;
+
     public function setUp(): void
     {
         parent::setUp();
 
         Config::getInstance()->LoginLdap = array();
+
+        $this->generalConfig = Config::getInstance()->General;
+        $this->setTrustedHosts(array('whatever.com', 'www.whatever.com'));
 
         $this->setSitesManagerApiMock();
 
@@ -42,6 +51,7 @@ class UserAccessAttributeParserTest extends TestCase
 
     public function tearDown(): void
     {
+        Config::getInstance()->General = $this->generalConfig;
         Option::setSingletonInstance(null);
     }
 
@@ -357,6 +367,101 @@ class UserAccessAttributeParserTest extends TestCase
         $this->assertTrue($hasSuperUserAccess);
     }
 
+    /**
+     * @dataProvider getUrlsWhoseHostIsNotATrustedHost
+     */
+    public function test_getSuperUserAccessFromSuperUserAttribute_ReturnsFalse_IfHostIsNotATrustedHost($trustedHosts, $thisUrl, $instanceId)
+    {
+        $this->setTrustedHosts($trustedHosts);
+        $this->setThisPiwikUrl($thisUrl);
+        $this->userAccessAttributeParser->setServerIdsSeparator('|');
+
+        $this->assertFalse($this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute($instanceId));
+    }
+
+    /**
+     * @dataProvider getUrlsWhoseHostIsNotATrustedHost
+     */
+    public function test_getSiteIdsFromAccessAttribute_ReturnsNoSites_IfHostIsNotATrustedHost($trustedHosts, $thisUrl, $instanceId)
+    {
+        $this->setTrustedHosts($trustedHosts);
+        $this->setThisPiwikUrl($thisUrl);
+        $this->userAccessAttributeParser->setServerIdsSeparator('|');
+
+        $this->assertEquals(array(), $this->userAccessAttributeParser->getSiteIdsFromAccessAttribute($instanceId . '|1,2,3'));
+    }
+
+    public function getUrlsWhoseHostIsNotATrustedHost()
+    {
+        return array(
+            'different host' => array(array('whatever.com'), 'https://staging.whatever.com', 'staging.whatever.com'),
+            'no trusted hosts' => array(array(), 'https://whatever.com', 'whatever.com'),
+            'unrelated trusted host' => array(array('another.com'), 'https://whatever.com', 'whatever.com'),
+            'different port' => array(array('whatever.com'), 'http://whatever.com:9999', 'whatever.com:9999'),
+            'different port than the trusted host' => array(array('whatever.com:8080'), 'http://whatever.com:9999', 'whatever.com:9999'),
+        );
+    }
+
+    public function test_getSiteIdsFromAccessAttribute_LogsIgnoredUrlInstanceIdsOnce_IfHostIsNotATrustedHost()
+    {
+        $this->setTrustedHosts(array('whatever.com'));
+        $this->setThisPiwikUrl('https://staging.whatever.com');
+
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+        $logger->expects($this->once())->method('warning');
+
+        $parser = new UserAccessAttributeParser($logger);
+        $parser->setServerIdsSeparator('|');
+
+        $this->assertEquals(array(), $parser->getSiteIdsFromAccessAttribute('staging.whatever.com|1;another.com|2'));
+        $this->assertEquals(array(), $parser->getSiteIdsFromAccessAttribute('staging.whatever.com|3'));
+    }
+
+    public function test_getSiteIdsFromAccessAttribute_LogsInvalidUrl_IfThisInstanceUrlIsInvalid()
+    {
+        $this->setThisPiwikUrl('http://:80');
+
+        $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
+        $logger->expects($this->once())->method('warning')->with($this->stringContains('Invalid Piwik URL'));
+
+        $parser = new UserAccessAttributeParser($logger);
+        $parser->setServerIdsSeparator('|');
+
+        $this->assertEquals(array(), $parser->getSiteIdsFromAccessAttribute('whatever.com|1'));
+    }
+
+    /**
+     * @dataProvider getTrustedHostVariationsToTest
+     */
+    public function test_getSuperUserAccessFromSuperUserAttribute_ReturnsTrue_IfHostIsATrustedHost($trustedHost, $thisUrl, $instanceId)
+    {
+        $this->setTrustedHosts(array('another.com', $trustedHost));
+        $this->setThisPiwikUrl($thisUrl);
+        $this->userAccessAttributeParser->setServerIdsSeparator('|');
+
+        $this->assertTrue($this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute($instanceId));
+    }
+
+    public function getTrustedHostVariationsToTest()
+    {
+        return array(
+            'same host' => array('staging.whatever.com', 'https://staging.whatever.com', 'staging.whatever.com'),
+            'trusted host with port' => array('whatever.com:8080', 'http://whatever.com:8080/matomo', 'whatever.com:8080/matomo'),
+            'different case and trailing dot' => array('WhatEver.com.', 'https://whatever.com', 'whatever.com'),
+            'ipv6 host with port' => array('[::1]:8080', 'http://[::1]:8080', '[::1]:8080'),
+            'default port' => array('whatever.com', 'https://whatever.com:443', 'whatever.com:443'),
+        );
+    }
+
+    public function test_getSuperUserAccessFromSuperUserAttribute_IgnoresTrustedHosts_IfInstanceNameIsSet()
+    {
+        $this->setTrustedHosts(array());
+        $this->setThisPiwikUrl('https://staging.whatever.com');
+        $this->userAccessAttributeParser->setThisPiwikInstanceName('myPiwik');
+
+        $this->assertTrue($this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute('myPiwik'));
+    }
+
     private function setSitesManagerApiMock()
     {
         $mock = $this->getMockBuilder('stdClass')
@@ -381,5 +486,12 @@ class UserAccessAttributeParserTest extends TestCase
         });
 
         Option::setSingletonInstance($mock);
+    }
+
+    private function setTrustedHosts($trustedHosts)
+    {
+        $general = Config::getInstance()->General;
+        $general['trusted_hosts'] = $trustedHosts;
+        Config::getInstance()->General = $general;
     }
 }

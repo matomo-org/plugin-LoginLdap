@@ -267,6 +267,18 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
         $this->assertEquals(array('thor'), $superusers);
     }
 
+    public function test_NoAccessSynchronized_WhenInstancePiwikUrlUsed_AndItsHostIsNotATrustedHost()
+    {
+        $this->setPiwikInstanceUrl('http://localhost/', $trustedHosts = array('matomo.whatever.com'));
+        Config::getInstance()->LoginLdap['ldap_superuser_access_field'] = 'isasuperuser'; // disable superuser check so we can check user's normal access
+
+        $this->enableAccessSynchronization();
+
+        $this->authenticateViaLdap('thor', 'bilgesnipe');
+
+        $this->assertEquals(array(), $this->getAccessFor('thor'));
+    }
+
     public function test_RandomPasswordGenerated()
     {
         $this->authenticateViaLdap();
@@ -362,8 +374,16 @@ class LdapUserSynchronizationTest extends LdapIntegrationTest
         ), $access);
     }
 
-    private function setPiwikInstanceUrl($url)
+    /**
+     * @param string $url
+     * @param string[]|null $trustedHosts defaults to the host of $url, which is what Matomo's installation configures
+     */
+    private function setPiwikInstanceUrl($url, $trustedHosts = null)
     {
         SettingsPiwik::overwritePiwikUrl($url);
+
+        $general = Config::getInstance()->General;
+        $general['trusted_hosts'] = $trustedHosts ?? array(parse_url($url, PHP_URL_HOST));
+        Config::getInstance()->General = $general;
     }
 }
