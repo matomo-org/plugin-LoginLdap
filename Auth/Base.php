@@ -164,7 +164,7 @@ abstract class Base implements Auth
     /**
      * Returns the user's token auth.
      *
-     * @return string
+     * @return string|null
      */
     public function getTokenAuth()
     {

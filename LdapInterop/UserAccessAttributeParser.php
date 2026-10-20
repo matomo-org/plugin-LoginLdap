@@ -130,7 +130,7 @@ class UserAccessAttributeParser
      * Parses an LDAP access attribute value and returns the list of site IDs that apply to
      * this specific Piwik instance.
      *
-     * @var string $attributeValue eg `"piwikServerA:1,2,3;piwikServerB:4,5,6"`.
+     * @param string $attributeValue eg `"piwikServerA:1,2,3;piwikServerB:4,5,6"`.
      * @return array
      */
     public function getSiteIdsFromAccessAttribute($attributeValue)
@@ -162,7 +162,6 @@ class UserAccessAttributeParser
             $attributeValue == 1
             || strtolower($attributeValue) == 'true'
             || $attributeValue === ''
-            || $attributeValue === null
         ) { // special case when not managing multiple Piwik instances
             return true;
         }
@@ -265,7 +264,7 @@ class UserAccessAttributeParser
      *
      * If not instance ID is specified, will always return `true`.
      *
-     * @param string $instanceId eg, `"piwikServerA"` or `"piwikA.mysite.com"`
+     * @param string|null $instanceId eg, `"piwikServerA"` or `"piwikA.mysite.com"`
      * @return bool
      */
     protected function isInstanceIdForThisInstance($instanceId)

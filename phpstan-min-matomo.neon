@@ -1,0 +1,19 @@
+includes:
+    - phpstan.neon
+
+parameters:
+    tmpDir: /tmp/phpstan/LoginLdap/min
+    ignoreErrors:
+        # Matomo 5.0 documents getRequestVar()'s default as string|null, though it accepts any
+        # value; later versions document it as mixed.
+        -
+            identifier: argument.type
+            message: '#Common::getRequestVar\(\) expects string\|null, false given#'
+            path: LoginLdap.php
+            count: 2
+        # The wrapper forwards SessionAuth::wasSessionExpired(), which Matomo 5.7 added along with
+        # its only caller, so on earlier versions the forward is never reached.
+        -
+            identifier: method.notFound
+            path: Auth/WebServerSessionAuth.php
+            count: 1
