@@ -8,6 +8,29 @@ parameters:
         - tests/*
         - vendor/
         - github-action-tests/
+    ignoreErrors:
+        # Released update files are immutable history and must not be edited for analysis findings.
+        -
+            identifier: argument.type
+            path: Updates/3.0.0.php
+            count: 1
+        -
+            identifier: property.onlyWritten
+            path: Updates/4.7.3.php
+            count: 1
+        # UserUpdater documents its password and email as bool, though it forwards them to
+        # API::updateUser(), which takes strings.
+        -
+            identifier: argument.type
+            message: '#UserUpdater::updateUserWithoutCurrentPassword\(\) expects bool, string given#'
+            path: LdapInterop/UserSynchronizer.php
+            count: 2
+        # Core's Login plugin also clears the login with null; Auth::setLogin() documents string only.
+        -
+            identifier: argument.type
+            message: '#Piwik\\Auth::setLogin\(\) expects string, null given#'
+            path: LoginLdap.php
+            count: 1
     bootstrapFiles:
         - ../../bootstrap-phpstan.php
     universalObjectCratesClasses:
