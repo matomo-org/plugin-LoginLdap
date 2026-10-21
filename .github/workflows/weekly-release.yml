@@ -12,6 +12,10 @@ on:
         description: "Also release the other maintained branches"
         type: boolean
         default: false
+      skip-ci-check:
+        description: "Release this branch even though its CI failed or is still running"
+        type: boolean
+        default: false
 
 permissions: {}
 
@@ -23,6 +27,8 @@ jobs:
       contents: write
       pull-requests: write
     uses: matomo-org/plugin-ci-workflows/.github/workflows/plugin-dev-release.yml@main
+    with:
+      skip-ci-check: ${{ inputs.skip-ci-check || false }}
     secrets:
       approver-token: ${{ secrets.TESTS_ACCESS_TOKEN }}
 
