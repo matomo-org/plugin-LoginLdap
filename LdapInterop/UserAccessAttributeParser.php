@@ -322,7 +322,11 @@ class UserAccessAttributeParser
     {
         $delimiters = $this->serverIdsSeparator . $this->serverSpecificationDelimiter;
         $result = preg_split("/[" . preg_quote($delimiters, '/') . "]/", $attributeValue);
-        return array_map('trim', $result);
+        $result = array_map('trim', $result);
+
+        return array_values(array_filter($result, function ($instanceId) {
+            return $instanceId !== '';
+        }));
     }
 
     /**
