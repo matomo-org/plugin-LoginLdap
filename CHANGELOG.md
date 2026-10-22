@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 5.2.9
+- Access control improvement
+
 #### LoginLdap 5.2.8 - 2026-10-12
 - Improved the matching of LDAP access values to this Matomo by URL. They now only apply if the host and port of this Matomo's URL are one of its trusted hosts, otherwise access synchronization removes the access they grant, including superuser access. Before updating, add the host to the trusted hosts or set the LoginLdap instance name
 
