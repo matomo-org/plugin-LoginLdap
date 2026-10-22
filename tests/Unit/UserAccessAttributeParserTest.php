@@ -304,6 +304,45 @@ class UserAccessAttributeParserTest extends TestCase
         $this->assertFalse($hasSuperUserAccess);
     }
 
+    /**
+     * @dataProvider getSuperUserAttributesWithStrayDelimiters
+     */
+    public function test_getSuperUserAccessFromSuperUserAttribute_ReturnsFalse_IfOtherInstancesHaveAStrayDelimiter($attributeValue)
+    {
+        $this->userAccessAttributeParser->setThisPiwikInstanceName('myPiwik');
+
+        $this->assertFalse($this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute($attributeValue));
+    }
+
+    /**
+     * @dataProvider getSuperUserAttributesWithStrayDelimiters
+     */
+    public function test_getSuperUserAccessFromSuperUserAttribute_ReturnsFalse_IfOtherInstanceUrlsHaveAStrayDelimiter($attributeValue)
+    {
+        $this->setThisPiwikUrl("https://whatever.com/piwik");
+
+        $this->assertFalse($this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute($attributeValue));
+    }
+
+    public function getSuperUserAttributesWithStrayDelimiters()
+    {
+        return array(
+            'trailing delimiter' => array('otherPiwik;'),
+            'leading delimiter' => array(';otherPiwik'),
+            'doubled delimiter' => array('otherPiwik;;anotherPiwik'),
+            'trailing separator' => array('otherPiwik:'),
+            'delimiters only' => array(' ; : '),
+        );
+    }
+
+    public function test_getSuperUserAccessFromSuperUserAttribute_ReturnsTrue_IfThisInstanceHasAStrayDelimiter()
+    {
+        $this->userAccessAttributeParser->setThisPiwikInstanceName('myPiwik');
+
+        $this->assertTrue($this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute('myPiwik;'));
+        $this->assertTrue($this->userAccessAttributeParser->getSuperUserAccessFromSuperUserAttribute(';otherPiwik;;myPiwik'));
+    }
+
     public function test_getSuperUserAccessFromSuperUserAttribute_ReturnsCorrectResult_IfAttributeValueIsMalformed()
     {
         $this->userAccessAttributeParser->setThisPiwikInstanceName('myPiwik');
