@@ -1,15 +1,18 @@
-# Releases this plugin from its dev branch when plugin.json carries an untagged version whose
-# CHANGELOG.md entry is undated. It has no schedule yet, so it only runs when dispatched by hand.
-# The logic lives in matomo-org/plugin-ci-workflows; see the "Weekly release" section of its
-# README.md.
+# Releases this plugin from its dev branch once a week when plugin.json carries an untagged version
+# whose CHANGELOG.md entry is undated. The logic lives in matomo-org/plugin-ci-workflows; see the
+# "Weekly release" section of its README.md.
 
 name: Weekly release
 
 on:
+  schedule:
+    # Monday, so the release is dated that Monday. Keeps the minute and hour of matomo-tests.yml's
+    # cron, so the fleet stays staggered across the window.
+    - cron: '25 3 * * 1'
   workflow_dispatch:
     inputs:
       all-branches:
-        description: "Also release the other maintained branches"
+        description: "Also release the other maintained branches, as the schedule does"
         type: boolean
         default: false
       skip-ci-check:
