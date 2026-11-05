@@ -11,6 +11,7 @@ namespace Piwik\Plugins\LoginLdap;
 
 use Piwik\Common;
 use Piwik\Container\StaticContainer;
+use Piwik\Http\BadRequestException;
 use Piwik\Piwik;
 use Piwik\Plugins\Login\PasswordVerifier;
 use Piwik\Plugins\LoginLdap\Auth\WebServerAuth;
@@ -170,7 +171,7 @@ class API extends \Piwik\Plugin\API
     private function checkHttpMethodIsPost()
     {
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
-            throw new Exception("Invalid HTTP method.");
+            throw new BadRequestException("Invalid HTTP method.");
         }
     }
 

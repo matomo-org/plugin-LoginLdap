@@ -1,5 +1,8 @@
 # LoginLdap Changelog
 
+#### LoginLdap 6.0.5
+* Answered refused app token requests and changes to the LDAP user flag with HTTP 403, and wrongly sent settings saves with 400, instead of 500
+
 #### LoginLdap 6.0.4 - 2026-10-26
 * Access control improvement
 
