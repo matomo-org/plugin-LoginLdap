@@ -51,7 +51,8 @@ class CreateAppSpecificTokenGuardTest extends IntegrationTestCase
         $this->installWebServerAuth();
         $_SERVER['REMOTE_USER'] = 'attacker';
 
-        $this->expectException(\Exception::class);
+        $this->expectException(\Piwik\Exception\NoPrivilegesException::class);
+        $this->expectExceptionCode(403);
         $this->expectExceptionMessage(Piwik::translate('LoginLdap_CreateAppSpecificTokenAuthBlocked'));
 
         $parameters = ['userLogin' => 'somevictim'];

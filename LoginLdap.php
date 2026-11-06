@@ -13,6 +13,7 @@ use Exception;
 use Piwik\Auth;
 use Piwik\Common;
 use Piwik\Container\StaticContainer;
+use Piwik\Exception\NoPrivilegesException;
 use Piwik\FrontController;
 use Piwik\Option;
 use Piwik\Piwik;
@@ -263,7 +264,7 @@ class LoginLdap extends \Piwik\Plugin
         // nobody, WebServerAuth delegates to its password-validating fallback, so token creation stays safe
         // and must remain allowed.
         if (WebServerAuth::isCurrentRequestWebServerAuthenticated()) {
-            throw new Exception(Piwik::translate('LoginLdap_CreateAppSpecificTokenAuthBlocked'));
+            throw new NoPrivilegesException(Piwik::translate('LoginLdap_CreateAppSpecificTokenAuthBlocked'), 403);
         }
     }
 
@@ -345,7 +346,7 @@ class LoginLdap extends \Piwik\Plugin
     public function checkIfUserPreferenceChangeIsAllowed($preferenceInfo)
     {
         if (isset($preferenceInfo['preferenceName']) && $preferenceInfo['preferenceName'] === UserMapper::USER_PREFERENCE_NAME_IS_LDAP_USER && !UserMapper::$isLdapPreferenceSetAllowed) {
-            throw new Exception(Piwik::translate('LoginLdap_LdapUserCantChangeIsLdapUserPreference'));
+            throw new NoPrivilegesException(Piwik::translate('LoginLdap_LdapUserCantChangeIsLdapUserPreference'), 403);
         }
     }
 
