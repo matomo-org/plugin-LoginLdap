@@ -14,6 +14,16 @@ parameters:
           path: Updates/3.0.0.php
         - message: '#^Property Piwik\\Plugins\\LoginLdap\\Updates_4_7_3::\$migration is never read, only written\.$#'
           path: Updates/4.7.3.php
+        # the version guard is constant-folded against core's version: always true on 6.1.0 and later,
+        # always false on the minimum-required Matomo analysed by CI, so each leg reports only one of them
+        - identifier: ternary.alwaysTrue
+          path: LoginLdap.php
+          count: 1
+          reportUnmatched: false
+        - identifier: ternary.alwaysFalse
+          path: LoginLdap.php
+          count: 1
+          reportUnmatched: false
     bootstrapFiles:
         - ../../bootstrap-phpstan.php
     universalObjectCratesClasses:

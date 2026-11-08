@@ -430,6 +430,7 @@ import {
 } from 'CoreHome';
 import { Field, PasswordConfirmation, SaveButton } from 'CorePluginsAdmin';
 import TestableField from '../TestableField/TestableField.vue';
+import showHttpErrorMessage from '../showHttpErrorMessage';
 
 interface LoginLdapConfig {
   password_confirmation?: string;
@@ -614,6 +615,10 @@ export default defineComponent({
         payload,
       ).then(() => {
         this.showSaveSuccessNotification();
+      }).catch((e) => {
+        if (!showHttpErrorMessage(e)) {
+          throw e;
+        }
       }).finally(() => {
         this.actualLdapConfig.password_confirmation = '';
         this.isSavingConfig = false;
@@ -637,6 +642,10 @@ export default defineComponent({
         payload,
       ).then(() => {
         this.showSaveSuccessNotification();
+      }).catch((e) => {
+        if (!showHttpErrorMessage(e)) {
+          throw e;
+        }
       }).finally(() => {
         this.isSavingServers = false;
       });

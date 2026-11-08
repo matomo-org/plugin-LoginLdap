@@ -129,7 +129,8 @@ class PasswordConfirmationTest extends LdapIntegrationTest
         $this->setSuperUserAccess(self::TEST_LOGIN, true);
         $this->setCurrentUser(self::TEST_LOGIN, self::TEST_PASS);
 
-        $this->expectException(\Exception::class);
+        $this->expectException(\Piwik\Http\BadRequestException::class);
+        $this->expectExceptionCode(400);
         $this->expectExceptionMessage(Piwik::translate('UsersManager_ConfirmWithReAuthentication'));
 
         $this->api->saveLdapConfig(json_encode(array(
@@ -157,7 +158,8 @@ class PasswordConfirmationTest extends LdapIntegrationTest
         \Piwik\Config::getInstance()->LoginLdap['enable_password_confirmation'] = 0;
         $this->useRealLdapUser();
 
-        $this->expectException(\Exception::class);
+        $this->expectException(\Piwik\Exception\NoPrivilegesException::class);
+        $this->expectExceptionCode(403);
         $this->expectExceptionMessage(Piwik::translate('UsersManager_CurrentPasswordNotCorrect'));
 
         $this->api->saveLdapConfig(json_encode(array(
@@ -287,7 +289,8 @@ class PasswordConfirmationTest extends LdapIntegrationTest
         $this->setSuperUserAccess(self::TEST_LOGIN, true);
         $this->setCurrentUser(self::TEST_LOGIN, self::TEST_PASS);
 
-        $this->expectException(\Exception::class);
+        $this->expectException(\Piwik\Http\BadRequestException::class);
+        $this->expectExceptionCode(400);
         $this->expectExceptionMessage(Piwik::translate('UsersManager_ConfirmWithReAuthentication'));
 
         $this->api->saveServersInfo(json_encode($this->getServerPayload()));
@@ -310,7 +313,8 @@ class PasswordConfirmationTest extends LdapIntegrationTest
         \Piwik\Config::getInstance()->LoginLdap['enable_password_confirmation'] = 0;
         $this->useRealLdapUser();
 
-        $this->expectException(\Exception::class);
+        $this->expectException(\Piwik\Exception\NoPrivilegesException::class);
+        $this->expectExceptionCode(403);
         $this->expectExceptionMessage(Piwik::translate('UsersManager_CurrentPasswordNotCorrect'));
 
         $this->api->saveServersInfo(json_encode($this->getServerPayload()), 'not-' . self::TEST_PASS);

@@ -11,6 +11,8 @@ namespace Piwik\Plugins\LoginLdap;
 
 use Piwik\Common;
 use Piwik\Container\StaticContainer;
+use Piwik\Exception\NoPrivilegesException;
+use Piwik\Exception\ThingNotFoundException;
 use Piwik\Http\BadRequestException;
 use Piwik\Piwik;
 use Piwik\Plugins\Login\PasswordVerifier;
@@ -125,7 +127,7 @@ class API extends \Piwik\Plugin\API
             return $this->ldapUsers->getCountOfUsersMatchingFilter($filter);
         } catch (Exception $ex) {
             if (stripos($ex->getMessage(), "Bad search filter") !== false) {
-                throw new Exception(Piwik::translate("LoginLdap_InvalidFilter"));
+                throw new BadRequestException(Piwik::translate("LoginLdap_InvalidFilter"), LoginLdap::getClientErrorCode(400));
             } else {
                 throw $ex;
             }
@@ -144,7 +146,8 @@ class API extends \Piwik\Plugin\API
 
         $ldapUser = $this->ldapUsers->getUser($login);
         if (empty($ldapUser)) {
-            throw new Exception(Piwik::translate('LoginLdap_UserNotFound', $login));
+            $message = Piwik::translate('LoginLdap_UserNotFound', $login);
+            throw LoginLdap::getClientErrorCode(404) ? new ThingNotFoundException($message) : new Exception($message);
         }
 
         $synchronizedUser = $this->userSynchronizer->synchronizeLdapUser($login, $ldapUser);
@@ -186,18 +189,18 @@ class API extends \Piwik\Plugin\API
         $loginCurrentUser = Piwik::getCurrentUserLogin();
 
         if ($passwordConfirmation === null || $passwordConfirmation === '') {
-            throw new Exception(Piwik::translate('UsersManager_ConfirmWithReAuthentication'));
+            throw new BadRequestException(Piwik::translate('UsersManager_ConfirmWithReAuthentication'));
         }
 
         try {
             $passwordCorrect = StaticContainer::get(PasswordVerifier::class)
                 ->isPasswordCorrect($loginCurrentUser, $passwordConfirmation);
         } catch (Exception $e) {
-            throw new Exception(Piwik::translate('UsersManager_CurrentPasswordNotCorrect'));
+            throw new NoPrivilegesException(Piwik::translate('UsersManager_CurrentPasswordNotCorrect'), 403);
         }
 
         if (!$passwordCorrect) {
-            throw new Exception(Piwik::translate('UsersManager_CurrentPasswordNotCorrect'));
+            throw new NoPrivilegesException(Piwik::translate('UsersManager_CurrentPasswordNotCorrect'), 403);
         }
     }
 }
