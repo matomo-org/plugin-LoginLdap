@@ -22,6 +22,7 @@ use Piwik\Plugins\LoginLdap\Auth\Base as AuthBase;
 use Piwik\Plugins\LoginLdap\Auth\WebServerAuth;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserMapper;
 use Piwik\Plugins\LoginLdap\LdapInterop\UserSynchronizer;
+use Piwik\Version;
 use Piwik\View;
 use Piwik\Plugins\UsersManager\API as UsersManagerAPI;
 use Piwik\Session;
@@ -286,6 +287,16 @@ class LoginLdap extends \Piwik\Plugin
     }
 
     /**
+     * Before Matomo 6.1.0 the user-edit form and the LDAP filter and user synchronisation checks show
+     * no message for a 4xx API response, so those versions keep the HTTP 200 error body (code 0).
+     * Remove once the plugin requires Matomo 6.1.0.
+     */
+    public static function getClientErrorCode(int $code): int
+    {
+        return version_compare(Version::VERSION, '6.1.0-alpha', '>=') ? $code : 0;
+    }
+
+    /**
      * Throws Exception when LDAP user tries to change password
      * because such user's pass should be managed directly on LDAP host
      *
@@ -294,8 +305,9 @@ class LoginLdap extends \Piwik\Plugin
     public function disablePasswordChangeForLdapUsers(Auth $auth)
     {
         if ($this->isCurrentUserLdapUser($auth)) {
-            throw new Exception(
-                Piwik::translate('LoginLdap_LdapUserCantChangePassword')
+            throw new NoPrivilegesException(
+                Piwik::translate('LoginLdap_LdapUserCantChangePassword'),
+                self::getClientErrorCode(403)
             );
         }
     }
@@ -359,7 +371,7 @@ class LoginLdap extends \Piwik\Plugin
     public function disablePasswordUpdate($values)
     {
         if (!UserSynchronizer::$allowUpdateUser && !empty($values['userLogin']) && !empty($values['password']) && $this->isUserLdapUser($values['userLogin'])) {
-            throw new Exception(Piwik::translate('LoginLdap_LdapUserCantChangePassword'));
+            throw new NoPrivilegesException(Piwik::translate('LoginLdap_LdapUserCantChangePassword'), self::getClientErrorCode(403));
         }
     }
 
