@@ -1,6 +1,6 @@
 # LoginLdap Changelog
 
-#### LoginLdap 6.0.5
+#### LoginLdap 6.0.5 - 2026-11-09
 * Answered refused app token requests and changes to the LDAP user flag with HTTP 403, and wrongly sent settings saves with 400, instead of HTTP 200 with an error message
 * Answered a missing password confirmation with HTTP 400 and a wrong one with HTTP 403, and from Matomo 6.1.0 an invalid search filter with HTTP 400, an unknown LDAP user with HTTP 404 and an LDAP user changing their password with HTTP 403, instead of HTTP 200 with an error message
 
