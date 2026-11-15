@@ -1,6 +1,7 @@
 # LoginLdap Changelog
 
 #### LoginLdap 6.0.6
+* Fixed PHP deprecation notices on PHP 8.4 and newer
 * Answered a missing password confirmation with HTTP 400 and a wrong one with HTTP 403, and from Matomo 6.1.0 an invalid search filter with HTTP 400, an unknown LDAP user with HTTP 404 and an LDAP user changing their password with HTTP 403, instead of HTTP 200 with an error message
 
 #### LoginLdap 6.0.5 - 2026-11-09

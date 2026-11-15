@@ -54,7 +54,7 @@ class Client
         $serverHostName = null,
         $port = ServerInfo::DEFAULT_LDAP_PORT,
         $timeout = self::DEFAULT_TIMEOUT_SECS,
-        LoggerInterface $logger = null
+        ?LoggerInterface $logger = null
     ) {
         $this->logger = $logger ?: StaticContainer::get(LoggerInterface::class);
 
