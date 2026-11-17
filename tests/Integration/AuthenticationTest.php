@@ -168,6 +168,32 @@ class AuthenticationTest extends LdapIntegrationTest
         $this->assertEquals(AuthResult::SUCCESS, $authResult->getCode());
     }
 
+    /**
+     * @dataProvider getWrongPasswords
+     */
+    public function test_LdapAuth_DoesNotAuthenticateNonLdapUser_WithWrongPasswordAndValidTokenAuth($password)
+    {
+        // lets short passwords through to authentication instead of failing the strength check
+        Config::getInstance()->General['disable_checks_usernames_attributes'] = 1;
+
+        $ldapAuth = LdapAuth::makeConfigured();
+        $ldapAuth->setLogin(self::NON_LDAP_NORMAL_USER);
+        $ldapAuth->setTokenAuth($this->getNonLdapNormalUserTokenAuth()); // valid token
+        $ldapAuth->setPassword($password);
+        $authResult = $ldapAuth->authenticate();
+
+        $this->assertEquals(0, $authResult->getCode());
+    }
+
+    public function getWrongPasswords()
+    {
+        return array(
+            'wrong password' => array('foo bar'),
+            'one character' => array('x'),
+            'zero' => array('0'),
+        );
+    }
+
     public function test_LdapAuth_AuthenticatesSuccessfully_WhenTokenAuthOnlyAuthenticationUsed()
     {
         $this->test_LdapAuth_AuthenticatesUser_WithCorrectCredentials();

@@ -328,7 +328,7 @@ abstract class Base implements Auth
         }
 
         $auth->setLogin($this->login);
-        if (!empty($this->password)) {
+        if ($this->password !== null && $this->password !== '') {
             $this->logger->debug("Auth\\Base::{func}: trying normal auth with user password", array('func' => __FUNCTION__));
 
             $auth->setPassword($this->password);
