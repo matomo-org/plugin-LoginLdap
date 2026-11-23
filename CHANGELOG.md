@@ -1,6 +1,6 @@
 # LoginLdap Changelog
 
-#### LoginLdap 6.0.7
+#### LoginLdap 6.0.7 - 2026-11-23
 * Access control improvement
 
 #### LoginLdap 6.0.6 - 2026-11-16
